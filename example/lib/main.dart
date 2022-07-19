@@ -44,9 +44,23 @@ class FirstScreen extends StatelessWidget {
             final res = await klumpPlugin.checkout(
               context: context,
               data: KlumpCheckoutData(
-                totalAmount: 10000,
-                metaData: {},
-                items: [],
+                amount: 45000,
+                shippingFee: 5000,
+                merchantReference: "what-ever-you-want-this-to-be",
+                metaData: {
+                  'customer': "Elon Musk",
+                  'email': "musk@spacex.com",
+                },
+                items: [
+                  KlumpCheckoutItem(
+                    imageUrl:
+                        'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+                    itemUrl: 'https://www.paypal.com/in/webapps/mpp/home',
+                    name: 'Awesome item',
+                    unitPrice: 20000,
+                    quantity: 2,
+                  )
+                ],
               ),
             );
             print(res);

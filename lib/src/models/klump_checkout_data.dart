@@ -1,19 +1,29 @@
 import 'package:klump_checkout/src/models/klump_checkout_item.dart';
 
 class KlumpCheckoutData {
-  final double totalAmount;
+  final double amount;
   final double? shippingFee;
   final String? currency;
-  final String? merchantReference;
-  final Map<String, dynamic> metaData;
+  final String merchantReference;
+  final Map<String, String> metaData;
   final List<KlumpCheckoutItem> items;
 
   KlumpCheckoutData({
-    required this.totalAmount,
+    required this.amount,
     this.shippingFee,
     this.currency,
-    this.merchantReference,
+    required this.merchantReference,
     required this.metaData,
     required this.items,
   });
+
+  Map<String, dynamic> toMap() => {
+        'amount': amount,
+        'shipping_fee': shippingFee ?? 0,
+        'currency': "'${currency ?? 'NGN'}'",
+        'merchant_reference': "'$merchantReference'",
+        'meta_data': metaData.map((key, value) => MapEntry(key, "'$value'")),
+        'source': "'mobile'",
+        'items': items.map((e) => e.toMap()).toList(),
+      };
 }

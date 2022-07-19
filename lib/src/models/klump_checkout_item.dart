@@ -5,19 +5,19 @@ class KlumpCheckoutItem {
   final double unitPrice;
   final int quantity;
 
-  KlumpCheckoutItem(
+  KlumpCheckoutItem({
     this.imageUrl,
     this.itemUrl,
-    this.name,
-    this.unitPrice,
-    this.quantity,
-  );
+    required this.name,
+    required this.unitPrice,
+    required this.quantity,
+  });
 
-  Map<String, dynamic> toJson() => {
-        'image_url': imageUrl ?? '',
-        'item_url': itemUrl ?? '',
-        'name': name,
-        'unit_price': unitPrice,
+  Map<String, dynamic> toMap() => {
+        'image_url': "'${imageUrl ?? ''}'",
+        'item_url': "'${itemUrl ?? ''}'",
+        'name': "'$name'",
+        'unit_price': "'$unitPrice'",
         'quantity': quantity,
       };
 }
