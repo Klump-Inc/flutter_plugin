@@ -14,7 +14,7 @@ abstract class KlumpCheckoutPlatform extends PlatformInterface {
   ///
   /// Defaults to [MethodChannelKlumpCheckout].
   static KlumpCheckoutPlatform get instance => _instance;
-  
+
   /// Platform-specific implementations should set this with their own
   /// platform-specific class that extends [KlumpCheckoutPlatform] when
   /// they register themselves.

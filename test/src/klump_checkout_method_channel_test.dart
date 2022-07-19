@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:klump_checkout/klump_checkout_method_channel.dart';
+import 'package:klump_checkout/src/klump_checkout_method_channel.dart';
 
 void main() {
   MethodChannelKlumpCheckout platform = MethodChannelKlumpCheckout();

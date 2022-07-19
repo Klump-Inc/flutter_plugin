@@ -1,22 +1,24 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 // import 'package:flutter_webview_pro/platform_interface.dart';
-// import 'package:flutter_webview_pro/webview_flutter.dart';
+import 'package:flutter_webview_pro/webview_flutter.dart';
+import 'package:klump_checkout/src/core/constant/colors.dart';
 import 'package:logger/logger.dart';
 // <script src="https://klump-js.netlify.app/klump.js" defer></script>
 // <script src="https://staging-js.useklump.com/klump.js" defer></script>
 // <script src="https://staging-js.useklump.com/klump.js" defer></script>
+//  redirect_url: 'https://verygoodmerchant.com/checkout/confirmation',
 
-class WebViewExample extends StatefulWidget {
-  const WebViewExample({Key? key}) : super(key: key);
+class KlumpWebview extends StatefulWidget {
+  const KlumpWebview({Key? key}) : super(key: key);
 
   @override
-  WebViewExampleState createState() => WebViewExampleState();
+  KlumpWebviewState createState() => KlumpWebviewState();
 }
 
-class WebViewExampleState extends State<WebViewExample> {
+class KlumpWebviewState extends State<KlumpWebview> {
   bool isLoading = true;
   @override
   void initState() {
@@ -27,7 +29,7 @@ class WebViewExampleState extends State<WebViewExample> {
   var webpage = '''
 <!DOCTYPE html>
 <html>
-<script src="https://klump-js.netlify.app/klump.js" defer></script>
+<script src="https://staging-js.useklump.com/klump.js" defer></script>
 <body>
 <div style ="width: 500px; margin: 100px auto;">
   <div id="klump__checkout"></div>
@@ -45,12 +47,12 @@ class WebViewExampleState extends State<WebViewExample> {
             amount: 45000,
             shipping_fee: 5000,
             currency: 'NGN',
-            redirect_url: 'https://verygoodmerchant.com/checkout/confirmation',
             merchant_reference: 'what-ever-you-want-this-to-be',
             meta_data: {
               customer: 'Elon Musk',
               email: 'musk@spacex.com'
             },
+            source: 'mobile',
             items: [
                 {
                     image_url:
@@ -148,8 +150,9 @@ class WebViewExampleState extends State<WebViewExample> {
                 },
               ),
               isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
+                  ? Center(
+                      child:
+                          CircularProgressIndicator(color: KlumpColors.primary),
                     )
                   : Container(
                       width: 0,
