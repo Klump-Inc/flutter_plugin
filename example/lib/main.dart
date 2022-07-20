@@ -33,7 +33,8 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Checkout example app'),
+        title: const Text('Klump Checkout Sample'),
+        centerTitle: false,
       ),
       body: Center(
         child: ElevatedButton(
