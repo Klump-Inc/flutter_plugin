@@ -3,9 +3,6 @@
 
 Flutter SDK for implementing the Klump Checkout - Klump is a 
 
-## Try the demo
-Checkout the [widget flow](https://okra.ng/) to view how the Klump Checkout works. *Click "See How it Works"*
-
 ## Before getting started
 - Checkout our [get started guide](https://docs.okra.ng/docs/get-started-with-okra) to create your developer account and retrieve your Client Token, API Keys, and Private Keys.
 - Create a [sandbox customer](https://docs.okra.ng/docs/creating-sandbox-customers), so you can get connecting immediately. 
@@ -27,24 +24,20 @@ dependencies:
 
 ## Flow Summary
 
-1. Collect user's card details, email and phone number. 
+1. Collect Klump checkout data. 
 	
-2. Initialize the klump_checkoutPlugin by creating an object of the klump_checkoutPlugin class with two named parameters passed to the constructor.
-	- The first argument is the public key of the merchant
-	- The second argument is the secret key of the merchant.
-	- Both public and secret keys are provided by klump_checkout to the merchants.
-	-  Prompts backend to initialize transactions by calling the `initialPayment` method.
-	- klump_checkout's backend returns a `payment slug` which is returned when `Initiate Payment` endpoint is called
-	- App provides the `payment slug` and card details to our SDK's using the `pay` and `verifyCardNumber` methods
-	
-3. Once request is successful,  `ThirdPartyPaymentResponse` is return.
+2. Initialize the `KlumpPlugin` by creating an object of the klumpPlugin class with a named parameters passed to the constructor.
+	- The named paramater is the public key of the merchant.
+	- Call the `checkout` method with the context and data named paramaters  to render the Klump checkout webview.
+
+3. Once request is successful,  `KlumpCheckoutResponse` is return.
 
 
 ## Installation
 - To start using this package, simply add the following to project `pubspec.yaml`
 
 ```
-  flutter_klump_checkout: <lastes-version>
+  klump_checkout: <lastes-version>
 ```
 
 ## Usage
@@ -62,12 +55,11 @@ To use this package, your android app must declare internet permission. Add the 
 ```dart
 
    KlumpPlugin klumpPlugin = KlumpPlugin(
-                publicKey:
-                    'klp_pk_test_...');
+      publicKey: 'klp_pk_test_...');
 
 ```
 
-### 4. Perform ckeckout with klump_checkout Web UI
+### 3. Perform ckeckout with klump_checkout Web UI
 Payment transaction can be made with the `checkout` method: 
 ## Parameters
 - `context` BuildContext.
