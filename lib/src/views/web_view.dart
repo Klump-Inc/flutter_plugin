@@ -66,7 +66,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
                   javascriptMode: JavascriptMode.unrestricted,
                   javascriptChannels: <JavascriptChannel>{
                     JavascriptChannel(
-                      name: 'CloseLoader',
+                      name: 'FlutterCloseLoader',
                       onMessageReceived: (JavascriptMessage message) {
                         Future.delayed(const Duration(seconds: 2), () {
                           setState(() {
@@ -76,26 +76,34 @@ class KlumpWebviewState extends State<KlumpWebview> {
                       },
                     ),
                     JavascriptChannel(
-                      name: 'Print',
+                      name: 'FlutterOnError',
                       onMessageReceived: (JavascriptMessage message) {
                         final data = (jsonDecode(message.message))['data']
                             as Map<String, dynamic>;
                         Logger().d(data);
-                        switch (data['type']) {
-                          case 'ERROR':
-                            setState(() {
-                              _response = KlumpCheckoutResponse(
-                                  CheckoutStatus.error, data);
-                            });
-                            break;
-                          case 'SUCCESS':
-                            setState(() {
-                              _response = KlumpCheckoutResponse(
-                                  CheckoutStatus.success, data);
-                            });
-                            break;
-                          default:
-                        }
+                        setState(() {
+                          _response =
+                              KlumpCheckoutResponse(CheckoutStatus.error, data);
+                        });
+                      },
+                    ),
+                    JavascriptChannel(
+                      name: 'FlutterOnSuccess',
+                      onMessageReceived: (JavascriptMessage message) {
+                        final data = (jsonDecode(message.message))['data']
+                            as Map<String, dynamic>;
+                        Logger().d(data);
+                        setState(() {
+                          _response = KlumpCheckoutResponse(
+                              CheckoutStatus.success, data);
+                        });
+                      },
+                    ),
+                    JavascriptChannel(
+                      name: 'FlutterOnClose',
+                      onMessageReceived: (JavascriptMessage message) {
+                        Logger().d(message.message);
+                        Navigator.pop(context, _response);
                       },
                     ),
                   },
