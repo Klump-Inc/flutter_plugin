@@ -32,7 +32,7 @@ String genereteWebPage(String publicKey, KlumpCheckoutData data) {
         onLoad: (data) => {
             console.log('html onLoad will be handled by the merchant');
             console.log(data);
-          FlutterOnSuccess.postMessage(JSON.stringify(data));
+          FlutterOnLoad.postMessage(JSON.stringify(data));
         },
         onOpen: (data) => {
             console.log('html OnOpen will be handled by the merchant');
