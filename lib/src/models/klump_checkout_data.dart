@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/src/models/klump_checkout_item.dart';
 
-class KlumpCheckoutData {
+class KlumpCheckoutData extends Equatable {
   final double amount;
   final double? shippingFee;
   final String? currency;
@@ -8,7 +9,7 @@ class KlumpCheckoutData {
   final Map<String, String> metaData;
   final List<KlumpCheckoutItem> items;
 
-  KlumpCheckoutData({
+  const KlumpCheckoutData({
     required this.amount,
     this.shippingFee,
     this.currency,
@@ -26,4 +27,8 @@ class KlumpCheckoutData {
         'source': "'mobile'",
         'items': items.map((e) => e.toMap()).toList(),
       };
+
+  @override
+  List<Object?> get props =>
+      [amount, shippingFee, currency, merchantReference, metaData, items];
 }

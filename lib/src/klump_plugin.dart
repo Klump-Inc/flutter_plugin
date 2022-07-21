@@ -9,7 +9,7 @@ class KlumpPlugin {
     required this.publicKey,
   });
 
-  Future<KlumpCheckoutHandler?> checkout({
+  Future<KlumpCheckoutResponse?> checkout({
     required BuildContext context,
     required KlumpCheckoutData data,
   }) async {

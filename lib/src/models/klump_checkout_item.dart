@@ -1,11 +1,13 @@
-class KlumpCheckoutItem {
+import 'package:equatable/equatable.dart';
+
+class KlumpCheckoutItem extends Equatable {
   final String? imageUrl;
   final String? itemUrl;
   final String name;
   final double unitPrice;
   final int quantity;
 
-  KlumpCheckoutItem({
+  const KlumpCheckoutItem({
     this.imageUrl,
     this.itemUrl,
     required this.name,
@@ -20,4 +22,7 @@ class KlumpCheckoutItem {
         'unit_price': "'$unitPrice'",
         'quantity': quantity,
       };
+
+  @override
+  List<Object?> get props => [imageUrl, itemUrl, name, unitPrice, quantity];
 }
