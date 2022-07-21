@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.klump.inc.klump_checkout_example">
+    <permission android:name="android.permission.INTERNET"/>
    <application
         android:label="klump_checkout_example"
         android:name="${applicationName}"
