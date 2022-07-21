@@ -95,7 +95,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
                       name: 'FlutterOnSuccess',
                       onMessageReceived: (JavascriptMessage message) {
                         final data = (jsonDecode(message.message))['data']
-                            as Map<String, dynamic>;
+                            ['data'] as Map<String, dynamic>;
                         Logger().d(data);
                         setState(() {
                           _response = KlumpCheckoutResponse(
