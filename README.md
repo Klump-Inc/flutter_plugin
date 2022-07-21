@@ -1,8 +1,7 @@
 # Klump Checkout Flutter Plugin
 
-This library allows for the easy integration of [Klump Checkout] into your Flutter application. 
 
-Flutter SDK for implementing the Klump Checkout - Okra is a safe and secure web drop-in module and this library provides a front-end web (also available in [iOS](https://github.com/okraHQ/okra-ios-sdk), [Android](https://github.com/okraHQ/okra-android-sdk), and [JavaScript](https://github.com/okraHQ/okra-js)) SDK for [account authentication](https://docs.okra.ng/docs/widget-properties) and [payment initiation](https://docs.okra.ng/docs/creating-a-charge) for each bank that Okra [supports](https://docs.okra.ng/docs/bank-coverage). 
+Flutter SDK for implementing the Klump Checkout - Klump is a 
 
 ## Try the demo
 Checkout the [widget flow](https://okra.ng/) to view how the Klump Checkout works. *Click "See How it Works"*
