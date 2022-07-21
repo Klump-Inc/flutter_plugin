@@ -37,7 +37,7 @@ dependencies:
 - To start using this package, simply add the following to project `pubspec.yaml`
 
 ```
-  klump_checkout: <lastes-version>
+  klump_checkout: <lastest-version>
 ```
 
 ## Usage
