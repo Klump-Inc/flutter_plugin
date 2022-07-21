@@ -4,11 +4,8 @@
 Flutter SDK for implementing the Klump Checkout - Klump is a 
 
 ## Before getting started
-- Checkout our [get started guide](https://docs.okra.ng/docs/get-started-with-okra) to create your developer account and retrieve your Client Token, API Keys, and Private Keys.
-- Create a [sandbox customer](https://docs.okra.ng/docs/creating-sandbox-customers), so you can get connecting immediately. 
-
-*Bonus Points*
-- Setup [Slack Notifications](https://docs.okra.ng/docs/slack-integration) so you can see your API call statuses and re-run calls in real-time!
+- Checkout our [get started guide](https://docs.useklump.com/docs/intro-to-klump) to create your mechant account and retrieve your API Keys.
+- Create a [Merchant account](https://docs.useklump.com/docs/intro-to-klump), so you can get connecting immediately. 
 
 ### Getting Started
 This library would help you add Klump Checkout to your hybrid android/ios application in no time. All you need to do is ...
