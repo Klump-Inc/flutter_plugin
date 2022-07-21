@@ -75,10 +75,8 @@ Payment transaction can be made with the `checkout` method:
 
 	
 ```dart
-	.
-	.
-	.
-	final res = await klumpPlugin.checkout(
+
+final res = await klumpPlugin.checkout(
       context: context,
       data: const KlumpCheckoutData(
       amount: 45000,
