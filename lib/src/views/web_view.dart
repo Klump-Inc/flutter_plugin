@@ -62,9 +62,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
                     _controller.complete(webViewController);
                     _loadHtmlString(_controller, _htmlContent);
                   },
-                  onPageFinished: (response) {
-                    Logger().d(response);
-                  },
+                  onPageFinished: (response) {},
                   javascriptMode: JavascriptMode.unrestricted,
                   javascriptChannels: <JavascriptChannel>{
                     JavascriptChannel(
@@ -82,13 +80,13 @@ class KlumpWebviewState extends State<KlumpWebview> {
                       onMessageReceived: (JavascriptMessage message) {
                         final data = (jsonDecode(message.message))['data']
                             as Map<String, dynamic>;
+                        Logger().d(data);
                         switch (data['type']) {
                           case 'ERROR':
                             setState(() {
                               _response = KlumpCheckoutResponse(
                                   CheckoutStatus.error, data);
                             });
-
                             break;
                           case 'SUCCESS':
                             setState(() {
