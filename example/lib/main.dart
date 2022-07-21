@@ -44,7 +44,7 @@ class FirstScreen extends StatelessWidget {
                     'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332');
             final res = await klumpPlugin.checkout(
               context: context,
-              data: KlumpCheckoutData(
+              data: const KlumpCheckoutData(
                 amount: 45000,
                 shippingFee: 5000,
                 merchantReference: "what-ever-you-want-this-to-be",
@@ -64,6 +64,7 @@ class FirstScreen extends StatelessWidget {
                 ],
               ),
             );
+            // ignore: avoid_print
             print(res);
           },
           child: const Text('Text Checkout'),
