@@ -9,6 +9,10 @@ import 'package:klump_checkout/src/core/utils/util.dart';
 import 'package:logger/logger.dart';
 
 class KlumpWebview extends StatefulWidget {
+  ///
+  /// [KlumpWebview] - the actual payment webview that renders the checkout widget.
+  ///
+
   final String pubilcKey;
   final KlumpCheckoutData data;
   const KlumpWebview({
