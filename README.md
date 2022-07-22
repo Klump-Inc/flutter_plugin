@@ -22,7 +22,7 @@ dependencies:
 
 ## Flow Summary
 
-1. Collect Klump checkout data. 
+1. Collect Klump `checkout data`. 
 	
 2. Initialize the `KlumpPlugin` by creating an object of the klumpPlugin class with a named parameters passed to the constructor.
 	- The named paramater is the public key of the merchant.
