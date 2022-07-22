@@ -63,8 +63,12 @@ Payment transaction can be made with the `checkout` method:
 - `data` The `KlumpCheckoutData` . 
 =======
 - `context` is the view BuildContext.
+<<<<<<< HEAD
 - `data` The `KlumpCheckoputData` . 
 >>>>>>> fdbdeda (Update README.md)
+=======
+- `data` is the `KlumpCheckoputData` . 
+>>>>>>> 0ebe9c2 (Update README.md)
 
 	
 ```dart
