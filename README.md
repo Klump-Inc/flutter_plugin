@@ -1,11 +1,10 @@
 # Klump Checkout Flutter Plugin
 
-
-Flutter SDK for implementing the Klump Checkout - Klump is a modern, simple to use platform that allows the user to collect payments from customers in instalments using a payment card (debit or credit) or a bank account.
+Flutter Plugin for implementing the Klump Checkout - Klump is a modern, simple to use platform that allows the user to collect payments from customers in instalments using a payment card (debit or credit) or a bank account.
 
 ## Before getting started
+- Create a merchant account on [useklump](https://useklump.com/)
 - Checkout our [get started guide](https://docs.useklump.com/docs/intro-to-klump) to create your mechant account and retrieve your API Keys.
-- Create a [Merchant account](https://docs.useklump.com/docs/intro-to-klump), so you can get connecting immediately. 
 
 ### Getting Started
 This library would help you add Klump Checkout to your hybrid android/ios application in no time. All you need to do is ...
@@ -21,7 +20,7 @@ dependencies:
 
 ## Flow Summary
 
-1. Collect Klump checkout data. 
+1. Collect Klump `checkout data`. 
 	
 2. Initialize the `KlumpPlugin` by creating an object of the klumpPlugin class with a named parameters passed to the constructor.
 	- The named paramater is the public key of the merchant.
