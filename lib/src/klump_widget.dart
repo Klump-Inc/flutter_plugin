@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/views/web_view.dart';
 
-class KlumpPlugin {
+class KlumpWidget {
   final String publicKey;
 
-  /// Initialize the KlumpPlugin object.
+  /// Initialize the KlumpWidget object.
   ///
-  /// [publicKey] - your KlumpPlugin public key. This is mandatory
+  /// [publicKey] - your KlumpWidget public key. This is mandatory
   ///
   ///
 
-  KlumpPlugin({
+  KlumpWidget({
     required this.publicKey,
   });
 
-  /// Initial Checkout and pay using KlumpPlugin web payment UI
+  /// Initial Checkout and pay using KlumpWidget web payment UI
   ///
-  /// [publicKey] - the merchat public key from [KlumpPlugin] object initialization.
+  /// [publicKey] - the merchat public key from [KlumpWidget] object initialization.
   ///
   /// [data] - the purchase data consisting of total amount, meta_data, items, etc.
   ///

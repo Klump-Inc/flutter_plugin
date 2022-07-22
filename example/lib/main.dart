@@ -39,10 +39,10 @@ class FirstScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            KlumpPlugin klumpPlugin = KlumpPlugin(
+            KlumpWidget klumpWidget = KlumpWidget(
                 publicKey:
                     'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332');
-            final res = await klumpPlugin.checkout(
+            final res = await klumpWidget.checkout(
               context: context,
               data: const KlumpCheckoutData(
                 amount: 45000,
