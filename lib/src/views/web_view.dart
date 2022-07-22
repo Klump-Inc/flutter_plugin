@@ -9,6 +9,10 @@ import 'package:klump_checkout/src/core/utils/util.dart';
 import 'package:logger/logger.dart';
 
 class KlumpWebview extends StatefulWidget {
+  ///
+  /// [KlumpWebview] - the actual payment webview that renders the checkout widget.
+  ///
+
   final String pubilcKey;
   final KlumpCheckoutData data;
   const KlumpWebview({
@@ -52,6 +56,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
           statusBarBrightness: Brightness.light,
         ),
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: SafeArea(
             child: Stack(
               children: [
@@ -62,13 +67,11 @@ class KlumpWebviewState extends State<KlumpWebview> {
                     _controller.complete(webViewController);
                     _loadHtmlString(_controller, _htmlContent);
                   },
-                  onPageFinished: (response) {
-                    Logger().d(response);
-                  },
+                  onPageFinished: (response) {},
                   javascriptMode: JavascriptMode.unrestricted,
                   javascriptChannels: <JavascriptChannel>{
                     JavascriptChannel(
-                      name: 'CloseLoader',
+                      name: 'FlutterCloseLoader',
                       onMessageReceived: (JavascriptMessage message) {
                         Future.delayed(const Duration(seconds: 2), () {
                           setState(() {
@@ -78,26 +81,34 @@ class KlumpWebviewState extends State<KlumpWebview> {
                       },
                     ),
                     JavascriptChannel(
-                      name: 'Print',
+                      name: 'FlutterOnError',
                       onMessageReceived: (JavascriptMessage message) {
                         final data = (jsonDecode(message.message))['data']
                             as Map<String, dynamic>;
-                        switch (data['type']) {
-                          case 'ERROR':
-                            setState(() {
-                              _response = KlumpCheckoutResponse(
-                                  CheckoutStatus.error, data);
-                            });
-
-                            break;
-                          case 'SUCCESS':
-                            setState(() {
-                              _response = KlumpCheckoutResponse(
-                                  CheckoutStatus.success, data);
-                            });
-                            break;
-                          default:
-                        }
+                        Logger().d(data);
+                        setState(() {
+                          _response =
+                              KlumpCheckoutResponse(CheckoutStatus.error, data);
+                        });
+                      },
+                    ),
+                    JavascriptChannel(
+                      name: 'FlutterOnSuccess',
+                      onMessageReceived: (JavascriptMessage message) {
+                        final data = (jsonDecode(message.message))['data']
+                            ['data'] as Map<String, dynamic>;
+                        Logger().d(data);
+                        setState(() {
+                          _response = KlumpCheckoutResponse(
+                              CheckoutStatus.success, data);
+                        });
+                      },
+                    ),
+                    JavascriptChannel(
+                      name: 'FlutterOnClose',
+                      onMessageReceived: (JavascriptMessage message) {
+                        Logger().d(message.message);
+                        Navigator.pop(context, _response);
                       },
                     ),
                   },

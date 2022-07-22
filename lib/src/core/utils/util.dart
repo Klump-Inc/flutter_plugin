@@ -4,7 +4,7 @@ String genereteWebPage(String publicKey, KlumpCheckoutData data) {
   var webpage = '''
 <!DOCTYPE html>
 <html>
-<script src="https://klump-js.netlify.app/klump.js?mobile=true" defer></script>
+<script src="https://js.useklump.com/klump.js" defer></script>
 <body>
 <div style ="width: 500px; margin: 100px auto;">
   <div id="klump__checkout"></div>
@@ -15,34 +15,34 @@ String genereteWebPage(String publicKey, KlumpCheckoutData data) {
   </div>
 </div>
 <script>
-    CloseLoader.postMessage(true);
+    FlutterCloseLoader.postMessage(true);
     const payload = {
         publicKey: '$publicKey',
         data: ${data.toMap()},
         onSuccess: (data) => {
             console.log('html onSuccess will be handled by the merchant');
             console.log(data);
-         Print.postMessage(JSON.stringify(data));
+         FlutterOnSuccess.postMessage(JSON.stringify(data));
         },
         onError: (data) => {
             console.log('html onError will be handled by the merchant');
             console.log(data);
-           Print.postMessage(JSON.stringify(data));
+           FlutterOnError.postMessage(JSON.stringify(data));
         },
         onLoad: (data) => {
             console.log('html onLoad will be handled by the merchant');
             console.log(data);
-          Print.postMessage(JSON.stringify(data));
+          FlutterOnLoad.postMessage(JSON.stringify(data));
         },
         onOpen: (data) => {
             console.log('html OnOpen will be handled by the merchant');
             console.log(data);
-         Print.postMessage(JSON.stringify(data));
+         FlutterOnOpen.postMessage(JSON.stringify(data));
         },
         onClose: (data) => {
             console.log('html onClose will be handled by the merchant');
             console.log(data);
-          Print.postMessage(JSON.stringify(data));
+          FlutterOnClose.postMessage(JSON.stringify(data));
         }
     }
     document.getElementById('klump__checkout').addEventListener('click', function () {
