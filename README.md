@@ -89,6 +89,3 @@ final res = await klumpPlugin.checkout(
   print(res);
   }
 ```
-
-### Author
-- [Jeremiah Agbama](https://www.linkedin.com/in/jeremiah-agbama-168653161/)
