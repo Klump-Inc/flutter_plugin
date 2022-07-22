@@ -4,7 +4,7 @@ String genereteWebPage(String publicKey, KlumpCheckoutData data) {
   var webpage = '''
 <!DOCTYPE html>
 <html>
-<script src="https://staging-js.useklump.com/klump.js" defer></script>
+<script src="https://js.useklump.com/klump.js" defer></script>
 <body>
 <div style ="width: 500px; margin: 100px auto;">
   <div id="klump__checkout"></div>
