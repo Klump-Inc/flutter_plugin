@@ -22,7 +22,7 @@ dependencies:
 
 1. Collect Klump `checkout data`. 
 	
-2. Initialize the `KlumpPlugin` by creating an object of the klumpPlugin class with a named parameters passed to the constructor.
+2. Initialize the `KlumpWidget` by creating an object of the KlumpWidget class with a named parameters passed to the constructor.
 	- The named paramater is the public key of the merchant.
 	- Call the `checkout` method with the context and data named paramaters  to render the Klump checkout webview.
 
@@ -46,11 +46,11 @@ To use this package, your android app must declare internet permission. Add the 
 ```
 
 ### 2. Initializing Plugin
-	To use [klump_checkout] SDK, you need to first initialize it by using the `KlumpPlugin` class.
+	To use [klump_checkout] SDK, you need to first initialize it by using the `KlumpWidget` class.
 	
 ```dart
 
-   KlumpPlugin klumpPlugin = KlumpPlugin(
+   KlumpWidget klumpWidget = KlumpWidget(
       publicKey: 'klp_pk_test_...');
 
 ```
@@ -64,7 +64,7 @@ Payment transaction can be made with the `checkout` method:
 	
 ```dart
 
-final res = await klumpPlugin.checkout(
+final res = await klumpWidget.checkout(
       context: context,
       data: const KlumpCheckoutData(
       amount: 45000,
