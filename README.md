@@ -1,6 +1,6 @@
 # Klump Checkout Flutter Plugin
 
-![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 40 31](https://user-images.githubusercontent.com/34801232/180447659-e002e64c-a9f8-4a0e-819a-bfdb1773309e.png) ![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 40 40](https://user-images.githubusercontent.com/34801232/180447623-b03b6aaf-ce37-486b-ad6a-aecd4a7d7de9.png)
+![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 40 31](https://user-images.githubusercontent.com/34801232/180447659-e002e64c-a9f8-4a0e-819a-bfdb1773309e.png) ![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 40 40](https://user-images.githubusercontent.com/34801232/180447623-b03b6aaf-ce37-486b-ad6a-aecd4a7d7de9.png =250x250)
 ![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 40 49](https://user-images.githubusercontent.com/34801232/180447702-fd6f4083-546b-4304-961a-02edf03893e6.png)
 ![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 41 40](https://user-images.githubusercontent.com/34801232/180447738-43a6517b-3c06-4436-a5e3-e735a5c16b39.png)
 ![Simulator Screen Shot - iPhone 11 Pro - 2022-07-22 at 11 43 00](https://user-images.githubusercontent.com/34801232/180447750-88307cac-eff9-45e8-8e0a-4a34660ec11a.png)
