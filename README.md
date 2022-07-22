@@ -86,6 +86,5 @@ final res = await klumpWidget.checkout(
       ],
     ),
   );
-  print(res);
   }
 ```
