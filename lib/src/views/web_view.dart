@@ -56,6 +56,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
           statusBarBrightness: Brightness.light,
         ),
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: SafeArea(
             child: Stack(
               children: [
