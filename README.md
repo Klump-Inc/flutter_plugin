@@ -9,7 +9,7 @@ Flutter SDK for implementing the Klump Checkout - Klump is a modern, simple to u
 
 ## Before getting started
 - Checkout our [get started guide](https://docs.useklump.com/docs/intro-to-klump) to create your mechant account and retrieve your API Keys.
-- Create a [Merchant account](https://docs.useklump.com/docs/intro-to-klump), so you can get connecting immediately. 
+- Create a [Merchant account](https://useklump.com/), so you can get connecting immediately. 
 
 ### Getting Started
 This library would help you add Klump Checkout to your hybrid android/ios application in no time. All you need to do is ...
