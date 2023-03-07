@@ -58,8 +58,9 @@ To use this package, your android app must declare internet permission. Add the 
 ### 3. Perform ckeckout with klump_checkout Web UI
 Payment transaction can be made with the `checkout` method: 
 ## Parameters
-- `context` is the view BuildContext.
-- `data` is the `KlumpCheckoputData` . 
+
+- `context` BuildContext.
+- `data` The `KlumpCheckoutData` . 
 
 	
 ```dart
