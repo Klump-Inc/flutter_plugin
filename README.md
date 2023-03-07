@@ -59,7 +59,7 @@ To use this package, your android app must declare internet permission. Add the 
 Payment transaction can be made with the `checkout` method: 
 ## Parameters
 - `context` BuildContext.
-- `data` The `KlumpCheckoputData` . 
+- `data` The `KlumpCheckoutData` . 
 
 	
 ```dart
