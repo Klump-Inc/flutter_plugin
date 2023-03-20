@@ -37,7 +37,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
     _htmlContent = genereteWebPage(
         widget.isLive
             ? 'https://js.useklump.com/klump.js'
-            : 'https://klump-js.netlify.app/klump.js',
+            : 'https://staging-js.useklump.com/klump.js',
         widget.pubilcKey,
         widget.data);
   }
