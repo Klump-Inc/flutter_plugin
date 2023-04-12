@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_webview_pro/webview_flutter.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/core/constant/colors.dart';
 import 'package:klump_checkout/src/core/utils/util.dart';
 import 'package:logger/logger.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class KlumpWebview extends StatefulWidget {
   ///
@@ -15,10 +15,12 @@ class KlumpWebview extends StatefulWidget {
 
   final String pubilcKey;
   final KlumpCheckoutData data;
+  final bool isLive;
   const KlumpWebview({
     Key? key,
     required this.pubilcKey,
     required this.data,
+    required this.isLive,
   }) : super(key: key);
 
   @override
@@ -32,7 +34,12 @@ class KlumpWebviewState extends State<KlumpWebview> {
   @override
   void initState() {
     super.initState();
-    _htmlContent = genereteWebPage(widget.pubilcKey, widget.data);
+    _htmlContent = genereteWebPage(
+        widget.isLive
+            ? 'https://js.useklump.com/klump.js'
+            : 'https://staging-js.useklump.com/klump.js',
+        widget.pubilcKey,
+        widget.data);
   }
 
   final Completer<WebViewController> _controller =
@@ -73,6 +80,7 @@ class KlumpWebviewState extends State<KlumpWebview> {
                     JavascriptChannel(
                       name: 'FlutterCloseLoader',
                       onMessageReceived: (JavascriptMessage message) {
+                        Logger().d(message.message);
                         Future.delayed(const Duration(seconds: 2), () {
                           setState(() {
                             isLoading = false;
@@ -102,6 +110,12 @@ class KlumpWebviewState extends State<KlumpWebview> {
                           _response = KlumpCheckoutResponse(
                               CheckoutStatus.success, data);
                         });
+                      },
+                    ),
+                    JavascriptChannel(
+                      name: 'FlutterOnLoad',
+                      onMessageReceived: (JavascriptMessage message) {
+                        Logger().d(message.message);
                       },
                     ),
                     JavascriptChannel(

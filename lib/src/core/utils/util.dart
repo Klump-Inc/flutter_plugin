@@ -1,15 +1,16 @@
 import 'package:klump_checkout/klump_checkout.dart';
 
-String genereteWebPage(String publicKey, KlumpCheckoutData data) {
+String genereteWebPage(
+    String baseUrl, String publicKey, KlumpCheckoutData data) {
   var webpage = '''
 <!DOCTYPE html>
 <html>
-<script src="https://js.useklump.com/klump.js" defer></script>
+<script src="$baseUrl" defer></script>
 <body>
 <div style ="width: 500px; margin: 100px auto;">
   <div id="klump__checkout"></div>
   <div id="klump__ad">
-      <input type="number" value="45000" id="klump__price">
+      <input type="number" value="${(data.amount + (data.shippingFee ?? 0)).toString()}" id="klump__price">
       <input type="text" value="$publicKey" id="klump__merchant__public__key">
       <input type="text" value="${data.currency ?? 'NGN'}" id="klump__currency">
   </div>

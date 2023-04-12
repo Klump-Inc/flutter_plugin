@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_webview_pro/webview_flutter.dart';
 import 'package:klump_checkout/src/models/models.dart';
 import 'package:klump_checkout/src/views/web_view.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'helpers/helpers.dart';
 
@@ -31,6 +31,7 @@ void main() {
         KlumpWebview(
           pubilcKey: '',
           data: data,
+          isLive: false,
         ),
       );
       expect(find.byType(WebView), findsOneWidget);
