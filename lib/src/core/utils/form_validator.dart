@@ -1,6 +1,17 @@
-import 'package:klump_checkout/src/core/core.dart';
+import 'package:flutter/material.dart';
+import 'package:klump_checkout/src/checkout.dart';
 
 class KCFormValidator {
+  static Color getBorderColor(String? message) {
+    if (message == null) {
+      return KCColors.grey1;
+    } else if (message.isEmpty) {
+      return Colors.green.withOpacity(0.50);
+    } else {
+      return Colors.red.withOpacity(0.50);
+    }
+  }
+
   static String? errorEmail(String? text, String message) {
     if (text == null) {
       return null;

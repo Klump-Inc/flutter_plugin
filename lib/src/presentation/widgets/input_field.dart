@@ -20,7 +20,6 @@ class KCInputField extends StatefulWidget {
     this.validationMessage,
     this.onTap,
     this.readOnly = false,
-    this.hideBorder = false,
     this.prefixText,
   });
   final TextEditingController? controller;
@@ -38,7 +37,6 @@ class KCInputField extends StatefulWidget {
   final String? validationMessage;
   final void Function()? onTap;
   final bool readOnly;
-  final bool hideBorder;
   final String? prefixText;
   @override
   State<KCInputField> createState() => _KCInputFieldState();
@@ -61,12 +59,10 @@ class _KCInputFieldState extends State<KCInputField> {
         DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4.4186),
-            border: widget.hideBorder
-                ? null
-                : Border.all(
-                    color: KCColors.grey1,
-                    width: 0.88,
-                  ),
+            border: Border.all(
+              color: KCFormValidator.getBorderColor(widget.validationMessage),
+              width: 0.88,
+            ),
           ),
           child: Row(
             children: [
