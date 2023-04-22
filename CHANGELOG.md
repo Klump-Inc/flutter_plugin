@@ -4,6 +4,8 @@
 ## [1.0.3] - Android fixes
 ## [1.0.4] - Dependency changes
 ## [1.0.5] - Plugin update
+## [1.0.6] - Plugin Update
+
 
 
 
