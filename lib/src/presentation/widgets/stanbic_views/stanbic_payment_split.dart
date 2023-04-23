@@ -83,7 +83,10 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                               ),
                             Padding(
                               padding: const EdgeInsets.only(top: 2, right: 5),
-                              child: SvgPicture.asset(KCAssets.caretDown),
+                              child: SvgPicture.asset(
+                                KCAssets.caretDown,
+                                package: KC_PACKAGE_NAME,
+                              ),
                             ),
                           ],
                         ),
@@ -146,7 +149,10 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                               ),
                             Padding(
                               padding: const EdgeInsets.only(top: 2, right: 5),
-                              child: SvgPicture.asset(KCAssets.caretDown),
+                              child: SvgPicture.asset(
+                                KCAssets.caretDown,
+                                package: KC_PACKAGE_NAME,
+                              ),
                             ),
                           ],
                         ),
