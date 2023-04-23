@@ -26,6 +26,7 @@ class KCBankPopupMenuItemContent extends StatelessWidget {
             logo,
             height: 20,
             width: 17.09,
+            package: KC_PACKAGE_NAME,
           ),
           const XSpace(14),
           KCBodyText1(

@@ -32,6 +32,7 @@ class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
                       KCAssets.stanbicLogo,
                       height: 55,
                       width: 47,
+                      package: KC_PACKAGE_NAME,
                     ),
                     const YSpace(24),
                     Expanded(
@@ -45,6 +46,7 @@ class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
                               responseStatus
                                   ? KCAssets.successIllus
                                   : KCAssets.failureIllus,
+                              package: KC_PACKAGE_NAME,
                             ),
                           ),
                           const YSpace(22),

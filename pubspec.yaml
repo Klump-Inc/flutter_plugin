@@ -18,6 +18,10 @@ dependencies:
   flutter_svg: ^2.0.5
   percent_indicator: ^4.2.3
   auto_size_text: ^3.0.0
+  dio: ^5.1.1
+  internet_connection_checker: ^0.0.1+4
+
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -35,12 +39,12 @@ flutter:
         - asset: assets/fonts/avenir/Avenir-Book.ttf
         - asset: assets/fonts/avenir/Avenir-Regular.ttf
         - asset: assets/fonts/avenir/Avenir-Light.ttf
-  # plugin:
-  #   platforms:
-  #     android:
-  #       package: com.klump.inc.klump_checkout
-  #       pluginClass: KlumpCheckoutPlugin
-  #     ios:
-  #       pluginClass: KlumpCheckoutPlugin
+  plugin:
+    platforms:
+      android:
+        package: com.klump.inc.klump_checkout
+        pluginClass: KlumpCheckoutPlugin
+      ios:
+        pluginClass: KlumpCheckoutPlugin
   
   

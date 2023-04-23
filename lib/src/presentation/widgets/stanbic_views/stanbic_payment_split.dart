@@ -38,7 +38,10 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                         onTap: checkoutNotfier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(KCAssets.arrowBack),
+                          child: SvgPicture.asset(
+                            KCAssets.arrowBack,
+                            package: KC_PACKAGE_NAME,
+                          ),
                         ),
                       ),
                     ),

@@ -70,13 +70,17 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                         onTap: checkoutNotfier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(KCAssets.arrowBack),
+                          child: SvgPicture.asset(
+                            KCAssets.arrowBack,
+                            package: KC_PACKAGE_NAME,
+                          ),
                         ),
                       ),
                     ),
                     const YSpace(24.22),
                     Image.asset(
                       KCAssets.stanbicLogo,
+                      package: KC_PACKAGE_NAME,
                       height: 55,
                       width: 47,
                     ),

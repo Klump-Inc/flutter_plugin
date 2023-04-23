@@ -39,6 +39,7 @@ class _StanbicDecisionState extends State<StanbicDecision> {
                     KCAssets.stanbicLogo,
                     height: 55,
                     width: 47,
+                    package: KC_PACKAGE_NAME,
                   ),
                   Expanded(
                     child: Column(
@@ -66,7 +67,10 @@ class _StanbicDecisionState extends State<StanbicDecision> {
                                 color: KCColors.blue.withOpacity(0.10),
                               ),
                               child: Center(
-                                child: SvgPicture.asset(KCAssets.secureCredit),
+                                child: SvgPicture.asset(
+                                  KCAssets.secureCredit,
+                                  package: KC_PACKAGE_NAME,
+                                ),
                               ),
                             ),
                           ),

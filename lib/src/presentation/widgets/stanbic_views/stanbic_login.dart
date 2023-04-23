@@ -81,7 +81,10 @@ class _StanbicLoginState extends State<StanbicLogin> {
                         onTap: checkoutNotfier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(KCAssets.arrowBack),
+                          child: SvgPicture.asset(
+                            KCAssets.arrowBack,
+                            package: KC_PACKAGE_NAME,
+                          ),
                         ),
                       ),
                     ),
@@ -90,6 +93,7 @@ class _StanbicLoginState extends State<StanbicLogin> {
                       KCAssets.stanbicLogo,
                       height: 55,
                       width: 47,
+                      package: KC_PACKAGE_NAME,
                     ),
                     const YSpace(22),
                     KCHeadline3('Setup your account'),

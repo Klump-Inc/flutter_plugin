@@ -26,7 +26,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               onTap: () => Navigator.pop(context),
               child: Padding(
                 padding: const EdgeInsets.all(4),
-                child: SvgPicture.asset(KCAssets.arrowBack),
+                child: SvgPicture.asset(
+                  KCAssets.arrowBack,
+                  package: 'klump_checkout',
+                ),
               ),
             ),
           ),
@@ -70,6 +73,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                               checkoutNotfier.selectedBankFlow!.logo,
                               height: 20,
                               width: 17.09,
+                              package: KC_PACKAGE_NAME,
                             ),
                             const XSpace(14),
                             KCBodyText1(
@@ -80,7 +84,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                         ),
                       Padding(
                         padding: const EdgeInsets.only(top: 2, right: 5),
-                        child: SvgPicture.asset(KCAssets.caretDown),
+                        child: SvgPicture.asset(
+                          KCAssets.caretDown,
+                          package: KC_PACKAGE_NAME,
+                        ),
                       ),
                     ],
                   ),
