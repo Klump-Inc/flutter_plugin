@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/src/src.dart';
 
-class HttpRequester {
-  HttpRequester() {
+class KCHttpRequester {
+  KCHttpRequester() {
     dio = Dio(
       BaseOptions(
         baseUrl: KC_BASE_URL,

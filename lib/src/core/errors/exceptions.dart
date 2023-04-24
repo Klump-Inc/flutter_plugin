@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 
-abstract class Failure extends Equatable {
-  const Failure();
+abstract class KCException extends Equatable implements Exception {
+  const KCException();
   @override
   List<Object> get props => [];
 }
 
-class NoInternetFailure extends Failure {
+class NoInternetKCException extends KCException {
   @override
   List<Object> get props => [];
 }
 
-class ServerFailure extends Failure {
-  const ServerFailure({
+class ServerKCException extends KCException {
+  const ServerKCException({
     required this.message,
     required this.code,
   });
@@ -23,41 +23,41 @@ class ServerFailure extends Failure {
   List<Object> get props => [message, code];
 }
 
-class CacheFailure extends Failure {
+class CacheKCException extends KCException {
   @override
   List<Object> get props => [];
 }
 
-class NoDataFailure extends Failure {
+class NoDataKCException extends KCException {
   @override
   List<Object> get props => [];
 }
 
-class NullFailure extends Failure {
+class NullKCException extends KCException {
   @override
   List<Object> get props => [];
 }
 
-class UnknownFailure extends Failure {
+class UnknownKCException extends KCException {
   @override
   List<Object> get props => [];
 }
 
-class TimeoutFailure extends Failure {
+class TimeoutKCException extends KCException {
   @override
   List<Object> get props => [];
 }
 
-class FailureToMessage {
-  static String mapFailureToMessage(Failure failure) {
+class KCExceptionsToMessage {
+  static String mapErrorToMessage(KCException failure) {
     String message;
-    if (failure is NoInternetFailure) {
+    if (failure is NoInternetKCException) {
       message = 'Please check your internet connection and try again!';
-    } else if (failure is ServerFailure) {
+    } else if (failure is ServerKCException) {
       message = failure.message;
-    } else if (failure is CacheFailure || failure is NoDataFailure) {
+    } else if (failure is CacheKCException || failure is NoDataKCException) {
       message = 'Data not found, please login again!';
-    } else if (failure is TimeoutFailure) {
+    } else if (failure is TimeoutKCException) {
       message = 'Connection timout, please try again!';
     } else {
       message = 'An Error occurred, please try again!';

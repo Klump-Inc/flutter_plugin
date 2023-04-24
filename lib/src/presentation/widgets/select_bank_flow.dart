@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
-  const SelectBankFlow({super.key});
+  const SelectBankFlow({super.key, required this.data});
+  final KlumpCheckoutData data;
 
   @override
   State<SelectBankFlow> createState() => _SelectBankFlowState();
 }
 
 class _SelectBankFlowState extends State<SelectBankFlow> {
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, _initiatTranx);
+    super.initState();
+  }
+
+  void _initiatTranx() {
+    Provider.of<KCChangeNotifier>(context, listen: false)
+        .initiateTransaction(widget.data);
+  }
+
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
@@ -138,6 +151,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const Spacer(),
           KCPrimaryButton(
             disabled: checkoutNotfier.selectedBankFlow == null,
+            loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,
           ),

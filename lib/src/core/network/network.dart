@@ -1,2 +1,2 @@
 export 'http_requester.dart';
-export 'internet_connection.dart';
+export 'internet_info.dart';

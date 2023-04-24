@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class KCBottomSheet extends StatefulWidget {
-  const KCBottomSheet({super.key});
+  final KlumpCheckoutData data;
 
-  static dynamic route(BuildContext context) {
+  const KCBottomSheet({super.key, required this.data});
+
+  static dynamic route(BuildContext context, KlumpCheckoutData data) {
     return showModalBottomSheet<void>(
       isDismissible: false,
       context: context,
@@ -18,7 +21,7 @@ class KCBottomSheet extends StatefulWidget {
         ),
       ),
       isScrollControlled: true,
-      builder: (context) => const KCBottomSheet(),
+      builder: (context) => KCBottomSheet(data: data),
     );
   }
 
@@ -67,7 +70,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
               child: Consumer<KCChangeNotifier>(
                 builder: (_, value, __) {
                   final views = <Widget>[
-                    const SelectBankFlow(),
+                    SelectBankFlow(data: widget.data),
                     const StanbicLogin(),
                     const StanbicLoginOTP(),
                     const StanbicTerms(),

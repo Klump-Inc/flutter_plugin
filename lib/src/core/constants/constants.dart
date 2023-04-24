@@ -17,3 +17,4 @@ const String KC_CONTENT_TYPE_DEFAULT = 'application/json';
 const String KC_CLIENT_ID_VALUE = 'website';
 const String KC_CLIENT_KEY_VALUE = 'website';
 const String KC_CLIENT_SECRET_VALUE = 'VMws+/Q&=gVV+R7M';
+const String KC_CKECKOUT_TOKEN = 'kc_checkout_token';

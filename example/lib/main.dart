@@ -40,14 +40,14 @@ class FirstScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             KlumpWidget klumpWidget = KlumpWidget(
-              publicKey:
-                  'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
               isLive: false,
             );
             final res = await klumpWidget.checkout(
               context: context,
               data: const KlumpCheckoutData(
                 amount: 100000,
+                merchantPublicKey:
+                    'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
                 shippingFee: 0,
                 merchantReference: "what-ever-you-want-this-to-be",
                 metaData: {
