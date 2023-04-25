@@ -1,6 +1,6 @@
 name: klump_checkout
 description:  A Flutter plugin for payment checkout on Klump gateway. Completely supports Android and iOS.
-version: 1.0.5
+version: 1.0.6
 homepage: https://github.com/Klump-Inc/flutter_plugin
 
 environment:
@@ -8,18 +8,39 @@ environment:
   flutter: ">=2.5.0"
 
 dependencies:
-  equatable: ^2.0.3
   flutter:
     sdk: flutter
   webview_flutter: ^3.0.4
+  intl: ^0.18.1
   logger: ^1.1.0
+  provider: ^6.0.5
+  flutter_svg: ^2.0.5
+  percent_indicator: ^4.2.3
+  auto_size_text: ^3.0.0
+  dio: ^5.1.1
+  internet_connection_checker: ^0.0.1+4
+  equatable: ^2.0.5
+  dartz: ^0.10.1
+  shared_preferences: ^2.1.0
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
 
 flutter:
+  assets:
+    - assets/images/
+    - assets/icons/
+  fonts:
+    - family: Avenir
+      fonts:
+        - asset: assets/fonts/avenir/Avenir-Heavy.ttf
+        - asset: assets/fonts/avenir/Avenir-Black.ttf
+        - asset: assets/fonts/avenir/Avenir-Book.ttf
+        - asset: assets/fonts/avenir/Avenir-Regular.ttf
+        - asset: assets/fonts/avenir/Avenir-Light.ttf
   plugin:
     platforms:
       android:
@@ -27,3 +48,5 @@ flutter:
         pluginClass: KlumpCheckoutPlugin
       ios:
         pluginClass: KlumpCheckoutPlugin
+  
+  

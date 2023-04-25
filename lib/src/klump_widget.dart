@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/views/web_view.dart';
+import 'package:klump_checkout/src/src.dart';
 
 class KlumpWidget {
-  final String publicKey;
   final bool isLive;
 
   /// Initialize the KlumpWidget object.
@@ -16,7 +15,6 @@ class KlumpWidget {
   ///
 
   KlumpWidget({
-    required this.publicKey,
     this.isLive = true,
   });
 
@@ -33,15 +31,6 @@ class KlumpWidget {
     required BuildContext context,
     required KlumpCheckoutData data,
   }) async {
-    return await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => KlumpWebview(
-          pubilcKey: publicKey,
-          data: data,
-          isLive: isLive,
-        ),
-      ),
-    );
+    return await KCBottomSheet.route(context, data);
   }
 }

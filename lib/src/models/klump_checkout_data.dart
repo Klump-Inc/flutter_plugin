@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/models/klump_checkout_item.dart';
 
 class KlumpCheckoutData extends Equatable {
@@ -8,6 +9,7 @@ class KlumpCheckoutData extends Equatable {
   final String merchantReference;
   final Map<String, String> metaData;
   final List<KlumpCheckoutItem> items;
+  final String merchantPublicKey;
 
   const KlumpCheckoutData({
     required this.amount,
@@ -16,6 +18,7 @@ class KlumpCheckoutData extends Equatable {
     required this.merchantReference,
     required this.metaData,
     required this.items,
+    required this.merchantPublicKey,
   });
 
   Map<String, dynamic> toMap() => {
@@ -29,6 +32,13 @@ class KlumpCheckoutData extends Equatable {
       };
 
   @override
-  List<Object?> get props =>
-      [amount, shippingFee, currency, merchantReference, metaData, items];
+  List<Object?> get props => [
+        amount,
+        shippingFee,
+        currency,
+        merchantReference,
+        metaData,
+        items,
+        required
+      ];
 }
