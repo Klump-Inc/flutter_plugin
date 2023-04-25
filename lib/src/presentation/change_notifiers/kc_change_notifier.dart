@@ -6,8 +6,13 @@ class KCChangeNotifier extends ChangeNotifier {
   KCChangeNotifier() {
     initiateTransactionUsecase =
         InitiateTransactionUsecase(stanbicRepository: StanbicRepository());
+    accountValidationUsecase =
+        AccountValidationUsecase(stanbicRepository: StanbicRepository());
+    verifyOTPUsecase = VerifyOTPUsecase(stanbicRepository: StanbicRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
+  late AccountValidationUsecase accountValidationUsecase;
+  late VerifyOTPUsecase verifyOTPUsecase;
   bool _isBusy = false;
   bool get isBusy => _isBusy;
   var _currentPage = 0;
@@ -16,6 +21,12 @@ class KCChangeNotifier extends ChangeNotifier {
   final Map<String, bool> _stanbicSteps = {
     'initiated': false,
   };
+
+  String? _accountNumber;
+  String? _phoneNumber;
+  String? get accountNumber => _accountNumber;
+  String? get phoneNumber => _phoneNumber;
+
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
   }
@@ -73,5 +84,39 @@ class KCChangeNotifier extends ChangeNotifier {
         },
       );
     }
+  }
+
+  Future<void> validateAccount(String accountNumber, String phoneNumber) async {
+    _setBusy(true);
+    _accountNumber = accountNumber;
+    _phoneNumber = phoneNumber;
+    final response = await accountValidationUsecase(
+      AccountValidationUsecaseParams(
+        accountNumber: accountNumber,
+        phoneNumber: phoneNumber,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) {},
+      (r) => nextPage(),
+    );
+  }
+
+  Future<void> verifyOTP(String otp) async {
+    nextPage();
+    _setBusy(true);
+    final response = await verifyOTPUsecase(
+      VerifyOTPUsecaseParams(
+        accountNumber: _accountNumber ?? '',
+        phoneNumber: _phoneNumber ?? '',
+        otp: otp,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => {},
+      (r) => nextPage(),
+    );
   }
 }

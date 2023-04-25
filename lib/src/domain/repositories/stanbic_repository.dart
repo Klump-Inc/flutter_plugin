@@ -30,4 +30,40 @@ class StanbicRepository {
       );
     }
   }
+
+  Future<Either<KCException, void>> validateAccount({
+    required String accountNumber,
+    required String phoneNumber,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.validateAccount(
+        accountNumber: accountNumber,
+        phoneNumber: phoneNumber,
+      );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, void>> verifyOTP({
+    required String accountNumber,
+    required String phoneNumber,
+    required String otp,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.verifyOTP(
+        accountNumber: accountNumber,
+        phoneNumber: phoneNumber,
+        otp: otp,
+      );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
 }

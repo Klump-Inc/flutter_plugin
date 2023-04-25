@@ -156,10 +156,12 @@ class _StanbicLoginState extends State<StanbicLogin> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled,
+                          disabled: !enabled || checkoutNotfier.isBusy,
+                          loading: checkoutNotfier.isBusy,
                           onTap: () => Provider.of<KCChangeNotifier>(context,
                                   listen: false)
-                              .nextPage(),
+                              .validateAccount(_emailCtrl.text.trim(),
+                                  _passwordCtrl.text.trim()),
                         );
                       },
                     ),

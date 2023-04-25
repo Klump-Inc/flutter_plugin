@@ -15,9 +15,25 @@ class StanbicLoginOTP extends StatefulWidget {
 
 class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
   late TextEditingController _otpCtrl;
-
   late StreamController<String> otpStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
+
+  Timer? _timer;
+  final ValueNotifier<int> _timeLeft =
+      ValueNotifier(kC_OTP_RESEND_WAIT_TIME_IN_SECONDS);
+
+  void _startCounter() {
+    _timeLeft.value = kC_OTP_RESEND_WAIT_TIME_IN_SECONDS;
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer t) {
+        _timeLeft.value--;
+        if (_timeLeft.value == 0) {
+          t.cancel();
+        }
+      },
+    );
+  }
 
   void validateInputs() {
     final otpError = KCFormValidator.errorOTP(_otpCtrl.text.trim(), 'Required');
@@ -38,12 +54,14 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
       otpStreamCtrl.sink.add(_otpCtrl.text.trim());
       validateInputs();
     });
+    _startCounter();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _otpCtrl.dispose();
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -88,7 +106,7 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                     KCHeadline3('Enter the code'),
                     const YSpace(8),
                     KCHeadline5(
-                        'A code has been sent to your otp address and 08097743324. '),
+                        'A code has been sent to your otp address and ${checkoutNotfier.phoneNumber}'),
                     const YSpace(28),
                     StreamBuilder<String>(
                       stream: otpStreamCtrl.stream,
@@ -111,13 +129,23 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                       },
                     ),
                     const YSpace(16),
-                    KCBodyText1(
-                      '1:00 remaining',
-                      fontSize: 16,
-                      color: KCColors.lightBlue,
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
+                    ValueListenableBuilder<int>(
+                      valueListenable: _timeLeft,
+                      builder: (_, timeLeft, __) {
+                        return InkWell(
+                          onTap: timeLeft != 0 ? null : () {},
+                          child: KCBodyText1(
+                            timeLeft == 0
+                                ? 'Resend code'
+                                : '${timeLeft ~/ 60}:${timeLeft >= 60 ? '00' : timeLeft} remaining',
+                            fontSize: 16,
+                            color: KCColors.lightBlue,
+                            style: const TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const YSpace(25),
                     const Spacer(),
@@ -126,10 +154,11 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled,
+                          disabled: !enabled || checkoutNotfier.isBusy,
+                          loading: checkoutNotfier.isBusy,
                           onTap: () => Provider.of<KCChangeNotifier>(context,
                                   listen: false)
-                              .nextPage(),
+                              .verifyOTP(_otpCtrl.text.trim()),
                         );
                       },
                     ),

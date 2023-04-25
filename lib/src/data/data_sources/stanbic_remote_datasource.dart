@@ -9,6 +9,15 @@ abstract class StanbicRemoteDatasource {
     required String publicKey,
     required Map<String, dynamic> metaData,
   });
+  Future<void> validateAccount({
+    required String accountNumber,
+    required String phoneNumber,
+  });
+  Future<void> verifyOTP({
+    required String accountNumber,
+    required String phoneNumber,
+    required String otp,
+  });
 }
 
 class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
@@ -34,6 +43,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "klump_public_key": publicKey,
         "meta_data": metaData,
       };
+      Logger().d(body);
       final response = await kcHttpRequester.post(
         endpoint: '/v1/transactions/initiate',
         body: body,
@@ -42,6 +52,50 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(KC_CKECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<void> validateAccount({
+    required String accountNumber,
+    required String phoneNumber,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final body = {
+        "accountNumber": accountNumber,
+        "phoneNumber": phoneNumber,
+      };
+      Logger().d(body);
+      final response = await kcHttpRequester.post(
+        endpoint: '/v1/stanbic/accounts/validation',
+        body: body,
+      );
+      Logger().d(response.data);
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<void> verifyOTP({
+    required String accountNumber,
+    required String phoneNumber,
+    required String otp,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final body = {
+        "accountNumber": accountNumber,
+        "phoneNumber": phoneNumber,
+        "otp": otp,
+      };
+      Logger().d(body);
+      final response = await kcHttpRequester.post(
+        endpoint: '/v1/stanbic/accounts/validation',
+        body: body,
+      );
+      Logger().d(response.data);
     } else {
       throw NoInternetKCException();
     }
