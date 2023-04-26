@@ -22,6 +22,7 @@ dependencies:
   equatable: ^2.0.5
   dartz: ^0.10.1
   shared_preferences: ^2.1.0
+  flutter_html:  ^3.0.0-alpha.6
 
   
 dev_dependencies:
