@@ -92,7 +92,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
-        endpoint: '/v1/stanbic/accounts/validation',
+        endpoint: '/v1/stanbic/accounts/verify',
         body: body,
       );
       Logger().d(response.data);
