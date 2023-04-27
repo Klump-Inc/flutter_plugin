@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
   KCChangeNotifier() {
@@ -106,7 +107,7 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     _setBusy(false);
     response.fold(
-      (l) {},
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) => nextPage(),
     );
   }
@@ -122,7 +123,7 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     _setBusy(false);
     response.fold(
-      (l) => {},
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) => nextPage(),
     );
   }
