@@ -3,17 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicDecisionStatus extends StatefulWidget {
-  const StanbicDecisionStatus({super.key});
+class StanbicEligibilityInfo extends StatefulWidget {
+  const StanbicEligibilityInfo({super.key});
 
   @override
-  State<StanbicDecisionStatus> createState() => _StanbicDecisionStatusState();
+  State<StanbicEligibilityInfo> createState() => _StanbicEligibilityInfoState();
 }
 
-class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
-  final responseStatus = true;
+class _StanbicEligibilityInfoState extends State<StanbicEligibilityInfo> {
   @override
   Widget build(BuildContext context) {
+    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -43,7 +43,7 @@ class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
                             height: 187.1,
                             width: 187.1,
                             child: SvgPicture.asset(
-                              responseStatus
+                              checkoutNotifier.eligibilityAmount != null
                                   ? KCAssets.successIllus
                                   : KCAssets.failureIllus,
                               package: KC_PACKAGE_NAME,
@@ -51,7 +51,7 @@ class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
                           ),
                           const YSpace(22),
                           Column(
-                            children: responseStatus
+                            children: checkoutNotifier.eligibilityAmount != null
                                 ? [
                                     KCBodyText1(
                                       'You are qualified for a spending limit of',
@@ -61,7 +61,7 @@ class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
                                     ),
                                     const YSpace(8),
                                     KCHeadline3(
-                                      'NGN 910,365.57',
+                                      'NGN ${KCStringUtil.formatAmount(checkoutNotifier.eligibilityAmount ?? 0)}',
                                       fontSize: 27,
                                       textAlign: TextAlign.center,
                                       height: 1.4318,
@@ -88,11 +88,18 @@ class _StanbicDecisionStatusState extends State<StanbicDecisionStatus> {
                     ),
                     const YSpace(24),
                     KCPrimaryButton(
-                      title: responseStatus ? 'Continue' : 'Return to store',
-                      onTap: () =>
-                          Provider.of<KCChangeNotifier>(context, listen: false)
-                              .nextPage(),
-                    ),
+                        title: checkoutNotifier.eligibilityAmount != null
+                            ? 'Continue'
+                            : 'Return to store',
+                        onTap: () {
+                          if (checkoutNotifier.eligibilityAmount != null) {
+                            Provider.of<KCChangeNotifier>(context,
+                                    listen: false)
+                                .nextPage();
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        }),
                     const YSpace(59)
                   ],
                 ),

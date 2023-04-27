@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/src/checkout.dart';
 
-class VerifyOTPUsecase extends KCUsecase<void, VerifyOTPUsecaseParams> {
+class VerifyOTPUsecase extends KCUsecase<double, VerifyOTPUsecaseParams> {
   VerifyOTPUsecase({
     required this.stanbicRepository,
   });
@@ -10,7 +10,7 @@ class VerifyOTPUsecase extends KCUsecase<void, VerifyOTPUsecaseParams> {
   final StanbicRepository stanbicRepository;
 
   @override
-  Future<Either<KCException, void>> call(
+  Future<Either<KCException, double>> call(
     VerifyOTPUsecaseParams params,
   ) =>
       stanbicRepository.verifyOTP(

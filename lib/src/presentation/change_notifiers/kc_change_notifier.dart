@@ -35,6 +35,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get phoneNumber => _phoneNumber;
   String? _stanbicTermsHTML;
   String? get stanbicTermsHTML => _stanbicTermsHTML;
+  double? _eligibilityAmount;
+  double? get eligibilityAmount => _eligibilityAmount;
 
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
@@ -121,11 +123,14 @@ class KCChangeNotifier extends ChangeNotifier {
         otp: otp,
       ),
     );
-    _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) => nextPage(),
+      (r) {
+        _eligibilityAmount = r;
+        nextPage();
+      },
     );
+    _setBusy(false);
   }
 
   Future<void> fetchBankTC() async {

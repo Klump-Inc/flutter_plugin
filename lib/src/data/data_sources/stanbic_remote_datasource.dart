@@ -13,7 +13,7 @@ abstract class StanbicRemoteDatasource {
     required String accountNumber,
     required String phoneNumber,
   });
-  Future<void> verifyOTP({
+  Future<double> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
@@ -80,7 +80,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   }
 
   @override
-  Future<void> verifyOTP({
+  Future<double> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
@@ -90,6 +90,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
         "otp": otp,
+        "email": "",
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
@@ -97,6 +98,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         body: body,
       );
       Logger().d(response.data);
+      return response.data['loanLimit']['maxMonthlyRepayment'] ?? 0.0;
     } else {
       throw NoInternetKCException();
     }

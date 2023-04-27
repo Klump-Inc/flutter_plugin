@@ -48,7 +48,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, void>> verifyOTP({
+  Future<Either<KCException, double>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
