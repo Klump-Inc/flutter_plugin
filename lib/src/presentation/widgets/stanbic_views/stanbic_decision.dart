@@ -15,7 +15,7 @@ class _StanbicDecisionState extends State<StanbicDecision> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
-      Provider.of<KCChangeNotifier>(context, listen: false).nextPage();
+      Provider.of<KCChangeNotifier>(context, listen: false).getLoanStatus();
     });
     super.initState();
   }

@@ -177,7 +177,7 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                         disabled: !accepted,
                         onTap: () => Provider.of<KCChangeNotifier>(context,
                                 listen: false)
-                            .nextPage(),
+                            .createLoan(),
                       );
                     },
                   ),

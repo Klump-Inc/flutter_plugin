@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
@@ -11,11 +12,19 @@ class KCChangeNotifier extends ChangeNotifier {
         AccountValidationUsecase(stanbicRepository: StanbicRepository());
     verifyOTPUsecase = VerifyOTPUsecase(stanbicRepository: StanbicRepository());
     getBankTCUsecase = GetBankTCUsecase(stanbicRepository: StanbicRepository());
+    getRepaymentDetailsUsecase =
+        GetRepaymentDetailsUsecase(stanbicRepository: StanbicRepository());
+    createNewUsecase = CreateNewUsecase(stanbicRepository: StanbicRepository());
+    getLoanStatusUsecase =
+        GetLoanStatusUsecase(stanbicRepository: StanbicRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
   late AccountValidationUsecase accountValidationUsecase;
   late VerifyOTPUsecase verifyOTPUsecase;
   late GetBankTCUsecase getBankTCUsecase;
+  late GetRepaymentDetailsUsecase getRepaymentDetailsUsecase;
+  late CreateNewUsecase createNewUsecase;
+  late GetLoanStatusUsecase getLoanStatusUsecase;
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
@@ -29,6 +38,8 @@ class KCChangeNotifier extends ChangeNotifier {
     'terms_and_condition': false,
   };
 
+  KlumpCheckoutData? _checkoutData;
+
   String? _accountNumber;
   String? _phoneNumber;
   String? get accountNumber => _accountNumber;
@@ -37,6 +48,9 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get stanbicTermsHTML => _stanbicTermsHTML;
   double? _eligibilityAmount;
   double? get eligibilityAmount => _eligibilityAmount;
+  RepaymentDetails? _repaymentDetails;
+  RepaymentDetails? get repaymentDetails => _repaymentDetails;
+  String? _newLoanId;
 
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
@@ -80,6 +94,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void initiateTransaction(KlumpCheckoutData data) async {
     if (_stanbicSteps['initiated'] != true) {
+      _checkoutData = data;
       _setBusy(true);
       initiateTransactionUsecase(
         InitiateTransactionUsecaseParams(
@@ -145,5 +160,61 @@ class KCChangeNotifier extends ChangeNotifier {
       },
     );
     _setBusy(false);
+  }
+
+  Future<void> getRepaymentDetails(int installment, int repaymentDay) async {
+    _setBusy(true);
+    final response =
+        await getRepaymentDetailsUsecase(GetRepaymentDetailsUsecaseParams(
+      amount: _checkoutData?.amount ?? 0,
+      publicKey: _checkoutData?.merchantPublicKey ?? '',
+      installment: installment,
+      repaymentDay: repaymentDay,
+    ));
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _repaymentDetails = r;
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> createLoan() async {
+    _setBusy(true);
+    final response = await createNewUsecase(
+      CreateNewUsecaseParams(
+        amount: _checkoutData?.amount ?? 0,
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        installment: 4,
+        repaymentDay: 30,
+        termsVersion: "1",
+        items: _checkoutData?.items ?? [],
+      ),
+    );
+    response.fold(
+      (l) => {},
+      (r) {
+        _newLoanId = r;
+        nextPage();
+      },
+    );
+    _setBusy(false);
+  }
+
+  Future<String?> getLoanStatus() async {
+    _setBusy(true);
+    final response = await getLoanStatusUsecase(
+      GetLoanStatusUsecaseParams(id: _newLoanId ?? ''),
+    );
+    _setBusy(false);
+    return response.fold(
+      (l) {
+        Logger().d(KCExceptionsToMessage.mapErrorToMessage(l));
+        return null;
+      },
+      (r) => r,
+    );
   }
 }
