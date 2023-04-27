@@ -18,6 +18,7 @@ abstract class StanbicRemoteDatasource {
     required String phoneNumber,
     required String otp,
   });
+  Future<String> getBankTC();
 }
 
 class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
@@ -96,6 +97,19 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         body: body,
       );
       Logger().d(response.data);
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<String> getBankTC() async {
+    if (await kcInternetInfo.isConnected) {
+      final response = await kcHttpRequester.get(
+        endpoint: '/v1/stanbic/terms-and-conditions',
+      );
+      Logger().d(response.data);
+      return response.data['termsAndConditions'];
     } else {
       throw NoInternetKCException();
     }

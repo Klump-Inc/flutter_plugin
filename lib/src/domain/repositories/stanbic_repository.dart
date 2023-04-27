@@ -66,4 +66,15 @@ class StanbicRepository {
       );
     }
   }
+
+  Future<Either<KCException, String>> getBankTC() async {
+    try {
+      final response = await stanbicRmoteDatasource.getBankTC();
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
 }
