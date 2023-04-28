@@ -79,7 +79,7 @@ class _StanbicDecisionState extends State<StanbicDecision> {
                             restartAnimation: true,
                             percent: 1,
                             startAngle: 180,
-                            animationDuration: 60 * 10,
+                            animationDuration: 60 * 30,
                             circularStrokeCap: CircularStrokeCap.round,
                             backgroundColor: Colors.transparent,
                             progressColor: KCColors.blue,

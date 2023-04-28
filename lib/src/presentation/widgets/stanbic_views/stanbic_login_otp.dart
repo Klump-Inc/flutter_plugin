@@ -133,7 +133,15 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                       valueListenable: _timeLeft,
                       builder: (_, timeLeft, __) {
                         return InkWell(
-                          onTap: timeLeft != 0 ? null : () {},
+                          onTap: timeLeft != 0 || checkoutNotfier.isBusy
+                              ? null
+                              : () {
+                                  checkoutNotfier
+                                      .resendAccountOTP()
+                                      .then((value) {
+                                    _startCounter();
+                                  });
+                                },
                           child: KCBodyText1(
                             timeLeft == 0
                                 ? 'Resend code'

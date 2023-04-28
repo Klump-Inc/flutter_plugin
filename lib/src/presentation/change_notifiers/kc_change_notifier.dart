@@ -130,6 +130,27 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
+  Future<bool> resendAccountOTP() async {
+    _setBusy(true);
+    final response = await accountValidationUsecase(
+      AccountValidationUsecaseParams(
+        accountNumber: _accountNumber!,
+        phoneNumber: _phoneNumber!,
+      ),
+    );
+    _setBusy(false);
+    return response.fold(
+      (l) {
+        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
+        return false;
+      },
+      (r) {
+        showToast('OTP has been sent.');
+        return true;
+      },
+    );
+  }
+
   Future<void> verifyOTP(String otp) async {
     _setBusy(true);
     final response = await verifyOTPUsecase(
