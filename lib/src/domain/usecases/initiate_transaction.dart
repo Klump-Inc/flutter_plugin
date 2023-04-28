@@ -19,6 +19,7 @@ class InitiateTransactionUsecase
         currency: params.currency,
         publicKey: params.publicKey,
         metaData: params.metaData,
+        isLive: params.isLive,
       );
 }
 
@@ -28,12 +29,14 @@ class InitiateTransactionUsecaseParams extends Equatable {
     required this.currency,
     required this.publicKey,
     required this.metaData,
+    required this.isLive,
   });
 
   final double amount;
   final String currency;
   final String publicKey;
   final Map<String, dynamic> metaData;
+  final bool isLive;
 
   @override
   List<Object?> get props => [
@@ -41,5 +44,6 @@ class InitiateTransactionUsecaseParams extends Equatable {
         currency,
         publicKey,
         metaData,
+        isLive,
       ];
 }

@@ -92,7 +92,7 @@ class KCChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void initiateTransaction(KlumpCheckoutData data) async {
+  void initiateTransaction(bool isLive, KlumpCheckoutData data) async {
     if (_stanbicSteps['initiated'] != true) {
       _checkoutData = data;
       _setBusy(true);
@@ -102,6 +102,7 @@ class KCChangeNotifier extends ChangeNotifier {
           currency: data.currency ?? 'NGN',
           publicKey: data.merchantPublicKey,
           metaData: data.metaData,
+          isLive: isLive,
         ),
       ).then(
         (_) {

@@ -6,11 +6,13 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class KCBottomSheet extends StatefulWidget {
+  final bool isLive;
   final KlumpCheckoutData data;
 
-  const KCBottomSheet({super.key, required this.data});
+  const KCBottomSheet({super.key, required this.data, required this.isLive});
 
-  static dynamic route(BuildContext context, KlumpCheckoutData data) {
+  static dynamic route(
+      BuildContext context, KlumpCheckoutData data, bool isLive) {
     return showModalBottomSheet<void>(
       isDismissible: false,
       context: context,
@@ -22,7 +24,7 @@ class KCBottomSheet extends StatefulWidget {
         ),
       ),
       isScrollControlled: true,
-      builder: (context) => KCBottomSheet(data: data),
+      builder: (context) => KCBottomSheet(data: data, isLive: isLive),
     );
   }
 
@@ -87,7 +89,10 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                 child: Consumer<KCChangeNotifier>(
                   builder: (_, value, __) {
                     final views = <Widget>[
-                      SelectBankFlow(data: widget.data),
+                      SelectBankFlow(
+                        data: widget.data,
+                        isLive: widget.isLive,
+                      ),
                       const StanbicLogin(),
                       const StanbicLoginOTP(),
                       const StanbicTerms(),

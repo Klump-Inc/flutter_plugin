@@ -15,6 +15,7 @@ class StanbicRepository {
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.initiate(
@@ -22,6 +23,7 @@ class StanbicRepository {
         currency: currency,
         publicKey: publicKey,
         metaData: metaData,
+        isLive: isLive,
       );
       return Right(response);
     } catch (e) {

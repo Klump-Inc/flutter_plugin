@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class KlumpCheckoutWidget {
-  final bool isLive;
-
-  /// Initialize the KlumpWidget object.
-  ///
+class KlumpCheckout {
+  /// Initial Checkout and pay using KlumpCheckout payment UI
   ///
   /// [isLive] - default is true, pass true for test environment
-  ///
-  ///
-
-  KlumpCheckoutWidget({
-    this.isLive = true,
-  });
-
-  /// Initial Checkout and pay using KlumpWidget web payment UI
   ///
   /// [context] - the app BuildContext
   ///
@@ -24,10 +13,11 @@ class KlumpCheckoutWidget {
 
   ///
   /// returns [KlumpCheckoutResponse]
-  Future<KlumpCheckoutResponse?> checkout({
+  Future<KlumpCheckoutResponse?> pay({
+    bool isLive = true,
     required BuildContext context,
     required KlumpCheckoutData data,
   }) async {
-    return await KCBottomSheet.route(context, data);
+    return await KCBottomSheet.route(context, data, isLive);
   }
 }

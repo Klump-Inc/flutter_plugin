@@ -39,10 +39,9 @@ class FirstScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            final klumpWidget = KlumpCheckoutWidget(
+            final klumpCheckout = KlumpCheckout();
+            final res = await klumpCheckout.pay(
               isLive: false,
-            );
-            final res = await klumpWidget.checkout(
               context: context,
               data: const KlumpCheckoutData(
                 amount: 100000,

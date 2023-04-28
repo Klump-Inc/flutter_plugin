@@ -5,8 +5,13 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
-  const SelectBankFlow({super.key, required this.data});
+  const SelectBankFlow({
+    super.key,
+    required this.data,
+    required this.isLive,
+  });
   final KlumpCheckoutData data;
+  final bool isLive;
 
   @override
   State<SelectBankFlow> createState() => _SelectBankFlowState();
@@ -21,7 +26,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
 
   void _initiatTranx() {
     Provider.of<KCChangeNotifier>(context, listen: false)
-        .initiateTransaction(widget.data);
+        .initiateTransaction(widget.isLive, widget.data);
   }
 
   @override

@@ -8,6 +8,7 @@ abstract class StanbicRemoteDatasource {
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
+    required bool isLive,
   });
   Future<void> validateAccount({
     required String accountNumber,
@@ -51,8 +52,14 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        KC_ENVIRONMENT_KEY,
+        isLive ? KC_PRODUCTION_ENVIRONMENT : KC_STAGING_ENVIRONMENT,
+      );
       final body = {
         "amount": amount,
         "currency": currency,
@@ -61,11 +68,11 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/transactions/initiate',
         body: body,
       );
       Logger().d(response.data);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(KC_CKECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
     } else {
@@ -79,12 +86,14 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String phoneNumber,
   }) async {
     if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final body = {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/accounts/validation',
         body: body,
       );
@@ -101,6 +110,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String otp,
   }) async {
     if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final body = {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
@@ -109,11 +119,11 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/accounts/verify',
         body: body,
       );
       Logger().d(response.data);
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(KC_STANBIC_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
       return response.data['loanLimit']['maxMonthlyRepayment'] ?? 0.0;
@@ -125,7 +135,9 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   @override
   Future<TermsAndConditionModel> getBankTC() async {
     if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/terms-and-conditions',
       );
       Logger().d(response.data);
@@ -155,6 +167,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/repayment-details',
         body: body,
         token: prefs.getString(KC_STANBIC_TOKEN),
@@ -188,6 +201,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       };
       Logger().d(body);
       final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/new',
         body: body,
         token: prefs.getString(KC_STANBIC_TOKEN),
@@ -204,6 +218,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/$id/status',
         token: prefs.getString(KC_STANBIC_TOKEN),
       );

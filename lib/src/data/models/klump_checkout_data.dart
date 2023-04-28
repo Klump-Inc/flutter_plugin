@@ -39,6 +39,7 @@ class KlumpCheckoutData extends Equatable {
         merchantReference,
         metaData,
         items,
-        required
+        required,
+        merchantPublicKey,
       ];
 }

@@ -7,7 +7,8 @@ const String KC_PACKAGE_NAME = 'klump_checkout';
 const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
 
-const String KC_BASE_URL = 'https://staging-api.useklump.com';
+const String KC_BASE_URL = 'https://api.useklump.com';
+const String KC_STAGING_BASE_URL = 'https://staging-api.useklump.com';
 const int KC_CONNECT_TIMEOUT = 30;
 const int KC_RECEIVE_TIMEOUT = 60;
 const String KC_CLIENT_ID = 'Client-Id';
@@ -17,6 +18,9 @@ const String KC_CONTENT_TYPE_DEFAULT = 'application/json';
 const String KC_CLIENT_ID_VALUE = 'website';
 const String KC_CLIENT_KEY_VALUE = 'website';
 const String KC_CLIENT_SECRET_VALUE = 'VMws+/Q&=gVV+R7M';
+const String KC_ENVIRONMENT_KEY = 'kc_environment_key';
+const String KC_PRODUCTION_ENVIRONMENT = 'kc_production_env';
+const String KC_STAGING_ENVIRONMENT = 'kc_staging_env';
 const String KC_CKECKOUT_TOKEN = 'kc_checkout_token';
 const String KC_STANBIC_TOKEN = 'kc_stanbic_token';
 
