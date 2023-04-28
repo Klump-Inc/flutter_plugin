@@ -92,9 +92,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                       const StanbicLoginOTP(),
                       const StanbicTerms(),
                       const StanbicEligibilityInfo(),
-                      // const StanbicDecision(),
                       const StanbicPaymentSplit(),
                       const StanbicPaymentPreview(),
+                      const StanbicDecision(),
                       const StanbicDisbursementStatus()
                     ];
                     return PageView(

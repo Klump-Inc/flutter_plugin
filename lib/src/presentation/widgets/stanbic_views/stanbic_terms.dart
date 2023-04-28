@@ -38,7 +38,7 @@ class _StanbicTermsState extends State<StanbicTerms> {
             minHeight: constraints.maxHeight,
           ),
           child: IntrinsicHeight(
-            child: checkoutNotfier.stanbicTermsHTML == null
+            child: checkoutNotfier.stanbicTC == null
                 ? const KCPageLoaderWidget()
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 26),
@@ -82,7 +82,7 @@ class _StanbicTermsState extends State<StanbicTerms> {
                           child: SingleChildScrollView(
                             child: Html(
                               data:
-                                  "$KC_HTML_HEADER${checkoutNotfier.stanbicTermsHTML ?? ''}$KC_HTML_FOOTER",
+                                  "$KC_HTML_HEADER${checkoutNotfier.stanbicTC?.termsAndConditions ?? ''}$KC_HTML_FOOTER",
                             ),
                           ),
                         ),

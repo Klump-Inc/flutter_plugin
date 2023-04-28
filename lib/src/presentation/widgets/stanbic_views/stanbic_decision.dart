@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/src.dart';
@@ -12,12 +14,34 @@ class StanbicDecision extends StatefulWidget {
 }
 
 class _StanbicDecisionState extends State<StanbicDecision> {
+  Timer? timer;
+
+  void _startStatusLookup() {
+    var checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    timer = Timer.periodic(
+      const Duration(seconds: 10),
+      (Timer t) {
+        checkoutNotifier.getLoanStatus().then((response) {
+          if (response?.isCompleted == true) {
+            timer?.cancel();
+            checkoutNotifier.nextPage();
+          }
+        });
+      },
+    );
+  }
+
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3), () {
-      Provider.of<KCChangeNotifier>(context, listen: false).nextPage();
-    });
+    Future.delayed(Duration.zero, _startStatusLookup);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override

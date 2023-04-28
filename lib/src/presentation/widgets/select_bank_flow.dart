@@ -53,7 +53,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(16),
           LayoutBuilder(
             builder: (context, costraint) {
-              return PopupMenuButton<KCBankEntity>(
+              return PopupMenuButton<KCBank>(
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
                 ),
@@ -107,7 +107,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 ),
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<KCBankEntity>(
+                    PopupMenuItem<KCBank>(
                       height: 0,
                       padding: EdgeInsets.zero,
                       child: KCBankPopupMenuItemContent(
@@ -116,14 +116,14 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                       ),
                       onTap: () {
                         checkoutNotfier.setBankFlow(
-                          KCBankEntity(
+                          KCBank(
                             name: 'Stanbic Bank',
                             logo: KCAssets.stanbicLogo,
                           ),
                         );
                       },
                     ),
-                    PopupMenuItem<KCBankEntity>(
+                    PopupMenuItem<KCBank>(
                       enabled: false,
                       height: 0,
                       padding: EdgeInsets.zero,

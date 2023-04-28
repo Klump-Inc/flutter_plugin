@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/checkout.dart';
 
 class StanbicRepository {
@@ -67,9 +68,67 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, String>> getBankTC() async {
+  Future<Either<KCException, TermsAndCondition>> getBankTC() async {
     try {
       final response = await stanbicRmoteDatasource.getBankTC();
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, RepaymentDetails>> getRepaymentDetails({
+    required double amount,
+    required String publicKey,
+    required int installment,
+    required int repaymentDay,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.getRepaymentDetails(
+        amount: amount,
+        publicKey: publicKey,
+        installment: installment,
+        repaymentDay: repaymentDay,
+      );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, String>> createNew({
+    required double amount,
+    required String publicKey,
+    required int installment,
+    required int repaymentDay,
+    required String termsVersion,
+    required List<KlumpCheckoutItem> items,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.createNew(
+        amount: amount,
+        publicKey: publicKey,
+        installment: installment,
+        repaymentDay: repaymentDay,
+        termsVersion: termsVersion,
+        items: items,
+      );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, StanbicStatusResponse>> getLoanStatus(
+      {required String id}) async {
+    try {
+      final response = await stanbicRmoteDatasource.getLoanStatus(id: id);
       return Right(response);
     } catch (e) {
       return Left(

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:klump_checkout/src/checkout.dart';
 
-class GetBankTCUsecase extends KCUsecase<String, NoParams> {
+class GetBankTCUsecase extends KCUsecase<TermsAndCondition, NoParams> {
   GetBankTCUsecase({
     required this.stanbicRepository,
   });
@@ -9,7 +9,7 @@ class GetBankTCUsecase extends KCUsecase<String, NoParams> {
   final StanbicRepository stanbicRepository;
 
   @override
-  Future<Either<KCException, String>> call(
+  Future<Either<KCException, TermsAndCondition>> call(
     NoParams params,
   ) =>
       stanbicRepository.getBankTC();
