@@ -6,3 +6,4 @@ export 'installment_popup_menu_content.dart';
 export 'select_bank_flow.dart';
 export 'spaces.dart';
 export 'stanbic_views/stanbic_views.dart';
+export 'text.dart';

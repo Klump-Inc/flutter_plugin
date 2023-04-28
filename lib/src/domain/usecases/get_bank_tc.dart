@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class GetBankTCUsecase extends KCUsecase<TermsAndCondition, NoParams> {
   GetBankTCUsecase({

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class RepaymentDetails extends Equatable {
   final String? accountNumber;

@@ -1,6 +1,4 @@
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/checkout.dart';
-import 'package:klump_checkout/src/data/models/terms_and_condition_model.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

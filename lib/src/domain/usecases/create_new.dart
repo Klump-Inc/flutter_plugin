@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/checkout.dart';
 
 class CreateNewUsecase extends KCUsecase<String, CreateNewUsecaseParams> {
   CreateNewUsecase({

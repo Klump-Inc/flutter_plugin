@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 

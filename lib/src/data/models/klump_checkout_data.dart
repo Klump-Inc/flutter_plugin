@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:klump_checkout/src/models/klump_checkout_item.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class KlumpCheckoutData extends Equatable {
   final double amount;

@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/checkout.dart';
 
 class StanbicRepository {
   late StanbicRemoteDatasource stanbicRmoteDatasource;

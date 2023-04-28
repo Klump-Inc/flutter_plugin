@@ -39,7 +39,7 @@ class FirstScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            KlumpWidget klumpWidget = KlumpWidget(
+            final klumpWidget = KlumpCheckoutWidget(
               isLive: false,
             );
             final res = await klumpWidget.checkout(

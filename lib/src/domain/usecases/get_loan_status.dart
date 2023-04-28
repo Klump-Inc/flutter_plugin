@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class GetLoanStatusUsecase
     extends KCUsecase<StanbicStatusResponse, GetLoanStatusUsecaseParams> {

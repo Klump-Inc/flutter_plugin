@@ -1,4 +1,4 @@
-import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class RepaymentDetailsModel extends RepaymentDetails {
   const RepaymentDetailsModel({

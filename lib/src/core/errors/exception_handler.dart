@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 import 'package:logger/logger.dart';
 
 class KCExceptionHandler {

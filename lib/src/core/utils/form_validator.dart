@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class KCFormValidator {
   static Color getBorderColor(String? message) {
