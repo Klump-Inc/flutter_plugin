@@ -42,9 +42,22 @@ class RepaymentDetails extends Equatable {
 
   @override
   List<Object?> get props => [
+        accountNumber,
+        transactionType,
+        instantBuyAmount,
         loanAmount,
         downpaymentAmount,
+        monthlyRepayment,
         totalRepayment,
+        managementFee,
+        interest,
+        vat,
+        insurance,
+        tenor,
+        installment,
+        minimumBalanceRequired,
+        repaymentDay,
         repaymentSchedules,
+        repaymentMetadata,
       ];
 }

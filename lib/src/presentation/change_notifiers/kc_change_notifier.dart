@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
@@ -51,6 +50,8 @@ class KCChangeNotifier extends ChangeNotifier {
   RepaymentDetails? _repaymentDetails;
   RepaymentDetails? get repaymentDetails => _repaymentDetails;
   String? _newLoanId;
+  StanbicStatusResponse? _stanbicStatusResponse;
+  StanbicStatusResponse? get stanbicStatusResponse => _stanbicStatusResponse;
 
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
@@ -185,10 +186,10 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final response = await createNewUsecase(
       CreateNewUsecaseParams(
-        amount: _checkoutData?.amount ?? 0,
-        publicKey: _checkoutData?.merchantPublicKey ?? '',
-        installment: 4,
-        repaymentDay: 30,
+        amount: _checkoutData!.amount,
+        publicKey: _checkoutData!.merchantPublicKey,
+        installment: _repaymentDetails!.installment,
+        repaymentDay: int.parse(_repaymentDetails!.repaymentDay),
         termsVersion: "1",
         items: _checkoutData?.items ?? [],
       ),
@@ -203,18 +204,16 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
   }
 
-  Future<String?> getLoanStatus() async {
-    _setBusy(true);
+  Future<StanbicStatusResponse?> getLoanStatus() async {
     final response = await getLoanStatusUsecase(
-      GetLoanStatusUsecaseParams(id: _newLoanId ?? ''),
+      GetLoanStatusUsecaseParams(id: _newLoanId!),
     );
-    _setBusy(false);
     return response.fold(
-      (l) {
-        Logger().d(KCExceptionsToMessage.mapErrorToMessage(l));
-        return null;
+      (l) => null,
+      (r) {
+        _stanbicStatusResponse = r;
+        return r;
       },
-      (r) => r,
     );
   }
 }

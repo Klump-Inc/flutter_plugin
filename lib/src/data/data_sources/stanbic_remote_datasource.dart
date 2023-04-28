@@ -34,7 +34,7 @@ abstract class StanbicRemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
   });
-  Future<String> getLoanStatus({required String id});
+  Future<StanbicStatusResponseModel> getLoanStatus({required String id});
 }
 
 class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
@@ -155,7 +155,6 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "klump_public_key": publicKey,
       };
       Logger().d(body);
-      await SharedPreferences.getInstance();
       final response = await kcHttpRequester.post(
         endpoint: '/v1/stanbic/loans/repayment-details',
         body: body,
@@ -179,6 +178,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required List<KlumpCheckoutItem> items,
   }) async {
     if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final body = {
         "amount": amount,
         "installment": installment,
@@ -191,6 +191,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       final response = await kcHttpRequester.post(
         endpoint: '/v1/stanbic/loans/new',
         body: body,
+        token: prefs.getString(KC_STANBIC_TOKEN),
       );
       Logger().d(response.data);
       return response.data['id'];
@@ -200,12 +201,15 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   }
 
   @override
-  Future<String> getLoanStatus({required String id}) async {
+  Future<StanbicStatusResponseModel> getLoanStatus({required String id}) async {
     if (await kcInternetInfo.isConnected) {
-      final response =
-          await kcHttpRequester.get(endpoint: '/v1/stanbic/loans/$id/status');
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await kcHttpRequester.get(
+        endpoint: '/v1/stanbic/loans/$id/status',
+        token: prefs.getString(KC_STANBIC_TOKEN),
+      );
       Logger().d(response.data);
-      return response.data['message'];
+      return StanbicStatusResponseModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
     }

@@ -16,6 +16,7 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
+    final repaymentDetails = checkoutNotfier.repaymentDetails;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -58,7 +59,7 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                   ),
                   const YSpace(22),
                   KCHeadline3(
-                    '4 instalments charged on your card over 3 months',
+                    '${repaymentDetails!.installment} instalments charged on your card over ${repaymentDetails.tenor} months',
                   ),
                   const YSpace(10),
                   Expanded(
@@ -68,31 +69,30 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const KPPaymentItemTile(
+                            KPPaymentItemTile(
                               title: 'Due Now',
-                              amount: 'NGN161,807.5',
+                              amount:
+                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
                               body: 'Paid at purchase',
                               bodyLines: 1,
                               firstItem: true,
                             ),
-                            const KPPaymentItemTile(
-                              title: 'Due: Aug 5, 2021',
-                              amount: 'NGN161,807.5',
-                              body: 'Paid automatically 1 month later',
-                              bodyLines: 2,
-                            ),
-                            const KPPaymentItemTile(
-                              title: 'Due: Sept 5, 2021',
-                              amount: 'NGN161,807.5',
-                              body: 'Paid automatically 2 month later',
-                              bodyLines: 2,
-                            ),
-                            const KPPaymentItemTile(
-                              title: 'Due: Sept 5, 2021',
-                              amount: 'NGN161,807.5',
-                              body: 'Final payment, 3 months later',
-                              bodyLines: 2,
-                              lastItem: true,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(
+                                repaymentDetails.tenor,
+                                (index) => KPPaymentItemTile(
+                                  title:
+                                      'Due: ${repaymentDetails.repaymentSchedules[index].repaymentDate}',
+                                  amount:
+                                      'NGN${KCStringUtil.formatAmount(repaymentDetails.repaymentSchedules[index].monthlyRepayment)}',
+                                  body: index == repaymentDetails.tenor - 1
+                                      ? 'Final payment, ${index + 1} months later'
+                                      : 'Paid automatically ${index + 1} month later',
+                                  bodyLines: 2,
+                                  lastItem: index == repaymentDetails.tenor - 1,
+                                ),
+                              ),
                             ),
                             const YSpace(18),
                             KCHeadline5(
@@ -173,8 +173,10 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                     valueListenable: _accepted,
                     builder: (_, accepted, __) {
                       return KCPrimaryButton(
-                        title: 'Pay NGN 161,807.5',
-                        disabled: !accepted,
+                        title:
+                            'Pay NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
+                        disabled: !accepted || checkoutNotfier.isBusy,
+                        loading: checkoutNotfier.isBusy,
                         onTap: () => Provider.of<KCChangeNotifier>(context,
                                 listen: false)
                             .createLoan(),

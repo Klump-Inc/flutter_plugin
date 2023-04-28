@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/src/checkout.dart';
 
 class GetLoanStatusUsecase
-    extends KCUsecase<String, GetLoanStatusUsecaseParams> {
+    extends KCUsecase<StanbicStatusResponse, GetLoanStatusUsecaseParams> {
   GetLoanStatusUsecase({
     required this.stanbicRepository,
   });
@@ -11,7 +11,7 @@ class GetLoanStatusUsecase
   final StanbicRepository stanbicRepository;
 
   @override
-  Future<Either<KCException, String>> call(
+  Future<Either<KCException, StanbicStatusResponse>> call(
     GetLoanStatusUsecaseParams params,
   ) =>
       stanbicRepository.getLoanStatus(id: params.id);

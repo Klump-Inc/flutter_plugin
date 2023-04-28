@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:provider/provider.dart';
 
 class StanbicDisbursementStatus extends StatefulWidget {
   const StanbicDisbursementStatus({super.key});
@@ -11,10 +13,10 @@ class StanbicDisbursementStatus extends StatefulWidget {
 }
 
 class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
-  final responseStatus = true;
-
   @override
   Widget build(BuildContext context) {
+    var checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -44,7 +46,9 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                             height: 187.1,
                             width: 187.1,
                             child: SvgPicture.asset(
-                              responseStatus
+                              checkoutNotifier.stanbicStatusResponse
+                                          ?.isSuccessful ==
+                                      true
                                   ? KCAssets.successIllus
                                   : KCAssets.failureIllus,
                               package: KC_PACKAGE_NAME,
@@ -52,16 +56,24 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                           ),
                           const YSpace(22),
                           KCHeadline3(
-                            responseStatus ? 'Successful' : 'Unsuccessful',
+                            checkoutNotifier
+                                        .stanbicStatusResponse?.isSuccessful ==
+                                    true
+                                ? 'Successful'
+                                : 'Unsuccessful',
                             fontSize: 27,
                             textAlign: TextAlign.center,
                             height: 1.4318,
                           ),
                           const YSpace(8),
                           KCBodyText1(
-                            responseStatus
+                            checkoutNotifier
+                                        .stanbicStatusResponse?.isSuccessful ==
+                                    true
                                 ? 'Loan disburse successful \nYour next pay date is March 3, 2022'
-                                : 'We couldn’t verify your documents, please re-upload or email support@useklump.com',
+                                : checkoutNotifier
+                                        .stanbicStatusResponse?.message ??
+                                    '',
                             fontSize: 16,
                             textAlign: TextAlign.center,
                             height: 1.36625,
@@ -71,8 +83,23 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                     ),
                     const YSpace(24),
                     KCPrimaryButton(
-                      title: responseStatus ? 'Continue' : 'Go back',
-                      onTap: () => Navigator.pop(context),
+                      title: checkoutNotifier
+                                  .stanbicStatusResponse?.isSuccessful ==
+                              true
+                          ? 'Continue'
+                          : 'Go back',
+                      onTap: () {
+                        final checkoutResponse = KlumpCheckoutResponse(
+                          checkoutNotifier
+                                      .stanbicStatusResponse?.isSuccessful ==
+                                  true
+                              ? CheckoutStatus.success
+                              : CheckoutStatus.error,
+                          checkoutNotifier.stanbicStatusResponse?.message ?? '',
+                          null,
+                        );
+                        Navigator.pop(context, checkoutResponse);
+                      },
                     ),
                     const YSpace(59)
                   ],

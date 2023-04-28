@@ -125,7 +125,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, String>> getLoanStatus(
+  Future<Either<KCException, StanbicStatusResponse>> getLoanStatus(
       {required String id}) async {
     try {
       final response = await stanbicRmoteDatasource.getLoanStatus(id: id);
