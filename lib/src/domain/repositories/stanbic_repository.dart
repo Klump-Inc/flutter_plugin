@@ -68,7 +68,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, String>> getBankTC() async {
+  Future<Either<KCException, TermsAndCondition>> getBankTC() async {
     try {
       final response = await stanbicRmoteDatasource.getBankTC();
       return Right(response);

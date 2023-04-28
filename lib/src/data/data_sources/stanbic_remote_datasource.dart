@@ -1,5 +1,6 @@
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/checkout.dart';
+import 'package:klump_checkout/src/data/models/terms_and_condition_model.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +20,7 @@ abstract class StanbicRemoteDatasource {
     required String phoneNumber,
     required String otp,
   });
-  Future<String> getBankTC();
+  Future<TermsAndConditionModel> getBankTC();
   Future<RepaymentDetailsModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
@@ -124,13 +125,13 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   }
 
   @override
-  Future<String> getBankTC() async {
+  Future<TermsAndConditionModel> getBankTC() async {
     if (await kcInternetInfo.isConnected) {
       final response = await kcHttpRequester.get(
         endpoint: '/v1/stanbic/terms-and-conditions',
       );
       Logger().d(response.data);
-      return response.data['termsAndConditions'];
+      return TermsAndConditionModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
     }

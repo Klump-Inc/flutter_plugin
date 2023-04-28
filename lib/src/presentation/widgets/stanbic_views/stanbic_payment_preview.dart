@@ -146,9 +146,9 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
-                              TextSpan(text: ' and'),
+                              TextSpan(text: ' and '),
                               TextSpan(
-                                text: ' Terms and Conditions',
+                                text: 'Terms and Conditions',
                                 style: TextStyle(
                                   color: KCColors.black3,
                                   fontWeight: FontWeight.w800,

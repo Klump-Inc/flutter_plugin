@@ -43,8 +43,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? _phoneNumber;
   String? get accountNumber => _accountNumber;
   String? get phoneNumber => _phoneNumber;
-  String? _stanbicTermsHTML;
-  String? get stanbicTermsHTML => _stanbicTermsHTML;
+  TermsAndCondition? _stanbicTC;
+  TermsAndCondition? get stanbicTC => _stanbicTC;
   double? _eligibilityAmount;
   double? get eligibilityAmount => _eligibilityAmount;
   RepaymentDetails? _repaymentDetails;
@@ -80,15 +80,15 @@ class KCChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  KCBankEntity? _selectedBankFlow;
-  KCBankEntity? get selectedBankFlow => _selectedBankFlow;
+  KCBank? _selectedBankFlow;
+  KCBank? get selectedBankFlow => _selectedBankFlow;
 
   void _setBusy(bool value) {
     _isBusy = value;
     notifyListeners();
   }
 
-  void setBankFlow(KCBankEntity bank) {
+  void setBankFlow(KCBank bank) {
     _selectedBankFlow = bank;
     notifyListeners();
   }
@@ -157,7 +157,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => {},
       (r) {
-        _stanbicTermsHTML = r;
+        _stanbicTC = r;
       },
     );
     _setBusy(false);
@@ -190,7 +190,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         installment: _repaymentDetails!.installment,
         repaymentDay: int.parse(_repaymentDetails!.repaymentDay),
-        termsVersion: "1",
+        termsVersion: _stanbicTC!.version,
         items: _checkoutData?.items ?? [],
       ),
     );

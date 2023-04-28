@@ -20,7 +20,7 @@ class _StanbicDecisionState extends State<StanbicDecision> {
     var checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     timer = Timer.periodic(
-      const Duration(seconds: 15),
+      const Duration(seconds: 10),
       (Timer t) {
         checkoutNotifier.getLoanStatus().then((response) {
           if (response?.isCompleted == true) {
