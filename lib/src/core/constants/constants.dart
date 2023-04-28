@@ -9,7 +9,7 @@ const String PUBLIC_KEY = 'publicKey';
 
 const String KC_BASE_URL = 'https://staging-api.useklump.com';
 const int KC_CONNECT_TIMEOUT = 30;
-const int KC_RECEIVE_TIMEOUT = 30;
+const int KC_RECEIVE_TIMEOUT = 60;
 const String KC_CLIENT_ID = 'Client-Id';
 const String KC_CLIENT_KEY = 'Client-Key';
 const String KC_CLIENT_SECRET = 'Client-Secret';
