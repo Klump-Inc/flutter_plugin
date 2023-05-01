@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class KlumpCheckout {
-  /// Initial Checkout and pay using KlumpCheckout payment UI
+  /// Initiate KlumpCheckout and pay using the payment UI
   ///
-  /// [isLive] - default is true, pass true for test environment
+  /// [isLive] - default is true, pass false for test/staging environment
   ///
   /// [context] - the app BuildContext
   ///
   /// [data] - the purchase data consisting of total amount, meta_data, items, etc.
   ///
-
   ///
   /// returns [KlumpCheckoutResponse]
   Future<KlumpCheckoutResponse?> pay({

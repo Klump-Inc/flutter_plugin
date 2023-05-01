@@ -1,5 +1,4 @@
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class StanbicRemoteDatasource {
@@ -66,13 +65,11 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "klump_public_key": publicKey,
         "meta_data": metaData,
       };
-      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/transactions/initiate',
         body: body,
       );
-      Logger().d(response.data);
       await prefs.setString(KC_CKECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
     } else {
@@ -91,13 +88,11 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
       };
-      Logger().d(body);
-      final response = await kcHttpRequester.post(
+      await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/accounts/validation',
         body: body,
       );
-      Logger().d(response.data);
     } else {
       throw NoInternetKCException();
     }
@@ -117,13 +112,11 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "otp": otp,
         "email": "",
       };
-      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/accounts/verify',
         body: body,
       );
-      Logger().d(response.data);
       await prefs.setString(KC_STANBIC_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
       return response.data['loanLimit']['maxMonthlyRepayment'] ?? 0.0;
@@ -140,7 +133,6 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/terms-and-conditions',
       );
-      Logger().d(response.data);
       return TermsAndConditionModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
@@ -165,7 +157,6 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "repaymentDay": repaymentDay,
         "klump_public_key": publicKey,
       };
-      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/repayment-details',
@@ -173,7 +164,6 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         token: prefs.getString(KC_STANBIC_TOKEN),
         headers: headers,
       );
-      Logger().d(response.data);
       return RepaymentDetailsModel.fromJson(response.data['data']);
     } else {
       throw NoInternetKCException();
@@ -199,14 +189,12 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "termsAndConditionVersion": termsVersion,
         "items": items.map((e) => e.toMap()).toList(),
       };
-      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/new',
         body: body,
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
-      Logger().d(response.data);
       return response.data['id'];
     } else {
       throw NoInternetKCException();
@@ -222,7 +210,6 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         endpoint: '/v1/stanbic/loans/$id/status',
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
-      Logger().d(response.data);
       return StanbicStatusResponseModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
