@@ -5,7 +5,6 @@ class KCHttpRequester {
   KCHttpRequester() {
     dio = Dio(
       BaseOptions(
-        baseUrl: KC_BASE_URL,
         connectTimeout: const Duration(seconds: KC_CONNECT_TIMEOUT),
         receiveTimeout: const Duration(seconds: KC_RECEIVE_TIMEOUT),
         headers: {
@@ -20,6 +19,7 @@ class KCHttpRequester {
   late Dio dio;
 
   Future<Response<dynamic>> post({
+    required String? environment,
     required String endpoint,
     required dynamic body,
     String? token,
@@ -29,7 +29,9 @@ class KCHttpRequester {
   }) async {
     dio.options.headers['Authorization'] = 'Bearer $token';
     final response = await dio.post<dynamic>(
-      KC_BASE_URL + endpoint,
+      environment == KC_PRODUCTION_ENVIRONMENT
+          ? KC_BASE_URL + endpoint
+          : KC_STAGING_BASE_URL + endpoint,
       data: body,
       queryParameters: queryParam,
       options: Options(
@@ -41,6 +43,7 @@ class KCHttpRequester {
   }
 
   Future<Response<dynamic>> get({
+    required String? environment,
     required String endpoint,
     String? token,
     Map<String, dynamic>? queryParam,
@@ -49,7 +52,9 @@ class KCHttpRequester {
   }) async {
     dio.options.headers['Authorization'] = 'Bearer $token';
     final response = dio.get<dynamic>(
-      KC_BASE_URL + endpoint,
+      environment == KC_PRODUCTION_ENVIRONMENT
+          ? KC_BASE_URL + endpoint
+          : KC_STAGING_BASE_URL + endpoint,
       queryParameters: queryParam,
       options: Options(
         contentType: contentType,
@@ -60,6 +65,7 @@ class KCHttpRequester {
   }
 
   Future<Response<dynamic>> patch({
+    required String? environment,
     required String endpoint,
     required dynamic body,
     String? token,
@@ -69,7 +75,9 @@ class KCHttpRequester {
   }) async {
     dio.options.headers['Authorization'] = 'Bearer $token';
     final response = await dio.patch<dynamic>(
-      KC_BASE_URL + endpoint,
+      environment == KC_PRODUCTION_ENVIRONMENT
+          ? KC_BASE_URL + endpoint
+          : KC_STAGING_BASE_URL + endpoint,
       data: body,
       queryParameters: queryParam,
       options: Options(

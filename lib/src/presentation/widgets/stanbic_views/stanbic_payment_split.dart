@@ -181,10 +181,13 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                     const Spacer(),
                     KCPrimaryButton(
                       title: 'Continue',
-                      disabled: _instalmentSplit == null || _paymentDay == null,
-                      onTap: () =>
-                          Provider.of<KCChangeNotifier>(context, listen: false)
-                              .nextPage(),
+                      disabled: _instalmentSplit == null ||
+                          _paymentDay == null ||
+                          checkoutNotfier.isBusy,
+                      loading: checkoutNotfier.isBusy,
+                      onTap: () => Provider.of<KCChangeNotifier>(context,
+                              listen: false)
+                          .getRepaymentDetails(_instalmentSplit!, _paymentDay!),
                     ),
                     const YSpace(59)
                   ],

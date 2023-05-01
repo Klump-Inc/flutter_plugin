@@ -1,5 +1,5 @@
 export 'stanbic_decision.dart';
-export 'stanbic_decision_status.dart';
+export 'stanbic_eligibility_info.dart';
 export 'stanbic_disbursement_status.dart';
 export 'stanbic_information.dart';
 export 'stanbic_login.dart';

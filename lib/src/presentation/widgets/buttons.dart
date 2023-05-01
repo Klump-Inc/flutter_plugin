@@ -91,9 +91,11 @@ class KCButtonLoaderWidget extends StatelessWidget {
               radius: 15.0,
               color: KCColors.white,
             )
-          : const CircularProgressIndicator(
-              color: KCColors.white,
-              strokeWidth: 3,
+          : const Center(
+              child: CircularProgressIndicator(
+                color: KCColors.white,
+                strokeWidth: 3,
+              ),
             ),
     );
   }

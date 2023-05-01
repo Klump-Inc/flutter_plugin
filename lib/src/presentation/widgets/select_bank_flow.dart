@@ -5,8 +5,13 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
-  const SelectBankFlow({super.key, required this.data});
+  const SelectBankFlow({
+    super.key,
+    required this.data,
+    required this.isLive,
+  });
   final KlumpCheckoutData data;
+  final bool isLive;
 
   @override
   State<SelectBankFlow> createState() => _SelectBankFlowState();
@@ -21,7 +26,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
 
   void _initiatTranx() {
     Provider.of<KCChangeNotifier>(context, listen: false)
-        .initiateTransaction(widget.data);
+        .initiateTransaction(widget.isLive, widget.data);
   }
 
   @override
@@ -53,7 +58,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(16),
           LayoutBuilder(
             builder: (context, costraint) {
-              return PopupMenuButton<KCBankEntity>(
+              return PopupMenuButton<KCBank>(
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
                 ),
@@ -107,7 +112,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 ),
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<KCBankEntity>(
+                    PopupMenuItem<KCBank>(
                       height: 0,
                       padding: EdgeInsets.zero,
                       child: KCBankPopupMenuItemContent(
@@ -116,14 +121,14 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                       ),
                       onTap: () {
                         checkoutNotfier.setBankFlow(
-                          KCBankEntity(
+                          KCBank(
                             name: 'Stanbic Bank',
                             logo: KCAssets.stanbicLogo,
                           ),
                         );
                       },
                     ),
-                    PopupMenuItem<KCBankEntity>(
+                    PopupMenuItem<KCBank>(
                       enabled: false,
                       height: 0,
                       padding: EdgeInsets.zero,
