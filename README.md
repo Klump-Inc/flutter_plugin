@@ -13,7 +13,7 @@ This library would help you add Klump Checkout to your hybrid android/ios applic
 To use this plugin, add `klump_checkout` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 ```pub
 dependencies:
-  klump_checkout: ^1.0.6
+  klump_checkout: ^1.0.7
 ```
 
 ### Usage
@@ -22,11 +22,11 @@ dependencies:
 
 1. Collect Klump `checkout data`. 
 	
-2. Initialize the `KlumpWidget` by creating an object of the KlumpWidget class with a named parameters passed to the constructor.
-	- The named paramater is the public key of the merchant.
-	- Call the `checkout` method with the context and data named paramaters  to render the Klump checkout webview.
+2. Initialize the `KlumpCheckout` by creating an object of the KlumpCheckout class.
 
-3. Once request is successful,  `KlumpCheckoutResponse` is return.
+3. Call the `pay` method with the isLive, context and data named paramaters to render the Klump checkout view.
+	
+4. Once request is successful, `KlumpCheckoutResponse` is return.
 
 
 ## Installation
@@ -46,26 +46,27 @@ To use this package, your android app must declare internet permission. Add the 
 ```
 
 ### 2. Initializing Plugin
-	To use [klump_checkout] SDK, you need to first initialize it by using the `KlumpWidget` class.
+	To use [klump_checkout] SDK, you need to first initialize it by using the `KlumpCheckout` class.
 	
 ```dart
 
-   KlumpWidget klumpWidget = KlumpWidget(
-      publicKey: 'klp_pk_test_...');
+    final klumpCheckout = KlumpCheckout();
 
 ```
 
-### 3. Perform ckeckout with klump_checkout Web UI
-Payment transaction can be made with the `checkout` method: 
+### 3. Perform ckeckout with klump_checkout  UI
+Payment transaction can be made with the `pay` method: 
 ## Parameters
 
+- `isLive` boolean - pass true for live envireoment and false for test environment
 - `context` BuildContext.
-- `data` The `KlumpCheckoutData` . 
+- `data` the `KlumpCheckoutData` . 
 
 	
 ```dart
 
-final res = await klumpWidget.checkout(
+final res = await klumpCheckout.pay(
+      isLive: false,
       context: context,
       data: const KlumpCheckoutData(
       amount: 45000,
