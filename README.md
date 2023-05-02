@@ -46,7 +46,7 @@ To use this package, your android app must declare internet permission. Add the 
 ```
 
 ### 2. Initializing Plugin
-	To use [klump_checkout] SDK, you need to first initialize it by using the `KlumpCheckout` class.
+To use [klump_checkout] SDK, you need to first initialize it by using the `KlumpCheckout` class.
 	
 ```dart
 
