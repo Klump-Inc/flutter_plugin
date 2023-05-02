@@ -67,10 +67,11 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                           ),
                           const YSpace(8),
                           KCBodyText1(
-                            checkoutNotifier
-                                        .stanbicStatusResponse?.isSuccessful ==
+                            checkoutNotifier.stanbicStatusResponse?.isSuccessful ==
                                     true
-                                ? 'Loan disburse successful \nYour next pay date is March 3, 2022'
+                                ? checkoutNotifier
+                                        .stanbicStatusResponse?.message ??
+                                    ''
                                 : checkoutNotifier
                                         .stanbicStatusResponse?.message ??
                                     '',
