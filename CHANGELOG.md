@@ -6,6 +6,8 @@
 ## [1.0.5] - Plugin update
 ## [1.0.6] - Plugin Update
 ## [1.0.7] - Update Readme.md
+## [1.0.8] - Update Readme.md
+
 
 
 

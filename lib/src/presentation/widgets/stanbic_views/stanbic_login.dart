@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StanbicLogin extends StatefulWidget {
   const StanbicLogin({super.key});
@@ -141,12 +142,24 @@ class _StanbicLoginState extends State<StanbicLogin> {
                       },
                     ),
                     const YSpace(16),
-                    KCBodyText1(
-                      'Don’t have a Stanbic account? Create one',
-                      fontSize: 16,
-                      color: KCColors.lightBlue,
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
+                    GestureDetector(
+                      onTap: () async {
+                        if (!await launchUrl(
+                          Uri.parse(
+                              "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"),
+                          mode: LaunchMode.externalApplication,
+                        )) {
+                          // ignore: avoid_print
+                          print('Could not open link');
+                        }
+                      },
+                      child: KCBodyText1(
+                        'Don’t have a Stanbic account? Create one',
+                        fontSize: 16,
+                        color: KCColors.lightBlue,
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                     const YSpace(25),
