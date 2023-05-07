@@ -9,7 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 extension PumpKlumpWidget on WidgetTester {
-  Future<void> pumpScreen(Widget widget) {
+  Future<void> pumpKCWidget(Widget widget) {
+    return pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [],
+        home: Scaffold(
+          body: Container(child: widget),
+        ),
+      ),
+    );
+  }
+
+  Future<void> pumpKCScreen(Widget widget) {
     return pumpWidget(
       MaterialApp(
         localizationsDelegates: const [],
