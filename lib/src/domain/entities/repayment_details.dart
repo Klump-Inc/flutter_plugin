@@ -16,7 +16,7 @@ class RepaymentDetails extends Equatable {
   final int tenor;
   final int installment;
   final double? minimumBalanceRequired;
-  final String repaymentDay;
+  final dynamic repaymentDay;
   final List<RepaymentScheduleModel> repaymentSchedules;
   final dynamic repaymentMetadata;
 
