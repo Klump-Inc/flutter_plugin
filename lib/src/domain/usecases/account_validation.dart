@@ -17,6 +17,7 @@ class AccountValidationUsecase
       stanbicRepository.validateAccount(
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
+        publicKey: params.publicKey,
       );
 }
 
@@ -24,14 +25,17 @@ class AccountValidationUsecaseParams extends Equatable {
   const AccountValidationUsecaseParams({
     required this.accountNumber,
     required this.phoneNumber,
+    required this.publicKey,
   });
 
   final String accountNumber;
   final String phoneNumber;
+  final String publicKey;
 
   @override
   List<Object?> get props => [
         accountNumber,
         phoneNumber,
+        publicKey,
       ];
 }

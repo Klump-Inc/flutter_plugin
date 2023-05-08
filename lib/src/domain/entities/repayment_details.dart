@@ -13,8 +13,8 @@ class RepaymentDetails extends Equatable {
   final double? interest;
   final double? vat;
   final double? insurance;
-  final int tenor;
-  final int installment;
+  final dynamic tenor;
+  final dynamic installment;
   final double? minimumBalanceRequired;
   final dynamic repaymentDay;
   final List<RepaymentScheduleModel> repaymentSchedules;

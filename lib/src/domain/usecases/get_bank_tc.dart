@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class GetBankTCUsecase extends KCUsecase<TermsAndCondition, NoParams> {
+class GetBankTCUsecase
+    extends KCUsecase<TermsAndCondition, GetBankTCUsecaseParams> {
   GetBankTCUsecase({
     required this.stanbicRepository,
   });
@@ -10,7 +12,16 @@ class GetBankTCUsecase extends KCUsecase<TermsAndCondition, NoParams> {
 
   @override
   Future<Either<KCException, TermsAndCondition>> call(
-    NoParams params,
+    GetBankTCUsecaseParams params,
   ) =>
-      stanbicRepository.getBankTC();
+      stanbicRepository.getBankTC(publicKey: params.publicKey);
+}
+
+class GetBankTCUsecaseParams extends Equatable {
+  final String publicKey;
+
+  const GetBankTCUsecaseParams({required this.publicKey});
+
+  @override
+  List<Object?> get props => [publicKey];
 }

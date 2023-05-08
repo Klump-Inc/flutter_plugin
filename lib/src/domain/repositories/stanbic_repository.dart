@@ -36,11 +36,13 @@ class StanbicRepository {
   Future<Either<KCException, void>> validateAccount({
     required String accountNumber,
     required String phoneNumber,
+    required String publicKey,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.validateAccount(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
+        publicKey: publicKey,
       );
       return Right(response);
     } catch (e) {
@@ -54,12 +56,14 @@ class StanbicRepository {
     required String accountNumber,
     required String phoneNumber,
     required String otp,
+    required String publicKey,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
         otp: otp,
+        publicKey: publicKey,
       );
       return Right(response);
     } catch (e) {
@@ -69,9 +73,11 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, TermsAndCondition>> getBankTC() async {
+  Future<Either<KCException, TermsAndCondition>> getBankTC(
+      {required String publicKey}) async {
     try {
-      final response = await stanbicRmoteDatasource.getBankTC();
+      final response =
+          await stanbicRmoteDatasource.getBankTC(publicKey: publicKey);
       return Right(response);
     } catch (e) {
       return Left(
@@ -126,10 +132,13 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, StanbicStatusResponse>> getLoanStatus(
-      {required String id}) async {
+  Future<Either<KCException, StanbicStatusResponse>> getLoanStatus({
+    required String id,
+    required String publicKey,
+  }) async {
     try {
-      final response = await stanbicRmoteDatasource.getLoanStatus(id: id);
+      final response = await stanbicRmoteDatasource.getLoanStatus(
+          id: id, publicKey: publicKey);
       return Right(response);
     } catch (e) {
       return Left(
