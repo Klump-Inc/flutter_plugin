@@ -121,6 +121,7 @@ class KCChangeNotifier extends ChangeNotifier {
       AccountValidationUsecaseParams(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
     _setBusy(false);
@@ -136,6 +137,7 @@ class KCChangeNotifier extends ChangeNotifier {
       AccountValidationUsecaseParams(
         accountNumber: _accountNumber!,
         phoneNumber: _phoneNumber!,
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
     _setBusy(false);
@@ -158,6 +160,7 @@ class KCChangeNotifier extends ChangeNotifier {
         accountNumber: _accountNumber ?? '',
         phoneNumber: _phoneNumber ?? '',
         otp: otp,
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
     response.fold(
@@ -172,9 +175,9 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> fetchBankTC() async {
     _setBusy(true);
-    final response = await getBankTCUsecase(
-      NoParams(),
-    );
+    final response = await getBankTCUsecase(GetBankTCUsecaseParams(
+      publicKey: _checkoutData?.merchantPublicKey ?? '',
+    ));
     response.fold(
       (l) => {},
       (r) {
@@ -210,7 +213,7 @@ class KCChangeNotifier extends ChangeNotifier {
         amount: _checkoutData!.amount,
         publicKey: _checkoutData!.merchantPublicKey,
         installment: _repaymentDetails!.installment,
-        repaymentDay: int.parse(_repaymentDetails!.repaymentDay),
+        repaymentDay: int.parse(_repaymentDetails!.repaymentDay.toString()),
         termsVersion: _stanbicTC!.version,
         items: _checkoutData?.items ?? [],
       ),
@@ -227,7 +230,10 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<StanbicStatusResponse?> getLoanStatus() async {
     final response = await getLoanStatusUsecase(
-      GetLoanStatusUsecaseParams(id: _newLoanId!),
+      GetLoanStatusUsecaseParams(
+        id: _newLoanId!,
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+      ),
     );
     return response.fold(
       (l) => null,

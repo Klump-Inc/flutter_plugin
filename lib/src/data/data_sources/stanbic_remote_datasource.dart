@@ -12,13 +12,15 @@ abstract class StanbicRemoteDatasource {
   Future<void> validateAccount({
     required String accountNumber,
     required String phoneNumber,
+    required String publicKey,
   });
   Future<double> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
+    required String publicKey,
   });
-  Future<TermsAndConditionModel> getBankTC();
+  Future<TermsAndConditionModel> getBankTC({required String publicKey});
   Future<RepaymentDetailsModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
@@ -33,7 +35,10 @@ abstract class StanbicRemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
   });
-  Future<StanbicStatusResponseModel> getLoanStatus({required String id});
+  Future<StanbicStatusResponseModel> getLoanStatus({
+    required String id,
+    required String publicKey,
+  });
 }
 
 class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
@@ -81,6 +86,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   Future<void> validateAccount({
     required String accountNumber,
     required String phoneNumber,
+    required String publicKey,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -88,8 +94,12 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
       };
+      final headers = {
+        'klump-public-key': publicKey,
+      };
       await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        headers: headers,
         endpoint: '/v1/stanbic/accounts/validation',
         body: body,
       );
@@ -103,9 +113,13 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String accountNumber,
     required String phoneNumber,
     required String otp,
+    required String publicKey,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
       final body = {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
@@ -115,22 +129,29 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/accounts/verify',
+        headers: headers,
         body: body,
       );
       await prefs.setString(KC_STANBIC_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
-      return response.data['loanLimit']['maxMonthlyRepayment'] ?? 0.0;
+      return response.data['loanLimit']['maxLoanLimit']?.toDouble() ?? 0.0;
     } else {
       throw NoInternetKCException();
     }
   }
 
   @override
-  Future<TermsAndConditionModel> getBankTC() async {
+  Future<TermsAndConditionModel> getBankTC({
+    required String publicKey,
+  }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
       final response = await kcHttpRequester.get(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        headers: headers,
         endpoint: '/v1/stanbic/terms-and-conditions',
       );
       return TermsAndConditionModel.fromJson(response.data);
@@ -181,6 +202,9 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
       final body = {
         "amount": amount,
         "installment": installment,
@@ -192,6 +216,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/new',
+        headers: headers,
         body: body,
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
@@ -202,12 +227,19 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   }
 
   @override
-  Future<StanbicStatusResponseModel> getLoanStatus({required String id}) async {
+  Future<StanbicStatusResponseModel> getLoanStatus({
+    required String id,
+    required String publicKey,
+  }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
       final response = await kcHttpRequester.get(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/$id/status',
+        headers: headers,
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
       return StanbicStatusResponseModel.fromJson(response.data);

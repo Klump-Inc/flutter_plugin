@@ -17,6 +17,7 @@ class VerifyOTPUsecase extends KCUsecase<double, VerifyOTPUsecaseParams> {
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
         otp: params.otp,
+        publicKey: params.publicKey,
       );
 }
 
@@ -25,16 +26,19 @@ class VerifyOTPUsecaseParams extends Equatable {
     required this.accountNumber,
     required this.phoneNumber,
     required this.otp,
+    required this.publicKey,
   });
 
   final String accountNumber;
   final String phoneNumber;
   final String otp;
+  final String publicKey;
 
   @override
   List<Object?> get props => [
         accountNumber,
         phoneNumber,
         otp,
+        publicKey,
       ];
 }
