@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StanbicPaymentPreview extends StatefulWidget {
   const StanbicPaymentPreview({super.key});
@@ -87,7 +89,7 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                                   amount:
                                       'NGN${KCStringUtil.formatAmount(repaymentDetails.repaymentSchedules[index].monthlyRepayment)}',
                                   body: index == repaymentDetails.tenor - 1
-                                      ? 'Final payment, ${index + 1} months later'
+                                      ? 'Final payment, ${index + 1} month(s) later'
                                       : 'Paid automatically ${index + 1} month later',
                                   bodyLines: 2,
                                   lastItem: index == repaymentDetails.tenor - 1,
@@ -95,11 +97,11 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                               ),
                             ),
                             const YSpace(18),
-                            KCHeadline5(
-                              'Get your order immediately at only one fourth of the payment upfront. The balance will be split into three equal instalments over 3 months. ',
-                              fontSize: 14,
-                              height: 1.714,
-                            )
+                            // KCHeadline5(
+                            //   'Get your order immediately at only one fourth of the payment upfront. The balance will be split into three equal instalments over 3 months. ',
+                            //   fontSize: 14,
+                            //   height: 1.714,
+                            // )
                           ],
                         ),
                       ),
@@ -107,9 +109,10 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                   ),
                   const YSpace(10),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(top: 8, bottom: 5),
                         child: SizedBox(
                           height: 16,
                           width: 16,
@@ -131,33 +134,47 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                         ),
                       ),
                       const XSpace(10.5),
-                      const Expanded(
+                      Expanded(
                         child: Text.rich(
                           TextSpan(
                             children: [
-                              TextSpan(
-                                text: 'I agree to this according to Klump’s ',
+                              const TextSpan(
+                                text:
+                                    'By selecting this button, you are confirming that you have reviewed and agreed to Stanbic IBTC\'s ',
                               ),
                               TextSpan(
-                                text: 'Customer Agreement',
-                                style: TextStyle(
-                                  color: KCColors.black3,
+                                text: 'privacy policy',
+                                style: const TextStyle(
+                                  color: KCColors.blue,
                                   fontWeight: FontWeight.w800,
                                   decoration: TextDecoration.underline,
                                 ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    if (!await launchUrl(
+                                      Uri.parse(
+                                          "https://www.stanbicibtcbank.com/nigeriabank/personal/about-us/legal/security-statement"),
+                                      mode: LaunchMode.externalApplication,
+                                    )) {
+                                      // ignore: avoid_print
+                                      print('Could not open link');
+                                    }
+                                  },
                               ),
-                              TextSpan(text: ' and '),
-                              TextSpan(
-                                text: 'Terms and Conditions',
-                                style: TextStyle(
-                                  color: KCColors.black3,
-                                  fontWeight: FontWeight.w800,
-                                  decoration: TextDecoration.underline,
-                                ),
-                              )
+                              const TextSpan(
+                                  text:
+                                      ' and Buy Now Pay Later terms and conditions'),
+                              // TextSpan(
+                              //   text: 'Terms and Conditions',
+                              //   style: TextStyle(
+                              //     color: KCColors.black3,
+                              //     fontWeight: FontWeight.w800,
+                              //     decoration: TextDecoration.underline,
+                              //   ),
+                              // )
                             ],
                           ),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: KCColors.grey5,
                             fontSize: 12,
                             height: 1.818,
@@ -247,6 +264,7 @@ class KPPaymentItemTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
+                      flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -275,6 +293,7 @@ class KPPaymentItemTile extends StatelessWidget {
                     ),
                     const XSpace(30),
                     Expanded(
+                      flex: 2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
