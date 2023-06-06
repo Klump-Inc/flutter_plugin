@@ -312,11 +312,25 @@ void main() {
           },
         ),
       );
+      expect(find.byType(SvgPicture), findsWidgets);
       expect(find.text('Your installment split'), findsOneWidget);
+      expect(find.text('How would you like to split your payment?'),
+          findsOneWidget);
+      expect(find.text('What day of the month would you like to pay?'),
+          findsOneWidget);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(Image), findsNothing);
       expect(find.byType(PopupMenuButton<int>), findsNWidgets(2));
+      await tester.tap(find.byType(PopupMenuButton<int>).first);
+      await tester.pump();
+      expect(find.byType(KCInstallmentPopupMenuItemContent), findsNWidgets(3));
+      await tester.tap(find.byType(LayoutBuilder));
+      await tester.pump();
+      await tester.tap(find.byType(PopupMenuButton<int>).last);
+      await tester.pump();
+      expect(find.byType(KCInstallmentPopupMenuItemContent), findsNWidgets(31));
       expect(find.byType(SvgPicture), findsWidgets);
+      expect(find.byType(Spacer), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
     testWidgets('StanbicPaymentPreview renders correctly', (tester) async {
