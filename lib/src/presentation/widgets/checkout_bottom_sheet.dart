@@ -14,7 +14,9 @@ class KCBottomSheet extends StatefulWidget {
   static dynamic route(
       BuildContext context, KlumpCheckoutData data, bool isLive) {
     return showModalBottomSheet<void>(
+      isScrollControlled: true,
       isDismissible: false,
+      enableDrag: false,
       context: context,
       backgroundColor: KCColors.white,
       shape: const RoundedRectangleBorder(
@@ -23,7 +25,6 @@ class KCBottomSheet extends StatefulWidget {
           topRight: Radius.circular(9.92367),
         ),
       ),
-      isScrollControlled: true,
       builder: (context) => KCBottomSheet(data: data, isLive: isLive),
     );
   }
