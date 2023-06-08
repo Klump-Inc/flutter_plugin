@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
