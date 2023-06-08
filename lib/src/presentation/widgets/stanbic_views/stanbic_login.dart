@@ -109,7 +109,6 @@ class _StanbicLoginState extends State<StanbicLogin> {
                           hint: 'Account Number',
                           textInputType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
-                            // ignore: unnecessary_raw_strings
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                             LengthLimitingTextInputFormatter(10),
                           ],
@@ -129,7 +128,6 @@ class _StanbicLoginState extends State<StanbicLogin> {
                           hint: 'Phone Number',
                           textInputType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
-                            // ignore: unnecessary_raw_strings
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                             LengthLimitingTextInputFormatter(11),
                           ],

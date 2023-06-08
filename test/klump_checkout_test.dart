@@ -345,15 +345,27 @@ void main() {
           },
         ),
       );
+      final text = kcChangeNotifier.repaymentDetails?.installment.toString() ==
+              '2'
+          ? 'Get your order  immediately at half the payment upfront. The balance will be scheduled for one month post your first instalment.'
+          : kcChangeNotifier.repaymentDetails?.installment.toString() == '3'
+              ? 'Get your order  immediately at one third of the payment upfront. The balance will be split into two (2) equal instalments over 2 months.'
+              : kcChangeNotifier.repaymentDetails?.installment.toString() == '4'
+                  ? 'Get your order  immediately at one fourth of the payment upfront. The balance will be split into three (3) equal instalments over 3 months.'
+                  : kcChangeNotifier.repaymentDetails?.installment.toString() ==
+                          '5'
+                      ? 'Get your order  immediately at one fifth of the payment upfront. The balance will be split into four (4) equal instalments over 4 months.'
+                      : kcChangeNotifier.repaymentDetails?.installment
+                                  .toString() ==
+                              '6'
+                          ? 'Get your order  immediately at one sixth of the payment upfront. The balance will be split into four (5) equal instalments over 5 months.'
+                          : '';
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(Image), findsOneWidget);
       expect(find.byType(SvgPicture), findsOneWidget);
       expect(find.byType(KPPaymentItemTile), findsWidgets);
       expect(find.byType(Expanded), findsWidgets);
-      expect(
-          find.text(
-              'Get your order immediately at only one fourth of the payment upfront. The balance will be split into three equal instalments over 3 months. '),
-          findsOneWidget);
+      expect(find.text(text), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
 
