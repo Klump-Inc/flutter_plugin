@@ -120,7 +120,6 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                           ),
                           textInputType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
-                            // ignore: unnecessary_raw_strings
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                             LengthLimitingTextInputFormatter(6),
                           ],
