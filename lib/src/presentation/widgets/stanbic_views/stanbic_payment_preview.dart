@@ -1,9 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class StanbicPaymentPreview extends StatefulWidget {
   const StanbicPaymentPreview({super.key});
@@ -97,11 +95,28 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                               ),
                             ),
                             const YSpace(18),
-                            // KCHeadline5(
-                            //   'Get your order immediately at only one fourth of the payment upfront. The balance will be split into three equal instalments over 3 months. ',
-                            //   fontSize: 14,
-                            //   height: 1.714,
-                            // )
+                            KCHeadline5(
+                              repaymentDetails.installment.toString() == '2'
+                                  ? 'Get your order  immediately at half the payment upfront. The balance will be scheduled for one month post your first instalment.'
+                                  : repaymentDetails.installment.toString() ==
+                                          '3'
+                                      ? 'Get your order  immediately at one third of the payment upfront. The balance will be split into two (2) equal instalments over 2 months.'
+                                      : repaymentDetails.installment
+                                                  .toString() ==
+                                              '4'
+                                          ? 'Get your order  immediately at one fourth of the payment upfront. The balance will be split into three (3) equal instalments over 3 months.'
+                                          : repaymentDetails.installment
+                                                      .toString() ==
+                                                  '5'
+                                              ? 'Get your order  immediately at one fifth of the payment upfront. The balance will be split into four (4) equal instalments over 4 months.'
+                                              : repaymentDetails.installment
+                                                          .toString() ==
+                                                      '6'
+                                                  ? 'Get your order  immediately at one sixth of the payment upfront. The balance will be split into four (5) equal instalments over 5 months.'
+                                                  : '',
+                              fontSize: 14,
+                              height: 1.714,
+                            )
                           ],
                         ),
                       ),
@@ -134,49 +149,35 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                         ),
                       ),
                       const XSpace(10.5),
-                      Expanded(
+                      const Expanded(
                         child: Text.rich(
                           TextSpan(
                             children: [
-                              const TextSpan(
-                                text:
-                                    'By selecting this button, you are confirming that you have reviewed and agreed to Stanbic IBTC\'s ',
+                              TextSpan(
+                                text: 'I agree to this according to Klump’s ',
                               ),
                               TextSpan(
-                                text: 'privacy policy',
-                                style: const TextStyle(
-                                  color: KCColors.blue,
+                                text: 'Customer Agreement',
+                                style: TextStyle(
+                                  color: KCColors.black3,
                                   fontWeight: FontWeight.w800,
                                   decoration: TextDecoration.underline,
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    if (!await launchUrl(
-                                      Uri.parse(
-                                          "https://www.stanbicibtcbank.com/nigeriabank/personal/about-us/legal/security-statement"),
-                                      mode: LaunchMode.externalApplication,
-                                    )) {
-                                      // ignore: avoid_print
-                                      print('Could not open link');
-                                    }
-                                  },
                               ),
-                              const TextSpan(
-                                  text:
-                                      ' and Buy Now Pay Later terms and conditions'),
-                              // TextSpan(
-                              //   text: 'Terms and Conditions',
-                              //   style: TextStyle(
-                              //     color: KCColors.black3,
-                              //     fontWeight: FontWeight.w800,
-                              //     decoration: TextDecoration.underline,
-                              //   ),
-                              // )
+                              TextSpan(text: ' and'),
+                              TextSpan(
+                                text: ' Terms and Conditions',
+                                style: TextStyle(
+                                  color: KCColors.black3,
+                                  fontWeight: FontWeight.w800,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              )
                             ],
                           ),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: KCColors.grey5,
-                            fontSize: 12,
+                            fontSize: 11,
                             height: 1.818,
                             fontFamily: KCFonts.avenir,
                             fontWeight: FontWeight.w400,
