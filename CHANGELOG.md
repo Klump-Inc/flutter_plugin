@@ -9,6 +9,8 @@
 ## [1.0.8] - Update Readme.md
 ## [1.0.9] - improvements
 ## [1.0.10] - improvements
+## [1.0.11] - Update Readme.md
+
 
 
 
