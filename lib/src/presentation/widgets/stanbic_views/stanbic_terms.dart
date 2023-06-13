@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StanbicTerms extends StatefulWidget {
   const StanbicTerms({super.key});
@@ -109,34 +111,58 @@ class _StanbicTermsState extends State<StanbicTerms> {
                               ),
                             ),
                             const XSpace(10.5),
-                            const Expanded(
+                            Expanded(
                               child: Text.rich(
                                 TextSpan(
                                   children: [
-                                    TextSpan(
+                                    const TextSpan(
                                       text:
                                           'I agree to this according to Klump’s ',
                                     ),
                                     TextSpan(
                                       text: 'Customer Agreement',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: KCColors.black3,
                                         fontWeight: FontWeight.w800,
                                         decoration: TextDecoration.underline,
                                       ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          if (!await launchUrl(
+                                            Uri.parse(
+                                                "https://useklump.com/legal/terms-of-service-customer"),
+                                            mode:
+                                                LaunchMode.externalApplication,
+                                          )) {
+                                            // ignore: avoid_print
+                                            print('Could not open link');
+                                          }
+                                        },
                                     ),
-                                    TextSpan(text: ' and'),
+                                    const TextSpan(text: ' and'),
                                     TextSpan(
                                       text: ' Terms and Conditions',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: KCColors.black3,
                                         fontWeight: FontWeight.w800,
                                         decoration: TextDecoration.underline,
                                       ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          if (!await launchUrl(
+                                            Uri.parse(
+                                                "https://useklump.com/legal/terms-of-service"),
+                                            mode:
+                                                LaunchMode.externalApplication,
+                                          )) {
+                                            // ignore: avoid_print
+                                            print('Could not open link');
+                                          }
+                                        },
                                     )
                                   ],
                                 ),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: KCColors.grey5,
                                   fontSize: 11,
                                   height: 1.818,
@@ -144,7 +170,7 @@ class _StanbicTermsState extends State<StanbicTerms> {
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         const YSpace(24),
