@@ -69,6 +69,8 @@ final res = await klumpCheckout.pay(
       isLive: false,
       context: context,
       data: const KlumpCheckoutData(
+        merchantPublicKey:
+                    'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
       amount: 45000,
       shippingFee: 5000,
       merchantReference: "what-ever-you-want-this-to-be",
@@ -86,6 +88,11 @@ final res = await klumpCheckout.pay(
           quantity: 2,
         )
       ],
+       shippingData: {
+          "address": "Ediam road Akppa",
+          "landmark": "extras",
+          "city_id": "da513ab9-a28e-4451-af6b-16f029be2c37"
+        },
     ),
   );
 ```
