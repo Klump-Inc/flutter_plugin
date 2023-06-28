@@ -20,7 +20,7 @@ class KlumpCheckoutData extends Equatable {
     required this.metaData,
     required this.items,
     required this.merchantPublicKey,
-    required this.shippingData,
+    this.shippingData,
   });
 
   Map<String, dynamic> toMap() => {
