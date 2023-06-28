@@ -114,6 +114,7 @@ class StanbicRepository {
     required int repaymentDay,
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.createNew(
@@ -123,6 +124,7 @@ class StanbicRepository {
         repaymentDay: repaymentDay,
         termsVersion: termsVersion,
         items: items,
+        shippingData: shippingData,
       );
       return Right(response);
     } catch (e) {

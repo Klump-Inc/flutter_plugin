@@ -10,6 +10,7 @@ class KlumpCheckoutData extends Equatable {
   final Map<String, String> metaData;
   final List<KlumpCheckoutItem> items;
   final String merchantPublicKey;
+  final Map<String, dynamic>? shippingData;
 
   const KlumpCheckoutData({
     required this.amount,
@@ -19,6 +20,7 @@ class KlumpCheckoutData extends Equatable {
     required this.metaData,
     required this.items,
     required this.merchantPublicKey,
+    required this.shippingData,
   });
 
   Map<String, dynamic> toMap() => {
@@ -29,6 +31,7 @@ class KlumpCheckoutData extends Equatable {
         'meta_data': metaData.map((key, value) => MapEntry(key, "'$value'")),
         'source': "'mobile'",
         'items': items.map((e) => e.toMap()).toList(),
+        'shipping_data': shippingData,
       };
 
   @override
@@ -41,5 +44,6 @@ class KlumpCheckoutData extends Equatable {
         items,
         required,
         merchantPublicKey,
+        shippingData,
       ];
 }

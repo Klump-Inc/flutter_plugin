@@ -216,10 +216,11 @@ class KCChangeNotifier extends ChangeNotifier {
         repaymentDay: int.parse(_repaymentDetails!.repaymentDay.toString()),
         termsVersion: _stanbicTC!.version,
         items: _checkoutData?.items ?? [],
+        shippingData: _checkoutData?.shippingData,
       ),
     );
     response.fold(
-      (l) => {},
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         _newLoanId = r;
         nextPage();

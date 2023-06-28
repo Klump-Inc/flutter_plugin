@@ -40,6 +40,11 @@ void main() {
     ],
     merchantPublicKey:
         'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
+    shippingData: {
+      "address": "Ediam road Akppa",
+      "landmark": "extras",
+      "city_id": "73c743dd-9b62-411c-9d2f-2255e72a89ec"
+    },
   );
 
   final repaymentDetailsJson = {
