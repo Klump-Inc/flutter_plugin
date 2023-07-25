@@ -106,7 +106,7 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                     KCHeadline3('Enter the code'),
                     const YSpace(8),
                     KCHeadline5(
-                        'A code has been sent to your otp address and ${checkoutNotfier.phoneNumber}'),
+                        'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'),
                     const YSpace(28),
                     StreamBuilder<String>(
                       stream: otpStreamCtrl.stream,
