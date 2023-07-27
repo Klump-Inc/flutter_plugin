@@ -14,7 +14,12 @@ abstract class StanbicRemoteDatasource {
     required String phoneNumber,
     required String publicKey,
   });
-  Future<double> verifyOTP({
+  Future<bool> accountCredentials({
+    required String email,
+    required String password,
+    required String publicKey,
+  });
+  Future<StanbicUserModel> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
@@ -110,7 +115,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   }
 
   @override
-  Future<double> verifyOTP({
+  Future<StanbicUserModel> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
@@ -135,7 +140,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       );
       await prefs.setString(KC_STANBIC_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
-      return response.data['loanLimit']['maxLoanLimit']?.toDouble() ?? 0.0;
+      return StanbicUserModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
     }
@@ -246,6 +251,34 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
       return StanbicStatusResponseModel.fromJson(response.data);
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<bool> accountCredentials({
+    required String email,
+    required String password,
+    required String publicKey,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final body = {
+        "email": email,
+        "password": password,
+      };
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        headers: headers,
+        endpoint: '/v1/loans/account/credentials',
+        body: body,
+        token: prefs.getString(KC_STANBIC_TOKEN),
+      );
+      return response.statusCode == 200;
     } else {
       throw NoInternetKCException();
     }

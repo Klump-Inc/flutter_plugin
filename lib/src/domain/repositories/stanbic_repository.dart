@@ -52,7 +52,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, double>> verifyOTP({
+  Future<Either<KCException, StanbicUser>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
@@ -141,6 +141,25 @@ class StanbicRepository {
     try {
       final response = await stanbicRmoteDatasource.getLoanStatus(
           id: id, publicKey: publicKey);
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, bool>> accountCredentials({
+    required String email,
+    required String password,
+    required String publicKey,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.accountCredentials(
+        email: email,
+        password: password,
+        publicKey: publicKey,
+      );
       return Right(response);
     } catch (e) {
       return Left(

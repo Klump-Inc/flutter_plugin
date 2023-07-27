@@ -5,3 +5,4 @@ export 'klump_checkout_response.dart';
 export 'klump_checkout_data.dart';
 export 'klump_checkout_item.dart';
 export 'terms_and_condition_model.dart';
+export 'stanbic_user_model.dart';

@@ -13,30 +13,19 @@ class StanbicAccountInformation extends StatefulWidget {
 }
 
 class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
-  late TextEditingController _firstnameCtrl;
-  late TextEditingController _lastnameCtrl;
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
 
-  late StreamController<String> firstnameStreamCtrl;
-  late StreamController<String> lastnameStreamCtrl;
   late StreamController<String> emailStreamCtrl;
   late StreamController<String> passwordStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final firstnameError =
-        KCFormValidator.errorGeneric(_firstnameCtrl.text.trim(), 'Required');
-    final lastnameError =
-        KCFormValidator.errorGeneric(_lastnameCtrl.text.trim(), 'Required');
     final emailError =
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    if (firstnameError?.isEmpty == true &&
-        lastnameError?.isEmpty == true &&
-        emailError?.isEmpty == true &&
-        passwordError?.isEmpty == true) {
+    if (emailError?.isEmpty == true && passwordError?.isEmpty == true) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -46,22 +35,12 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
   @override
   void initState() {
     super.initState();
-    _firstnameCtrl = TextEditingController();
-    _lastnameCtrl = TextEditingController();
+
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
-    firstnameStreamCtrl = StreamController<String>.broadcast();
-    lastnameStreamCtrl = StreamController<String>.broadcast();
     emailStreamCtrl = StreamController<String>.broadcast();
     passwordStreamCtrl = StreamController<String>.broadcast();
-    _firstnameCtrl.addListener(() {
-      firstnameStreamCtrl.sink.add(_firstnameCtrl.text.trim());
-      validateInputs();
-    });
-    _lastnameCtrl.addListener(() {
-      lastnameStreamCtrl.sink.add(_lastnameCtrl.text.trim());
-      validateInputs();
-    });
+
     _emailCtrl.addListener(() {
       emailStreamCtrl.sink.add(_emailCtrl.text.trim());
       validateInputs();
@@ -75,12 +54,8 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
   @override
   void dispose() {
     super.dispose();
-    _firstnameCtrl.dispose();
-    _lastnameCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
-    firstnameStreamCtrl.close();
-    lastnameStreamCtrl.close();
     emailStreamCtrl.close();
     passwordStreamCtrl.close();
   }
@@ -122,34 +97,22 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
                     KCHeadline5(
                         'We’ll only ask you for this information once and you can choose to easily update it in the Klump app later.'),
                     const YSpace(18),
-                    StreamBuilder<String>(
-                      stream: firstnameStreamCtrl.stream,
-                      builder: (context, snapshot) {
-                        return KCInputField(
-                          controller: _firstnameCtrl,
-                          hint: 'First Name',
-                          textInputType: TextInputType.text,
-                          validationMessage: KCFormValidator.errorGeneric(
-                            snapshot.data,
-                            'First Name is required',
-                          ),
-                        );
-                      },
+                    KCInputField(
+                      controller: TextEditingController(
+                          text: checkoutNotfier.stanbicUser?.firstname),
+                      hint: 'First Name',
+                      textInputType: TextInputType.text,
+                      readOnly: true,
+                      validationMessage: '',
                     ),
                     const YSpace(16),
-                    StreamBuilder<String>(
-                      stream: lastnameStreamCtrl.stream,
-                      builder: (context, snapshot) {
-                        return KCInputField(
-                          controller: _lastnameCtrl,
-                          hint: 'Last Name',
-                          textInputType: TextInputType.text,
-                          validationMessage: KCFormValidator.errorGeneric(
-                            snapshot.data,
-                            'Last Name is required',
-                          ),
-                        );
-                      },
+                    KCInputField(
+                      controller: TextEditingController(
+                          text: checkoutNotfier.stanbicUser?.lastname),
+                      hint: 'Last Name',
+                      textInputType: TextInputType.text,
+                      readOnly: true,
+                      validationMessage: '',
                     ),
                     const YSpace(16),
                     StreamBuilder<String>(
@@ -194,8 +157,10 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
                           loading: checkoutNotfier.isBusy,
                           onTap: () => Provider.of<KCChangeNotifier>(context,
                                   listen: false)
-                              .validateAccount(_emailCtrl.text.trim(),
-                                  _passwordCtrl.text.trim()),
+                              .addAccountCredentials(
+                            _emailCtrl.text.trim(),
+                            _passwordCtrl.text.trim(),
+                          ),
                         );
                       },
                     ),

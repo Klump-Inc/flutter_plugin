@@ -288,7 +288,8 @@ void main() {
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
     testWidgets('StanbicEligibilityInfo renders correctly', (tester) async {
-      when(kcChangeNotifier.eligibilityAmount).thenAnswer((_) => 500000);
+      when(kcChangeNotifier.stanbicUser?.maxLoanLimit)
+          .thenAnswer((_) => 500000);
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,
