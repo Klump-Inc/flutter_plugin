@@ -16,6 +16,8 @@ class KCChangeNotifier extends ChangeNotifier {
     createNewUsecase = CreateNewUsecase(stanbicRepository: StanbicRepository());
     getLoanStatusUsecase =
         GetLoanStatusUsecase(stanbicRepository: StanbicRepository());
+    getPartnerInsurersUsecase =
+        GetPartnerInsurersUsecase(stanbicRepository: StanbicRepository());
     accountCredentialsUsecase =
         AccountCredentialsUsecase(stanbicRepository: StanbicRepository());
   }
@@ -26,6 +28,7 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetRepaymentDetailsUsecase getRepaymentDetailsUsecase;
   late CreateNewUsecase createNewUsecase;
   late GetLoanStatusUsecase getLoanStatusUsecase;
+  late GetPartnerInsurersUsecase getPartnerInsurersUsecase;
   late AccountCredentialsUsecase accountCredentialsUsecase;
 
   bool _isBusy = false;
@@ -55,6 +58,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? _newLoanId;
   StanbicStatusResponse? _stanbicStatusResponse;
   StanbicStatusResponse? get stanbicStatusResponse => _stanbicStatusResponse;
+  List<PartnerInsurer>? _partnerInsurers;
+  List<PartnerInsurer>? get partnerInsurers => _partnerInsurers;
 
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
@@ -85,6 +90,8 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KCBank? _selectedBankFlow;
   KCBank? get selectedBankFlow => _selectedBankFlow;
+  PartnerInsurer? _selectedPartnerInsurer;
+  PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
 
   void _setBusy(bool value) {
     _isBusy = value;
@@ -93,6 +100,14 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void setBankFlow(KCBank bank) {
     _selectedBankFlow = bank;
+    notifyListeners();
+    if (bank.name == 'Stanbic Bank') {
+      getPartnerInsurer('stanbic');
+    }
+  }
+
+  void setPartnerInsurer(PartnerInsurer insurer) {
+    _selectedPartnerInsurer = insurer;
     notifyListeners();
   }
 
@@ -199,6 +214,7 @@ class KCChangeNotifier extends ChangeNotifier {
       publicKey: _checkoutData?.merchantPublicKey ?? '',
       installment: installment,
       repaymentDay: repaymentDay,
+      insurerId: _selectedPartnerInsurer!.value,
     ));
     _setBusy(false);
     response.fold(
@@ -221,6 +237,7 @@ class KCChangeNotifier extends ChangeNotifier {
         termsVersion: _stanbicTC!.version,
         items: _checkoutData?.items ?? [],
         shippingData: _checkoutData?.shippingData,
+        insurerId: _selectedPartnerInsurer!.value,
       ),
     );
     response.fold(
@@ -247,6 +264,23 @@ class KCChangeNotifier extends ChangeNotifier {
         return r;
       },
     );
+  }
+
+  Future<void> getPartnerInsurer(String partner) async {
+    _setBusy(true);
+    final response = await getPartnerInsurersUsecase(
+      GetPartnerInsurersUsecaseParams(
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: partner,
+      ),
+    );
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _partnerInsurers = r;
+      },
+    );
+    _setBusy(false);
   }
 
   Future<void> addAccountCredentials(String email, String password) async {

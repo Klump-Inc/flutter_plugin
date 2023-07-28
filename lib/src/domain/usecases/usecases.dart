@@ -5,3 +5,4 @@ export 'get_bank_tc.dart';
 export 'get_repayment_details.dart';
 export 'create_new.dart';
 export 'get_loan_status.dart';
+export 'get_partner_insurers.dart';

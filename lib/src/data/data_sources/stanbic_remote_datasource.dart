@@ -31,6 +31,7 @@ abstract class StanbicRemoteDatasource {
     required String publicKey,
     required int installment,
     required int repaymentDay,
+    required int insurerId,
   });
   Future<String> createNew({
     required double amount,
@@ -40,9 +41,14 @@ abstract class StanbicRemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
+    required int insurerId,
   });
   Future<StanbicStatusResponseModel> getLoanStatus({
     required String id,
+    required String publicKey,
+  });
+  Future<List<PartnerInsurerModel>> getPartnerInsurers({
+    required String partner,
     required String publicKey,
   });
 }
@@ -172,6 +178,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String publicKey,
     required int installment,
     required int repaymentDay,
+    required int insurerId,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -183,6 +190,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "installment": installment,
         "repaymentDay": repaymentDay,
         "klump_public_key": publicKey,
+        "insurerId": insurerId,
       };
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
@@ -206,6 +214,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
+    required int insurerId,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -220,6 +229,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "termsAndConditionVersion": termsVersion,
         "items": items.map((e) => e.toMap()).toList(),
         "shipping_data": shippingData,
+        "insurerId": insurerId,
       };
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
@@ -279,6 +289,30 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
       return response.statusCode == 200;
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<List<PartnerInsurerModel>> getPartnerInsurers({
+    required String partner,
+    required String publicKey,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final isLive =
+          prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT;
+      final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        endpoint:
+            '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner',
+        headers: headers,
+      );
+      return PartnerInsurerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
     }

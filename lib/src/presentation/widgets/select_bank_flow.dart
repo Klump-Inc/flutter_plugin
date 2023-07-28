@@ -54,8 +54,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(24.22),
           KCHeadline3('Choose a bank'),
           const YSpace(8),
-          KCHeadline5('Select a bank to Buy Now and Pay Later.'),
-          const YSpace(16),
+          KCHeadline5('Choose the bank you want to pay with'),
+          const YSpace(8),
           LayoutBuilder(
             builder: (context, costraint) {
               return PopupMenuButton<KCBank>(
@@ -153,9 +153,91 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               );
             },
           ),
+          if (checkoutNotfier.selectedBankFlow?.name == 'Stanbic Bank' &&
+              checkoutNotfier.partnerInsurers?.isNotEmpty == true)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const YSpace(32),
+                KCHeadline5('Choose your insurer'),
+                const YSpace(8),
+                LayoutBuilder(
+                  builder: (context, constraint) {
+                    return PopupMenuButton<PartnerInsurer>(
+                      constraints: BoxConstraints(
+                        minWidth: constraint.maxWidth,
+                        maxWidth: constraint.maxWidth,
+                      ),
+                      padding: EdgeInsets.zero,
+                      elevation: 1,
+                      offset: const Offset(0, 76),
+                      child: Container(
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.11,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: KCColors.grey1),
+                          borderRadius: BorderRadius.circular(4.4186),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (checkoutNotfier.selectedPartnerInsurer == null)
+                              KCBodyText1(
+                                'Choose insurer',
+                                color: KCColors.grey2,
+                                fontSize: 15,
+                              )
+                            else
+                              Expanded(
+                                child: KCAutoSizedText(
+                                  checkoutNotfier.selectedPartnerInsurer!.name,
+                                  fontSize: 15,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2, right: 5),
+                              child: SvgPicture.asset(
+                                KCAssets.caretDown,
+                                package: KC_PACKAGE_NAME,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      itemBuilder: (context) {
+                        return List.generate(
+                          checkoutNotfier.partnerInsurers!.length,
+                          (index) => PopupMenuItem<PartnerInsurer>(
+                            height: 0,
+                            padding: EdgeInsets.zero,
+                            child: KCInsurerPopupMenuItemContent(
+                              withBG: index % 2 != 0,
+                              title:
+                                  checkoutNotfier.partnerInsurers![index].name,
+                            ),
+                            onTap: () {
+                              checkoutNotfier.setPartnerInsurer(
+                                  checkoutNotfier.partnerInsurers![index]);
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          const YSpace(32),
           const Spacer(),
           KCPrimaryButton(
-            disabled: checkoutNotfier.selectedBankFlow == null,
+            disabled: checkoutNotfier.isBusy ||
+                checkoutNotfier.selectedBankFlow == null ||
+                checkoutNotfier.selectedBankFlow?.name == 'Stanbic Bank' &&
+                    checkoutNotfier.selectedPartnerInsurer == null,
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,

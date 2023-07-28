@@ -91,6 +91,7 @@ class StanbicRepository {
     required String publicKey,
     required int installment,
     required int repaymentDay,
+    required int insurerId,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getRepaymentDetails(
@@ -98,6 +99,7 @@ class StanbicRepository {
         publicKey: publicKey,
         installment: installment,
         repaymentDay: repaymentDay,
+        insurerId: insurerId,
       );
       return Right(response);
     } catch (e) {
@@ -115,6 +117,7 @@ class StanbicRepository {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
+    required int insurerId,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.createNew(
@@ -125,6 +128,7 @@ class StanbicRepository {
         termsVersion: termsVersion,
         items: items,
         shippingData: shippingData,
+        insurerId: insurerId,
       );
       return Right(response);
     } catch (e) {
@@ -160,6 +164,21 @@ class StanbicRepository {
         password: password,
         publicKey: publicKey,
       );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, List<PartnerInsurer>>> getPartnerInsurers({
+    required String partner,
+    required String publicKey,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.getPartnerInsurers(
+          partner: partner, publicKey: publicKey);
       return Right(response);
     } catch (e) {
       return Left(
