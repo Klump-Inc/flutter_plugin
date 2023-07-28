@@ -52,7 +52,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, double>> verifyOTP({
+  Future<Either<KCException, StanbicUser>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
@@ -153,13 +153,17 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, List<PartnerInsurer>>> getPartnerInsurers({
-    required String partner,
+  Future<Either<KCException, bool>> accountCredentials({
+    required String email,
+    required String password,
     required String publicKey,
   }) async {
     try {
-      final response = await stanbicRmoteDatasource.getPartnerInsurers(
-          partner: partner, publicKey: publicKey);
+      final response = await stanbicRmoteDatasource.accountCredentials(
+        email: email,
+        password: password,
+        publicKey: publicKey,
+      );
       return Right(response);
     } catch (e) {
       return Left(

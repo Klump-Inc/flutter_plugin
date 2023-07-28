@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -17,6 +18,8 @@ class KCChangeNotifier extends ChangeNotifier {
         GetLoanStatusUsecase(stanbicRepository: StanbicRepository());
     getPartnerInsurersUsecase =
         GetPartnerInsurersUsecase(stanbicRepository: StanbicRepository());
+    accountCredentialsUsecase =
+        AccountCredentialsUsecase(stanbicRepository: StanbicRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
   late AccountValidationUsecase accountValidationUsecase;
@@ -26,6 +29,7 @@ class KCChangeNotifier extends ChangeNotifier {
   late CreateNewUsecase createNewUsecase;
   late GetLoanStatusUsecase getLoanStatusUsecase;
   late GetPartnerInsurersUsecase getPartnerInsurersUsecase;
+  late AccountCredentialsUsecase accountCredentialsUsecase;
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
@@ -47,8 +51,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get phoneNumber => _phoneNumber;
   TermsAndCondition? _stanbicTC;
   TermsAndCondition? get stanbicTC => _stanbicTC;
-  double? _eligibilityAmount;
-  double? get eligibilityAmount => _eligibilityAmount;
+  StanbicUser? _stanbicUser;
+  StanbicUser? get stanbicUser => _stanbicUser;
   RepaymentDetails? _repaymentDetails;
   RepaymentDetails? get repaymentDetails => _repaymentDetails;
   String? _newLoanId;
@@ -181,7 +185,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _eligibilityAmount = r;
+        _stanbicUser = r;
         nextPage();
       },
     );
@@ -277,5 +281,21 @@ class KCChangeNotifier extends ChangeNotifier {
       },
     );
     _setBusy(false);
+  }
+
+  Future<void> addAccountCredentials(String email, String password) async {
+    _setBusy(true);
+    final response = await accountCredentialsUsecase(
+      AccountCredentialsUsecaseParams(
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        email: email,
+        password: password,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) => nextPage(),
+    );
   }
 }

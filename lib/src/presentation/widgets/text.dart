@@ -83,7 +83,7 @@ class KCHeadline3 extends KCTextBase {
     TextStyle? style,
     Color color = KCColors.primary,
     double fontSize = 22,
-    FontWeight fontWeight = FontWeight.w800,
+    FontWeight fontWeight = FontWeight.w900,
     super.textAlign,
     super.overflow,
     super.maxLines,
