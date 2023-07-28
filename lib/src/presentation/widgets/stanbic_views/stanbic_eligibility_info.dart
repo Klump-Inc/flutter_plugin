@@ -43,7 +43,7 @@ class _StanbicEligibilityInfoState extends State<StanbicEligibilityInfo> {
                             height: 187.1,
                             width: 187.1,
                             child: SvgPicture.asset(
-                              checkoutNotifier.eligibilityAmount != null
+                              checkoutNotifier.stanbicUser?.maxLoanLimit != null
                                   ? KCAssets.successIllus
                                   : KCAssets.failureIllus,
                               package: KC_PACKAGE_NAME,
@@ -51,48 +51,52 @@ class _StanbicEligibilityInfoState extends State<StanbicEligibilityInfo> {
                           ),
                           const YSpace(22),
                           Column(
-                            children: checkoutNotifier.eligibilityAmount != null
-                                ? [
-                                    KCBodyText1(
-                                      'You are qualified for a spending limit of',
-                                      fontSize: 16,
-                                      textAlign: TextAlign.center,
-                                      height: 1.36625,
-                                    ),
-                                    const YSpace(8),
-                                    KCHeadline3(
-                                      'NGN ${KCStringUtil.formatAmount(checkoutNotifier.eligibilityAmount ?? 0)}',
-                                      fontSize: 27,
-                                      textAlign: TextAlign.center,
-                                      height: 1.4318,
-                                    ),
-                                  ]
-                                : [
-                                    KCHeadline3(
-                                      'Unsuccessful',
-                                      fontSize: 27,
-                                      textAlign: TextAlign.center,
-                                      height: 1.4318,
-                                    ),
-                                    const YSpace(8),
-                                    KCBodyText1(
-                                      'We couldn’t get your transaction history at this time, please try again later.',
-                                      fontSize: 16,
-                                      textAlign: TextAlign.center,
-                                      height: 1.36625,
-                                    ),
-                                  ],
+                            children:
+                                checkoutNotifier.stanbicUser?.maxLoanLimit !=
+                                        null
+                                    ? [
+                                        KCBodyText1(
+                                          'You are qualified for a spending limit of',
+                                          fontSize: 16,
+                                          textAlign: TextAlign.center,
+                                          height: 1.36625,
+                                        ),
+                                        const YSpace(8),
+                                        KCHeadline3(
+                                          'NGN ${KCStringUtil.formatAmount(checkoutNotifier.stanbicUser?.maxLoanLimit ?? 0)}',
+                                          fontSize: 27,
+                                          textAlign: TextAlign.center,
+                                          height: 1.4318,
+                                        ),
+                                      ]
+                                    : [
+                                        KCHeadline3(
+                                          'Unsuccessful',
+                                          fontSize: 27,
+                                          textAlign: TextAlign.center,
+                                          height: 1.4318,
+                                        ),
+                                        const YSpace(8),
+                                        KCBodyText1(
+                                          'We couldn’t get your transaction history at this time, please try again later.',
+                                          fontSize: 16,
+                                          textAlign: TextAlign.center,
+                                          height: 1.36625,
+                                        ),
+                                      ],
                           ),
                         ],
                       ),
                     ),
                     const YSpace(24),
                     KCPrimaryButton(
-                        title: checkoutNotifier.eligibilityAmount != null
-                            ? 'Continue'
-                            : 'Return to store',
+                        title:
+                            checkoutNotifier.stanbicUser?.maxLoanLimit != null
+                                ? 'Continue'
+                                : 'Return to store',
                         onTap: () {
-                          if (checkoutNotifier.eligibilityAmount != null) {
+                          if (checkoutNotifier.stanbicUser?.maxLoanLimit !=
+                              null) {
                             Provider.of<KCChangeNotifier>(context,
                                     listen: false)
                                 .nextPage();

@@ -12,6 +12,16 @@ class KCFormValidator {
     }
   }
 
+  static String? errorGeneric(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else {
+      return '';
+    }
+  }
+
   static String? errorEmail(String? text, String message) {
     if (text == null) {
       return null;

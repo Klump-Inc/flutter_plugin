@@ -15,19 +15,19 @@ class StanbicLogin extends StatefulWidget {
 }
 
 class _StanbicLoginState extends State<StanbicLogin> {
-  late TextEditingController _emailCtrl;
-  late TextEditingController _passwordCtrl;
+  late TextEditingController _accountNoCtrl;
+  late TextEditingController _phoneNoCtrl;
 
-  late StreamController<String> emailStreamCtrl;
-  late StreamController<String> passwordStreamCtrl;
+  late StreamController<String> accountNoStreamCtrl;
+  late StreamController<String> phoneNoStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final emailError =
-        KCFormValidator.errorAccountNumber(_emailCtrl.text.trim(), 'Required');
-    final passwordError =
-        KCFormValidator.errorPhoneNumber(_passwordCtrl.text.trim(), 'Required');
-    if (emailError?.isEmpty == true && passwordError?.isEmpty == true) {
+    final accountNoError = KCFormValidator.errorAccountNumber(
+        _accountNoCtrl.text.trim(), 'Required');
+    final phoneNoError =
+        KCFormValidator.errorPhoneNumber(_phoneNoCtrl.text.trim(), 'Required');
+    if (accountNoError?.isEmpty == true && phoneNoError?.isEmpty == true) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -37,16 +37,16 @@ class _StanbicLoginState extends State<StanbicLogin> {
   @override
   void initState() {
     super.initState();
-    _emailCtrl = TextEditingController();
-    _passwordCtrl = TextEditingController();
-    emailStreamCtrl = StreamController<String>.broadcast();
-    passwordStreamCtrl = StreamController<String>.broadcast();
-    _emailCtrl.addListener(() {
-      emailStreamCtrl.sink.add(_emailCtrl.text.trim());
+    _accountNoCtrl = TextEditingController();
+    _phoneNoCtrl = TextEditingController();
+    accountNoStreamCtrl = StreamController<String>.broadcast();
+    phoneNoStreamCtrl = StreamController<String>.broadcast();
+    _accountNoCtrl.addListener(() {
+      accountNoStreamCtrl.sink.add(_accountNoCtrl.text.trim());
       validateInputs();
     });
-    _passwordCtrl.addListener(() {
-      passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
+    _phoneNoCtrl.addListener(() {
+      phoneNoStreamCtrl.sink.add(_phoneNoCtrl.text.trim());
       validateInputs();
     });
   }
@@ -54,8 +54,8 @@ class _StanbicLoginState extends State<StanbicLogin> {
   @override
   void dispose() {
     super.dispose();
-    _emailCtrl.dispose();
-    _passwordCtrl.dispose();
+    _accountNoCtrl.dispose();
+    _phoneNoCtrl.dispose();
   }
 
   @override
@@ -102,10 +102,10 @@ class _StanbicLoginState extends State<StanbicLogin> {
                     KCHeadline5('Login to your Stanbic IBTC account.'),
                     const YSpace(24),
                     StreamBuilder<String>(
-                      stream: emailStreamCtrl.stream,
+                      stream: accountNoStreamCtrl.stream,
                       builder: (context, snapshot) {
                         return KCInputField(
-                          controller: _emailCtrl,
+                          controller: _accountNoCtrl,
                           hint: 'Account Number',
                           textInputType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
@@ -121,10 +121,10 @@ class _StanbicLoginState extends State<StanbicLogin> {
                     ),
                     const YSpace(16),
                     StreamBuilder<String>(
-                      stream: passwordStreamCtrl.stream,
+                      stream: phoneNoStreamCtrl.stream,
                       builder: (context, snapshot) {
                         return KCInputField(
-                          controller: _passwordCtrl,
+                          controller: _phoneNoCtrl,
                           hint: 'Phone Number',
                           textInputType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[
@@ -171,8 +171,8 @@ class _StanbicLoginState extends State<StanbicLogin> {
                           loading: checkoutNotfier.isBusy,
                           onTap: () => Provider.of<KCChangeNotifier>(context,
                                   listen: false)
-                              .validateAccount(_emailCtrl.text.trim(),
-                                  _passwordCtrl.text.trim()),
+                              .validateAccount(_accountNoCtrl.text.trim(),
+                                  _phoneNoCtrl.text.trim()),
                         );
                       },
                     ),
