@@ -1,4 +1,5 @@
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class StanbicRemoteDatasource {
@@ -38,6 +39,10 @@ abstract class StanbicRemoteDatasource {
   });
   Future<StanbicStatusResponseModel> getLoanStatus({
     required String id,
+    required String publicKey,
+  });
+  Future<List<PartnerInsurerModel>> getPartnerInsurers({
+    required String partner,
     required String publicKey,
   });
 }
@@ -246,6 +251,30 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         token: prefs.getString(KC_STANBIC_TOKEN),
       );
       return StanbicStatusResponseModel.fromJson(response.data);
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<List<PartnerInsurerModel>> getPartnerInsurers({
+    required String partner,
+    required String publicKey,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final isLive =
+          prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT;
+      final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        endpoint:
+            '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner',
+        headers: headers,
+      );
+      return PartnerInsurerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
     }

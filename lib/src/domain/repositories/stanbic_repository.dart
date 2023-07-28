@@ -148,4 +148,19 @@ class StanbicRepository {
       );
     }
   }
+
+  Future<Either<KCException, List<PartnerInsurer>>> getPartnerInsurers({
+    required String partner,
+    required String publicKey,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.getPartnerInsurers(
+          partner: partner, publicKey: publicKey);
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
 }

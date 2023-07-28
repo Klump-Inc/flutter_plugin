@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
@@ -54,7 +55,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(24.22),
           KCHeadline3('Choose a bank'),
           const YSpace(8),
-          KCHeadline5('Select a bank to Buy Now and Pay Later.'),
+          KCHeadline5('Choose the bank you want to pay with'),
           const YSpace(16),
           LayoutBuilder(
             builder: (context, costraint) {
@@ -153,9 +154,87 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               );
             },
           ),
+          if (checkoutNotfier.selectedBankFlow?.name == 'Stanbic Bank' &&
+              checkoutNotfier.partnerInsurers?.isNotEmpty == true)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const YSpace(32),
+                KCHeadline5('Choose your insurer'),
+                const YSpace(16),
+                LayoutBuilder(
+                  builder: (context, costraint) {
+                    return PopupMenuButton<PartnerInsurer>(
+                      constraints: BoxConstraints(
+                        minWidth: costraint.maxWidth,
+                      ),
+                      padding: EdgeInsets.zero,
+                      elevation: 1,
+                      offset: const Offset(0, 76),
+                      child: Container(
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.11,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: KCColors.grey1),
+                          borderRadius: BorderRadius.circular(4.4186),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (checkoutNotfier.selectedPartnerInsurer == null)
+                              KCBodyText1(
+                                'Choose insurer',
+                                color: KCColors.grey2,
+                                fontSize: 15,
+                              )
+                            else
+                              Expanded(
+                                child: KCAutoSizedText(
+                                  checkoutNotfier.selectedPartnerInsurer!.name,
+                                  fontSize: 15,
+                                  maxLines: 1,
+                                ),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2, right: 5),
+                              child: SvgPicture.asset(
+                                KCAssets.caretDown,
+                                package: KC_PACKAGE_NAME,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      itemBuilder: (context) {
+                        return List.generate(
+                          checkoutNotfier.partnerInsurers!.length,
+                          (index) => PopupMenuItem<PartnerInsurer>(
+                            height: 0,
+                            padding: EdgeInsets.zero,
+                            child: KCBankPopupMenuItemContent(
+                              title: 'Stanbic Bank',
+                              logo: KCAssets.stanbicLogo,
+                            ),
+                            onTap: () {
+                              checkoutNotfier.setPartnerInsurer(
+                                  checkoutNotfier.partnerInsurers![index]);
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          const YSpace(32),
           const Spacer(),
           KCPrimaryButton(
-            disabled: checkoutNotfier.selectedBankFlow == null,
+            disabled: checkoutNotfier.selectedBankFlow == null ||
+                checkoutNotfier.isBusy,
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
@@ -15,6 +16,8 @@ class KCChangeNotifier extends ChangeNotifier {
     createNewUsecase = CreateNewUsecase(stanbicRepository: StanbicRepository());
     getLoanStatusUsecase =
         GetLoanStatusUsecase(stanbicRepository: StanbicRepository());
+    getPartnerInsurersUsecase =
+        GetPartnerInsurersUsecase(stanbicRepository: StanbicRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
   late AccountValidationUsecase accountValidationUsecase;
@@ -23,6 +26,7 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetRepaymentDetailsUsecase getRepaymentDetailsUsecase;
   late CreateNewUsecase createNewUsecase;
   late GetLoanStatusUsecase getLoanStatusUsecase;
+  late GetPartnerInsurersUsecase getPartnerInsurersUsecase;
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
@@ -51,6 +55,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? _newLoanId;
   StanbicStatusResponse? _stanbicStatusResponse;
   StanbicStatusResponse? get stanbicStatusResponse => _stanbicStatusResponse;
+  List<PartnerInsurer>? _partnerInsurers;
+  List<PartnerInsurer>? get partnerInsurers => _partnerInsurers;
 
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
@@ -81,6 +87,8 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KCBank? _selectedBankFlow;
   KCBank? get selectedBankFlow => _selectedBankFlow;
+  PartnerInsurer? _selectedPartnerInsurer;
+  PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
 
   void _setBusy(bool value) {
     _isBusy = value;
@@ -89,6 +97,14 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void setBankFlow(KCBank bank) {
     _selectedBankFlow = bank;
+    notifyListeners();
+    if (bank.name == 'Stanbic Bank') {
+      getPartnerInsurer('stanbic');
+    }
+  }
+
+  void setPartnerInsurer(PartnerInsurer insurer) {
+    _selectedPartnerInsurer = insurer;
     notifyListeners();
   }
 
@@ -243,5 +259,22 @@ class KCChangeNotifier extends ChangeNotifier {
         return r;
       },
     );
+  }
+
+  Future<void> getPartnerInsurer(String partner) async {
+    _setBusy(true);
+    final response = await getPartnerInsurersUsecase(
+      GetPartnerInsurersUsecaseParams(
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: partner,
+      ),
+    );
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _partnerInsurers = r;
+      },
+    );
+    _setBusy(false);
   }
 }
