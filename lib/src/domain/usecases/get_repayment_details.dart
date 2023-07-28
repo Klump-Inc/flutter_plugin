@@ -19,6 +19,7 @@ class GetRepaymentDetailsUsecase
         publicKey: params.publicKey,
         installment: params.installment,
         repaymentDay: params.repaymentDay,
+        insurerId: params.insurerId,
       );
 }
 
@@ -28,12 +29,14 @@ class GetRepaymentDetailsUsecaseParams extends Equatable {
     required this.publicKey,
     required this.installment,
     required this.repaymentDay,
+    required this.insurerId,
   });
 
   final double amount;
   final String publicKey;
   final int installment;
   final int repaymentDay;
+  final int insurerId;
 
   @override
   List<Object?> get props => [
@@ -41,5 +44,6 @@ class GetRepaymentDetailsUsecaseParams extends Equatable {
         publicKey,
         installment,
         repaymentDay,
+        insurerId,
       ];
 }

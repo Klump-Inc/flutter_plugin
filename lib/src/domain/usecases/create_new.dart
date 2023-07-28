@@ -21,6 +21,7 @@ class CreateNewUsecase extends KCUsecase<String, CreateNewUsecaseParams> {
         termsVersion: params.termsVersion,
         items: params.items,
         shippingData: params.shippingData,
+        insurerId: params.insurerId,
       );
 }
 
@@ -33,6 +34,7 @@ class CreateNewUsecaseParams extends Equatable {
     required this.termsVersion,
     required this.items,
     required this.shippingData,
+    required this.insurerId,
   });
 
   final double amount;
@@ -42,6 +44,7 @@ class CreateNewUsecaseParams extends Equatable {
   final String termsVersion;
   final List<KlumpCheckoutItem> items;
   final Map<String, dynamic>? shippingData;
+  final int insurerId;
 
   @override
   List<Object?> get props => [
@@ -52,5 +55,6 @@ class CreateNewUsecaseParams extends Equatable {
         termsVersion,
         items,
         shippingData,
+        insurerId,
       ];
 }

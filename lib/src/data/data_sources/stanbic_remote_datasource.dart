@@ -26,6 +26,7 @@ abstract class StanbicRemoteDatasource {
     required String publicKey,
     required int installment,
     required int repaymentDay,
+    required int insurerId,
   });
   Future<String> createNew({
     required double amount,
@@ -35,6 +36,7 @@ abstract class StanbicRemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
+    required int insurerId,
   });
   Future<StanbicStatusResponseModel> getLoanStatus({
     required String id,
@@ -171,6 +173,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String publicKey,
     required int installment,
     required int repaymentDay,
+    required int insurerId,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -182,6 +185,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "installment": installment,
         "repaymentDay": repaymentDay,
         "klump_public_key": publicKey,
+        "insurerId": insurerId,
       };
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
@@ -205,6 +209,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
+    required int insurerId,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -219,6 +224,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "termsAndConditionVersion": termsVersion,
         "items": items.map((e) => e.toMap()).toList(),
         "shipping_data": shippingData,
+        "insurerId": insurerId,
       };
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),

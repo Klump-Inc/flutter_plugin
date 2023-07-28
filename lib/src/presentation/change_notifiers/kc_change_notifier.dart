@@ -210,6 +210,7 @@ class KCChangeNotifier extends ChangeNotifier {
       publicKey: _checkoutData?.merchantPublicKey ?? '',
       installment: installment,
       repaymentDay: repaymentDay,
+      insurerId: _selectedPartnerInsurer!.value,
     ));
     _setBusy(false);
     response.fold(
@@ -232,6 +233,7 @@ class KCChangeNotifier extends ChangeNotifier {
         termsVersion: _stanbicTC!.version,
         items: _checkoutData?.items ?? [],
         shippingData: _checkoutData?.shippingData,
+        insurerId: _selectedPartnerInsurer!.value,
       ),
     );
     response.fold(
