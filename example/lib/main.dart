@@ -39,14 +39,13 @@ class FirstScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            KlumpWidget klumpWidget = KlumpWidget(
-              publicKey:
-                  'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
+            final klumpCheckout = KlumpCheckout();
+            final res = await klumpCheckout.pay(
               isLive: false,
-            );
-            final res = await klumpWidget.checkout(
               context: context,
               data: const KlumpCheckoutData(
+                merchantPublicKey:
+                    'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
                 amount: 100000,
                 shippingFee: 0,
                 merchantReference: "what-ever-you-want-this-to-be",
@@ -64,6 +63,11 @@ class FirstScreen extends StatelessWidget {
                     quantity: 2,
                   )
                 ],
+                shippingData: {
+                  "address": "Ediam road Akppa",
+                  "landmark": "extras",
+                  "city_id": "da513ab9-a28e-4451-af6b-16f029be2c37"
+                },
               ),
             );
             // ignore: avoid_print
