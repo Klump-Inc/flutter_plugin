@@ -293,4 +293,28 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       throw NoInternetKCException();
     }
   }
+
+  @override
+  Future<List<PartnerInsurerModel>> getPartnerInsurers({
+    required String partner,
+    required String publicKey,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final isLive =
+          prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT;
+      final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        endpoint:
+            '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner',
+        headers: headers,
+      );
+      return PartnerInsurerListModel.fromJson(response.data).data;
+    } else {
+      throw NoInternetKCException();
+    }
+  }
 }
