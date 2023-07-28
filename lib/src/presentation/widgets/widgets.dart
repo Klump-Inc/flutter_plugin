@@ -8,3 +8,4 @@ export 'spaces.dart';
 export 'stanbic_views/stanbic_views.dart';
 export 'text.dart';
 export 'loader.dart';
+export 'insurer_popup_menu_content.dart';

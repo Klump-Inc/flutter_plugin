@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
@@ -56,7 +55,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           KCHeadline3('Choose a bank'),
           const YSpace(8),
           KCHeadline5('Choose the bank you want to pay with'),
-          const YSpace(16),
+          const YSpace(8),
           LayoutBuilder(
             builder: (context, costraint) {
               return PopupMenuButton<KCBank>(
@@ -161,12 +160,13 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               children: [
                 const YSpace(32),
                 KCHeadline5('Choose your insurer'),
-                const YSpace(16),
+                const YSpace(8),
                 LayoutBuilder(
-                  builder: (context, costraint) {
+                  builder: (context, constraint) {
                     return PopupMenuButton<PartnerInsurer>(
                       constraints: BoxConstraints(
-                        minWidth: costraint.maxWidth,
+                        minWidth: constraint.maxWidth,
+                        maxWidth: constraint.maxWidth,
                       ),
                       padding: EdgeInsets.zero,
                       elevation: 1,
@@ -214,9 +214,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                           (index) => PopupMenuItem<PartnerInsurer>(
                             height: 0,
                             padding: EdgeInsets.zero,
-                            child: KCBankPopupMenuItemContent(
-                              title: 'Stanbic Bank',
-                              logo: KCAssets.stanbicLogo,
+                            child: KCInsurerPopupMenuItemContent(
+                              withBG: index % 2 != 0,
+                              title:
+                                  checkoutNotfier.partnerInsurers![index].name,
                             ),
                             onTap: () {
                               checkoutNotfier.setPartnerInsurer(
@@ -233,8 +234,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(32),
           const Spacer(),
           KCPrimaryButton(
-            disabled: checkoutNotfier.selectedBankFlow == null ||
-                checkoutNotfier.isBusy,
+            disabled: checkoutNotfier.isBusy ||
+                checkoutNotfier.selectedBankFlow == null ||
+                checkoutNotfier.selectedBankFlow?.name == 'Stanbic Bank' &&
+                    checkoutNotfier.selectedPartnerInsurer == null,
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,
