@@ -5,6 +5,7 @@ class StanbicUserModel extends StanbicUser {
     required super.firstname,
     required super.lastname,
     required super.maxLoanLimit,
+    required super.requiresUserCredential,
   });
 
   factory StanbicUserModel.fromJson(Map<String, dynamic> json) =>
@@ -12,5 +13,6 @@ class StanbicUserModel extends StanbicUser {
         firstname: json['user']['firstname'],
         lastname: json['user']['firstname'],
         maxLoanLimit: json['loanLimit']['maxLoanLimit']?.toDouble(),
+        requiresUserCredential: json['requiresUserCredential'],
       );
 }

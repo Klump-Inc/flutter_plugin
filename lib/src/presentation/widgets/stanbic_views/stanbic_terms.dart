@@ -53,7 +53,15 @@ class _StanbicTermsState extends State<StanbicTerms> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             InkWell(
-                              onTap: checkoutNotfier.prevPage,
+                              onTap: () {
+                                if (checkoutNotfier
+                                        .stanbicUser?.requiresUserCredential ==
+                                    true) {
+                                  checkoutNotfier.prevPage();
+                                } else {
+                                  checkoutNotfier.prevPage(skipPage: true);
+                                }
+                              },
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: SvgPicture.asset(
