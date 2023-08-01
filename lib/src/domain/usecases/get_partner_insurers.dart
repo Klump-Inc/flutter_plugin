@@ -15,18 +15,23 @@ class GetPartnerInsurersUsecase
     GetPartnerInsurersUsecaseParams params,
   ) =>
       stanbicRepository.getPartnerInsurers(
-          partner: params.partner, publicKey: params.publicKey);
+        partner: params.partner,
+        publicKey: params.publicKey,
+        amount: params.amount,
+      );
 }
 
 class GetPartnerInsurersUsecaseParams extends Equatable {
   final String publicKey;
   final String partner;
+  final double amount;
 
   const GetPartnerInsurersUsecaseParams({
     required this.publicKey,
     required this.partner,
+    required this.amount,
   });
 
   @override
-  List<Object?> get props => [publicKey, partner];
+  List<Object?> get props => [publicKey, partner, amount];
 }

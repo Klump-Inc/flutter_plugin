@@ -50,6 +50,7 @@ abstract class StanbicRemoteDatasource {
   Future<List<PartnerInsurerModel>> getPartnerInsurers({
     required String partner,
     required String publicKey,
+    required double amount,
   });
 }
 
@@ -298,6 +299,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
   Future<List<PartnerInsurerModel>> getPartnerInsurers({
     required String partner,
     required String publicKey,
+    required double amount,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -309,7 +311,7 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
       final response = await kcHttpRequester.get(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint:
-            '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner',
+            '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner&amount=$amount',
         headers: headers,
       );
       return PartnerInsurerListModel.fromJson(response.data).data;

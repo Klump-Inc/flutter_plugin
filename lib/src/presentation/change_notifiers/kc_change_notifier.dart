@@ -287,6 +287,7 @@ class KCChangeNotifier extends ChangeNotifier {
       GetPartnerInsurersUsecaseParams(
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: partner,
+        amount: _checkoutData?.amount ?? 0,
       ),
     );
     response.fold(
