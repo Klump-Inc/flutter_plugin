@@ -4,11 +4,13 @@ class StanbicUser extends Equatable {
   final String firstname;
   final String lastname;
   final double? maxLoanLimit;
+  final bool? requiresUserCredential;
 
   const StanbicUser({
     required this.firstname,
     required this.lastname,
     required this.maxLoanLimit,
+    required this.requiresUserCredential,
   });
 
   @override
@@ -16,5 +18,6 @@ class StanbicUser extends Equatable {
         firstname,
         lastname,
         maxLoanLimit,
+        requiresUserCredential,
       ];
 }

@@ -68,23 +68,34 @@ class KCChangeNotifier extends ChangeNotifier {
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
 
-  void nextPage() {
-    _currentPage++;
-    _pageController.animateToPage(
-      _currentPage,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.linear,
-    );
+  void nextPage({bool skipPage = false}) {
+    if (skipPage) {
+      _currentPage = _currentPage + 2;
+      _pageController.jumpToPage(_currentPage);
+    } else {
+      _currentPage++;
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
+    }
     notifyListeners();
   }
 
-  void prevPage() {
-    _currentPage--;
-    _pageController.animateToPage(
-      _currentPage,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.linear,
-    );
+  void prevPage({bool skipPage = false}) {
+    if (skipPage) {
+      _currentPage = _currentPage - 2;
+      _pageController.jumpToPage(_currentPage);
+    } else {
+      _currentPage--;
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
+    }
+
     notifyListeners();
   }
 
@@ -186,7 +197,11 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         _stanbicUser = r;
-        nextPage();
+        if (r.requiresUserCredential == true) {
+          nextPage();
+        } else {
+          nextPage(skipPage: true);
+        }
       },
     );
     _setBusy(false);
