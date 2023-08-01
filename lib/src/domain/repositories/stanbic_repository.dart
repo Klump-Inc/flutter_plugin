@@ -175,10 +175,14 @@ class StanbicRepository {
   Future<Either<KCException, List<PartnerInsurer>>> getPartnerInsurers({
     required String partner,
     required String publicKey,
+    required double amount,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getPartnerInsurers(
-          partner: partner, publicKey: publicKey);
+        partner: partner,
+        publicKey: publicKey,
+        amount: amount,
+      );
       return Right(response);
     } catch (e) {
       return Left(
