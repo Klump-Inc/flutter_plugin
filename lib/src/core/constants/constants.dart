@@ -39,14 +39,14 @@ const String KC_HTML_HEADER = '''
           }
           h3{
               font-size: 16px;
-              line-height:26px;
+              line-height:24px;
               color: #171717;
               font-weight: 900;
           }
-          p {
+          div, p {
               margin: 0 !important;
               font-size: 14px;
-              line-height:26px;
+              line-height:20px;
               color: #171717;
           }
           </style>
