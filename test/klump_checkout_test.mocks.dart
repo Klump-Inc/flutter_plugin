@@ -452,10 +452,10 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         returnValue: _i5.Future<_i2.StanbicStatusResponse?>.value(),
       ) as _i5.Future<_i2.StanbicStatusResponse?>);
   @override
-  _i5.Future<void> getPartnerInsurer(String? partner) => (super.noSuchMethod(
+  _i5.Future<void> getPartnerInsurer() => (super.noSuchMethod(
         Invocation.method(
           #getPartnerInsurer,
-          [partner],
+          [],
         ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
