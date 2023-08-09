@@ -36,18 +36,21 @@ const String KC_HTML_HEADER = '''
           body {
               margin: 0;
               color: #171717;
+              text-align:left;
           }
           h3{
               font-size: 16px;
               line-height:24px;
               color: #171717;
               font-weight: 900;
+              text-align:left;
           }
-          div, p {
+          div, p, li {
               margin: 0 !important;
               font-size: 14px;
               line-height:20px;
               color: #171717;
+              text-align:left;
           }
           </style>
       </head>
