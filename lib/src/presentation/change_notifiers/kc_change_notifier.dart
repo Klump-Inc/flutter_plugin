@@ -101,6 +101,10 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KCBank? _selectedBankFlow;
   KCBank? get selectedBankFlow => _selectedBankFlow;
+  int? _paymentSplit;
+  int? get paymentSplit => _paymentSplit;
+  int? _paymentDay;
+  int? get paymentDay => _paymentDay;
   PartnerInsurer? _selectedPartnerInsurer;
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
 
@@ -112,9 +116,16 @@ class KCChangeNotifier extends ChangeNotifier {
   void setBankFlow(KCBank bank) {
     _selectedBankFlow = bank;
     notifyListeners();
-    if (bank.name == 'Stanbic Bank') {
-      getPartnerInsurer('stanbic');
-    }
+  }
+
+  void setPaymentSplit(int split) {
+    _paymentSplit = split;
+    notifyListeners();
+  }
+
+  void setPaymentDay(int day) {
+    _paymentDay = day;
+    notifyListeners();
   }
 
   void setPartnerInsurer(PartnerInsurer insurer) {
@@ -281,22 +292,24 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
-  Future<void> getPartnerInsurer(String partner) async {
-    _setBusy(true);
-    final response = await getPartnerInsurersUsecase(
-      GetPartnerInsurersUsecaseParams(
-        publicKey: _checkoutData?.merchantPublicKey ?? '',
-        partner: partner,
-        amount: _checkoutData?.amount ?? 0,
-      ),
-    );
-    response.fold(
-      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) {
-        _partnerInsurers = r;
-      },
-    );
-    _setBusy(false);
+  Future<void> getPartnerInsurer() async {
+    if (_selectedBankFlow!.name == 'Stanbic Bank') {
+      _setBusy(true);
+      final response = await getPartnerInsurersUsecase(
+        GetPartnerInsurersUsecaseParams(
+          publicKey: _checkoutData?.merchantPublicKey ?? '',
+          partner: _selectedBankFlow!.alias,
+          amount: _checkoutData?.amount ?? 0,
+        ),
+      );
+      response.fold(
+        (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+        (r) {
+          _partnerInsurers = r;
+        },
+      );
+      _setBusy(false);
+    }
   }
 
   Future<void> addAccountCredentials(String email, String password) async {

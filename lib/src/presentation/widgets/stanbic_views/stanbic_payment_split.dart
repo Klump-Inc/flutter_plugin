@@ -11,8 +11,15 @@ class StanbicPaymentSplit extends StatefulWidget {
 }
 
 class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
-  int? _instalmentSplit;
-  int? _paymentDay;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, _loanInsurer);
+    super.initState();
+  }
+
+  void _loanInsurer() {
+    Provider.of<KCChangeNotifier>(context, listen: false).getPartnerInsurer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +78,14 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            if (_instalmentSplit == null)
+                            if (checkoutNotfier.paymentSplit == null)
                               KCBodyText1(
                                 'Choose split',
                                 color: KCColors.grey2,
                               )
                             else
                               KCBodyText1(
-                                '$_instalmentSplit instalments',
+                                '${checkoutNotfier.paymentSplit} instalments',
                                 fontSize: 15,
                               ),
                             Padding(
@@ -103,9 +110,7 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                                   logo: KCAssets.stanbicLogo,
                                 ),
                                 onTap: () {
-                                  setState(() {
-                                    _instalmentSplit = e;
-                                  });
+                                  checkoutNotfier.setPaymentSplit(e);
                                 },
                               ),
                             )
@@ -137,14 +142,14 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            if (_paymentDay == null)
+                            if (checkoutNotfier.paymentDay == null)
                               KCBodyText1(
                                 'Choose day',
                                 color: KCColors.grey2,
                               )
                             else
                               KCBodyText1(
-                                '$_paymentDay',
+                                '${checkoutNotfier.paymentDay}',
                                 fontSize: 15,
                               ),
                             Padding(
@@ -169,25 +174,108 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                               logo: KCAssets.stanbicLogo,
                             ),
                             onTap: () {
-                              setState(() {
-                                _paymentDay = index + 1;
-                              });
+                              checkoutNotfier.setPaymentDay(index + 1);
                             },
                           ),
                         ).toList();
                       },
                     ),
+                    if (checkoutNotfier.selectedBankFlow?.name ==
+                            'Stanbic Bank' &&
+                        checkoutNotfier.partnerInsurers?.isNotEmpty == true)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const YSpace(32),
+                          KCHeadline5('Choose your insurer'),
+                          const YSpace(8),
+                          PopupMenuButton<PartnerInsurer>(
+                            constraints: BoxConstraints(
+                              minWidth: constraints.maxWidth - 52,
+                              maxWidth: constraints.maxWidth - 52,
+                            ),
+                            padding: EdgeInsets.zero,
+                            elevation: 1,
+                            offset: const Offset(0, 76),
+                            child: Container(
+                              height: 60,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.11,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: KCColors.grey1),
+                                borderRadius: BorderRadius.circular(4.4186),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (checkoutNotfier.selectedPartnerInsurer ==
+                                      null)
+                                    KCBodyText1(
+                                      'Choose insurer',
+                                      color: KCColors.grey2,
+                                      fontSize: 15,
+                                    )
+                                  else
+                                    Expanded(
+                                      child: KCAutoSizedText(
+                                        checkoutNotfier
+                                            .selectedPartnerInsurer!.name,
+                                        fontSize: 15,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 2, right: 5),
+                                    child: SvgPicture.asset(
+                                      KCAssets.caretDown,
+                                      package: KC_PACKAGE_NAME,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            itemBuilder: (context) {
+                              return List.generate(
+                                checkoutNotfier.partnerInsurers!.length,
+                                (index) => PopupMenuItem<PartnerInsurer>(
+                                  height: 0,
+                                  padding: EdgeInsets.zero,
+                                  child: KCInsurerPopupMenuItemContent(
+                                    withBG: index % 2 != 0,
+                                    title: checkoutNotfier
+                                        .partnerInsurers![index].name,
+                                  ),
+                                  onTap: () {
+                                    checkoutNotfier.setPartnerInsurer(
+                                        checkoutNotfier
+                                            .partnerInsurers![index]);
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     const YSpace(24),
                     const Spacer(),
                     KCPrimaryButton(
                       title: 'Continue',
-                      disabled: _instalmentSplit == null ||
-                          _paymentDay == null ||
+                      disabled: checkoutNotfier.paymentSplit == null ||
+                          checkoutNotfier.paymentDay == null ||
+                          checkoutNotfier.selectedBankFlow?.name ==
+                                  'Stanbic Bank' &&
+                              checkoutNotfier.selectedPartnerInsurer == null ||
                           checkoutNotfier.isBusy,
                       loading: checkoutNotfier.isBusy,
-                      onTap: () => Provider.of<KCChangeNotifier>(context,
-                              listen: false)
-                          .getRepaymentDetails(_instalmentSplit!, _paymentDay!),
+                      onTap: () =>
+                          Provider.of<KCChangeNotifier>(context, listen: false)
+                              .getRepaymentDetails(
+                                  checkoutNotfier.paymentSplit!,
+                                  checkoutNotfier.paymentDay!),
                     ),
                     const YSpace(59)
                   ],

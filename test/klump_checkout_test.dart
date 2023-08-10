@@ -210,11 +210,12 @@ void main() {
     testWidgets('SelectBankFlow renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.selectedBankFlow).thenAnswer(
-        (_) => KCBank(name: 'Stanbic', logo: KCAssets.stanbicLogo),
+        (_) => KCBank(
+            name: 'Stanbic', logo: KCAssets.stanbicLogo, alias: 'stanbic'),
       );
       when(
         kcChangeNotifier.setBankFlow(
-          KCBank(name: 'Stanbic', logo: KCAssets.stanbicLogo),
+          KCBank(name: 'Stanbic', logo: KCAssets.stanbicLogo, alias: 'stanbic'),
         ),
       ).thenAnswer((_) async {});
       await tester.pumpKCWidget(
