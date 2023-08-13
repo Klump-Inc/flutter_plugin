@@ -180,10 +180,15 @@ class _StanbicTermsState extends State<StanbicTerms> {
                             return KCPrimaryButton(
                               title: 'Continue',
                               disabled: !accepted,
-                              onTap: () => Provider.of<KCChangeNotifier>(
-                                      context,
-                                      listen: false)
-                                  .nextPage(),
+                              onTap: () {
+                                if (checkoutNotfier
+                                        .stanbicUser?.requiresUserCredential ==
+                                    true) {
+                                  checkoutNotfier.nextPage();
+                                } else {
+                                  checkoutNotfier.nextPage(skipPage: true);
+                                }
+                              },
                             );
                           },
                         ),

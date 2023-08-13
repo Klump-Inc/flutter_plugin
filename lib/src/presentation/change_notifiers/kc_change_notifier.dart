@@ -208,11 +208,7 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         _stanbicUser = r;
-        if (r.requiresUserCredential == true) {
-          nextPage();
-        } else {
-          nextPage(skipPage: true);
-        }
+        nextPage();
       },
     );
     _setBusy(false);
