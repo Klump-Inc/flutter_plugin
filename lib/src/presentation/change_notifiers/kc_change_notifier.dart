@@ -293,7 +293,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> getPartnerInsurer() async {
-    if (_selectedBankFlow!.name == 'Stanbic Bank') {
+    if (_selectedBankFlow!.alias == 'stanbic') {
       _setBusy(true);
       final response = await getPartnerInsurersUsecase(
         GetPartnerInsurersUsecaseParams(
