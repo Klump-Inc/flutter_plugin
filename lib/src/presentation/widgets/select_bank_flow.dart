@@ -116,13 +116,13 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                       height: 0,
                       padding: EdgeInsets.zero,
                       child: KCBankPopupMenuItemContent(
-                        title: 'Stanbic Bank',
+                        title: 'Stanbic IBTC Bank',
                         logo: KCAssets.stanbicLogo,
                       ),
                       onTap: () {
                         checkoutNotfier.setBankFlow(
                           KCBank(
-                            name: 'Stanbic Bank',
+                            name: 'Stanbic IBTC Bank',
                             logo: KCAssets.stanbicLogo,
                             alias: 'stanbic',
                           ),

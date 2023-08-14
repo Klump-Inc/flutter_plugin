@@ -208,11 +208,7 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         _stanbicUser = r;
-        if (r.requiresUserCredential == true) {
-          nextPage();
-        } else {
-          nextPage(skipPage: true);
-        }
+        nextPage();
       },
     );
     _setBusy(false);
@@ -293,7 +289,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> getPartnerInsurer() async {
-    if (_selectedBankFlow!.name == 'Stanbic Bank') {
+    if (_selectedBankFlow!.alias == 'stanbic') {
       _setBusy(true);
       final response = await getPartnerInsurersUsecase(
         GetPartnerInsurersUsecaseParams(

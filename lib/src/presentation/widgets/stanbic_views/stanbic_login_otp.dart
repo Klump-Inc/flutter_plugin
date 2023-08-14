@@ -163,9 +163,8 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                           title: 'Continue',
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
-                          onTap: () => Provider.of<KCChangeNotifier>(context,
-                                  listen: false)
-                              .verifyOTP(_otpCtrl.text.trim()),
+                          onTap: () =>
+                              checkoutNotfier.verifyOTP(_otpCtrl.text.trim()),
                         );
                       },
                     ),
