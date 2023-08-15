@@ -190,4 +190,18 @@ class StanbicRepository {
       );
     }
   }
+
+  Future<Either<KCException, List<Partner>>> getLoanPartners({
+    required String publicKey,
+  }) async {
+    try {
+      final response =
+          await stanbicRmoteDatasource.getLoanPartners(publicKey: publicKey);
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
 }
