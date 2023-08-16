@@ -180,7 +180,7 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                         ).toList();
                       },
                     ),
-                    if (checkoutNotfier.selectedBankFlow?.alias == 'stanbic' &&
+                    if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
                         checkoutNotfier.partnerInsurers?.isNotEmpty == true)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +265,7 @@ class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
                       title: 'Continue',
                       disabled: checkoutNotfier.paymentSplit == null ||
                           checkoutNotfier.paymentDay == null ||
-                          checkoutNotfier.selectedBankFlow?.name == 'stanbic' &&
+                          checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
                               checkoutNotfier.selectedPartnerInsurer == null ||
                           checkoutNotfier.isBusy,
                       loading: checkoutNotfier.isBusy,

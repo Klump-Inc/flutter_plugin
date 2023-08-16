@@ -25,13 +25,21 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
   }
 
   void _initiatTranx() {
-    Provider.of<KCChangeNotifier>(context, listen: false)
-        .initiateTransaction(widget.isLive, widget.data);
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    changeNotifier.getLoanPartners().then(
+          (_) => changeNotifier.initiateTransaction(widget.isLive, widget.data),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
+    final activeLoanPartners = checkoutNotfier.loanPartners == null
+        ? <Partner>[]
+        : checkoutNotfier.loanPartners!
+            .where((e) => e.isActive == true)
+            .toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),
       child: Column(
@@ -58,7 +66,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(8),
           LayoutBuilder(
             builder: (context, costraint) {
-              return PopupMenuButton<KCBank>(
+              return PopupMenuButton<Partner>(
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
                 ),
@@ -87,11 +95,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                       else
                         Row(
                           children: [
-                            Image.asset(
-                              checkoutNotfier.selectedBankFlow!.logo,
+                            Image.network(
+                              checkoutNotfier.selectedBankFlow!.logo ?? '',
                               height: 20,
                               width: 17.09,
-                              package: KC_PACKAGE_NAME,
                             ),
                             const XSpace(14),
                             KCBodyText1(
@@ -111,45 +118,46 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                   ),
                 ),
                 itemBuilder: (context) {
-                  return [
-                    PopupMenuItem<KCBank>(
-                      height: 0,
-                      padding: EdgeInsets.zero,
-                      child: KCBankPopupMenuItemContent(
-                        title: 'Stanbic IBTC Bank',
-                        logo: KCAssets.stanbicLogo,
-                      ),
-                      onTap: () {
-                        checkoutNotfier.setBankFlow(
-                          KCBank(
-                            name: 'Stanbic IBTC Bank',
-                            logo: KCAssets.stanbicLogo,
-                            alias: 'stanbic',
-                          ),
-                        );
-                      },
-                    ),
-                    PopupMenuItem<KCBank>(
-                      enabled: false,
-                      height: 0,
-                      padding: EdgeInsets.zero,
-                      child: Container(
-                        height: 49,
-                        color: KCColors.grey3.withOpacity(0.15),
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            KCBodyText1(
-                              'Others banks coming soon',
-                              color: KCColors.grey4,
-                            ),
-                          ],
-                        ),
-                      ),
-                      onTap: () {},
-                    ),
-                  ];
+                  return List.generate(
+                    activeLoanPartners.length + 1,
+                    (index) {
+                      return index != activeLoanPartners.length
+                          ? PopupMenuItem<Partner>(
+                              height: 0,
+                              padding: EdgeInsets.zero,
+                              child: KCBankPopupMenuItemContent(
+                                title: activeLoanPartners[index].name,
+                                logo: activeLoanPartners[index].logo,
+                                withBG: index % 2 == 0,
+                              ),
+                              onTap: () {
+                                checkoutNotfier
+                                    .setBankFlow(activeLoanPartners[index]);
+                              },
+                            )
+                          : PopupMenuItem<Partner>(
+                              enabled: false,
+                              height: 0,
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                height: 49,
+                                color: KCColors.grey3.withOpacity(0.15),
+                                width: double.infinity,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    KCBodyText1(
+                                      'Others banks coming soon',
+                                      color: KCColors.grey4,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {},
+                            );
+                    },
+                  );
                 },
               );
             },
@@ -158,7 +166,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const Spacer(),
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
-                checkoutNotfier.selectedBankFlow == null,
+                checkoutNotfier.selectedBankFlow == null ||
+                checkoutNotfier.selectedBankFlow?.slug != 'stanbic',
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,

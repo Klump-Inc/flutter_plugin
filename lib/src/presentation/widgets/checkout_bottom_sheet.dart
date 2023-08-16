@@ -88,24 +88,35 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
               ),
               Expanded(
                 child: Consumer<KCChangeNotifier>(
-                  builder: (_, value, __) {
-                    final views = <Widget>[
+                  builder: (_, checkoutNotifier, __) {
+                    var views = <Widget>[
                       SelectBankFlow(
                         data: widget.data,
                         isLive: widget.isLive,
                       ),
-                      const StanbicLogin(),
-                      const StanbicLoginOTP(),
-                      const StanbicTerms(),
-                      const StanbicAccountInformation(),
-                      const StanbicEligibilityInfo(),
-                      const StanbicPaymentSplit(),
-                      const StanbicPaymentPreview(),
-                      const StanbicDecision(),
-                      const StanbicDisbursementStatus()
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'stanbic')
+                          const StanbicLogin(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicLoginOTP(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicTerms(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicAccountInformation(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicEligibilityInfo(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicPaymentSplit(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicPaymentPreview(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicDecision(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicDisbursementStatus()
                     ];
                     return PageView(
-                      controller: value.pageController,
+                      controller: checkoutNotifier.pageController,
                       physics: const NeverScrollableScrollPhysics(),
                       children: views,
                     );

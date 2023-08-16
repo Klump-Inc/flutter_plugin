@@ -52,6 +52,9 @@ abstract class StanbicRemoteDatasource {
     required String publicKey,
     required double amount,
   });
+  Future<List<PartnerModel>> getLoanPartners({
+    required String publicKey,
+  });
 }
 
 class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
@@ -315,6 +318,26 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         headers: headers,
       );
       return PartnerInsurerListModel.fromJson(response.data).data;
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<List<PartnerModel>> getLoanPartners({
+    required String publicKey,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        endpoint: '/v1/loans/partners',
+        headers: headers,
+      );
+      return PartnerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
     }
