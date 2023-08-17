@@ -303,14 +303,14 @@ void main() {
           findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
-    testWidgets('StanbicEligibilityInfo renders correctly', (tester) async {
+    testWidgets('StanbicConfirmation renders correctly', (tester) async {
       when(kcChangeNotifier.stanbicUser?.maxLoanLimit)
           .thenAnswer((_) => 500000);
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,
           builder: (context, kcChangeNotifier) {
-            return const StanbicEligibilityInfo();
+            return const StanbicConfirmation();
           },
         ),
       );

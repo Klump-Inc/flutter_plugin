@@ -219,9 +219,15 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                             'Pay NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
                         disabled: !accepted || checkoutNotfier.isBusy,
                         loading: checkoutNotfier.isBusy,
-                        onTap: () => Provider.of<KCChangeNotifier>(context,
-                                listen: false)
-                            .createLoan(),
+                        onTap: () {
+                          if (checkoutNotfier
+                                  .stanbicUser?.requiresUserCredential ==
+                              true) {
+                            checkoutNotfier.nextPage();
+                          } else {
+                            checkoutNotfier.nextPage(skipPage: true);
+                          }
+                        },
                       );
                     },
                   ),
