@@ -36,7 +36,7 @@ class _StanbicConfirmationState extends State<StanbicConfirmation> {
                     const YSpace(24),
                     Expanded(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const YSpace(22),
                           Column(
