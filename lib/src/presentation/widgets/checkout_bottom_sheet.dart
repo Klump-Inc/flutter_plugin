@@ -95,21 +95,19 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         isLive: widget.isLive,
                       ),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'stanbic')
-                          const StanbicLogin(),
+                        const StanbicLogin(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicLoginOTP(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicTerms(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicAccountInformation(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicEligibilityInfo(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicPaymentSplit(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicPaymentPreview(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicAccountInformation(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicConfirmation(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicDecision(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
