@@ -46,13 +46,13 @@ class KCFormValidator {
     }
   }
 
-  static String? errorOTP(String? text, String message) {
+  static String? errorOTP(String? text, String message, [int length = 6]) {
     if (text == null) {
       return null;
     } else if (text.isEmpty) {
       return message;
-    } else if (text.length < 6) {
-      return 'OTP must have 6 numbers';
+    } else if (text.length != length) {
+      return 'OTP must have $length numbers';
     } else {
       return '';
     }

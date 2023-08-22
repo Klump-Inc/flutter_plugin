@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class VerifyOTPUsecase extends KCUsecase<StanbicUser, VerifyOTPUsecaseParams> {
+class VerifyOTPUsecase extends KCUsecase<KlumpUser, VerifyOTPUsecaseParams> {
   VerifyOTPUsecase({
     required this.stanbicRepository,
   });
@@ -10,7 +10,7 @@ class VerifyOTPUsecase extends KCUsecase<StanbicUser, VerifyOTPUsecaseParams> {
   final StanbicRepository stanbicRepository;
 
   @override
-  Future<Either<KCException, StanbicUser>> call(
+  Future<Either<KCException, KlumpUser>> call(
     VerifyOTPUsecaseParams params,
   ) =>
       stanbicRepository.verifyOTP(
@@ -18,6 +18,8 @@ class VerifyOTPUsecase extends KCUsecase<StanbicUser, VerifyOTPUsecaseParams> {
         phoneNumber: params.phoneNumber,
         otp: params.otp,
         publicKey: params.publicKey,
+        partner: params.partner,
+        firstName: params.firstName,
       );
 }
 
@@ -27,12 +29,16 @@ class VerifyOTPUsecaseParams extends Equatable {
     required this.phoneNumber,
     required this.otp,
     required this.publicKey,
+    required this.partner,
+    this.firstName,
   });
 
   final String accountNumber;
   final String phoneNumber;
   final String otp;
   final String publicKey;
+  final String partner;
+  final String? firstName;
 
   @override
   List<Object?> get props => [
@@ -40,5 +46,7 @@ class VerifyOTPUsecaseParams extends Equatable {
         phoneNumber,
         otp,
         publicKey,
+        partner,
+        firstName,
       ];
 }

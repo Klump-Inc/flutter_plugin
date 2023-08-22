@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-class StanbicUser extends Equatable {
+class KlumpUser extends Equatable {
   final String firstname;
   final String lastname;
   final double? maxLoanLimit;
   final bool? requiresUserCredential;
 
-  const StanbicUser({
+  const KlumpUser({
     required this.firstname,
     required this.lastname,
     required this.maxLoanLimit,

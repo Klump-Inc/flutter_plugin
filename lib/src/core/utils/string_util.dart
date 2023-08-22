@@ -10,3 +10,9 @@ class KCStringUtil {
     return text.replaceAll(RegExp(' +'), '');
   }
 }
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+}

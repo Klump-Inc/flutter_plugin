@@ -67,6 +67,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           LayoutBuilder(
             builder: (context, costraint) {
               return PopupMenuButton<Partner>(
+                enabled: activeLoanPartners.isNotEmpty,
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
                 ),
@@ -166,8 +167,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const Spacer(),
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
-                checkoutNotfier.selectedBankFlow == null ||
-                checkoutNotfier.selectedBankFlow?.slug != 'stanbic',
+                checkoutNotfier.selectedBankFlow == null,
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,

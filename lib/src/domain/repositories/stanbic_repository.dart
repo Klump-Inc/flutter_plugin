@@ -2,9 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class StanbicRepository {
-  late StanbicRemoteDatasource stanbicRmoteDatasource;
+  late RemoteDatasource stanbicRmoteDatasource;
   StanbicRepository() {
-    stanbicRmoteDatasource = StanbicRemoteDataSourceImpl(
+    stanbicRmoteDatasource = RemoteDataSourceImpl(
       KCHttpRequester(),
       KCInternetInfo(),
     );
@@ -36,13 +36,17 @@ class StanbicRepository {
   Future<Either<KCException, void>> validateAccount({
     required String accountNumber,
     required String phoneNumber,
+    String? firstName,
     required String publicKey,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.validateAccount(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
         publicKey: publicKey,
+        partner: partner,
+        firstName: firstName,
       );
       return Right(response);
     } catch (e) {
@@ -52,11 +56,13 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, StanbicUser>> verifyOTP({
+  Future<Either<KCException, KlumpUser>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
     required String publicKey,
+    String? firstName,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(
@@ -64,6 +70,8 @@ class StanbicRepository {
         phoneNumber: phoneNumber,
         otp: otp,
         publicKey: publicKey,
+        firstName: firstName,
+        partner: partner,
       );
       return Right(response);
     } catch (e) {

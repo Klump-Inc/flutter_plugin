@@ -6,4 +6,5 @@ class KCAssets {
   static String failureIllus = 'assets/icons/failure_illus.svg';
   static String secureCredit = 'assets/icons/secure_credit.svg';
   static String stanbicLogo = 'assets/images/stanbic_logo.png';
+  static String klumpLogo = 'assets/icons/klump_logo.svg';
 }

@@ -51,12 +51,14 @@ class KCChangeNotifier extends ChangeNotifier {
 
   String? _accountNumber;
   String? _phoneNumber;
+  String? _firstName;
   String? get accountNumber => _accountNumber;
   String? get phoneNumber => _phoneNumber;
+  String? get firstName => _firstName;
   TermsAndCondition? _stanbicTC;
   TermsAndCondition? get stanbicTC => _stanbicTC;
-  StanbicUser? _stanbicUser;
-  StanbicUser? get stanbicUser => _stanbicUser;
+  KlumpUser? _stanbicUser;
+  KlumpUser? get stanbicUser => _stanbicUser;
   RepaymentDetails? _repaymentDetails;
   RepaymentDetails? get repaymentDetails => _repaymentDetails;
   String? _newLoanId;
@@ -178,15 +180,19 @@ class KCChangeNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> validateAccount(String accountNumber, String phoneNumber) async {
+  Future<void> validateAccount(String accountNumber, String phoneNumber,
+      {String? firstName}) async {
     _setBusy(true);
     _accountNumber = accountNumber;
     _phoneNumber = phoneNumber;
+    _firstName = firstName;
     final response = await accountValidationUsecase(
       AccountValidationUsecaseParams(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
         publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        firstName: firstName,
       ),
     );
     _setBusy(false);
@@ -202,7 +208,9 @@ class KCChangeNotifier extends ChangeNotifier {
       AccountValidationUsecaseParams(
         accountNumber: _accountNumber!,
         phoneNumber: _phoneNumber!,
-        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        publicKey: _checkoutData!.merchantPublicKey,
+        partner: _selectedBankFlow!.slug,
+        firstName: _firstName,
       ),
     );
     _setBusy(false);
@@ -222,11 +230,12 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final response = await verifyOTPUsecase(
       VerifyOTPUsecaseParams(
-        accountNumber: _accountNumber ?? '',
-        phoneNumber: _phoneNumber ?? '',
-        otp: otp,
-        publicKey: _checkoutData?.merchantPublicKey ?? '',
-      ),
+          accountNumber: _accountNumber ?? '',
+          phoneNumber: _phoneNumber ?? '',
+          otp: otp,
+          publicKey: _checkoutData!.merchantPublicKey,
+          partner: _selectedBankFlow!.slug,
+          firstName: _firstName),
     );
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
@@ -260,7 +269,7 @@ class KCChangeNotifier extends ChangeNotifier {
       publicKey: _checkoutData?.merchantPublicKey ?? '',
       installment: installment,
       repaymentDay: repaymentDay,
-      insurerId: _selectedPartnerInsurer!.value,
+      insurerId: _selectedPartnerInsurer?.value ?? 0,
     ));
     _setBusy(false);
     response.fold(

@@ -94,16 +94,13 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         data: widget.data,
                         isLive: widget.isLive,
                       ),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicLogin(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicLoginOTP(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicTerms(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicPaymentSplit(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicPaymentPreview(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PolarisInformation(),
+                      const StanbicLogin(),
+                      const StanbicLoginOTP(),
+                      const StanbicTerms(),
+                      const StanbicPaymentSplit(),
+                      const StanbicPaymentPreview(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicAccountInformation(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
@@ -111,7 +108,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicDecision(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicDisbursementStatus()
+                        const StanbicDisbursementStatus(),
                     ];
                     return PageView(
                       controller: checkoutNotifier.pageController,

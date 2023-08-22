@@ -9,3 +9,4 @@ export 'stanbic_views/stanbic_views.dart';
 export 'text.dart';
 export 'loader.dart';
 export 'insurer_popup_menu_content.dart';
+export 'polaris_views/polaris_views.dart';

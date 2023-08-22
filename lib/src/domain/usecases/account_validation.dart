@@ -18,6 +18,8 @@ class AccountValidationUsecase
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
         publicKey: params.publicKey,
+        partner: params.partner,
+        firstName: params.firstName,
       );
 }
 
@@ -26,16 +28,22 @@ class AccountValidationUsecaseParams extends Equatable {
     required this.accountNumber,
     required this.phoneNumber,
     required this.publicKey,
+    required this.partner,
+    this.firstName,
   });
 
   final String accountNumber;
   final String phoneNumber;
   final String publicKey;
+  final String partner;
+  final String? firstName;
 
   @override
   List<Object?> get props => [
         accountNumber,
         phoneNumber,
         publicKey,
+        partner,
+        firstName,
       ];
 }

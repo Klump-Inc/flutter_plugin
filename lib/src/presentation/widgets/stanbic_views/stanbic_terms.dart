@@ -46,11 +46,10 @@ class _StanbicTermsState extends State<StanbicTerms> {
                     child: Column(
                       children: [
                         const YSpace(32.59),
-                        Image.asset(
-                          KCAssets.stanbicLogo,
+                        Image.network(
+                          checkoutNotifier.selectedBankFlow!.logo ?? '',
                           height: 55,
                           width: 47,
-                          package: KC_PACKAGE_NAME,
                         ),
                         const YSpace(24),
                         Expanded(
@@ -119,11 +118,11 @@ class _StanbicTermsState extends State<StanbicTerms> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 2.6),
-                                  child: Image.asset(
-                                    KCAssets.stanbicLogo,
+                                  child: Image.network(
+                                    checkoutNotifier.selectedBankFlow!.logo ??
+                                        '',
                                     height: 45,
                                     width: 38.45,
-                                    package: KC_PACKAGE_NAME,
                                   ),
                                 ),
                                 const XSpace(24)
