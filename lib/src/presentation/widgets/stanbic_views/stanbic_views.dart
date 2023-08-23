@@ -7,4 +7,4 @@ export 'stanbic_login.dart';
 export 'stanbic_login_otp.dart';
 export 'stanbic_payment_preview.dart';
 export 'stanbic_payment_split.dart';
-export 'stanbic_terms.dart';
+export 'partner_terms.dart';

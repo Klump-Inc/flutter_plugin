@@ -98,7 +98,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PolarisInformation(),
                       const StanbicLogin(),
                       const StanbicLoginOTP(),
-                      const StanbicTerms(),
+                      const PartnerTerms(),
                       const StanbicPaymentSplit(),
                       const StanbicPaymentPreview(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')

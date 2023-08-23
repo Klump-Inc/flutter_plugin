@@ -284,14 +284,14 @@ void main() {
     testWidgets('StanbicTerms renders correctly', (tester) async {
       when(kcChangeNotifier.stanbicTC).thenAnswer(
         (_) => const TermsAndCondition(
-            termsAndConditions: '', version: '1', channel: 'web'),
+            title: '', doc: '', version: '1', channel: 'web', text: ''),
       );
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,
           builder: (context, kcChangeNotifier) {
-            return const StanbicTerms();
+            return const PartnerTerms();
           },
         ),
       );

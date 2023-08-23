@@ -9,14 +9,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicTerms extends StatefulWidget {
-  const StanbicTerms({super.key});
+class PartnerTerms extends StatefulWidget {
+  const PartnerTerms({super.key});
 
   @override
-  State<StanbicTerms> createState() => _StanbicTermsState();
+  State<PartnerTerms> createState() => _PartnerTermsState();
 }
 
-class _StanbicTermsState extends State<StanbicTerms> {
+class _PartnerTermsState extends State<PartnerTerms> {
   final ValueNotifier<bool> _accepted = ValueNotifier(false);
 
   void _fetchTerms() {
@@ -130,16 +130,22 @@ class _StanbicTermsState extends State<StanbicTerms> {
                             ),
                             const YSpace(22),
                             KCHeadline3(
-                              'Read and agree to the terms of service to continue',
+                              checkoutNotifier.stanbicTC?.title ?? '',
                               fontSize: 15,
                             ),
                             const YSpace(8),
                             Expanded(
                               child: SingleChildScrollView(
-                                child: Html(
-                                  data:
-                                      "$KC_HTML_HEADER${checkoutNotifier.stanbicTC?.termsAndConditions ?? ''}$KC_HTML_FOOTER",
-                                ),
+                                child: checkoutNotifier.stanbicTC?.doc != null
+                                    ? Html(
+                                        data:
+                                            "$KC_HTML_HEADER${checkoutNotifier.stanbicTC?.doc ?? ''}$KC_HTML_FOOTER",
+                                      )
+                                    : KCBodyText1(
+                                        checkoutNotifier.stanbicTC?.text ?? '',
+                                        fontSize: 15,
+                                        height: 1.4667,
+                                      ),
                               ),
                             ),
                             const YSpace(24),

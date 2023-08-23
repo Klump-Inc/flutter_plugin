@@ -14,14 +14,21 @@ class GetBankTCUsecase
   Future<Either<KCException, TermsAndCondition>> call(
     GetBankTCUsecaseParams params,
   ) =>
-      stanbicRepository.getBankTC(publicKey: params.publicKey);
+      stanbicRepository.getBankTC(
+        publicKey: params.publicKey,
+        partner: params.partner,
+      );
 }
 
 class GetBankTCUsecaseParams extends Equatable {
   final String publicKey;
+  final String partner;
 
-  const GetBankTCUsecaseParams({required this.publicKey});
+  const GetBankTCUsecaseParams({
+    required this.publicKey,
+    required this.partner,
+  });
 
   @override
-  List<Object?> get props => [publicKey];
+  List<Object?> get props => [publicKey, partner];
 }

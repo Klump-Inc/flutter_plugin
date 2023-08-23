@@ -81,11 +81,15 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, TermsAndCondition>> getBankTC(
-      {required String publicKey}) async {
+  Future<Either<KCException, TermsAndCondition>> getBankTC({
+    required String publicKey,
+    required String partner,
+  }) async {
     try {
-      final response =
-          await stanbicRmoteDatasource.getBankTC(publicKey: publicKey);
+      final response = await stanbicRmoteDatasource.getBankTC(
+        publicKey: publicKey,
+        partner: partner,
+      );
       return Right(response);
     } catch (e) {
       return Left(

@@ -251,6 +251,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final response = await getBankTCUsecase(GetBankTCUsecaseParams(
       publicKey: _checkoutData?.merchantPublicKey ?? '',
+      partner: _selectedBankFlow!.slug,
     ));
     response.fold(
       (l) => {},
@@ -289,7 +290,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         installment: _repaymentDetails!.installment,
         repaymentDay: int.parse(_repaymentDetails!.repaymentDay.toString()),
-        termsVersion: _stanbicTC!.version,
+        termsVersion: _stanbicTC!.version ?? '1',
         items: _checkoutData?.items ?? [],
         shippingData: _checkoutData?.shippingData,
         insurerId: _selectedPartnerInsurer!.value,

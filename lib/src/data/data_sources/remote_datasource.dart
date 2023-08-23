@@ -30,7 +30,10 @@ abstract class RemoteDatasource {
     String? firstName,
     required String partner,
   });
-  Future<TermsAndConditionModel> getBankTC({required String publicKey});
+  Future<TermsAndConditionModel> getBankTC({
+    required String publicKey,
+    required String partner,
+  });
   Future<RepaymentDetailsModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
@@ -183,18 +186,28 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   @override
   Future<TermsAndConditionModel> getBankTC({
     required String publicKey,
+    required String partner,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final headers = {
         'klump-public-key': publicKey,
       };
+      final queryParams = {
+        'partner': partner,
+        'is_live':
+            prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
+      };
+      Logger().d(prefs.getString(KC_STANBIC_TOKEN));
       final response = await kcHttpRequester.get(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
-        endpoint: '/v1/stanbic/terms-and-conditions',
+        endpoint: '/v1/loans/partners/terms-and-conditions',
+        queryParam: queryParams,
+        token: prefs.getString(KC_STANBIC_TOKEN),
       );
-      return TermsAndConditionModel.fromJson(response.data);
+      Logger().d(response.data);
+      return TermsAndConditionModel.fromJson(response.data['data']);
     } else {
       throw NoInternetKCException();
     }
