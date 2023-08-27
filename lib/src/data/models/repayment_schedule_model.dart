@@ -11,10 +11,11 @@ class RepaymentScheduleModel extends RepaymentSchedule {
 
   factory RepaymentScheduleModel.fromJson(Map<String, dynamic> json) =>
       RepaymentScheduleModel(
-        principal: json["principal"]?.toDouble(),
-        interest: json["interest"]?.toDouble(),
-        monthlyRepayment: json["monthlyRepayment"]?.toDouble(),
-        principalBalance: json["principalBalance"]?.toDouble(),
+        principal: json["principal"],
+        interest: json["interest"],
+        monthlyRepayment:
+            double.tryParse(json["monthlyRepayment"]?.toString() ?? '') ?? 0,
+        principalBalance: json["principalBalance"],
         repaymentDate: json["repayment_date"],
       );
 

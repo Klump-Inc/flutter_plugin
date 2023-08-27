@@ -324,13 +324,13 @@ void main() {
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
 
-    testWidgets('StanbicPaymentSplit renders correctly', (tester) async {
+    testWidgets('PartnerPaymentSplit renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,
           builder: (context, kcChangeNotifier) {
-            return const StanbicPaymentSplit();
+            return const PartnerPaymentSplit();
           },
         ),
       );

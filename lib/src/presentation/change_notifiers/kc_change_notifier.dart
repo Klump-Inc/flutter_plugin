@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
@@ -20,9 +21,10 @@ class KCChangeNotifier extends ChangeNotifier {
         GetPartnerInsurersUsecase(stanbicRepository: StanbicRepository());
     accountCredentialsUsecase =
         AccountCredentialsUsecase(stanbicRepository: StanbicRepository());
-    getLoanPartnersUsecase = GetLoanPartnersUsecase(
-      stanbicRepository: StanbicRepository(),
-    );
+    getLoanPartnersUsecase =
+        GetLoanPartnersUsecase(stanbicRepository: StanbicRepository());
+    acceptTermsUsecase =
+        AcceptTermsUsecase(stanbicRepository: StanbicRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
   late AccountValidationUsecase accountValidationUsecase;
@@ -34,6 +36,7 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetPartnerInsurersUsecase getPartnerInsurersUsecase;
   late AccountCredentialsUsecase accountCredentialsUsecase;
   late GetLoanPartnersUsecase getLoanPartnersUsecase;
+  late AcceptTermsUsecase acceptTermsUsecase;
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
@@ -271,6 +274,7 @@ class KCChangeNotifier extends ChangeNotifier {
       installment: installment,
       repaymentDay: repaymentDay,
       insurerId: _selectedPartnerInsurer?.value ?? 0,
+      partner: _selectedBankFlow!.slug,
     ));
     _setBusy(false);
     response.fold(
@@ -355,6 +359,27 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) => nextPage(),
+    );
+  }
+
+  Future<void> acceptTerms() async {
+    _setBusy(true);
+    final response = await acceptTermsUsecase(
+      AcceptTermsUsecaseParams(
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        if (stanbicUser?.requiresUserCredential == true) {
+          nextPage();
+        } else {
+          nextPage(skipPage: true);
+        }
+      },
     );
   }
 }

@@ -3,14 +3,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicPaymentSplit extends StatefulWidget {
-  const StanbicPaymentSplit({super.key});
+class PartnerPaymentSplit extends StatefulWidget {
+  const PartnerPaymentSplit({super.key});
 
   @override
-  State<StanbicPaymentSplit> createState() => _StanbicPaymentSplitState();
+  State<PartnerPaymentSplit> createState() => _PartnerPaymentSplitState();
 }
 
-class _StanbicPaymentSplitState extends State<StanbicPaymentSplit> {
+class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   @override
   void initState() {
     Future.delayed(Duration.zero, _loanInsurer);

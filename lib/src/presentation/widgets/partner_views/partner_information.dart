@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:provider/provider.dart';
 
-class PolarisInformation extends StatelessWidget {
-  const PolarisInformation({super.key});
+class PartnerInformation extends StatelessWidget {
+  const PartnerInformation({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +30,15 @@ class PolarisInformation extends StatelessWidget {
                       ),
                     ),
                     const YSpace(22.15),
-                    KCHeadline3('Pay in instalments with Polaris'),
+                    KCHeadline3('Pay in instalments with Partner'),
                     const YSpace(22),
-                    const PolarisItemTile(
+                    const PartnerItemTile(
                       title: 'Your Bank Verification Number (BVN)',
                     ),
-                    const PolarisItemTile(
-                      title: 'An active account with Polaris',
+                    const PartnerItemTile(
+                      title: 'An active account with Partner',
                     ),
-                    const PolarisItemTile(
+                    const PartnerItemTile(
                       title: 'A valid phone number and email address',
                       lastItem: true,
                     ),
@@ -69,8 +69,8 @@ class PolarisInformation extends StatelessWidget {
   }
 }
 
-class PolarisItemTile extends StatelessWidget {
-  const PolarisItemTile({
+class PartnerItemTile extends StatelessWidget {
+  const PartnerItemTile({
     super.key,
     required this.title,
     this.lastItem = false,

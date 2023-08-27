@@ -1,24 +1,29 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicAccountInformation extends StatefulWidget {
-  const StanbicAccountInformation({super.key});
+class PartnerAccountCredentials extends StatefulWidget {
+  const PartnerAccountCredentials({super.key});
 
   @override
-  State<StanbicAccountInformation> createState() =>
-      _StanbicAccountInformationState();
+  State<PartnerAccountCredentials> createState() =>
+      _PartnerAccountCredentialsState();
 }
 
-class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
+class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
+  late TextEditingController _dobController;
 
   late StreamController<String> emailStreamCtrl;
   late StreamController<String> passwordStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
+  DateTime? _dob;
+  bool showDatePopup = false;
 
   void validateInputs() {
     final emailError =
@@ -35,9 +40,9 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
   @override
   void initState() {
     super.initState();
-
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
+    _dobController = TextEditingController();
     emailStreamCtrl = StreamController<String>.broadcast();
     passwordStreamCtrl = StreamController<String>.broadcast();
 
@@ -56,6 +61,7 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
     super.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
+    _dobController.dispose();
     emailStreamCtrl.close();
     passwordStreamCtrl.close();
   }
@@ -103,7 +109,6 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
                       hint: 'First Name',
                       textInputType: TextInputType.text,
                       readOnly: true,
-                      validationMessage: '',
                     ),
                     const YSpace(16),
                     KCInputField(
@@ -112,7 +117,6 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
                       hint: 'Last Name',
                       textInputType: TextInputType.text,
                       readOnly: true,
-                      validationMessage: '',
                     ),
                     const YSpace(16),
                     StreamBuilder<String>(
@@ -129,6 +133,74 @@ class _StanbicAccountInformationState extends State<StanbicAccountInformation> {
                         );
                       },
                     ),
+                    if (checkoutNotfier.selectedBankFlow?.slug == 'polaris')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: KCInputField(
+                          controller: _dobController,
+                          hint: 'Date of Birth',
+                          textInputType: TextInputType.text,
+                          onTap: () {
+                            setState(() {
+                              showDatePopup = true;
+                            });
+                            if (Platform.isIOS) {
+                              showCupertinoModalPopup<void>(
+                                barrierDismissible: false,
+                                context: context,
+                                barrierColor:
+                                    const Color.fromRGBO(0, 0, 0, 0.4),
+                                builder: (BuildContext context) {
+                                  return KCIOSDatePickerContainer(
+                                    initialDate: _dob,
+                                    onDateSelected: (value) {
+                                      _dobController.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _dob = value;
+                                        showDatePopup = false;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    onCancel: () {
+                                      setState(() {
+                                        showDatePopup = false;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                            } else {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return KCAndroidDatePickerContainer(
+                                    initialDate: _dob,
+                                    onDateSelected: (value) {
+                                      _dobController.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        showDatePopup = false;
+                                        _dob = value;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    onCancel: () {
+                                      setState(() {
+                                        showDatePopup = false;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          readOnly: true,
+                        ),
+                      ),
                     const YSpace(16),
                     StreamBuilder<String>(
                       stream: passwordStreamCtrl.stream,

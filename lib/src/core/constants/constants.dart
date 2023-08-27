@@ -8,7 +8,7 @@ const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
 
 const String KC_BASE_URL = 'https://api.useklump.com';
-const String KC_STAGING_BASE_URL = 'https://7943-102-89-46-227.ngrok-free.app';
+const String KC_STAGING_BASE_URL = 'https://d1e8-102-89-32-47.ngrok-free.app';
 const int KC_CONNECT_TIMEOUT = 30;
 const int KC_RECEIVE_TIMEOUT = 60;
 const String KC_CLIENT_ID = 'Client-Id';

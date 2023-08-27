@@ -9,6 +9,11 @@ class KCStringUtil {
   static String removeSpaces(String text) {
     return text.replaceAll(RegExp(' +'), '');
   }
+
+  static String formatDate(DateTime dateTime) {
+    final formatter = DateFormat('MMM d, yyyy');
+    return formatter.format(dateTime);
+  }
 }
 
 extension StringExtension on String {

@@ -20,6 +20,7 @@ class GetRepaymentDetailsUsecase
         installment: params.installment,
         repaymentDay: params.repaymentDay,
         insurerId: params.insurerId,
+        partner: params.partner,
       );
 }
 
@@ -30,6 +31,7 @@ class GetRepaymentDetailsUsecaseParams extends Equatable {
     required this.installment,
     required this.repaymentDay,
     required this.insurerId,
+    required this.partner,
   });
 
   final double amount;
@@ -37,6 +39,7 @@ class GetRepaymentDetailsUsecaseParams extends Equatable {
   final int installment;
   final int repaymentDay;
   final int insurerId;
+  final String partner;
 
   @override
   List<Object?> get props => [
@@ -45,5 +48,6 @@ class GetRepaymentDetailsUsecaseParams extends Equatable {
         installment,
         repaymentDay,
         insurerId,
+        partner,
       ];
 }

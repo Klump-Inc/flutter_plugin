@@ -74,8 +74,15 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                             KPPaymentItemTile(
                               title: 'Due Now',
                               amount:
-                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
-                              body: 'Paid at purchase',
+                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount + (repaymentDetails.managementFee ?? 0))}',
+                              body: repaymentDetails.downpaymentAmount != 0
+                                  ? 'Paid at purchase'
+                                  : repaymentDetails.managementFee != null &&
+                                          checkoutNotfier
+                                                  .selectedBankFlow?.slug ==
+                                              'polaris'
+                                      ? 'Polaris Fee '
+                                      : '',
                               bodyLines: 1,
                               firstItem: true,
                             ),
@@ -215,19 +222,10 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                     valueListenable: _accepted,
                     builder: (_, accepted, __) {
                       return KCPrimaryButton(
-                        title:
-                            'Pay NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
+                        title: 'Continue',
                         disabled: !accepted || checkoutNotfier.isBusy,
                         loading: checkoutNotfier.isBusy,
-                        onTap: () {
-                          if (checkoutNotfier
-                                  .stanbicUser?.requiresUserCredential ==
-                              true) {
-                            checkoutNotfier.nextPage();
-                          } else {
-                            checkoutNotfier.nextPage(skipPage: true);
-                          }
-                        },
+                        onTap: () => checkoutNotfier.acceptTerms(),
                       );
                     },
                   ),

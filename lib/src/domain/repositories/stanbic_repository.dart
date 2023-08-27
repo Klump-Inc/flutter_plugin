@@ -104,6 +104,7 @@ class StanbicRepository {
     required int installment,
     required int repaymentDay,
     required int insurerId,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getRepaymentDetails(
@@ -112,6 +113,7 @@ class StanbicRepository {
         installment: installment,
         repaymentDay: repaymentDay,
         insurerId: insurerId,
+        partner: partner,
       );
       return Right(response);
     } catch (e) {
@@ -209,6 +211,23 @@ class StanbicRepository {
     try {
       final response =
           await stanbicRmoteDatasource.getLoanPartners(publicKey: publicKey);
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, bool>> acceptTerms({
+    required String partner,
+    required String publicKey,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.acceptTerms(
+        partner: partner,
+        publicKey: publicKey,
+      );
       return Right(response);
     } catch (e) {
       return Left(
