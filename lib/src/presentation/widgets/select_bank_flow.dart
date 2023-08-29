@@ -38,7 +38,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     final activeLoanPartners = checkoutNotfier.loanPartners == null
         ? <Partner>[]
         : checkoutNotfier.loanPartners!
-            .where((e) => e.isActive == true || e.isActive == false)
+            .where((e) => e.isActive == true)
             .toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),

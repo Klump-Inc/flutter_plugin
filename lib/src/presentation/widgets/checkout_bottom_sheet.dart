@@ -104,7 +104,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                       const PartnerAccountCredentials(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInvoice(),
-                      const StanbicConfirmation(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const StanbicConfirmation(),
                       const StanbicDecision(),
                       const StanbicDisbursementStatus(),
                     ];

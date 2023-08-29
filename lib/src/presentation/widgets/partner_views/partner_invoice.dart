@@ -22,6 +22,8 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
     super.initState();
   }
 
+  bool _redirectDone = false;
+
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
@@ -100,18 +102,27 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           const YSpace(24),
                           const Spacer(),
                           KCPrimaryButton(
-                            title: 'Continue',
+                            title: _redirectDone ? 'Continue' : 'Open webLink',
                             onTap: () async {
-                              if (checkoutNotifier.finalLoanStep!.redirectUrl !=
-                                  null) {
-                                if (!await launchUrl(
-                                  Uri.parse(checkoutNotifier
-                                      .finalLoanStep!.redirectUrl!),
-                                  mode: LaunchMode.externalApplication,
-                                )) {
-                                  showToast('Could not open link!');
+                              if (_redirectDone) {
+                                checkoutNotifier.nextPage();
+                              } else {
+                                if (checkoutNotifier
+                                        .finalLoanStep!.redirectUrl !=
+                                    null) {
+                                  if (!await launchUrl(
+                                    Uri.parse(checkoutNotifier
+                                        .finalLoanStep!.redirectUrl!),
+                                    mode: LaunchMode.externalApplication,
+                                  )) {
+                                    showToast('Could not open link!');
+                                  } else {
+                                    setState(() {
+                                      _redirectDone = true;
+                                    });
+                                  }
                                 } else {
-                                  checkoutNotifier.nextPage(skipPage: true);
+                                  showToast('Error occured. Try again later!');
                                 }
                               }
                             },
