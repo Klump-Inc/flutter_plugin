@@ -24,6 +24,11 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
+    final paymentSplit = checkoutNotfier
+        .termsConditionResponse!.nextStep.formFields
+        ?.where((e) => e.name == 'installment');
+    final installments =
+        paymentSplit?.isNotEmpty == true ? paymentSplit!.first.options : [];
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -60,6 +65,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                     PopupMenuButton<int>(
                       constraints: BoxConstraints(
                         minWidth: constraints.maxWidth - 52,
+                        maxHeight: 300,
                       ),
                       padding: EdgeInsets.zero,
                       elevation: 1,
@@ -99,87 +105,114 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                         ),
                       ),
                       itemBuilder: (context) {
-                        return [2, 3, 4]
-                            .map(
-                              (e) => PopupMenuItem<int>(
-                                height: 0,
-                                padding: EdgeInsets.zero,
-                                child: KCInstallmentPopupMenuItemContent(
-                                  withBG: e == 2 || e == 4,
-                                  title: '$e instalments',
-                                  logo: KCAssets.stanbicLogo,
-                                ),
-                                onTap: () {
-                                  checkoutNotfier.setPaymentSplit(e);
-                                },
-                              ),
-                            )
-                            .toList();
+                        return installments == null || installments.isEmpty
+                            ? [2, 3, 4]
+                                .map(
+                                  (e) => PopupMenuItem<int>(
+                                    height: 0,
+                                    padding: EdgeInsets.zero,
+                                    child: KCInstallmentPopupMenuItemContent(
+                                      withBG: e == 2 || e == 4,
+                                      title: '$e instalments',
+                                      logo: KCAssets.stanbicLogo,
+                                    ),
+                                    onTap: () {
+                                      checkoutNotfier.setPaymentSplit(e);
+                                    },
+                                  ),
+                                )
+                                .toList()
+                            : installments
+                                .map(
+                                  (e) => PopupMenuItem<int>(
+                                    height: 0,
+                                    padding: EdgeInsets.zero,
+                                    child: KCInstallmentPopupMenuItemContent(
+                                      withBG: e['value'] % 2 == 0,
+                                      title: '${e['label']}',
+                                      logo: KCAssets.stanbicLogo,
+                                    ),
+                                    onTap: () {
+                                      checkoutNotfier
+                                          .setPaymentSplit(e['value']);
+                                    },
+                                  ),
+                                )
+                                .toList();
                       },
                     ),
-                    const YSpace(32),
-                    KCHeadline5('What day of the month would you like to pay?'),
-                    const YSpace(16),
-                    PopupMenuButton<int>(
-                      constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth - 52,
-                        maxHeight: 309,
-                      ),
-                      padding: EdgeInsets.zero,
-                      elevation: 1,
-                      offset: const Offset(0, 60),
-                      child: Container(
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.11,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: KCColors.grey1, width: 0.88),
-                          borderRadius: BorderRadius.circular(4.4186),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (checkoutNotfier.paymentDay == null)
-                              KCBodyText1(
-                                'Choose day',
-                                color: KCColors.grey2,
-                              )
-                            else
-                              KCBodyText1(
-                                '${checkoutNotfier.paymentDay}',
-                                fontSize: 15,
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2, right: 5),
-                              child: SvgPicture.asset(
-                                KCAssets.caretDown,
-                                package: KC_PACKAGE_NAME,
-                              ),
+                    if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic')
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const YSpace(32),
+                          KCHeadline5(
+                              'What day of the month would you like to pay?'),
+                          const YSpace(16),
+                          PopupMenuButton<int>(
+                            constraints: BoxConstraints(
+                              minWidth: constraints.maxWidth - 52,
+                              maxHeight: 309,
                             ),
-                          ],
-                        ),
-                      ),
-                      itemBuilder: (context) {
-                        return List.generate(
-                          31,
-                          (index) => PopupMenuItem<int>(
-                            height: 0,
                             padding: EdgeInsets.zero,
-                            child: KCInstallmentPopupMenuItemContent(
-                              withBG: (index + 1) % 2 != 0,
-                              title: '${index + 1}',
-                              logo: KCAssets.stanbicLogo,
+                            elevation: 1,
+                            offset: const Offset(0, 60),
+                            child: Container(
+                              height: 60,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.11,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: KCColors.grey1, width: 0.88),
+                                borderRadius: BorderRadius.circular(4.4186),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (checkoutNotfier.paymentDay == null)
+                                    KCBodyText1(
+                                      'Choose day',
+                                      color: KCColors.grey2,
+                                    )
+                                  else
+                                    KCBodyText1(
+                                      '${checkoutNotfier.paymentDay}',
+                                      fontSize: 15,
+                                    ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 2, right: 5),
+                                    child: SvgPicture.asset(
+                                      KCAssets.caretDown,
+                                      package: KC_PACKAGE_NAME,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            onTap: () {
-                              checkoutNotfier.setPaymentDay(index + 1);
+                            itemBuilder: (context) {
+                              return List.generate(
+                                31,
+                                (index) => PopupMenuItem<int>(
+                                  height: 0,
+                                  padding: EdgeInsets.zero,
+                                  child: KCInstallmentPopupMenuItemContent(
+                                    withBG: (index + 1) % 2 != 0,
+                                    title: '${index + 1}',
+                                    logo: KCAssets.stanbicLogo,
+                                  ),
+                                  onTap: () {
+                                    checkoutNotfier.setPaymentDay(index + 1);
+                                  },
+                                ),
+                              ).toList();
                             },
                           ),
-                        ).toList();
-                      },
-                    ),
+                        ],
+                      ),
                     if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
                         checkoutNotfier.partnerInsurers?.isNotEmpty == true)
                       Column(
@@ -264,7 +297,8 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                     KCPrimaryButton(
                       title: 'Continue',
                       disabled: checkoutNotfier.paymentSplit == null ||
-                          checkoutNotfier.paymentDay == null ||
+                          checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
+                              checkoutNotfier.paymentDay == null ||
                           checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
                               checkoutNotfier.selectedPartnerInsurer == null ||
                           checkoutNotfier.isBusy,
@@ -273,7 +307,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                           Provider.of<KCChangeNotifier>(context, listen: false)
                               .getRepaymentDetails(
                                   checkoutNotfier.paymentSplit!,
-                                  checkoutNotfier.paymentDay!),
+                                  checkoutNotfier.paymentDay),
                     ),
                     const YSpace(59)
                   ],

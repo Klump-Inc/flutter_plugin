@@ -7,24 +7,24 @@ import 'package:oktoast/oktoast.dart';
 class KCChangeNotifier extends ChangeNotifier {
   KCChangeNotifier() {
     initiateTransactionUsecase =
-        InitiateTransactionUsecase(stanbicRepository: StanbicRepository());
+        InitiateTransactionUsecase(partnerRepository: PartnerRepository());
     accountValidationUsecase =
-        AccountValidationUsecase(stanbicRepository: StanbicRepository());
-    verifyOTPUsecase = VerifyOTPUsecase(stanbicRepository: StanbicRepository());
-    getBankTCUsecase = GetBankTCUsecase(stanbicRepository: StanbicRepository());
+        AccountValidationUsecase(partnerRepository: PartnerRepository());
+    verifyOTPUsecase = VerifyOTPUsecase(partnerRepository: PartnerRepository());
+    getBankTCUsecase = GetBankTCUsecase(partnerRepository: PartnerRepository());
     getRepaymentDetailsUsecase =
-        GetRepaymentDetailsUsecase(stanbicRepository: StanbicRepository());
-    createNewUsecase = CreateNewUsecase(stanbicRepository: StanbicRepository());
+        GetRepaymentDetailsUsecase(partnerRepository: PartnerRepository());
+    createNewUsecase = CreateNewUsecase(partnerRepository: PartnerRepository());
     getLoanStatusUsecase =
-        GetLoanStatusUsecase(stanbicRepository: StanbicRepository());
+        GetLoanStatusUsecase(partnerRepository: PartnerRepository());
     getPartnerInsurersUsecase =
-        GetPartnerInsurersUsecase(stanbicRepository: StanbicRepository());
+        GetPartnerInsurersUsecase(partnerRepository: PartnerRepository());
     accountCredentialsUsecase =
-        AccountCredentialsUsecase(stanbicRepository: StanbicRepository());
+        AccountCredentialsUsecase(partnerRepository: PartnerRepository());
     getLoanPartnersUsecase =
-        GetLoanPartnersUsecase(stanbicRepository: StanbicRepository());
+        GetLoanPartnersUsecase(partnerRepository: PartnerRepository());
     acceptTermsUsecase =
-        AcceptTermsUsecase(stanbicRepository: StanbicRepository());
+        AcceptTermsUsecase(partnerRepository: PartnerRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
   late AccountValidationUsecase accountValidationUsecase;
@@ -58,19 +58,23 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get accountNumber => _accountNumber;
   String? get phoneNumber => _phoneNumber;
   String? get firstName => _firstName;
-  TermsAndCondition? _stanbicTC;
-  TermsAndCondition? get stanbicTC => _stanbicTC;
+  KCAPIResponse? _termsConditionResponse;
+  KCAPIResponse? get termsConditionResponse => _termsConditionResponse;
   KlumpUser? _stanbicUser;
   KlumpUser? get stanbicUser => _stanbicUser;
   RepaymentDetails? _repaymentDetails;
   RepaymentDetails? get repaymentDetails => _repaymentDetails;
-  String? _newLoanId;
-  StanbicStatusResponse? _stanbicStatusResponse;
-  StanbicStatusResponse? get stanbicStatusResponse => _stanbicStatusResponse;
+  NextStep? _finalLoanStep;
+  NextStep? get finalLoanStep => _finalLoanStep;
+  DisbursementStatusResponse? _stanbicStatusResponse;
+  DisbursementStatusResponse? get stanbicStatusResponse =>
+      _stanbicStatusResponse;
   List<PartnerInsurer>? _partnerInsurers;
   List<PartnerInsurer>? get partnerInsurers => _partnerInsurers;
   List<Partner>? _loanPartners;
   List<Partner>? get loanPartners => _loanPartners;
+  String? _loanId;
+  String? get loanId => _loanId;
 
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
@@ -259,23 +263,24 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => {},
       (r) {
-        _stanbicTC = r;
+        _termsConditionResponse = r;
       },
     );
     _setBusy(false);
   }
 
-  Future<void> getRepaymentDetails(int installment, int repaymentDay) async {
+  Future<void> getRepaymentDetails(int installment, int? repaymentDay) async {
     _setBusy(true);
-    final response =
-        await getRepaymentDetailsUsecase(GetRepaymentDetailsUsecaseParams(
-      amount: _checkoutData?.amount ?? 0,
-      publicKey: _checkoutData?.merchantPublicKey ?? '',
-      installment: installment,
-      repaymentDay: repaymentDay,
-      insurerId: _selectedPartnerInsurer?.value ?? 0,
-      partner: _selectedBankFlow!.slug,
-    ));
+    final response = await getRepaymentDetailsUsecase(
+      GetRepaymentDetailsUsecaseParams(
+        amount: _checkoutData?.amount ?? 0,
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        installment: installment,
+        repaymentDay: repaymentDay,
+        insurerId: _selectedPartnerInsurer?.value ?? 0,
+        partner: _selectedBankFlow!.slug,
+      ),
+    );
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
@@ -294,26 +299,34 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         installment: _repaymentDetails!.installment,
         repaymentDay: int.parse(_repaymentDetails!.repaymentDay.toString()),
-        termsVersion: _stanbicTC!.version ?? '1',
+        termsVersion:
+            (_termsConditionResponse!.data as TermsAndCondition?)?.version ??
+                '1',
         items: _checkoutData?.items ?? [],
         shippingData: _checkoutData?.shippingData,
-        insurerId: _selectedPartnerInsurer!.value,
+        insurerId: _selectedPartnerInsurer?.value,
+        partner: _selectedBankFlow!.slug,
       ),
     );
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _newLoanId = r;
-        nextPage();
+        _finalLoanStep = r.nextStep;
+        _loanId = r.data;
+        if (selectedBankFlow?.slug == 'stanbic') {
+          nextPage();
+        }
       },
     );
     _setBusy(false);
   }
 
-  Future<StanbicStatusResponse?> getLoanStatus() async {
+  Future<DisbursementStatusResponse?> getLoanStatus() async {
     final response = await getLoanStatusUsecase(
       GetLoanStatusUsecaseParams(
-        id: _newLoanId!,
+        url: selectedBankFlow?.slug == 'stanbic'
+            ? '/loans/account/new-loan/$loanId'
+            : _finalLoanStep?.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
@@ -363,23 +376,31 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> acceptTerms() async {
-    _setBusy(true);
-    final response = await acceptTermsUsecase(
-      AcceptTermsUsecaseParams(
-        publicKey: _checkoutData?.merchantPublicKey ?? '',
-        partner: _selectedBankFlow!.slug,
-      ),
-    );
-    _setBusy(false);
-    response.fold(
-      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) {
-        if (stanbicUser?.requiresUserCredential == true) {
-          nextPage();
-        } else {
-          nextPage(skipPage: true);
-        }
-      },
-    );
+    if (selectedBankFlow?.slug == 'stanbic') {
+      if (stanbicUser?.requiresUserCredential == true) {
+        nextPage();
+      } else {
+        nextPage(skipPage: true);
+      }
+    } else {
+      _setBusy(true);
+      final response = await acceptTermsUsecase(
+        AcceptTermsUsecaseParams(
+          publicKey: _checkoutData?.merchantPublicKey ?? '',
+          partner: _selectedBankFlow!.slug,
+        ),
+      );
+      _setBusy(false);
+      response.fold(
+        (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+        (r) {
+          if (stanbicUser?.requiresUserCredential == true) {
+            nextPage();
+          } else {
+            nextPage(skipPage: true);
+          }
+        },
+      );
+    }
   }
 }

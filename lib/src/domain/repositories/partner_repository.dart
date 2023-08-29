@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class StanbicRepository {
+class PartnerRepository {
   late RemoteDatasource stanbicRmoteDatasource;
-  StanbicRepository() {
+  PartnerRepository() {
     stanbicRmoteDatasource = RemoteDataSourceImpl(
       KCHttpRequester(),
       KCInternetInfo(),
@@ -81,7 +81,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, TermsAndCondition>> getBankTC({
+  Future<Either<KCException, KCAPIResponse>> getBankTC({
     required String publicKey,
     required String partner,
   }) async {
@@ -102,8 +102,8 @@ class StanbicRepository {
     required double amount,
     required String publicKey,
     required int installment,
-    required int repaymentDay,
-    required int insurerId,
+    required int? repaymentDay,
+    required int? insurerId,
     required String partner,
   }) async {
     try {
@@ -123,7 +123,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, String>> createNew({
+  Future<Either<KCException, KCAPIResponse>> createNew({
     required double amount,
     required String publicKey,
     required int installment,
@@ -131,7 +131,8 @@ class StanbicRepository {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
-    required int insurerId,
+    required int? insurerId,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.createNew(
@@ -143,6 +144,7 @@ class StanbicRepository {
         items: items,
         shippingData: shippingData,
         insurerId: insurerId,
+        partner: partner,
       );
       return Right(response);
     } catch (e) {
@@ -152,13 +154,13 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, StanbicStatusResponse>> getLoanStatus({
-    required String id,
+  Future<Either<KCException, DisbursementStatusResponse>> getLoanStatus({
+    required String url,
     required String publicKey,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getLoanStatus(
-          id: id, publicKey: publicKey);
+          url: url, publicKey: publicKey);
       return Right(response);
     } catch (e) {
       return Left(

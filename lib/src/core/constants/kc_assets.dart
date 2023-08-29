@@ -7,4 +7,5 @@ class KCAssets {
   static String secureCredit = 'assets/icons/secure_credit.svg';
   static String stanbicLogo = 'assets/images/stanbic_logo.png';
   static String klumpLogo = 'assets/icons/klump_logo.svg';
+  static String copy = 'assets/icons/copy.svg';
 }

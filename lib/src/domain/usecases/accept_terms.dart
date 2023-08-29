@@ -4,16 +4,16 @@ import 'package:klump_checkout/klump_checkout.dart';
 
 class AcceptTermsUsecase extends KCUsecase<bool, AcceptTermsUsecaseParams> {
   AcceptTermsUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
   Future<Either<KCException, bool>> call(
     AcceptTermsUsecaseParams params,
   ) =>
-      stanbicRepository.acceptTerms(
+      partnerRepository.acceptTerms(
         partner: params.partner,
         publicKey: params.publicKey,
       );

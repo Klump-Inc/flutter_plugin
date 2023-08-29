@@ -9,3 +9,4 @@ export 'stanbic_payment_preview.dart';
 export 'partner_payment_split.dart';
 export 'partner_terms.dart';
 export 'partner_information.dart';
+export 'partner_invoice.dart';

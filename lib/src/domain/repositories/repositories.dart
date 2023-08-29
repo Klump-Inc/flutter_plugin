@@ -1,1 +1,1 @@
-export 'stanbic_repository.dart';
+export 'partner_repository.dart';

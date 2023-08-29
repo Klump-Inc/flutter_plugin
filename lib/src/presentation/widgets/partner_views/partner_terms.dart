@@ -32,6 +32,8 @@ class _PartnerTermsState extends State<PartnerTerms> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final bankTerms =
+        checkoutNotifier.termsConditionResponse?.data as TermsAndCondition?;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -94,7 +96,7 @@ class _PartnerTermsState extends State<PartnerTerms> {
                       ],
                     ),
                   )
-                : checkoutNotifier.stanbicTC == null
+                : bankTerms == null
                     ? const KCPageLoaderWidget()
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 26),
@@ -130,19 +132,19 @@ class _PartnerTermsState extends State<PartnerTerms> {
                             ),
                             const YSpace(22),
                             KCHeadline3(
-                              checkoutNotifier.stanbicTC?.title ?? '',
+                              bankTerms.title ?? '',
                               fontSize: 15,
                             ),
                             const YSpace(8),
                             Expanded(
                               child: SingleChildScrollView(
-                                child: checkoutNotifier.stanbicTC?.doc != null
+                                child: bankTerms.doc != null
                                     ? Html(
                                         data:
-                                            "$KC_HTML_HEADER${checkoutNotifier.stanbicTC?.doc ?? ''}$KC_HTML_FOOTER",
+                                            "$KC_HTML_HEADER${bankTerms.doc ?? ''}$KC_HTML_FOOTER",
                                       )
                                     : KCBodyText1(
-                                        checkoutNotifier.stanbicTC?.text ?? '',
+                                        bankTerms.text ?? '',
                                         fontSize: 15,
                                         height: 1.4667,
                                       ),

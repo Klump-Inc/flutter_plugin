@@ -30,7 +30,7 @@ abstract class RemoteDatasource {
     String? firstName,
     required String partner,
   });
-  Future<TermsAndConditionModel> getBankTC({
+  Future<KCAPIResponseModel> getBankTC({
     required String publicKey,
     required String partner,
   });
@@ -38,11 +38,11 @@ abstract class RemoteDatasource {
     required double amount,
     required String publicKey,
     required int installment,
-    required int repaymentDay,
-    required int insurerId,
+    required int? repaymentDay,
+    required int? insurerId,
     required String partner,
   });
-  Future<String> createNew({
+  Future<KCAPIResponseModel> createNew({
     required double amount,
     required String publicKey,
     required int installment,
@@ -50,10 +50,11 @@ abstract class RemoteDatasource {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
-    required int insurerId,
+    required int? insurerId,
+    required String partner,
   });
-  Future<StanbicStatusResponseModel> getLoanStatus({
-    required String id,
+  Future<DisbursementStatusResponseModel> getLoanStatus({
+    required String url,
     required String publicKey,
   });
   Future<List<PartnerInsurerModel>> getPartnerInsurers({
@@ -128,16 +129,18 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
         "partner": partner,
-        'firstname': firstName,
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
+      if (partner == 'polaris') {
+        body.addAll({
+          'firstname': firstName,
+        });
+      }
       await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
-        endpoint: partner == 'stanbic'
-            ? '/v1/stanbic/accounts/validation'
-            : '/v1/loans/account/verification',
+        endpoint: '/v1/loans/account/verification',
         body: body,
       );
     } else {
@@ -159,37 +162,37 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final headers = {
         'klump-public-key': publicKey,
       };
-      final body = {
+      final body = <String, dynamic>{
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
         "otp": otp,
         "partner": partner,
         "email": "",
-        "firstname": firstName,
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
+      if (partner == 'polaris') {
+        body.addAll({
+          'firstname': firstName,
+        });
+      }
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
-        endpoint: partner == 'stanbic'
-            ? '/v1/stanbic/accounts/verify'
-            : '/v1/loans/account/verify-otp',
+        endpoint: '/v1/loans/account/verify-otp',
         headers: headers,
         body: body,
       );
-      await prefs.setString(
-          KC_STANBIC_TOKEN,
-          (response.data as Map<String, dynamic>)['token'] ??
-              (response.data as Map<String, dynamic>)['data']['token']);
-      return KlumpUserModel.fromJson(
-          partner == 'stanbic' ? response.data : response.data['data']);
+      Logger().d(response.data);
+      await prefs.setString(KC_LOGIN_TOKEN,
+          (response.data as Map<String, dynamic>)['data']['token']);
+      return KlumpUserModel.fromJson(response.data['data']);
     } else {
       throw NoInternetKCException();
     }
   }
 
   @override
-  Future<TermsAndConditionModel> getBankTC({
+  Future<KCAPIResponseModel> getBankTC({
     required String publicKey,
     required String partner,
   }) async {
@@ -208,9 +211,13 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         headers: headers,
         endpoint: '/v1/loans/partners/terms-and-conditions',
         queryParam: queryParams,
-        token: prefs.getString(KC_STANBIC_TOKEN),
+        token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      return TermsAndConditionModel.fromJson(response.data['data']);
+      Logger().d(response.data);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: TermsAndConditionModel.fromJson(response.data['data']),
+      );
     } else {
       throw NoInternetKCException();
     }
@@ -221,8 +228,55 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required double amount,
     required String publicKey,
     required int installment,
+    required int? repaymentDay,
+    required int? insurerId,
+    required String partner,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final body = <String, dynamic>{
+        "amount": amount,
+        "installment": installment,
+        "klump_public_key": publicKey,
+        "partner": partner,
+      };
+      if (partner == 'stanbic') {
+        body.addAll({
+          "insurerId": insurerId,
+        });
+      }
+      if (repaymentDay != null) {
+        body.addAll({
+          "repaymentDay": repaymentDay,
+        });
+      }
+      final response = await kcHttpRequester.post(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        endpoint: '/v1/loans/account/repayments-detail',
+        body: body,
+        token: prefs.getString(KC_LOGIN_TOKEN),
+        headers: headers,
+      );
+      Logger().d(response.data);
+      return RepaymentDetailsModel.fromJson(response.data['data']);
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<KCAPIResponseModel> createNew({
+    required double amount,
+    required String publicKey,
+    required int installment,
     required int repaymentDay,
-    required int insurerId,
+    required String termsVersion,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
+    required int? insurerId,
     required String partner,
   }) async {
     if (await kcInternetInfo.isConnected) {
@@ -235,73 +289,44 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "installment": installment,
         "repaymentDay": repaymentDay,
         "klump_public_key": publicKey,
-        "partner": partner,
-      };
-      if (partner == 'stanbic') {
-        body.addAll({
-          "insurerId": insurerId,
-        });
-      }
-      final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
-        endpoint: '/v1/loans/account/repayments-detail',
-        body: body,
-        token: prefs.getString(KC_STANBIC_TOKEN),
-        headers: headers,
-      );
-      Logger().d(response.data);
-      return RepaymentDetailsModel.fromJson(response.data['data']);
-    } else {
-      throw NoInternetKCException();
-    }
-  }
-
-  @override
-  Future<String> createNew({
-    required double amount,
-    required String publicKey,
-    required int installment,
-    required int repaymentDay,
-    required String termsVersion,
-    required List<KlumpCheckoutItem> items,
-    required Map<String, dynamic>? shippingData,
-    required int insurerId,
-  }) async {
-    if (await kcInternetInfo.isConnected) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final headers = {
-        'klump-public-key': publicKey,
-      };
-      final body = {
-        "amount": amount,
-        "installment": installment,
-        "repaymentDay": repaymentDay,
-        "klump_public_key": publicKey,
-        "termsAndConditionVersion": termsVersion,
         "items": items.map((e) => e.toMap()).toList(),
-        "insurerId": insurerId,
+        "partner": partner,
       };
       if (shippingData != null) {
         body.addAll({
           'shipping_data': shippingData,
         });
       }
+      if (insurerId != null) {
+        body.addAll({
+          "insurerId": insurerId,
+        });
+      }
+      if (partner == 'stanbic') {
+        body.addAll({
+          "termsAndConditionVersion": termsVersion,
+        });
+      }
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
-        endpoint: '/v1/stanbic/loans/new',
+        endpoint: '/v1/loans/account/new-loan',
         headers: headers,
         body: body,
-        token: prefs.getString(KC_STANBIC_TOKEN),
+        token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      return response.data['id'];
+      Logger().d(response.data);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: response.data['data']['id'],
+      );
     } else {
       throw NoInternetKCException();
     }
   }
 
   @override
-  Future<StanbicStatusResponseModel> getLoanStatus({
-    required String id,
+  Future<DisbursementStatusResponseModel> getLoanStatus({
+    required String url,
     required String publicKey,
   }) async {
     if (await kcInternetInfo.isConnected) {
@@ -311,11 +336,12 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       };
       final response = await kcHttpRequester.get(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
-        endpoint: '/v1/stanbic/loans/$id/status',
+        endpoint: '/v1$url',
         headers: headers,
-        token: prefs.getString(KC_STANBIC_TOKEN),
+        token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      return StanbicStatusResponseModel.fromJson(response.data);
+      Logger().d(response.data);
+      return DisbursementStatusResponseModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
     }
@@ -341,7 +367,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         headers: headers,
         endpoint: '/v1/loans/account/credentials',
         body: body,
-        token: prefs.getString(KC_STANBIC_TOKEN),
+        token: prefs.getString(KC_LOGIN_TOKEN),
       );
       return response.statusCode == 200;
     } else {
@@ -388,6 +414,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/partners',
         headers: headers,
       );
+      Logger().d(response.data);
       return PartnerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
@@ -414,8 +441,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/account/accept-loan-terms',
         headers: headers,
         body: body,
-        token: prefs.getString(KC_STANBIC_TOKEN),
+        token: prefs.getString(KC_LOGIN_TOKEN),
       );
+
       Logger().d(response.data);
       return response.statusCode == 200;
     } else {

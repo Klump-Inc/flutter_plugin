@@ -102,6 +102,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                       const PartnerPaymentSplit(),
                       const StanbicPaymentPreview(),
                       const PartnerAccountCredentials(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PartnerInvoice(),
                       const StanbicConfirmation(),
                       const StanbicDecision(),
                       const StanbicDisbursementStatus(),

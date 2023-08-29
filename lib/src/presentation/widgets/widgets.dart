@@ -5,7 +5,7 @@ export 'input_field.dart';
 export 'installment_popup_menu_content.dart';
 export 'select_bank_flow.dart';
 export 'spaces.dart';
-export 'partner_views/stanbic_views.dart';
+export 'partner_views/partner_views.dart';
 export 'text.dart';
 export 'loader.dart';
 export 'insurer_popup_menu_content.dart';

@@ -5,16 +5,16 @@ import 'package:klump_checkout/klump_checkout.dart';
 class AccountCredentialsUsecase
     extends KCUsecase<bool, AccountCredentialsUsecaseParams> {
   AccountCredentialsUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
   Future<Either<KCException, bool>> call(
     AccountCredentialsUsecaseParams params,
   ) =>
-      stanbicRepository.accountCredentials(
+      partnerRepository.accountCredentials(
         email: params.email,
         password: params.password,
         publicKey: params.publicKey,

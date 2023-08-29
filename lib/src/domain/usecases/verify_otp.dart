@@ -4,16 +4,16 @@ import 'package:klump_checkout/klump_checkout.dart';
 
 class VerifyOTPUsecase extends KCUsecase<KlumpUser, VerifyOTPUsecaseParams> {
   VerifyOTPUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
   Future<Either<KCException, KlumpUser>> call(
     VerifyOTPUsecaseParams params,
   ) =>
-      stanbicRepository.verifyOTP(
+      partnerRepository.verifyOTP(
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
         otp: params.otp,
