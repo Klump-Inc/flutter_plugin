@@ -232,9 +232,13 @@ class StanbicRemoteDataSourceImpl implements StanbicRemoteDatasource {
         "klump_public_key": publicKey,
         "termsAndConditionVersion": termsVersion,
         "items": items.map((e) => e.toMap()).toList(),
-        "shipping_data": shippingData,
         "insurerId": insurerId,
       };
+      if (shippingData != null) {
+        body.addAll({
+          "shipping_data": shippingData,
+        });
+      }
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/stanbic/loans/new',
