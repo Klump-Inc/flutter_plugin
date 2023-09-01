@@ -31,10 +31,7 @@ class PartnerInformation extends StatelessWidget {
                     ),
                     const YSpace(22.15),
                     KCHeadline3('Pay in instalments with Partner'),
-                    const YSpace(22),
-                    const PartnerItemTile(
-                      title: 'Your Bank Verification Number (BVN)',
-                    ),
+                    const YSpace(25),
                     const PartnerItemTile(
                       title: 'An active account with Partner',
                     ),
