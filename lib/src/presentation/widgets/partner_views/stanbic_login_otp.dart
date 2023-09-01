@@ -36,8 +36,14 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
   }
 
   void validateInputs() {
-    final otpError = KCFormValidator.errorOTP(_otpCtrl.text.trim(), 'Required');
-
+    final otpLength = Provider.of<KCChangeNotifier>(context, listen: false)
+                .selectedBankFlow
+                ?.slug ==
+            'stanbic'
+        ? 6
+        : 4;
+    final otpError =
+        KCFormValidator.errorOTP(_otpCtrl.text.trim(), 'Required', otpLength);
     if (otpError?.isEmpty == true) {
       _enabled.value = true;
     } else {
@@ -96,9 +102,8 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                       ),
                     ),
                     const YSpace(24.22),
-                    Image.asset(
-                      KCAssets.stanbicLogo,
-                      package: KC_PACKAGE_NAME,
+                    Image.network(
+                      checkoutNotfier.selectedBankFlow!.logo ?? '',
                       height: 55,
                       width: 47,
                     ),
@@ -113,10 +118,16 @@ class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
                       builder: (context, snapshot) {
                         return KCInputField(
                           controller: _otpCtrl,
-                          hint: 'Enter the 6-digit code here',
+                          hint: checkoutNotfier.selectedBankFlow?.slug ==
+                                  'stanbic'
+                              ? 'Enter the 6-digit code here'
+                              : 'Enter the 4-digit code here',
                           validationMessage: KCFormValidator.errorOTP(
                             snapshot.data,
                             'OTP is required',
+                            checkoutNotfier.selectedBankFlow?.slug == 'stanbic'
+                                ? 6
+                                : 4,
                           ),
                           textInputType: TextInputType.number,
                           inputFormatters: <TextInputFormatter>[

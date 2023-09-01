@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class StanbicRepository {
-  late StanbicRemoteDatasource stanbicRmoteDatasource;
-  StanbicRepository() {
-    stanbicRmoteDatasource = StanbicRemoteDataSourceImpl(
+class PartnerRepository {
+  late RemoteDatasource stanbicRmoteDatasource;
+  PartnerRepository() {
+    stanbicRmoteDatasource = RemoteDataSourceImpl(
       KCHttpRequester(),
       KCInternetInfo(),
     );
@@ -36,13 +36,17 @@ class StanbicRepository {
   Future<Either<KCException, void>> validateAccount({
     required String accountNumber,
     required String phoneNumber,
+    String? firstName,
     required String publicKey,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.validateAccount(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
         publicKey: publicKey,
+        partner: partner,
+        firstName: firstName,
       );
       return Right(response);
     } catch (e) {
@@ -52,11 +56,13 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, StanbicUser>> verifyOTP({
+  Future<Either<KCException, KlumpUser>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String otp,
     required String publicKey,
+    String? firstName,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(
@@ -64,6 +70,8 @@ class StanbicRepository {
         phoneNumber: phoneNumber,
         otp: otp,
         publicKey: publicKey,
+        firstName: firstName,
+        partner: partner,
       );
       return Right(response);
     } catch (e) {
@@ -73,11 +81,15 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, TermsAndCondition>> getBankTC(
-      {required String publicKey}) async {
+  Future<Either<KCException, KCAPIResponse>> getBankTC({
+    required String publicKey,
+    required String partner,
+  }) async {
     try {
-      final response =
-          await stanbicRmoteDatasource.getBankTC(publicKey: publicKey);
+      final response = await stanbicRmoteDatasource.getBankTC(
+        publicKey: publicKey,
+        partner: partner,
+      );
       return Right(response);
     } catch (e) {
       return Left(
@@ -90,8 +102,9 @@ class StanbicRepository {
     required double amount,
     required String publicKey,
     required int installment,
-    required int repaymentDay,
-    required int insurerId,
+    required int? repaymentDay,
+    required int? insurerId,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getRepaymentDetails(
@@ -100,6 +113,7 @@ class StanbicRepository {
         installment: installment,
         repaymentDay: repaymentDay,
         insurerId: insurerId,
+        partner: partner,
       );
       return Right(response);
     } catch (e) {
@@ -109,7 +123,7 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, String>> createNew({
+  Future<Either<KCException, KCAPIResponse>> createNew({
     required double amount,
     required String publicKey,
     required int installment,
@@ -117,7 +131,8 @@ class StanbicRepository {
     required String termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
-    required int insurerId,
+    required int? insurerId,
+    required String partner,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.createNew(
@@ -129,6 +144,7 @@ class StanbicRepository {
         items: items,
         shippingData: shippingData,
         insurerId: insurerId,
+        partner: partner,
       );
       return Right(response);
     } catch (e) {
@@ -138,13 +154,13 @@ class StanbicRepository {
     }
   }
 
-  Future<Either<KCException, StanbicStatusResponse>> getLoanStatus({
-    required String id,
+  Future<Either<KCException, DisbursementStatusResponse>> getLoanStatus({
+    required String url,
     required String publicKey,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getLoanStatus(
-          id: id, publicKey: publicKey);
+          url: url, publicKey: publicKey);
       return Right(response);
     } catch (e) {
       return Left(
@@ -157,12 +173,16 @@ class StanbicRepository {
     required String email,
     required String password,
     required String publicKey,
+    required String partner,
+    DateTime? dob,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.accountCredentials(
         email: email,
         password: password,
         publicKey: publicKey,
+        partner: partner,
+        dob: dob,
       );
       return Right(response);
     } catch (e) {
@@ -197,6 +217,23 @@ class StanbicRepository {
     try {
       final response =
           await stanbicRmoteDatasource.getLoanPartners(publicKey: publicKey);
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
+
+  Future<Either<KCException, bool>> acceptTerms({
+    required String partner,
+    required String publicKey,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.acceptTerms(
+        partner: partner,
+        publicKey: publicKey,
+      );
       return Right(response);
     } catch (e) {
       return Left(

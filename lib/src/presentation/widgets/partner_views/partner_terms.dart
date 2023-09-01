@@ -9,14 +9,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicTerms extends StatefulWidget {
-  const StanbicTerms({super.key});
+class PartnerTerms extends StatefulWidget {
+  const PartnerTerms({super.key});
 
   @override
-  State<StanbicTerms> createState() => _StanbicTermsState();
+  State<PartnerTerms> createState() => _PartnerTermsState();
 }
 
-class _StanbicTermsState extends State<StanbicTerms> {
+class _PartnerTermsState extends State<PartnerTerms> {
   final ValueNotifier<bool> _accepted = ValueNotifier(false);
 
   void _fetchTerms() {
@@ -32,6 +32,8 @@ class _StanbicTermsState extends State<StanbicTerms> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final bankTerms =
+        checkoutNotifier.termsConditionResponse?.data as TermsAndCondition?;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -46,11 +48,10 @@ class _StanbicTermsState extends State<StanbicTerms> {
                     child: Column(
                       children: [
                         const YSpace(32.59),
-                        Image.asset(
-                          KCAssets.stanbicLogo,
+                        Image.network(
+                          checkoutNotifier.selectedBankFlow!.logo ?? '',
                           height: 55,
                           width: 47,
-                          package: KC_PACKAGE_NAME,
                         ),
                         const YSpace(24),
                         Expanded(
@@ -95,7 +96,7 @@ class _StanbicTermsState extends State<StanbicTerms> {
                       ],
                     ),
                   )
-                : checkoutNotifier.stanbicTC == null
+                : bankTerms == null
                     ? const KCPageLoaderWidget()
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 26),
@@ -119,11 +120,11 @@ class _StanbicTermsState extends State<StanbicTerms> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 2.6),
-                                  child: Image.asset(
-                                    KCAssets.stanbicLogo,
+                                  child: Image.network(
+                                    checkoutNotifier.selectedBankFlow!.logo ??
+                                        '',
                                     height: 45,
                                     width: 38.45,
-                                    package: KC_PACKAGE_NAME,
                                   ),
                                 ),
                                 const XSpace(24)
@@ -131,16 +132,22 @@ class _StanbicTermsState extends State<StanbicTerms> {
                             ),
                             const YSpace(22),
                             KCHeadline3(
-                              'Read and agree to the terms of service to continue',
+                              bankTerms.title ?? '',
                               fontSize: 15,
                             ),
                             const YSpace(8),
                             Expanded(
                               child: SingleChildScrollView(
-                                child: Html(
-                                  data:
-                                      "$KC_HTML_HEADER${checkoutNotifier.stanbicTC?.termsAndConditions ?? ''}$KC_HTML_FOOTER",
-                                ),
+                                child: bankTerms.doc != null
+                                    ? Html(
+                                        data:
+                                            "$KC_HTML_HEADER${bankTerms.doc ?? ''}$KC_HTML_FOOTER",
+                                      )
+                                    : KCBodyText1(
+                                        bankTerms.text ?? '',
+                                        fontSize: 15,
+                                        height: 1.4667,
+                                      ),
                               ),
                             ),
                             const YSpace(24),

@@ -2,29 +2,28 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class GetBankTCUsecase
-    extends KCUsecase<KCAPIResponse, GetBankTCUsecaseParams> {
-  GetBankTCUsecase({
+class AcceptTermsUsecase extends KCUsecase<bool, AcceptTermsUsecaseParams> {
+  AcceptTermsUsecase({
     required this.partnerRepository,
   });
 
   final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, KCAPIResponse>> call(
-    GetBankTCUsecaseParams params,
+  Future<Either<KCException, bool>> call(
+    AcceptTermsUsecaseParams params,
   ) =>
-      partnerRepository.getBankTC(
-        publicKey: params.publicKey,
+      partnerRepository.acceptTerms(
         partner: params.partner,
+        publicKey: params.publicKey,
       );
 }
 
-class GetBankTCUsecaseParams extends Equatable {
+class AcceptTermsUsecaseParams extends Equatable {
   final String publicKey;
   final String partner;
 
-  const GetBankTCUsecaseParams({
+  const AcceptTermsUsecaseParams({
     required this.publicKey,
     required this.partner,
   });

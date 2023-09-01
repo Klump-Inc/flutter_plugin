@@ -5,16 +5,16 @@ import 'package:klump_checkout/klump_checkout.dart';
 class GetPartnerInsurersUsecase
     extends KCUsecase<List<PartnerInsurer>, GetPartnerInsurersUsecaseParams> {
   GetPartnerInsurersUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
   Future<Either<KCException, List<PartnerInsurer>>> call(
     GetPartnerInsurersUsecaseParams params,
   ) =>
-      stanbicRepository.getPartnerInsurers(
+      partnerRepository.getPartnerInsurers(
         partner: params.partner,
         publicKey: params.publicKey,
         amount: params.amount,

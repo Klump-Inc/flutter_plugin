@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: FirstScreen(),
     );
   }
@@ -63,11 +64,7 @@ class FirstScreen extends StatelessWidget {
                     quantity: 2,
                   )
                 ],
-                shippingData: {
-                  "address": "Ediam road Akppa",
-                  "landmark": "extras",
-                  "city_id": "da513ab9-a28e-4451-af6b-16f029be2c37"
-                },
+                shippingData: null,
               ),
             );
             // ignore: avoid_print

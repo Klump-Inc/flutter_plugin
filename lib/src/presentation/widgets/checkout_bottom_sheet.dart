@@ -94,24 +94,22 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         data: widget.data,
                         isLive: widget.isLive,
                       ),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicLogin(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicLoginOTP(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicTerms(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicPaymentSplit(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicPaymentPreview(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicAccountInformation(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PartnerMobileExperience(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PartnerInformation(),
+                      const StanbicLogin(),
+                      const StanbicLoginOTP(),
+                      const PartnerTerms(),
+                      const PartnerPaymentSplit(),
+                      const StanbicPaymentPreview(),
+                      const PartnerAccountCredentials(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PartnerInvoice(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const StanbicConfirmation(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicDecision(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicDisbursementStatus()
+                      const StanbicDecision(),
+                      const StanbicDisbursementStatus(),
                     ];
                     return PageView(
                       controller: checkoutNotifier.pageController,

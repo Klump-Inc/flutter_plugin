@@ -9,4 +9,20 @@ class KCStringUtil {
   static String removeSpaces(String text) {
     return text.replaceAll(RegExp(' +'), '');
   }
+
+  static String formatDate(DateTime dateTime) {
+    final formatter = DateFormat('MMM d, yyyy');
+    return formatter.format(dateTime);
+  }
+
+  static String formatServerDate(DateTime dateTime) {
+    final formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(dateTime);
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
 }

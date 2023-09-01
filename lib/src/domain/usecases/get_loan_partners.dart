@@ -5,16 +5,16 @@ import 'package:klump_checkout/klump_checkout.dart';
 class GetLoanPartnersUsecase
     extends KCUsecase<List<Partner>, GetLoanPartnersUsecaseParams> {
   GetLoanPartnersUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
   Future<Either<KCException, List<Partner>>> call(
     GetLoanPartnersUsecaseParams params,
   ) =>
-      stanbicRepository.getLoanPartners(publicKey: params.publicKey);
+      partnerRepository.getLoanPartners(publicKey: params.publicKey);
 }
 
 class GetLoanPartnersUsecaseParams extends Equatable {

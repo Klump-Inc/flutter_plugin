@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-class StanbicStatusResponse extends Equatable {
+class DisbursementStatusResponse extends Equatable {
   final bool isCompleted;
   final bool isSuccessful;
   final String message;
 
-  const StanbicStatusResponse({
+  const DisbursementStatusResponse({
     required this.isCompleted,
     required this.isSuccessful,
     required this.message,

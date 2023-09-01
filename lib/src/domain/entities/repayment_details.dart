@@ -4,18 +4,17 @@ import 'package:klump_checkout/klump_checkout.dart';
 class RepaymentDetails extends Equatable {
   final String? accountNumber;
   final String? transactionType;
-  final double instantBuyAmount;
   final double loanAmount;
   final double downpaymentAmount;
   final double monthlyRepayment;
   final double? totalRepayment;
   final double? managementFee;
   final double? interest;
-  final double? vat;
-  final double? insurance;
+  final dynamic vat;
+  final dynamic insurance;
   final dynamic tenor;
   final dynamic installment;
-  final double? minimumBalanceRequired;
+  final dynamic minimumBalanceRequired;
   final dynamic repaymentDay;
   final List<RepaymentScheduleModel> repaymentSchedules;
   final dynamic repaymentMetadata;
@@ -23,7 +22,6 @@ class RepaymentDetails extends Equatable {
   const RepaymentDetails({
     required this.accountNumber,
     required this.transactionType,
-    required this.instantBuyAmount,
     required this.loanAmount,
     required this.downpaymentAmount,
     required this.monthlyRepayment,
@@ -44,7 +42,6 @@ class RepaymentDetails extends Equatable {
   List<Object?> get props => [
         accountNumber,
         transactionType,
-        instantBuyAmount,
         loanAmount,
         downpaymentAmount,
         monthlyRepayment,
