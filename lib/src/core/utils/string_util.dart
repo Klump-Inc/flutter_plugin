@@ -14,6 +14,11 @@ class KCStringUtil {
     final formatter = DateFormat('MMM d, yyyy');
     return formatter.format(dateTime);
   }
+
+  static String formatServerDate(DateTime dateTime) {
+    final formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(dateTime);
+  }
 }
 
 extension StringExtension on String {

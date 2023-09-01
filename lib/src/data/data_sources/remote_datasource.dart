@@ -21,6 +21,8 @@ abstract class RemoteDatasource {
     required String email,
     required String password,
     required String publicKey,
+    required String partner,
+    DateTime? dob,
   });
   Future<KlumpUserModel> verifyOTP({
     required String accountNumber,
@@ -348,17 +350,24 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<bool> accountCredentials({
-    required String email,
-    required String password,
-    required String publicKey,
-  }) async {
+  Future<bool> accountCredentials(
+      {required String email,
+      required String password,
+      required String publicKey,
+      required String partner,
+      DateTime? dob}) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final body = {
         "email": email,
         "password": password,
+        "partner": partner,
       };
+      if (partner == 'polaris' && dob != null) {
+        body.addAll({
+          "date_of_birth": KCStringUtil.formatServerDate(dob),
+        });
+      }
       final headers = {
         'klump-public-key': publicKey,
       };

@@ -53,7 +53,7 @@ class _KCAndroidDatePickerContainerState
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+                color: KCColors.white,
                 borderRadius: BorderRadius.circular(13.2),
               ),
               child: Column(
@@ -67,52 +67,55 @@ class _KCAndroidDatePickerContainerState
                       headerHeight: 50,
                       showNavigationArrow: true,
                       toggleDaySelection: true,
-                      selectionColor: Theme.of(context).primaryColor,
-                      todayHighlightColor: Theme.of(context).highlightColor,
+                      selectionColor: KCColors.primary,
+                      todayHighlightColor: KCColors.lightBlue,
                       viewSpacing: 10,
-                      selectionTextStyle:
-                          Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                height: 1,
-                                color: Colors.white,
-                              ),
-                      headerStyle: DateRangePickerHeaderStyle(
-                        textStyle:
-                            Theme.of(context).textTheme.displaySmall!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  height: 1.2,
-                                ),
+                      selectionTextStyle: const TextStyle(
+                        fontFamily: KCFonts.avenir,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Colors.white,
                       ),
-                      monthCellStyle: DateRangePickerMonthCellStyle(
-                        textStyle:
-                            Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  height: 1.2,
-                                  fontSize: 12,
-                                ),
-                        todayTextStyle:
-                            Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  height: 1.2,
-                                  fontSize: 12,
-                                  color: Theme.of(context).highlightColor,
-                                ),
+                      headerStyle: const DateRangePickerHeaderStyle(
+                        textStyle: TextStyle(
+                          fontFamily: KCFonts.avenir,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: KCColors.black1,
+                        ),
                       ),
-                      yearCellStyle: DateRangePickerYearCellStyle(
-                        textStyle:
-                            Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  height: 1.2,
-                                  fontSize: 12,
-                                ),
-                        todayTextStyle:
-                            Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  height: 1.2,
-                                  fontSize: 12,
-                                  color: Theme.of(context).highlightColor,
-                                ),
+                      monthCellStyle: const DateRangePickerMonthCellStyle(
+                        textStyle: TextStyle(
+                          fontFamily: KCFonts.avenir,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: KCColors.black1,
+                        ),
+                        todayTextStyle: TextStyle(
+                          fontFamily: KCFonts.avenir,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: KCColors.lightBlue,
+                        ),
+                      ),
+                      yearCellStyle: const DateRangePickerYearCellStyle(
+                        textStyle: TextStyle(
+                          fontFamily: KCFonts.avenir,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: KCColors.black1,
+                        ),
+                        todayTextStyle: TextStyle(
+                          fontFamily: KCFonts.avenir,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: KCColors.lightBlue,
+                        ),
                       ),
                     ),
                   ),
                   Container(
-                    color: Theme.of(context).dividerColor,
+                    color: KCColors.grey7,
                     height: 0.5,
                   ),
                   GestureDetector(
@@ -120,17 +123,18 @@ class _KCAndroidDatePickerContainerState
                       widget.onDateSelected(
                           _controller.selectedDate ?? DateTime.now());
                     },
-                    child: SizedBox(
+                    child: const SizedBox(
                       height: 55,
                       child: Center(
                         child: Text(
                           'Confirm',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    color: Theme.of(context).highlightColor,
-                                    fontSize: 16,
-                                    height: 1.2,
-                                  ),
+                          style: TextStyle(
+                            fontFamily: KCFonts.avenir,
+                            fontWeight: FontWeight.w500,
+                            color: KCColors.lightBlue,
+                            fontSize: 16,
+                            height: 1.2,
+                          ),
                         ),
                       ),
                     ),
@@ -145,17 +149,19 @@ class _KCAndroidDatePickerContainerState
                 height: 55,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
+                  color: KCColors.white,
                   borderRadius: BorderRadius.circular(13.2),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Cancel',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Theme.of(context).highlightColor,
-                          fontSize: 16,
-                          height: 1.2,
-                        ),
+                    style: TextStyle(
+                      fontFamily: KCFonts.avenir,
+                      fontWeight: FontWeight.w500,
+                      color: KCColors.lightBlue,
+                      fontSize: 16,
+                      height: 1.2,
+                    ),
                   ),
                 ),
               ),

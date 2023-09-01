@@ -359,13 +359,16 @@ class KCChangeNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> addAccountCredentials(String email, String password) async {
+  Future<void> addAccountCredentials(
+      String email, String password, DateTime? dob) async {
     _setBusy(true);
     final response = await accountCredentialsUsecase(
       AccountCredentialsUsecaseParams(
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         email: email,
         password: password,
+        partner: _selectedBankFlow!.slug,
+        dob: dob,
       ),
     );
     _setBusy(false);

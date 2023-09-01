@@ -43,7 +43,7 @@ class _KCIOSDatePickerContainerState extends State<KCIOSDatePickerContainer> {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: KCColors.white,
               borderRadius: BorderRadius.circular(13.2),
             ),
             child: Column(
@@ -61,7 +61,7 @@ class _KCIOSDatePickerContainerState extends State<KCIOSDatePickerContainer> {
                   ),
                 ),
                 Container(
-                  color: Theme.of(context).dividerColor,
+                  color: KCColors.grey7,
                   height: 0.5,
                 ),
                 GestureDetector(
@@ -71,13 +71,12 @@ class _KCIOSDatePickerContainerState extends State<KCIOSDatePickerContainer> {
                   child: SizedBox(
                     height: 55,
                     child: Center(
-                      child: Text(
-                        'Confirm',
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Theme.of(context).highlightColor,
-                              fontSize: 16,
-                              height: 1.2,
-                            ),
+                      child: Material(
+                        child: KCHeadline5(
+                          'Confirm',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
@@ -92,17 +91,16 @@ class _KCIOSDatePickerContainerState extends State<KCIOSDatePickerContainer> {
               height: 55,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+                color: KCColors.white,
                 borderRadius: BorderRadius.circular(13.2),
               ),
               child: Center(
-                child: Text(
-                  'Cancel',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context).highlightColor,
-                        fontSize: 16,
-                        height: 1.2,
-                      ),
+                child: Material(
+                  child: KCHeadline5(
+                    'Cancel',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),

@@ -17,20 +17,28 @@ class PartnerAccountCredentials extends StatefulWidget {
 class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
-  late TextEditingController _dobController;
+  late TextEditingController _dobCtrl;
 
   late StreamController<String> emailStreamCtrl;
   late StreamController<String> passwordStreamCtrl;
+
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
   DateTime? _dob;
-  bool showDatePopup = false;
+  bool _validateDate = false;
 
   void validateInputs() {
+    final checkoutNotfier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+
     final emailError =
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    if (emailError?.isEmpty == true && passwordError?.isEmpty == true) {
+    final dobError = KCFormValidator.errorDOB(_dob, 'Required', _validateDate);
+    if (emailError?.isEmpty == true &&
+        passwordError?.isEmpty == true &&
+        (checkoutNotfier.selectedBankFlow?.slug != 'polaris' ||
+            dobError?.isEmpty == true)) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -42,7 +50,7 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
     super.initState();
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
-    _dobController = TextEditingController();
+    _dobCtrl = TextEditingController();
     emailStreamCtrl = StreamController<String>.broadcast();
     passwordStreamCtrl = StreamController<String>.broadcast();
 
@@ -61,7 +69,7 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
     super.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
-    _dobController.dispose();
+    _dobCtrl.dispose();
     emailStreamCtrl.close();
     passwordStreamCtrl.close();
   }
@@ -103,22 +111,22 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
                     KCHeadline5(
                         'We’ll only ask you for this information once and you can choose to easily update it in the Klump app later.'),
                     const YSpace(18),
-                    KCInputField(
-                      controller: TextEditingController(
-                          text: checkoutNotfier.stanbicUser?.firstname),
-                      hint: 'First Name',
-                      textInputType: TextInputType.text,
-                      readOnly: true,
-                    ),
-                    const YSpace(16),
-                    KCInputField(
-                      controller: TextEditingController(
-                          text: checkoutNotfier.stanbicUser?.lastname),
-                      hint: 'Last Name',
-                      textInputType: TextInputType.text,
-                      readOnly: true,
-                    ),
-                    const YSpace(16),
+                    // KCInputField(
+                    //   controller: TextEditingController(
+                    //       text: checkoutNotfier.stanbicUser?.firstname),
+                    //   hint: 'First Name',
+                    //   textInputType: TextInputType.text,
+                    //   readOnly: true,
+                    // ),
+                    // const YSpace(16),
+                    // KCInputField(
+                    //   controller: TextEditingController(
+                    //       text: checkoutNotfier.stanbicUser?.lastname),
+                    //   hint: 'Last Name',
+                    //   textInputType: TextInputType.text,
+                    //   readOnly: true,
+                    // ),
+                    // const YSpace(16),
                     StreamBuilder<String>(
                       stream: emailStreamCtrl.stream,
                       builder: (context, snapshot) {
@@ -136,69 +144,87 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
                     if (checkoutNotfier.selectedBankFlow?.slug == 'polaris')
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: KCInputField(
-                          controller: _dobController,
-                          hint: 'Date of Birth',
-                          textInputType: TextInputType.text,
-                          onTap: () {
-                            setState(() {
-                              showDatePopup = true;
-                            });
-                            if (Platform.isIOS) {
-                              showCupertinoModalPopup<void>(
-                                barrierDismissible: false,
-                                context: context,
-                                barrierColor:
-                                    const Color.fromRGBO(0, 0, 0, 0.4),
-                                builder: (BuildContext context) {
-                                  return KCIOSDatePickerContainer(
-                                    initialDate: _dob,
-                                    onDateSelected: (value) {
-                                      _dobController.text =
-                                          KCStringUtil.formatDate(value!);
-                                      setState(() {
-                                        _dob = value;
-                                        showDatePopup = false;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    onCancel: () {
-                                      setState(() {
-                                        showDatePopup = false;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  );
-                                },
-                              );
-                            } else {
-                              showDialog<void>(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (context) {
-                                  return KCAndroidDatePickerContainer(
-                                    initialDate: _dob,
-                                    onDateSelected: (value) {
-                                      _dobController.text =
-                                          KCStringUtil.formatDate(value!);
-                                      setState(() {
-                                        showDatePopup = false;
-                                        _dob = value;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    onCancel: () {
-                                      setState(() {
-                                        showDatePopup = false;
-                                      });
-                                      Navigator.pop(context);
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            KCInputField(
+                              controller: _dobCtrl,
+                              hint: 'Date of Birth',
+                              textInputType: TextInputType.text,
+                              validationMessage: KCFormValidator.errorDOB(
+                                _dob,
+                                'DOB is required',
+                                _validateDate,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _validateDate = true;
+                                });
+                                if (Platform.isIOS) {
+                                  showCupertinoModalPopup<void>(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    barrierColor:
+                                        const Color.fromRGBO(0, 0, 0, 0.4),
+                                    builder: (BuildContext context) {
+                                      return KCIOSDatePickerContainer(
+                                        initialDate: _dob,
+                                        onDateSelected: (value) {
+                                          _dobCtrl.text =
+                                              KCStringUtil.formatDate(value!);
+                                          setState(() {
+                                            _dob = value;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        onCancel: () {
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        },
+                                      );
                                     },
                                   );
-                                },
-                              );
-                            }
-                          },
-                          readOnly: true,
+                                } else {
+                                  showDialog<void>(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return KCAndroidDatePickerContainer(
+                                        initialDate: _dob,
+                                        onDateSelected: (value) {
+                                          _dobCtrl.text =
+                                              KCStringUtil.formatDate(value!);
+                                          setState(() {
+                                            _dob = value;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        onCancel: () {
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              readOnly: true,
+                            ),
+                            if (_validateDate &&
+                                KCFormValidator.errorDOB(_dob,
+                                            'DOB is required', _validateDate)
+                                        ?.isNotEmpty ==
+                                    true)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: KCBodyText1(
+                                  KCFormValidator.errorDOB(
+                                      _dob, 'DOB is required', _validateDate)!,
+                                  fontSize: 12,
+                                  color: Colors.red,
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     const YSpace(16),
@@ -218,6 +244,11 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
                         );
                       },
                     ),
+                    const YSpace(4),
+                    KCBodyText1(
+                      'Your password should contain a number, a special character (.!@#%^&), an uppercase and lowercase and must be at least 7 characters long.',
+                      fontSize: 12,
+                    ),
                     const YSpace(25),
                     const Spacer(),
                     ValueListenableBuilder<bool>(
@@ -232,6 +263,7 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
                               .addAccountCredentials(
                             _emailCtrl.text.trim(),
                             _passwordCtrl.text.trim(),
+                            _dob,
                           ),
                         );
                       },

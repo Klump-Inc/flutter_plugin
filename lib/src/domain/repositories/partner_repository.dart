@@ -173,12 +173,16 @@ class PartnerRepository {
     required String email,
     required String password,
     required String publicKey,
+    required String partner,
+    DateTime? dob,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.accountCredentials(
         email: email,
         password: password,
         publicKey: publicKey,
+        partner: partner,
+        dob: dob,
       );
       return Right(response);
     } catch (e) {
