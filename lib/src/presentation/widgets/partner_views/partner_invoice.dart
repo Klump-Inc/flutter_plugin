@@ -102,7 +102,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           const YSpace(24),
                           const Spacer(),
                           KCPrimaryButton(
-                            title: _redirectDone ? 'Continue' : 'Open webLink',
+                            title: _redirectDone ? 'Complete' : 'Continue',
                             onTap: () async {
                               if (_redirectDone) {
                                 checkoutNotifier.nextPage();

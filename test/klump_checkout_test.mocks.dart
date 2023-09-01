@@ -550,6 +550,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   _i6.Future<void> addAccountCredentials(
     String? email,
     String? password,
+    DateTime? dob,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -557,6 +558,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
           [
             email,
             password,
+            dob,
           ],
         ),
         returnValue: _i6.Future<void>.value(),

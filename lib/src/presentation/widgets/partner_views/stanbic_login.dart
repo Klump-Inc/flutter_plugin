@@ -179,8 +179,10 @@ class _StanbicLoginState extends State<StanbicLogin> {
                     GestureDetector(
                       onTap: () async {
                         if (!await launchUrl(
-                          Uri.parse(
-                              "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"),
+                          Uri.parse(checkoutNotfier.selectedBankFlow?.slug ==
+                                  'standbic'
+                              ? "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"
+                              : "https://www.polarisbanklimited.com/open-an-account/"),
                           mode: LaunchMode.externalApplication,
                         )) {
                           // ignore: avoid_print

@@ -95,6 +95,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         isLive: widget.isLive,
                       ),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PartnerMobileExperience(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInformation(),
                       const StanbicLogin(),
                       const StanbicLoginOTP(),

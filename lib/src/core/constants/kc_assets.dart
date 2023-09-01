@@ -8,4 +8,5 @@ class KCAssets {
   static String stanbicLogo = 'assets/images/stanbic_logo.png';
   static String klumpLogo = 'assets/icons/klump_logo.svg';
   static String copy = 'assets/icons/copy.svg';
+  static String computer = 'assets/icons/computer.svg';
 }
