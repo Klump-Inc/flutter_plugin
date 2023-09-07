@@ -6,14 +6,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicLoginOTP extends StatefulWidget {
-  const StanbicLoginOTP({super.key});
+class PartnerLoginOTP extends StatefulWidget {
+  const PartnerLoginOTP({super.key});
 
   @override
-  State<StanbicLoginOTP> createState() => _StanbicLoginOTPState();
+  State<PartnerLoginOTP> createState() => _PartnerLoginOTPState();
 }
 
-class _StanbicLoginOTPState extends State<StanbicLoginOTP> {
+class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   late TextEditingController _otpCtrl;
   late StreamController<String> otpStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);

@@ -7,14 +7,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicLogin extends StatefulWidget {
-  const StanbicLogin({super.key});
+class PartnerLogin extends StatefulWidget {
+  const PartnerLogin({super.key});
 
   @override
-  State<StanbicLogin> createState() => _StanbicLoginState();
+  State<PartnerLogin> createState() => _PartnerLoginState();
 }
 
-class _StanbicLoginState extends State<StanbicLogin> {
+class _PartnerLoginState extends State<PartnerLogin> {
   late TextEditingController _accountNoCtrl;
   late TextEditingController _phoneNoCtrl;
   late TextEditingController _firstNameCtrl;

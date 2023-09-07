@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicConfirmation extends StatefulWidget {
-  const StanbicConfirmation({super.key});
+class PartnerConfirmation extends StatefulWidget {
+  const PartnerConfirmation({super.key});
 
   @override
-  State<StanbicConfirmation> createState() => _StanbicConfirmationState();
+  State<PartnerConfirmation> createState() => _PartnerConfirmationState();
 }
 
-class _StanbicConfirmationState extends State<StanbicConfirmation> {
+class _PartnerConfirmationState extends State<PartnerConfirmation> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);

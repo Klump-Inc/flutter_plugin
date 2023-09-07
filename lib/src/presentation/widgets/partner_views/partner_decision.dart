@@ -6,14 +6,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class StanbicDecision extends StatefulWidget {
-  const StanbicDecision({super.key});
+class PartnerDecision extends StatefulWidget {
+  const PartnerDecision({super.key});
 
   @override
-  State<StanbicDecision> createState() => _StanbicDecisionState();
+  State<PartnerDecision> createState() => _PartnerDecisionState();
 }
 
-class _StanbicDecisionState extends State<StanbicDecision> {
+class _PartnerDecisionState extends State<PartnerDecision> {
   Timer? timer;
 
   void _startStatusLookup() {

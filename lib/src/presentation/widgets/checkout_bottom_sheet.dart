@@ -98,18 +98,18 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PartnerMobileExperience(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInformation(),
-                      const StanbicLogin(),
-                      const StanbicLoginOTP(),
+                      const PartnerLogin(),
+                      const PartnerLoginOTP(),
                       const PartnerTerms(),
                       const PartnerPaymentSplit(),
-                      const StanbicPaymentPreview(),
+                      const PartnerPaymentPreview(),
                       const PartnerAccountCredentials(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInvoice(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const StanbicConfirmation(),
-                      const StanbicDecision(),
-                      const StanbicDisbursementStatus(),
+                        const PartnerConfirmation(),
+                      const PartnerDecision(),
+                      const PartnerDisbursementStatus(),
                     ];
                     return PageView(
                       controller: checkoutNotifier.pageController,

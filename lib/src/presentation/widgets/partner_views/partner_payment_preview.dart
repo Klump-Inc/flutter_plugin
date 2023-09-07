@@ -5,14 +5,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicPaymentPreview extends StatefulWidget {
-  const StanbicPaymentPreview({super.key});
+class PartnerPaymentPreview extends StatefulWidget {
+  const PartnerPaymentPreview({super.key});
 
   @override
-  State<StanbicPaymentPreview> createState() => _StanbicPaymentPreviewState();
+  State<PartnerPaymentPreview> createState() => _PartnerPaymentPreviewState();
 }
 
-class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
+class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
   final ValueNotifier<bool> _accepted = ValueNotifier(false);
 
   @override

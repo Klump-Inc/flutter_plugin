@@ -4,15 +4,15 @@ import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicDisbursementStatus extends StatefulWidget {
-  const StanbicDisbursementStatus({super.key});
+class PartnerDisbursementStatus extends StatefulWidget {
+  const PartnerDisbursementStatus({super.key});
 
   @override
-  State<StanbicDisbursementStatus> createState() =>
-      _StanbicDisbursementStatusState();
+  State<PartnerDisbursementStatus> createState() =>
+      _PartnerDisbursementStatusState();
 }
 
-class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
+class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
   @override
   Widget build(BuildContext context) {
     var checkoutNotifier =
