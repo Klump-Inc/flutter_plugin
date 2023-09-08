@@ -70,6 +70,18 @@ class KCFormValidator {
     }
   }
 
+  static String? errorPassword2(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (text.length <= 7) {
+      return 'Password must have 8 or more characters';
+    } else {
+      return '';
+    }
+  }
+
   static String? errorOTP(String? text, String message, [int length = 6]) {
     if (text == null) {
       return null;

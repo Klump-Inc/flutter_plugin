@@ -17,6 +17,7 @@ class VerifyOTPUsecase extends KCUsecase<KlumpUser, VerifyOTPUsecaseParams> {
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
         otp: params.otp,
+        password: params.password,
         publicKey: params.publicKey,
         partner: params.partner,
         firstName: params.firstName,
@@ -27,7 +28,8 @@ class VerifyOTPUsecaseParams extends Equatable {
   const VerifyOTPUsecaseParams({
     required this.accountNumber,
     required this.phoneNumber,
-    required this.otp,
+    this.otp,
+    this.password,
     required this.publicKey,
     required this.partner,
     this.firstName,
@@ -35,7 +37,8 @@ class VerifyOTPUsecaseParams extends Equatable {
 
   final String accountNumber;
   final String phoneNumber;
-  final String otp;
+  final String? otp;
+  final String? password;
   final String publicKey;
   final String partner;
   final String? firstName;

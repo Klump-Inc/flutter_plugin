@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
+
 import 'package:provider/provider.dart';
 
 class PartnerLoginOTP extends StatefulWidget {
@@ -15,7 +16,9 @@ class PartnerLoginOTP extends StatefulWidget {
 
 class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   late TextEditingController _otpCtrl;
+  late TextEditingController _passwordCtrl;
   late StreamController<String> otpStreamCtrl;
+  late StreamController<String> passwordStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   Timer? _timer;
@@ -36,18 +39,24 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   }
 
   void validateInputs() {
-    final otpLength = Provider.of<KCChangeNotifier>(context, listen: false)
-                .selectedBankFlow
-                ?.slug ==
-            'stanbic'
+    final checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    final formFields =
+        checkoutNotifier.nextStepData!.nextStep.formFields!.map((e) => e.name);
+    final otpLength = checkoutNotifier.selectedBankFlow?.slug == 'stanbic'
         ? 6
-        : 4;
+        : checkoutNotifier.selectedBankFlow?.slug == 'polaris'
+            ? 4
+            : 5;
+    final passwordError =
+        KCFormValidator.errorPassword2(_passwordCtrl.text.trim(), 'Required');
     final otpError =
         KCFormValidator.errorOTP(_otpCtrl.text.trim(), 'Required', otpLength);
-    if (otpError?.isEmpty == true) {
-      _enabled.value = true;
-    } else {
+    if ((otpError?.isEmpty != true && formFields.contains('otp')) ||
+        (passwordError?.isEmpty != true && formFields.contains('password'))) {
       _enabled.value = false;
+    } else {
+      _enabled.value = true;
     }
   }
 
@@ -55,9 +64,16 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   void initState() {
     super.initState();
     _otpCtrl = TextEditingController();
+    _passwordCtrl = TextEditingController();
     otpStreamCtrl = StreamController<String>.broadcast();
+    passwordStreamCtrl = StreamController<String>.broadcast();
+
     _otpCtrl.addListener(() {
       otpStreamCtrl.sink.add(_otpCtrl.text.trim());
+      validateInputs();
+    });
+    _passwordCtrl.addListener(() {
+      passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
       validateInputs();
     });
     _startCounter();
@@ -66,13 +82,18 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   @override
   void dispose() {
     _otpCtrl.dispose();
+    _passwordCtrl.dispose();
     _timer?.cancel();
+    otpStreamCtrl.close();
+    passwordStreamCtrl.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
+    final formFields =
+        checkoutNotfier.nextStepData!.nextStep.formFields!.map((e) => e.name);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -108,63 +129,98 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                       width: 47,
                     ),
                     const YSpace(22),
-                    KCHeadline3('Enter the code'),
+                    KCHeadline3(formFields.contains('otp')
+                        ? 'Enter the code'
+                        : 'Enter password'),
                     const YSpace(8),
-                    KCHeadline5(
-                        'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'),
+                    KCHeadline5(formFields.contains('otp')
+                        ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
+                        : checkoutNotfier.nextStepData?.data),
                     const YSpace(28),
-                    StreamBuilder<String>(
-                      stream: otpStreamCtrl.stream,
-                      builder: (context, snapshot) {
-                        return KCInputField(
-                          controller: _otpCtrl,
-                          hint: checkoutNotfier.selectedBankFlow?.slug ==
-                                  'stanbic'
-                              ? 'Enter the 6-digit code here'
-                              : 'Enter the 4-digit code here',
-                          validationMessage: KCFormValidator.errorOTP(
-                            snapshot.data,
-                            'OTP is required',
-                            checkoutNotfier.selectedBankFlow?.slug == 'stanbic'
-                                ? 6
-                                : 4,
-                          ),
-                          textInputType: TextInputType.number,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            LengthLimitingTextInputFormatter(6),
-                          ],
-                          textInputAction: TextInputAction.done,
-                        );
-                      },
-                    ),
-                    const YSpace(16),
-                    ValueListenableBuilder<int>(
-                      valueListenable: _timeLeft,
-                      builder: (_, timeLeft, __) {
-                        return InkWell(
-                          onTap: timeLeft != 0 || checkoutNotfier.isBusy
-                              ? null
-                              : () {
-                                  checkoutNotfier
-                                      .resendAccountOTP()
-                                      .then((value) {
-                                    _startCounter();
-                                  });
-                                },
-                          child: KCBodyText1(
-                            timeLeft == 0
-                                ? 'Resend code'
-                                : '${timeLeft ~/ 60}:${timeLeft >= 60 ? '00' : timeLeft} remaining',
-                            fontSize: 16,
-                            color: KCColors.lightBlue,
-                            style: const TextStyle(
-                              decoration: TextDecoration.underline,
+                    if (formFields.contains('otp'))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: otpStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _otpCtrl,
+                              hint: checkoutNotfier.selectedBankFlow?.slug ==
+                                      'stanbic'
+                                  ? 'Enter the 6-digit code here'
+                                  : checkoutNotfier.selectedBankFlow?.slug ==
+                                          'polaris'
+                                      ? 'Enter the 4-digit code here'
+                                      : 'Enter the 5-digit code here',
+                              validationMessage: KCFormValidator.errorOTP(
+                                snapshot.data,
+                                'OTP is required',
+                                checkoutNotfier.selectedBankFlow?.slug ==
+                                        'stanbic'
+                                    ? 6
+                                    : checkoutNotfier.selectedBankFlow?.slug ==
+                                            'polaris'
+                                        ? 4
+                                        : 5,
+                              ),
+                              textInputType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                                LengthLimitingTextInputFormatter(6),
+                              ],
+                              textInputAction: TextInputAction.done,
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields.contains('password'))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: passwordStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _passwordCtrl,
+                              hint: 'Password',
+                              password: true,
+                              textInputType: TextInputType.text,
+                              textInputAction: TextInputAction.done,
+                              validationMessage: KCFormValidator.errorPassword2(
+                                snapshot.data,
+                                'Password is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields.contains('otp'))
+                      ValueListenableBuilder<int>(
+                        valueListenable: _timeLeft,
+                        builder: (_, timeLeft, __) {
+                          return InkWell(
+                            onTap: timeLeft != 0 || checkoutNotfier.isBusy
+                                ? null
+                                : () {
+                                    checkoutNotfier
+                                        .resendAccountOTP()
+                                        .then((value) {
+                                      _startCounter();
+                                    });
+                                  },
+                            child: KCBodyText1(
+                              timeLeft == 0
+                                  ? 'Resend code'
+                                  : '${timeLeft ~/ 60}:${timeLeft >= 60 ? '00' : timeLeft} remaining',
+                              fontSize: 16,
+                              color: KCColors.lightBlue,
+                              style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
                     const YSpace(25),
                     const Spacer(),
                     ValueListenableBuilder<bool>(
@@ -174,8 +230,10 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                           title: 'Continue',
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
-                          onTap: () =>
-                              checkoutNotfier.verifyOTP(_otpCtrl.text.trim()),
+                          onTap: () => checkoutNotfier.verifyOTP(
+                            _otpCtrl.text.trim(),
+                            _passwordCtrl.text.trim(),
+                          ),
                         );
                       },
                     ),

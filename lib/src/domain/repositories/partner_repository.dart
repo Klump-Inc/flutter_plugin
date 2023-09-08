@@ -33,7 +33,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, void>> validateAccount({
+  Future<Either<KCException, KCAPIResponse>> validateAccount({
     required String accountNumber,
     required String phoneNumber,
     String? firstName,
@@ -59,7 +59,8 @@ class PartnerRepository {
   Future<Either<KCException, KlumpUser>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
-    required String otp,
+    required String? otp,
+    required String? password,
     required String publicKey,
     String? firstName,
     required String partner,
@@ -69,6 +70,7 @@ class PartnerRepository {
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
         otp: otp,
+        password: password,
         publicKey: publicKey,
         firstName: firstName,
         partner: partner,

@@ -52,6 +52,9 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KlumpCheckoutData? _checkoutData;
 
+  KCAPIResponse? _nextStepData;
+  KCAPIResponse? get nextStepData => _nextStepData;
+
   String? _accountNumber;
   String? _phoneNumber;
   String? _firstName;
@@ -205,7 +208,10 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) => nextPage(),
+      (r) {
+        _nextStepData = r;
+        nextPage();
+      },
     );
   }
 
@@ -233,16 +239,18 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
-  Future<void> verifyOTP(String otp) async {
+  Future<void> verifyOTP(String? otp, String? password) async {
     _setBusy(true);
     final response = await verifyOTPUsecase(
       VerifyOTPUsecaseParams(
-          accountNumber: _accountNumber ?? '',
-          phoneNumber: _phoneNumber ?? '',
-          otp: otp,
-          publicKey: _checkoutData!.merchantPublicKey,
-          partner: _selectedBankFlow!.slug,
-          firstName: _firstName),
+        accountNumber: _accountNumber ?? '',
+        phoneNumber: _phoneNumber ?? '',
+        otp: otp,
+        password: password,
+        publicKey: _checkoutData!.merchantPublicKey,
+        partner: _selectedBankFlow!.slug,
+        firstName: _firstName,
+      ),
     );
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),

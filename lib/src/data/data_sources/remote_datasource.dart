@@ -10,7 +10,7 @@ abstract class RemoteDatasource {
     required Map<String, dynamic> metaData,
     required bool isLive,
   });
-  Future<void> validateAccount({
+  Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
     required String phoneNumber,
     String? firstName,
@@ -27,7 +27,8 @@ abstract class RemoteDatasource {
   Future<KlumpUserModel> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
-    required String otp,
+    required String? otp,
+    required String? password,
     required String publicKey,
     String? firstName,
     required String partner,
@@ -115,7 +116,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<void> validateAccount({
+  Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
     required String phoneNumber,
     String? firstName,
@@ -139,11 +140,16 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           'firstname': firstName,
         });
       }
-      await kcHttpRequester.post(
+      final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
         endpoint: '/v1/loans/account/verification',
         body: body,
+      );
+      Logger().d(response.data);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: response.data['message'],
       );
     } else {
       throw NoInternetKCException();
@@ -154,7 +160,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   Future<KlumpUserModel> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
-    required String otp,
+    required String? otp,
+    required String? password,
     required String publicKey,
     String? firstName,
     required String partner,
@@ -167,7 +174,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final body = <String, dynamic>{
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
-        "otp": otp,
         "partner": partner,
         "email": "",
         'is_live':
@@ -178,6 +184,17 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           'firstname': firstName,
         });
       }
+      if (otp?.isNotEmpty == true) {
+        body.addAll({
+          "otp": otp,
+        });
+      }
+      if (password?.isNotEmpty == true) {
+        body.addAll({
+          "password": password,
+        });
+      }
+      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/verify-otp',
