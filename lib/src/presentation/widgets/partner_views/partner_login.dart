@@ -180,9 +180,12 @@ class _PartnerLoginState extends State<PartnerLogin> {
                       onTap: () async {
                         if (!await launchUrl(
                           Uri.parse(checkoutNotfier.selectedBankFlow?.slug ==
-                                  'standbic'
+                                  'stanbic'
                               ? "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"
-                              : "https://www.polarisbanklimited.com/open-an-account/"),
+                              : checkoutNotfier.selectedBankFlow?.slug ==
+                                      'specta'
+                                  ? 'https://paywithspecta.com/account/register'
+                                  : "https://www.polarisbanklimited.com/open-an-account/"),
                           mode: LaunchMode.externalApplication,
                         )) {
                           // ignore: avoid_print

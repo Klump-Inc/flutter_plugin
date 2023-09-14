@@ -2,7 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class VerifyOTPUsecase extends KCUsecase<KlumpUser, VerifyOTPUsecaseParams> {
+class VerifyOTPUsecase
+    extends KCUsecase<KCAPIResponse, VerifyOTPUsecaseParams> {
   VerifyOTPUsecase({
     required this.partnerRepository,
   });
@@ -10,7 +11,7 @@ class VerifyOTPUsecase extends KCUsecase<KlumpUser, VerifyOTPUsecaseParams> {
   final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, KlumpUser>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     VerifyOTPUsecaseParams params,
   ) =>
       partnerRepository.verifyOTP(

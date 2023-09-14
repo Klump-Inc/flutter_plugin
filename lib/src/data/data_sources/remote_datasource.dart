@@ -17,14 +17,14 @@ abstract class RemoteDatasource {
     required String publicKey,
     required String partner,
   });
-  Future<bool> accountCredentials({
+  Future<KCAPIResponseModel> accountCredentials({
     required String email,
     required String password,
     required String publicKey,
     required String partner,
     DateTime? dob,
   });
-  Future<KlumpUserModel> verifyOTP({
+  Future<KCAPIResponseModel> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String? otp,
@@ -48,9 +48,9 @@ abstract class RemoteDatasource {
   Future<KCAPIResponseModel> createNew({
     required double amount,
     required String publicKey,
-    required int installment,
-    required int repaymentDay,
-    required String termsVersion,
+    required int? installment,
+    required int? repaymentDay,
+    required String? termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
     required int? insurerId,
@@ -157,7 +157,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<KlumpUserModel> verifyOTP({
+  Future<KCAPIResponseModel> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String? otp,
@@ -204,7 +204,10 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       Logger().d(response.data);
       await prefs.setString(KC_LOGIN_TOKEN,
           (response.data as Map<String, dynamic>)['data']['token']);
-      return KlumpUserModel.fromJson(response.data['data']);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: KlumpUserModel.fromJson(response.data['data']),
+      );
     } else {
       throw NoInternetKCException();
     }
@@ -290,9 +293,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   Future<KCAPIResponseModel> createNew({
     required double amount,
     required String publicKey,
-    required int installment,
-    required int repaymentDay,
-    required String termsVersion,
+    required int? installment,
+    required int? repaymentDay,
+    required String? termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
     required int? insurerId,
@@ -305,8 +308,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       };
       final body = {
         "amount": amount,
-        "installment": installment,
-        "repaymentDay": repaymentDay,
         "klump_public_key": publicKey,
         "items": items.map((e) => e.toMap()).toList(),
         "partner": partner,
@@ -321,11 +322,23 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           "insurerId": insurerId,
         });
       }
-      if (partner == 'stanbic') {
+
+      if (termsVersion != null) {
         body.addAll({
           "termsAndConditionVersion": termsVersion,
         });
       }
+      if (installment != null) {
+        body.addAll({
+          "installment": installment,
+        });
+      }
+      if (repaymentDay != null) {
+        body.addAll({
+          "repaymentDay": repaymentDay,
+        });
+      }
+
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/new-loan',
@@ -367,7 +380,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<bool> accountCredentials(
+  Future<KCAPIResponseModel> accountCredentials(
       {required String email,
       required String password,
       required String publicKey,
@@ -395,7 +408,10 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      return response.statusCode == 200;
+      Logger().d(response.data);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+      );
     } else {
       throw NoInternetKCException();
     }

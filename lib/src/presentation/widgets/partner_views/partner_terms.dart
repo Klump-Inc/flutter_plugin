@@ -42,7 +42,7 @@ class _PartnerTermsState extends State<PartnerTerms> {
             minHeight: constraints.maxHeight,
           ),
           child: IntrinsicHeight(
-            child: checkoutNotifier.stanbicUser?.maxLoanLimit == null
+            child: checkoutNotifier.klumpUser?.maxLoanLimit == null
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 26),
                     child: Column(

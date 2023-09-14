@@ -304,8 +304,7 @@ void main() {
     //   expect(find.byType(KCPrimaryButton), findsOneWidget);
     // });
     testWidgets('PartnerConfirmation renders correctly', (tester) async {
-      when(kcChangeNotifier.stanbicUser?.maxLoanLimit)
-          .thenAnswer((_) => 500000);
+      when(kcChangeNotifier.klumpUser?.maxLoanLimit).thenAnswer((_) => 500000);
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,
@@ -409,11 +408,14 @@ void main() {
     });
 
     testWidgets('PartnerDisbursementStatus renders correctly', (tester) async {
-      when(kcChangeNotifier.stanbicStatusResponse).thenAnswer((_) =>
-          const DisbursementStatusResponse(
-              isCompleted: true,
-              isSuccessful: true,
-              message: 'Loan has been disbursed successfully'));
+      when(kcChangeNotifier.disbursementStatusResponse).thenAnswer(
+        (_) => const DisbursementStatusResponse(
+          isCompleted: true,
+          isSuccessful: true,
+          message: 'Loan has been disbursed successfully',
+          next_repayment_date: null,
+        ),
+      );
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,

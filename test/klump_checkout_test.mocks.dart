@@ -386,20 +386,18 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         returnValue: false,
       ) as bool);
   @override
-  void nextPage({bool? skipPage = false}) => super.noSuchMethod(
+  void nextPage() => super.noSuchMethod(
         Invocation.method(
           #nextPage,
           [],
-          {#skipPage: skipPage},
         ),
         returnValueForMissingStub: null,
       );
   @override
-  void prevPage({bool? skipPage = false}) => super.noSuchMethod(
+  void prevPage() => super.noSuchMethod(
         Invocation.method(
           #prevPage,
           [],
-          {#skipPage: skipPage},
         ),
         returnValueForMissingStub: null,
       );

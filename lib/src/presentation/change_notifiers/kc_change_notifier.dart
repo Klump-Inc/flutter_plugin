@@ -3,6 +3,7 @@ import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
   KCChangeNotifier() {
@@ -63,15 +64,15 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get firstName => _firstName;
   KCAPIResponse? _termsConditionResponse;
   KCAPIResponse? get termsConditionResponse => _termsConditionResponse;
-  KlumpUser? _stanbicUser;
-  KlumpUser? get stanbicUser => _stanbicUser;
+  KlumpUser? _klumpUser;
+  KlumpUser? get klumpUser => _klumpUser;
   RepaymentDetails? _repaymentDetails;
   RepaymentDetails? get repaymentDetails => _repaymentDetails;
   NextStep? _finalLoanStep;
   NextStep? get finalLoanStep => _finalLoanStep;
-  DisbursementStatusResponse? _stanbicStatusResponse;
-  DisbursementStatusResponse? get stanbicStatusResponse =>
-      _stanbicStatusResponse;
+  DisbursementStatusResponse? _disbursementStatusResponse;
+  DisbursementStatusResponse? get disbursementStatusResponse =>
+      _disbursementStatusResponse;
   List<PartnerInsurer>? _partnerInsurers;
   List<PartnerInsurer>? get partnerInsurers => _partnerInsurers;
   List<Partner>? _loanPartners;
@@ -86,34 +87,23 @@ class KCChangeNotifier extends ChangeNotifier {
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
 
-  void nextPage({bool skipPage = false}) {
-    if (skipPage) {
-      _currentPage = _currentPage + 2;
-      _pageController.jumpToPage(_currentPage);
-    } else {
-      _currentPage++;
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.linear,
-      );
-    }
+  void nextPage() {
+    _currentPage++;
+    _pageController.animateToPage(
+      _currentPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
     notifyListeners();
   }
 
-  void prevPage({bool skipPage = false}) {
-    if (skipPage) {
-      _currentPage = _currentPage - 2;
-      _pageController.jumpToPage(_currentPage);
-    } else {
-      _currentPage--;
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.linear,
-      );
-    }
-
+  void prevPage() {
+    _currentPage--;
+    _pageController.animateToPage(
+      _currentPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
     notifyListeners();
   }
 
@@ -255,8 +245,12 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _stanbicUser = r;
-        nextPage();
+        _klumpUser = r.data as KlumpUser;
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
       },
     );
     _setBusy(false);
@@ -305,11 +299,12 @@ class KCChangeNotifier extends ChangeNotifier {
       CreateNewUsecaseParams(
         amount: _checkoutData!.amount,
         publicKey: _checkoutData!.merchantPublicKey,
-        installment: _repaymentDetails!.installment,
-        repaymentDay: int.parse(_repaymentDetails!.repaymentDay.toString()),
+        installment: _repaymentDetails?.installment,
+        repaymentDay: _repaymentDetails != null
+            ? int.parse(_repaymentDetails!.repaymentDay.toString())
+            : null,
         termsVersion:
-            (_termsConditionResponse!.data as TermsAndCondition?)?.version ??
-                '1',
+            (_termsConditionResponse?.data as TermsAndCondition?)?.version,
         items: _checkoutData?.items ?? [],
         shippingData: _checkoutData?.shippingData,
         insurerId: _selectedPartnerInsurer?.value,
@@ -318,10 +313,18 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) {
+      (r) async {
         _finalLoanStep = r.nextStep;
         _loanId = r.data;
-        if (selectedBankFlow?.slug == 'stanbic') {
+        if (selectedBankFlow?.slug == 'specta') {
+          if (!await launchUrl(
+            Uri.parse(r.nextStep.redirectUrl ?? ''),
+            mode: LaunchMode.externalApplication,
+          )) {
+            showToast('Could not open link!');
+          }
+        }
+        if (selectedBankFlow?.slug != 'polaris') {
           nextPage();
         }
       },
@@ -341,7 +344,7 @@ class KCChangeNotifier extends ChangeNotifier {
     return response.fold(
       (l) => null,
       (r) {
-        _stanbicStatusResponse = r;
+        _disbursementStatusResponse = r;
         return r;
       },
     );
@@ -382,17 +385,19 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) => nextPage(),
+      (r) {
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
     );
   }
 
   Future<void> acceptTerms() async {
     if (selectedBankFlow?.slug == 'stanbic') {
-      if (stanbicUser?.requiresUserCredential == true) {
-        nextPage();
-      } else {
-        nextPage(skipPage: true);
-      }
+      nextPage();
     } else {
       _setBusy(true);
       final response = await acceptTermsUsecase(
@@ -404,13 +409,7 @@ class KCChangeNotifier extends ChangeNotifier {
       _setBusy(false);
       response.fold(
         (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-        (r) {
-          if (stanbicUser?.requiresUserCredential == true) {
-            nextPage();
-          } else {
-            nextPage(skipPage: true);
-          }
-        },
+        (r) => nextPage(),
       );
     }
   }

@@ -73,15 +73,7 @@ class _PartnerConfirmationState extends State<PartnerConfirmation> {
                     KCSecondaryButton(
                       title: 'Go back',
                       disabled: checkoutNotifier.isBusy,
-                      onTap: () {
-                        if (checkoutNotifier
-                                .stanbicUser?.requiresUserCredential ==
-                            true) {
-                          checkoutNotifier.prevPage();
-                        } else {
-                          checkoutNotifier.prevPage(skipPage: true);
-                        }
-                      },
+                      onTap: () => checkoutNotifier.prevPage(),
                     ),
                     const YSpace(59)
                   ],

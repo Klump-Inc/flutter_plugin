@@ -56,7 +56,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, KlumpUser>> verifyOTP({
+  Future<Either<KCException, KCAPIResponse>> verifyOTP({
     required String accountNumber,
     required String phoneNumber,
     required String? otp,
@@ -128,9 +128,9 @@ class PartnerRepository {
   Future<Either<KCException, KCAPIResponse>> createNew({
     required double amount,
     required String publicKey,
-    required int installment,
-    required int repaymentDay,
-    required String termsVersion,
+    required int? installment,
+    required int? repaymentDay,
+    required String? termsVersion,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
     required int? insurerId,
@@ -171,7 +171,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, bool>> accountCredentials({
+  Future<Either<KCException, KCAPIResponse>> accountCredentials({
     required String email,
     required String password,
     required String publicKey,

@@ -94,16 +94,23 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         data: widget.data,
                         isLive: widget.isLive,
                       ),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'polaris' ||
+                          checkoutNotifier.selectedBankFlow?.slug == 'specta')
                         const PartnerMobileExperience(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInformation(),
                       const PartnerLogin(),
                       const PartnerLoginOTP(),
-                      const PartnerTerms(),
-                      const PartnerPaymentSplit(),
-                      const PartnerPaymentPreview(),
-                      const PartnerAccountCredentials(),
+                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                        const PartnerTerms(),
+                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                        const PartnerPaymentSplit(),
+                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                        const PartnerPaymentPreview(),
+                      if (checkoutNotifier.klumpUser?.requiresUserCredential ==
+                          true)
+                        const PartnerAccountCredentials(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInvoice(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')

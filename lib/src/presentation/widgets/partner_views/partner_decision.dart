@@ -46,6 +46,8 @@ class _PartnerDecisionState extends State<PartnerDecision> {
 
   @override
   Widget build(BuildContext context) {
+    var checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -59,11 +61,10 @@ class _PartnerDecisionState extends State<PartnerDecision> {
               child: Column(
                 children: [
                   const YSpace(32.59),
-                  Image.asset(
-                    KCAssets.stanbicLogo,
+                  Image.network(
+                    checkoutNotifier.selectedBankFlow?.logo ?? '',
                     height: 55,
                     width: 47,
-                    package: KC_PACKAGE_NAME,
                   ),
                   Expanded(
                     child: Column(
