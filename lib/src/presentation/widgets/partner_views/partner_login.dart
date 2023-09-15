@@ -175,32 +175,38 @@ class _PartnerLoginState extends State<PartnerLogin> {
                           );
                         },
                       ),
-                    const YSpace(16),
-                    GestureDetector(
-                      onTap: () async {
-                        if (!await launchUrl(
-                          Uri.parse(checkoutNotfier.selectedBankFlow?.slug ==
-                                  'stanbic'
-                              ? "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"
-                              : checkoutNotfier.selectedBankFlow?.slug ==
-                                      'specta'
-                                  ? 'https://paywithspecta.com/account/register'
-                                  : "https://www.polarisbanklimited.com/open-an-account/"),
-                          mode: LaunchMode.externalApplication,
-                        )) {
-                          // ignore: avoid_print
-                          print('Could not open link');
-                        }
-                      },
-                      child: KCBodyText1(
-                        'Don’t have a ${(checkoutNotfier.selectedBankFlow?.slug ?? checkoutNotfier.selectedBankFlow?.name)?.capitalize()} account? Create one',
-                        fontSize: 16,
-                        color: KCColors.lightBlue,
-                        style: const TextStyle(
-                          decoration: TextDecoration.underline,
+                    if (checkoutNotfier.selectedBankFlow?.nextStep?.displayData
+                                ?.createPartnerAccountText !=
+                            null &&
+                        checkoutNotfier.selectedBankFlow?.nextStep?.displayData
+                                ?.createPartnerAccountUrl !=
+                            null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (!await launchUrl(
+                              Uri.parse(checkoutNotfier
+                                  .selectedBankFlow!
+                                  .nextStep!
+                                  .displayData!
+                                  .createPartnerAccountUrl!),
+                              mode: LaunchMode.externalApplication,
+                            )) {
+                              // ignore: avoid_print
+                              print('Could not open link');
+                            }
+                          },
+                          child: KCBodyText1(
+                            '${checkoutNotfier.selectedBankFlow!.nextStep!.displayData!.createPartnerAccountText}',
+                            fontSize: 16,
+                            color: KCColors.lightBlue,
+                            style: const TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
                     const YSpace(25),
                     const Spacer(),
                     ValueListenableBuilder<bool>(

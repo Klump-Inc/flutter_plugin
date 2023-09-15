@@ -56,7 +56,7 @@ class PartnerMobileExperience extends StatelessWidget {
                           ),
                           const YSpace(25.45),
                           KCBodyText1(
-                            'Use a computer for better \npayment experience',
+                            'Use a computer for a better \npayment experience',
                             textAlign: TextAlign.center,
                             height: 1.875,
                           )

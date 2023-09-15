@@ -15,6 +15,7 @@ class PartnerModel extends Partner {
     required super.config,
     super.createdAt,
     super.updatedAt,
+    super.nextStep,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) => PartnerModel(
@@ -33,6 +34,9 @@ class PartnerModel extends Partner {
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
+        nextStep: json['next_step'] == null
+            ? null
+            : NextStepModel.fromJson(json['next_step']),
       );
 
   Map<String, dynamic> toJson() => {

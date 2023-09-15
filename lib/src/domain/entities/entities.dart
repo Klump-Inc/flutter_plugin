@@ -7,3 +7,4 @@ export 'klump_user.dart';
 export 'partner.dart';
 export 'next_step.dart';
 export 'kc_api_response.dart';
+export 'display_data.dart';
