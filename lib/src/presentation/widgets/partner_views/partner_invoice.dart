@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
@@ -47,15 +48,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: InkWell(
-                              onTap: () {
-                                if (checkoutNotifier
-                                        .stanbicUser?.requiresUserCredential ==
-                                    true) {
-                                  checkoutNotifier.prevPage();
-                                } else {
-                                  checkoutNotifier.prevPage(skipPage: true);
-                                }
-                              },
+                              onTap: () => checkoutNotifier.prevPage(),
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: SvgPicture.asset(
@@ -75,12 +68,12 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                             textAlign: TextAlign.left,
                           ),
                           const YSpace(8),
-                          KCBodyText1(
-                            checkoutNotifier
-                                    .finalLoanStep!.displayData?.subTitle ??
-                                '',
-                            fontSize: 15,
-                            height: 1.6,
+                          SizedBox(
+                            height: 50,
+                            child: Html(
+                              data:
+                                  "$KC_HTML_HEADER${checkoutNotifier.finalLoanStep!.displayData?.subTitle ?? ''}$KC_HTML_FOOTER",
+                            ),
                           ),
                           if (checkoutNotifier.finalLoanStep!.displayData?.list
                                   ?.isNotEmpty ==

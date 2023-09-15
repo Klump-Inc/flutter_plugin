@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class AccountValidationUsecase
-    extends KCUsecase<void, AccountValidationUsecaseParams> {
+    extends KCUsecase<KCAPIResponse, AccountValidationUsecaseParams> {
   AccountValidationUsecase({
     required this.partnerRepository,
   });
@@ -11,7 +11,7 @@ class AccountValidationUsecase
   final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, void>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     AccountValidationUsecaseParams params,
   ) =>
       partnerRepository.validateAccount(

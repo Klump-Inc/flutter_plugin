@@ -42,9 +42,9 @@ class CreateNewUsecaseParams extends Equatable {
 
   final double amount;
   final String publicKey;
-  final int installment;
-  final int repaymentDay;
-  final String termsVersion;
+  final int? installment;
+  final int? repaymentDay;
+  final String? termsVersion;
   final List<KlumpCheckoutItem> items;
   final Map<String, dynamic>? shippingData;
   final int? insurerId;

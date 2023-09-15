@@ -6,14 +6,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class StanbicDecision extends StatefulWidget {
-  const StanbicDecision({super.key});
+class PartnerDecision extends StatefulWidget {
+  const PartnerDecision({super.key});
 
   @override
-  State<StanbicDecision> createState() => _StanbicDecisionState();
+  State<PartnerDecision> createState() => _PartnerDecisionState();
 }
 
-class _StanbicDecisionState extends State<StanbicDecision> {
+class _PartnerDecisionState extends State<PartnerDecision> {
   Timer? timer;
 
   void _startStatusLookup() {
@@ -46,6 +46,8 @@ class _StanbicDecisionState extends State<StanbicDecision> {
 
   @override
   Widget build(BuildContext context) {
+    var checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -59,11 +61,10 @@ class _StanbicDecisionState extends State<StanbicDecision> {
               child: Column(
                 children: [
                   const YSpace(32.59),
-                  Image.asset(
-                    KCAssets.stanbicLogo,
+                  Image.network(
+                    checkoutNotifier.selectedBankFlow?.logo ?? '',
                     height: 55,
                     width: 47,
-                    package: KC_PACKAGE_NAME,
                   ),
                   Expanded(
                     child: Column(

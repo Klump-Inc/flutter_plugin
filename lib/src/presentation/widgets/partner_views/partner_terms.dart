@@ -42,7 +42,7 @@ class _PartnerTermsState extends State<PartnerTerms> {
             minHeight: constraints.maxHeight,
           ),
           child: IntrinsicHeight(
-            child: checkoutNotifier.stanbicUser?.maxLoanLimit == null
+            child: checkoutNotifier.klumpUser?.maxLoanLimit == null
                 ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 26),
                     child: Column(
@@ -138,16 +138,10 @@ class _PartnerTermsState extends State<PartnerTerms> {
                             const YSpace(8),
                             Expanded(
                               child: SingleChildScrollView(
-                                child: bankTerms.doc != null
-                                    ? Html(
-                                        data:
-                                            "$KC_HTML_HEADER${bankTerms.doc ?? ''}$KC_HTML_FOOTER",
-                                      )
-                                    : KCBodyText1(
-                                        bankTerms.text ?? '',
-                                        fontSize: 15,
-                                        height: 1.4667,
-                                      ),
+                                child: Html(
+                                  data:
+                                      "$KC_HTML_HEADER${bankTerms.text ?? ''}$KC_HTML_FOOTER",
+                                ),
                               ),
                             ),
                             const YSpace(24),

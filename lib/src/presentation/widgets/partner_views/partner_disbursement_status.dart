@@ -4,15 +4,15 @@ import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class StanbicDisbursementStatus extends StatefulWidget {
-  const StanbicDisbursementStatus({super.key});
+class PartnerDisbursementStatus extends StatefulWidget {
+  const PartnerDisbursementStatus({super.key});
 
   @override
-  State<StanbicDisbursementStatus> createState() =>
-      _StanbicDisbursementStatusState();
+  State<PartnerDisbursementStatus> createState() =>
+      _PartnerDisbursementStatusState();
 }
 
-class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
+class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
   @override
   Widget build(BuildContext context) {
     var checkoutNotifier =
@@ -31,11 +31,10 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                 child: Column(
                   children: [
                     const YSpace(32.59),
-                    Image.asset(
-                      KCAssets.stanbicLogo,
+                    Image.network(
+                      checkoutNotifier.selectedBankFlow?.logo ?? '',
                       height: 55,
                       width: 47,
-                      package: KC_PACKAGE_NAME,
                     ),
                     const YSpace(24),
                     Expanded(
@@ -46,7 +45,7 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                             height: 187.1,
                             width: 187.1,
                             child: SvgPicture.asset(
-                              checkoutNotifier.stanbicStatusResponse
+                              checkoutNotifier.disbursementStatusResponse
                                           ?.isSuccessful ==
                                       true
                                   ? KCAssets.successIllus
@@ -56,8 +55,8 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                           ),
                           const YSpace(22),
                           KCHeadline3(
-                            checkoutNotifier
-                                        .stanbicStatusResponse?.isSuccessful ==
+                            checkoutNotifier.disbursementStatusResponse
+                                        ?.isSuccessful ==
                                     true
                                 ? 'Successful'
                                 : 'Unsuccessful',
@@ -67,12 +66,12 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                           ),
                           const YSpace(8),
                           KCBodyText1(
-                            checkoutNotifier
-                                        .stanbicStatusResponse?.isSuccessful ==
+                            checkoutNotifier.disbursementStatusResponse
+                                        ?.isSuccessful ==
                                     true
-                                ? 'Loan disbursement successful \nYour next pay date is ${checkoutNotifier.repaymentDetails!.repaymentSchedules.first.repaymentDate}'
+                                ? '${checkoutNotifier.disbursementStatusResponse?.message}  ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date != null ? '\nYour next pay date is ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date}' : ''}'
                                 : checkoutNotifier
-                                        .stanbicStatusResponse?.message ??
+                                        .disbursementStatusResponse?.message ??
                                     '',
                             fontSize: 16,
                             textAlign: TextAlign.center,
@@ -84,18 +83,20 @@ class _StanbicDisbursementStatusState extends State<StanbicDisbursementStatus> {
                     const YSpace(24),
                     KCPrimaryButton(
                       title: checkoutNotifier
-                                  .stanbicStatusResponse?.isSuccessful ==
+                                  .disbursementStatusResponse?.isSuccessful ==
                               true
                           ? 'Continue'
                           : 'Go back',
                       onTap: () {
                         final checkoutResponse = KlumpCheckoutResponse(
-                          checkoutNotifier
-                                      .stanbicStatusResponse?.isSuccessful ==
+                          checkoutNotifier.disbursementStatusResponse
+                                      ?.isSuccessful ==
                                   true
                               ? CheckoutStatus.success
                               : CheckoutStatus.error,
-                          checkoutNotifier.stanbicStatusResponse?.message ?? '',
+                          checkoutNotifier
+                                  .disbursementStatusResponse?.message ??
+                              '',
                           null,
                         );
                         Navigator.pop(context, checkoutResponse);

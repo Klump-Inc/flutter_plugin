@@ -71,7 +71,6 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
     _passwordCtrl.dispose();
     _dobCtrl.dispose();
     emailStreamCtrl.close();
-    passwordStreamCtrl.close();
   }
 
   @override

@@ -386,20 +386,18 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         returnValue: false,
       ) as bool);
   @override
-  void nextPage({bool? skipPage = false}) => super.noSuchMethod(
+  void nextPage() => super.noSuchMethod(
         Invocation.method(
           #nextPage,
           [],
-          {#skipPage: skipPage},
         ),
         returnValueForMissingStub: null,
       );
   @override
-  void prevPage({bool? skipPage = false}) => super.noSuchMethod(
+  void prevPage() => super.noSuchMethod(
         Invocation.method(
           #prevPage,
           [],
-          {#skipPage: skipPage},
         ),
         returnValueForMissingStub: null,
       );
@@ -486,10 +484,17 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         returnValue: _i6.Future<bool>.value(false),
       ) as _i6.Future<bool>);
   @override
-  _i6.Future<void> verifyOTP(String? otp) => (super.noSuchMethod(
+  _i6.Future<void> verifyOTP(
+    String? otp,
+    String? password,
+  ) =>
+      (super.noSuchMethod(
         Invocation.method(
           #verifyOTP,
-          [otp],
+          [
+            otp,
+            password,
+          ],
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),

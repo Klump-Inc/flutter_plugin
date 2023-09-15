@@ -7,14 +7,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicLogin extends StatefulWidget {
-  const StanbicLogin({super.key});
+class PartnerLogin extends StatefulWidget {
+  const PartnerLogin({super.key});
 
   @override
-  State<StanbicLogin> createState() => _StanbicLoginState();
+  State<PartnerLogin> createState() => _PartnerLoginState();
 }
 
-class _StanbicLoginState extends State<StanbicLogin> {
+class _PartnerLoginState extends State<PartnerLogin> {
   late TextEditingController _accountNoCtrl;
   late TextEditingController _phoneNoCtrl;
   late TextEditingController _firstNameCtrl;
@@ -180,9 +180,12 @@ class _StanbicLoginState extends State<StanbicLogin> {
                       onTap: () async {
                         if (!await launchUrl(
                           Uri.parse(checkoutNotfier.selectedBankFlow?.slug ==
-                                  'standbic'
+                                  'stanbic'
                               ? "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"
-                              : "https://www.polarisbanklimited.com/open-an-account/"),
+                              : checkoutNotfier.selectedBankFlow?.slug ==
+                                      'specta'
+                                  ? 'https://paywithspecta.com/account/register'
+                                  : "https://www.polarisbanklimited.com/open-an-account/"),
                           mode: LaunchMode.externalApplication,
                         )) {
                           // ignore: avoid_print
