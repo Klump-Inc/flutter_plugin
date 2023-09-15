@@ -15,9 +15,13 @@ const String KC_CLIENT_ID = 'Client-Id';
 const String KC_CLIENT_KEY = 'Client-Key';
 const String KC_CLIENT_SECRET = 'Client-Secret';
 const String KC_CONTENT_TYPE_DEFAULT = 'application/json';
-const String KC_CLIENT_ID_VALUE = 'website';
-const String KC_CLIENT_KEY_VALUE = 'website';
-const String KC_CLIENT_SECRET_VALUE = 'VMws+/Q&=gVV+R7M';
+const String KC_CLIENT_ID_VALUE_STAGING = 'website';
+const String KC_CLIENT_KEY_VALUE_STAGING = 'website';
+const String KC_CLIENT_SECRET_VALUE_STAGING = 'VMws+/Q&=gVV+R7M';
+const String KC_CLIENT_ID_VALUE_PROD = 'checkout_ebbb8d1b6';
+const String KC_CLIENT_KEY_VALUE_PROD = 'checkout_gndhrhb8d1b6';
+const String KC_CLIENT_SECRET_VALUE_PROD =
+    'Mb3=647xsM121kLKaAyxe90c4a177d5b7c0';
 const String KC_ENVIRONMENT_KEY = 'kc_environment_key';
 const String KC_PRODUCTION_ENVIRONMENT = 'kc_production_env';
 const String KC_STAGING_ENVIRONMENT = 'kc_staging_env';
