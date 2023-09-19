@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:klump_checkout/src/domain/domain.dart';
 
 class Partner extends Equatable {
   final String id;
@@ -14,6 +15,7 @@ class Partner extends Equatable {
   final dynamic config;
   final dynamic createdAt;
   final DateTime? updatedAt;
+  final NextStep? nextStep;
 
   const Partner({
     required this.id,
@@ -29,6 +31,7 @@ class Partner extends Equatable {
     required this.config,
     this.createdAt,
     this.updatedAt,
+    this.nextStep,
   });
 
   @override
@@ -46,5 +49,6 @@ class Partner extends Equatable {
         config,
         createdAt,
         updatedAt,
+        nextStep,
       ];
 }

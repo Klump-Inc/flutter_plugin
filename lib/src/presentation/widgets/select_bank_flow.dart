@@ -37,9 +37,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final activeLoanPartners = checkoutNotfier.loanPartners == null
         ? <Partner>[]
-        : checkoutNotfier.loanPartners!
-            .where((e) => e.isActive == true)
-            .toList();
+        : checkoutNotfier.loanPartners!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),
       child: Column(
@@ -142,7 +140,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                               padding: EdgeInsets.zero,
                               child: Container(
                                 height: 49,
-                                color: KCColors.grey3.withOpacity(0.15),
+                                color: KCColors.grey3.withOpacity(0.30),
                                 width: double.infinity,
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -167,7 +165,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const Spacer(),
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
-                checkoutNotfier.selectedBankFlow == null,
+                checkoutNotfier.selectedBankFlow?.isActive != true,
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,

@@ -4,7 +4,7 @@ import 'package:klump_checkout/src/src.dart';
 class NextStep extends Equatable {
   final String? name;
   final String? method;
-  final DisplayDataModel? displayData;
+  final DisplayData? displayData;
   final List<FormFieldModel>? formFields;
   final String? redirectUrl;
   final String? api;

@@ -1,5 +1,4 @@
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -146,7 +145,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/account/verification',
         body: body,
       );
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['message'],
@@ -194,14 +192,12 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           "password": password,
         });
       }
-      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/verify-otp',
         headers: headers,
         body: body,
       );
-      Logger().d(response.data);
       await prefs.setString(KC_LOGIN_TOKEN,
           (response.data as Map<String, dynamic>)['data']['token']);
       return KCAPIResponseModel(
@@ -235,7 +231,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         queryParam: queryParams,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: TermsAndConditionModel.fromJson(response.data['data']),
@@ -282,7 +277,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         token: prefs.getString(KC_LOGIN_TOKEN),
         headers: headers,
       );
-      Logger().d(response.data);
       return RepaymentDetailsModel.fromJson(response.data['data']);
     } else {
       throw NoInternetKCException();
@@ -346,7 +340,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['data']['id'],
@@ -372,7 +365,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         headers: headers,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      Logger().d(response.data);
       return DisbursementStatusResponseModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
@@ -408,7 +400,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
       );
@@ -456,7 +447,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/partners',
         headers: headers,
       );
-      Logger().d(response.data);
       return PartnerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
@@ -486,7 +476,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
 
-      Logger().d(response.data);
       return response.statusCode == 200;
     } else {
       throw NoInternetKCException();
