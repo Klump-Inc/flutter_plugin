@@ -80,6 +80,9 @@ class KCChangeNotifier extends ChangeNotifier {
   String? _loanId;
   String? get loanId => _loanId;
 
+  Map<String, dynamic>? _selectedBank;
+  Map<String, dynamic>? get selectedBank => _selectedBank;
+
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
   }
@@ -123,6 +126,11 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void setBankFlow(Partner bank) {
     _selectedBankFlow = bank;
+    notifyListeners();
+  }
+
+  void selectBank(Map<String, dynamic> bank) {
+    _selectedBank = bank;
     notifyListeners();
   }
 

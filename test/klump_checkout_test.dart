@@ -105,7 +105,7 @@ void main() {
   group('Chekout widget test:', () {
     testWidgets('Bank popup menu content renders correctly', (tester) async {
       await tester.pumpKCWidget(
-        KCBankPopupMenuItemContent(
+        KCPartnerPopupMenuItemContent(
           logo: KCAssets.stanbicLogo,
           title: 'Bank name',
         ),

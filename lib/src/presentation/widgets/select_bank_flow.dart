@@ -38,6 +38,14 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     final activeLoanPartners = checkoutNotfier.loanPartners == null
         ? <Partner>[]
         : checkoutNotfier.loanPartners!;
+    final banks = ((checkoutNotfier.selectedBankFlow?.config
+                    as Map<String, dynamic>?)?['extra_form_fields'] as List?)
+                ?.isNotEmpty ==
+            true
+        ? ((checkoutNotfier.selectedBankFlow?.config
+                as Map<String, dynamic>?)?['extra_form_fields'] as List)
+            .first['options'] as List
+        : [];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),
       child: Column(
@@ -68,6 +76,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 enabled: activeLoanPartners.isNotEmpty,
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
+                  maxHeight: 250,
                 ),
                 padding: EdgeInsets.zero,
                 elevation: 1,
@@ -124,7 +133,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                           ? PopupMenuItem<Partner>(
                               height: 0,
                               padding: EdgeInsets.zero,
-                              child: KCBankPopupMenuItemContent(
+                              child: KCPartnerPopupMenuItemContent(
                                 title: activeLoanPartners[index].name,
                                 logo: activeLoanPartners[index].logo,
                                 withBG: index % 2 == 0,
@@ -161,11 +170,82 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               );
             },
           ),
+          if (banks.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 35),
+              child: LayoutBuilder(
+                builder: (context, costraint) {
+                  return PopupMenuButton<Partner>(
+                    enabled: true,
+                    constraints: BoxConstraints(
+                      minWidth: costraint.maxWidth,
+                      maxHeight: 250,
+                    ),
+                    padding: EdgeInsets.zero,
+                    elevation: 1,
+                    offset: const Offset(0, 76),
+                    child: Container(
+                      height: 60,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.11,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: KCColors.grey1),
+                        borderRadius: BorderRadius.circular(4.4186),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (checkoutNotfier.selectedBank == null)
+                            KCBodyText1(
+                              'Select Bank',
+                              color: KCColors.grey2,
+                              fontSize: 15,
+                            )
+                          else
+                            KCBodyText1(
+                              checkoutNotfier.selectedBank!['name'],
+                              fontSize: 15,
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2, right: 5),
+                            child: SvgPicture.asset(
+                              KCAssets.caretDown,
+                              package: KC_PACKAGE_NAME,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    itemBuilder: (context) {
+                      return List.generate(
+                        banks.length,
+                        (index) {
+                          return PopupMenuItem<Partner>(
+                            height: 0,
+                            padding: EdgeInsets.zero,
+                            child: KCBankPopupMenuItemContent(
+                              title: banks[index]['name'],
+                              withBG: index % 2 == 0,
+                            ),
+                            onTap: () {
+                              checkoutNotfier.selectBank(banks[index]);
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           const YSpace(32),
           const Spacer(),
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
-                checkoutNotfier.selectedBankFlow?.isActive != true,
+                checkoutNotfier.selectedBankFlow?.isActive != true ||
+                (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: checkoutNotfier.nextPage,
