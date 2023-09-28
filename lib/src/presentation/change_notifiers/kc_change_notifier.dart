@@ -126,6 +126,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void setBankFlow(Partner bank) {
     _selectedBankFlow = bank;
+    _selectedBank = null;
     notifyListeners();
   }
 
@@ -201,6 +202,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         firstName: firstName,
+        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
       ),
     );
     _setBusy(false);
@@ -222,6 +224,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         partner: _selectedBankFlow!.slug,
         firstName: _firstName,
+        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
       ),
     );
     _setBusy(false);
@@ -248,6 +251,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         partner: _selectedBankFlow!.slug,
         firstName: _firstName,
+        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
       ),
     );
     response.fold(

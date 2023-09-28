@@ -1,4 +1,5 @@
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -15,6 +16,7 @@ abstract class RemoteDatasource {
     String? firstName,
     required String publicKey,
     required String partner,
+    required String? bank,
   });
   Future<KCAPIResponseModel> accountCredentials({
     required String email,
@@ -31,6 +33,7 @@ abstract class RemoteDatasource {
     required String publicKey,
     String? firstName,
     required String partner,
+    required String? bank,
   });
   Future<KCAPIResponseModel> getBankTC({
     required String publicKey,
@@ -121,6 +124,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     String? firstName,
     required String publicKey,
     required String partner,
+    required String? bank,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -139,6 +143,12 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           'firstname': firstName,
         });
       }
+      if (bank != null) {
+        body.addAll({
+          'bank': bank,
+        });
+      }
+      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
@@ -163,6 +173,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String publicKey,
     String? firstName,
     required String partner,
+    required String? bank,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -190,6 +201,11 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       if (password?.isNotEmpty == true) {
         body.addAll({
           "password": password,
+        });
+      }
+      if (bank != null) {
+        body.addAll({
+          'bank': bank,
         });
       }
       final response = await kcHttpRequester.post(
