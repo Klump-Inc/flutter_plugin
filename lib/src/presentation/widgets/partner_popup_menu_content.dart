@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/src.dart';
 
-class KCBankPopupMenuItemContent extends StatelessWidget {
-  const KCBankPopupMenuItemContent({
+class KCPartnerPopupMenuItemContent extends StatelessWidget {
+  const KCPartnerPopupMenuItemContent({
     super.key,
     required this.title,
+    this.logo,
     this.withBG = false,
   });
 
   final String title;
+  final String? logo;
   final bool withBG;
 
   @override
@@ -18,11 +20,18 @@ class KCBankPopupMenuItemContent extends StatelessWidget {
       color: withBG ? KCColors.grey3.withOpacity(0.15) : null,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: KCBodyText1(
-          title,
-        ),
+      child: Row(
+        children: [
+          Image.network(
+            logo ?? '',
+            height: 20,
+            width: 17.09,
+          ),
+          const XSpace(14),
+          KCBodyText1(
+            title,
+          ),
+        ],
       ),
     );
   }

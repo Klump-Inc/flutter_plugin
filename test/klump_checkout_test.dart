@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -104,10 +105,12 @@ void main() {
   };
   group('Chekout widget test:', () {
     testWidgets('Bank popup menu content renders correctly', (tester) async {
-      await tester.pumpKCWidget(
-        KCBankPopupMenuItemContent(
-          logo: KCAssets.stanbicLogo,
-          title: 'Bank name',
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          KCPartnerPopupMenuItemContent(
+            logo: KCAssets.stanbicLogo,
+            title: 'Bank name',
+          ),
         ),
       );
       expect(find.byType(Container), findsWidgets);

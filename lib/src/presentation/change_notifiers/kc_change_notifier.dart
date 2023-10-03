@@ -80,6 +80,9 @@ class KCChangeNotifier extends ChangeNotifier {
   String? _loanId;
   String? get loanId => _loanId;
 
+  Map<String, dynamic>? _selectedBank;
+  Map<String, dynamic>? get selectedBank => _selectedBank;
+
   void _updateStanbicSteps(String key) {
     _stanbicSteps.update(key, (value) => true);
   }
@@ -123,6 +126,12 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void setBankFlow(Partner bank) {
     _selectedBankFlow = bank;
+    _selectedBank = null;
+    notifyListeners();
+  }
+
+  void selectBank(Map<String, dynamic> bank) {
+    _selectedBank = bank;
     notifyListeners();
   }
 
@@ -193,6 +202,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         firstName: firstName,
+        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
       ),
     );
     _setBusy(false);
@@ -214,6 +224,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         partner: _selectedBankFlow!.slug,
         firstName: _firstName,
+        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
       ),
     );
     _setBusy(false);
@@ -240,6 +251,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         partner: _selectedBankFlow!.slug,
         firstName: _firstName,
+        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
       ),
     );
     response.fold(
