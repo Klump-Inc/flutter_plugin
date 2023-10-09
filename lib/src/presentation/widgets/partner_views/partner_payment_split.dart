@@ -24,8 +24,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final paymentSplit = checkoutNotfier
-        .termsConditionResponse!.nextStep.formFields
+    final paymentSplit = checkoutNotfier.nextStepData!.nextStep.formFields
         ?.where((e) => e.name == 'installment');
     final installments =
         paymentSplit?.isNotEmpty == true ? paymentSplit!.first.options : [];

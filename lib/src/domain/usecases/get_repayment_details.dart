@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class GetRepaymentDetailsUsecase
-    extends KCUsecase<RepaymentDetails, GetRepaymentDetailsUsecaseParams> {
+    extends KCUsecase<KCAPIResponse, GetRepaymentDetailsUsecaseParams> {
   GetRepaymentDetailsUsecase({
     required this.partnerRepository,
   });
@@ -11,7 +11,7 @@ class GetRepaymentDetailsUsecase
   final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, RepaymentDetails>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     GetRepaymentDetailsUsecaseParams params,
   ) =>
       partnerRepository.getRepaymentDetails(

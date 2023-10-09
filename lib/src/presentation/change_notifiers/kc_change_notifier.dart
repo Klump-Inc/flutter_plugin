@@ -3,7 +3,6 @@ import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
   KCChangeNotifier() {
@@ -56,14 +55,17 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _nextStepData;
   KCAPIResponse? get nextStepData => _nextStepData;
 
+  KCAPIResponse? _verifyOTPNextStepData;
+  KCAPIResponse? get verifyOTPNextStepData => _verifyOTPNextStepData;
+
   String? _accountNumber;
   String? _phoneNumber;
   String? _firstName;
   String? get accountNumber => _accountNumber;
   String? get phoneNumber => _phoneNumber;
   String? get firstName => _firstName;
-  KCAPIResponse? _termsConditionResponse;
-  KCAPIResponse? get termsConditionResponse => _termsConditionResponse;
+  TermsAndCondition? _termsCondition;
+  TermsAndCondition? get termsCondition => _termsCondition;
   KlumpUser? _klumpUser;
   KlumpUser? get klumpUser => _klumpUser;
   RepaymentDetails? _repaymentDetails;
@@ -209,7 +211,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        _verifyOTPNextStepData = r;
         nextPage();
       },
     );
@@ -257,6 +259,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
+        _nextStepData = r;
         _klumpUser = r.data as KlumpUser;
         if (r.nextStep.name == 'NEW_LOAN') {
           createLoan();
@@ -277,7 +280,8 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => {},
       (r) {
-        _termsConditionResponse = r;
+        _nextStepData = r;
+        _termsCondition = r.data;
       },
     );
     _setBusy(false);
@@ -299,7 +303,8 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _repaymentDetails = r;
+        _nextStepData = r;
+        _repaymentDetails = r.data;
         nextPage();
       },
     );
@@ -315,8 +320,7 @@ class KCChangeNotifier extends ChangeNotifier {
         repaymentDay: _repaymentDetails != null
             ? int.parse(_repaymentDetails!.repaymentDay.toString())
             : null,
-        termsVersion:
-            (_termsConditionResponse?.data as TermsAndCondition?)?.version,
+        termsVersion: _termsCondition?.version,
         items: _checkoutData?.items ?? [],
         shippingData: _checkoutData?.shippingData,
         insurerId: _selectedPartnerInsurer?.value,
@@ -328,17 +332,7 @@ class KCChangeNotifier extends ChangeNotifier {
       (r) async {
         _finalLoanStep = r.nextStep;
         _loanId = r.data;
-        if (selectedBankFlow?.slug == 'specta') {
-          if (!await launchUrl(
-            Uri.parse(r.nextStep.redirectUrl ?? ''),
-            mode: LaunchMode.externalApplication,
-          )) {
-            showToast('Could not open link!');
-          }
-        }
-        if (selectedBankFlow?.slug != 'polaris') {
-          nextPage();
-        }
+        nextPage();
       },
     );
     _setBusy(false);
@@ -408,9 +402,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> acceptTerms() async {
-    if (selectedBankFlow?.slug == 'stanbic') {
-      nextPage();
-    } else {
+    if (nextStepData?.nextStep.name == 'ACCEPT_LOAN_TERMS') {
       _setBusy(true);
       final response = await acceptTermsUsecase(
         AcceptTermsUsecaseParams(
@@ -421,8 +413,16 @@ class KCChangeNotifier extends ChangeNotifier {
       _setBusy(false);
       response.fold(
         (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-        (r) => nextPage(),
+        (r) {
+          if (r.nextStep.name == 'NEW_LOAN') {
+            createLoan();
+          } else {
+            nextPage();
+          }
+        },
       );
+    } else {
+      nextPage();
     }
   }
 }

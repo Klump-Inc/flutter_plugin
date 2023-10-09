@@ -39,7 +39,7 @@ abstract class RemoteDatasource {
     required String publicKey,
     required String partner,
   });
-  Future<RepaymentDetailsModel> getRepaymentDetails({
+  Future<KCAPIResponseModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
     required int installment,
@@ -70,7 +70,7 @@ abstract class RemoteDatasource {
   Future<List<PartnerModel>> getLoanPartners({
     required String publicKey,
   });
-  Future<bool> acceptTerms({
+  Future<KCAPIResponseModel> acceptTerms({
     required String partner,
     required String publicKey,
   });
@@ -148,7 +148,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           'bank': bank,
         });
       }
-      Logger().d(body);
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
@@ -257,7 +256,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<RepaymentDetailsModel> getRepaymentDetails({
+  Future<KCAPIResponseModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
     required int installment,
@@ -293,7 +292,10 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         token: prefs.getString(KC_LOGIN_TOKEN),
         headers: headers,
       );
-      return RepaymentDetailsModel.fromJson(response.data['data']);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: RepaymentDetailsModel.fromJson(response.data['data']),
+      );
     } else {
       throw NoInternetKCException();
     }
@@ -470,7 +472,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<bool> acceptTerms({
+  Future<KCAPIResponseModel> acceptTerms({
     required String partner,
     required String publicKey,
   }) async {
@@ -491,8 +493,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-
-      return response.statusCode == 200;
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+      );
     } else {
       throw NoInternetKCException();
     }

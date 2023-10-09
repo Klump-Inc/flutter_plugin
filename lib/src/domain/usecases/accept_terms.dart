@@ -2,7 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class AcceptTermsUsecase extends KCUsecase<bool, AcceptTermsUsecaseParams> {
+class AcceptTermsUsecase
+    extends KCUsecase<KCAPIResponse, AcceptTermsUsecaseParams> {
   AcceptTermsUsecase({
     required this.partnerRepository,
   });
@@ -10,7 +11,7 @@ class AcceptTermsUsecase extends KCUsecase<bool, AcceptTermsUsecaseParams> {
   final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, bool>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     AcceptTermsUsecaseParams params,
   ) =>
       partnerRepository.acceptTerms(

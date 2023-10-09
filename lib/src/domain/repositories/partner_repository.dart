@@ -104,7 +104,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, RepaymentDetails>> getRepaymentDetails({
+  Future<Either<KCException, KCAPIResponse>> getRepaymentDetails({
     required double amount,
     required String publicKey,
     required int installment,
@@ -231,7 +231,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, bool>> acceptTerms({
+  Future<Either<KCException, KCAPIResponse>> acceptTerms({
     required String partner,
     required String publicKey,
   }) async {

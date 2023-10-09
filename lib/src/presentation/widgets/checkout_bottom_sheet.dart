@@ -102,7 +102,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PartnerInformation(),
                       const PartnerLogin(),
                       const PartnerLoginOTP(),
-                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const PartnerTerms(),
                       if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
                         const PartnerPaymentSplit(),
@@ -111,7 +111,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                       if (checkoutNotifier.klumpUser?.requiresUserCredential ==
                           true)
                         const PartnerAccountCredentials(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                      if (checkoutNotifier.selectedBankFlow?.slug != 'stanbic')
                         const PartnerInvoice(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const PartnerConfirmation(),
