@@ -16,16 +16,6 @@ class PartnerInvoice extends StatefulWidget {
 
 class _PartnerInvoiceState extends State<PartnerInvoice> {
   @override
-  void initState() {
-    Future.delayed(Duration.zero, () {
-      Provider.of<KCChangeNotifier>(context, listen: false).createLoan();
-    });
-    super.initState();
-  }
-
-  bool _redirectDone = false;
-
-  @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     return LayoutBuilder(
@@ -95,28 +85,21 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           const YSpace(24),
                           const Spacer(),
                           KCPrimaryButton(
-                            title: _redirectDone ? 'Complete' : 'Continue',
+                            title: 'Continue',
                             onTap: () async {
-                              if (_redirectDone) {
-                                checkoutNotifier.nextPage();
-                              } else {
-                                if (checkoutNotifier
-                                        .finalLoanStep!.redirectUrl !=
-                                    null) {
-                                  if (!await launchUrl(
-                                    Uri.parse(checkoutNotifier
-                                        .finalLoanStep!.redirectUrl!),
-                                    mode: LaunchMode.externalApplication,
-                                  )) {
-                                    showToast('Could not open link!');
-                                  } else {
-                                    setState(() {
-                                      _redirectDone = true;
-                                    });
-                                  }
+                              if (checkoutNotifier.finalLoanStep!.redirectUrl !=
+                                  null) {
+                                if (!await launchUrl(
+                                  Uri.parse(checkoutNotifier
+                                      .finalLoanStep!.redirectUrl!),
+                                  mode: LaunchMode.externalApplication,
+                                )) {
+                                  showToast('Could not open link!');
                                 } else {
-                                  showToast('Error occured. Try again later!');
+                                  checkoutNotifier.nextPage();
                                 }
+                              } else {
+                                showToast('Error occured. Try again later!');
                               }
                             },
                             disabled: checkoutNotifier.isBusy,

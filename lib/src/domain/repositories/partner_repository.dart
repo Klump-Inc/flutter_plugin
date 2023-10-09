@@ -39,6 +39,7 @@ class PartnerRepository {
     String? firstName,
     required String publicKey,
     required String partner,
+    required String? bank,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.validateAccount(
@@ -47,6 +48,7 @@ class PartnerRepository {
         publicKey: publicKey,
         partner: partner,
         firstName: firstName,
+        bank: bank,
       );
       return Right(response);
     } catch (e) {
@@ -64,6 +66,7 @@ class PartnerRepository {
     required String publicKey,
     String? firstName,
     required String partner,
+    required String? bank,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(
@@ -74,6 +77,7 @@ class PartnerRepository {
         publicKey: publicKey,
         firstName: firstName,
         partner: partner,
+        bank: bank,
       );
       return Right(response);
     } catch (e) {
@@ -100,7 +104,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, RepaymentDetails>> getRepaymentDetails({
+  Future<Either<KCException, KCAPIResponse>> getRepaymentDetails({
     required double amount,
     required String publicKey,
     required int installment,
@@ -227,7 +231,7 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, bool>> acceptTerms({
+  Future<Either<KCException, KCAPIResponse>> acceptTerms({
     required String partner,
     required String publicKey,
   }) async {

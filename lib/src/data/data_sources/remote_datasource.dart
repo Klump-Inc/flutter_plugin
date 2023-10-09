@@ -1,4 +1,5 @@
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -15,6 +16,7 @@ abstract class RemoteDatasource {
     String? firstName,
     required String publicKey,
     required String partner,
+    required String? bank,
   });
   Future<KCAPIResponseModel> accountCredentials({
     required String email,
@@ -31,12 +33,13 @@ abstract class RemoteDatasource {
     required String publicKey,
     String? firstName,
     required String partner,
+    required String? bank,
   });
   Future<KCAPIResponseModel> getBankTC({
     required String publicKey,
     required String partner,
   });
-  Future<RepaymentDetailsModel> getRepaymentDetails({
+  Future<KCAPIResponseModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
     required int installment,
@@ -67,7 +70,7 @@ abstract class RemoteDatasource {
   Future<List<PartnerModel>> getLoanPartners({
     required String publicKey,
   });
-  Future<bool> acceptTerms({
+  Future<KCAPIResponseModel> acceptTerms({
     required String partner,
     required String publicKey,
   });
@@ -121,6 +124,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     String? firstName,
     required String publicKey,
     required String partner,
+    required String? bank,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -137,6 +141,11 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       if (partner == 'polaris') {
         body.addAll({
           'firstname': firstName,
+        });
+      }
+      if (bank != null) {
+        body.addAll({
+          'bank': bank,
         });
       }
       final response = await kcHttpRequester.post(
@@ -163,6 +172,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String publicKey,
     String? firstName,
     required String partner,
+    required String? bank,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -190,6 +200,11 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       if (password?.isNotEmpty == true) {
         body.addAll({
           "password": password,
+        });
+      }
+      if (bank != null) {
+        body.addAll({
+          'bank': bank,
         });
       }
       final response = await kcHttpRequester.post(
@@ -241,7 +256,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<RepaymentDetailsModel> getRepaymentDetails({
+  Future<KCAPIResponseModel> getRepaymentDetails({
     required double amount,
     required String publicKey,
     required int installment,
@@ -277,7 +292,10 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         token: prefs.getString(KC_LOGIN_TOKEN),
         headers: headers,
       );
-      return RepaymentDetailsModel.fromJson(response.data['data']);
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: RepaymentDetailsModel.fromJson(response.data['data']),
+      );
     } else {
       throw NoInternetKCException();
     }
@@ -454,7 +472,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<bool> acceptTerms({
+  Future<KCAPIResponseModel> acceptTerms({
     required String partner,
     required String publicKey,
   }) async {
@@ -475,8 +493,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_LOGIN_TOKEN),
       );
-
-      return response.statusCode == 200;
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+      );
     } else {
       throw NoInternetKCException();
     }

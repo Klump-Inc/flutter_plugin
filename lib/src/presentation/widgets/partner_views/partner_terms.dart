@@ -32,8 +32,7 @@ class _PartnerTermsState extends State<PartnerTerms> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final bankTerms =
-        checkoutNotifier.termsConditionResponse?.data as TermsAndCondition?;
+    final bankTerms = checkoutNotifier.termsCondition;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
