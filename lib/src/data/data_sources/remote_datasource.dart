@@ -1,5 +1,4 @@
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
