@@ -184,6 +184,28 @@ void main() {
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });
+
+    testWidgets('PartnerMobileExperience renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerMobileExperience();
+            },
+          ),
+        ),
+      );
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(Image), findsOneWidget);
+      expect(find.byType(Spacer), findsWidgets);
+      expect(find.text('Use a computer for a better \npayment experience'),
+          findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+    });
+
     testWidgets('PartnerLogin renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.selectedBankFlow)
@@ -350,6 +372,28 @@ void main() {
       expect(find.text(text), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
+    });
+
+    testWidgets('PartnerDecision renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerDecision();
+            },
+          ),
+        ),
+      );
+      await tester.pump(Duration.zero);
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(CircularPercentIndicator), findsOneWidget);
+      expect(find.byType(SvgPicture), findsOneWidget);
+      expect(find.byType(Expanded), findsWidgets);
+      expect(find.text('Hang on!'), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsNothing);
     });
 
     testWidgets('PartnerDecision renders correctly', (tester) async {
