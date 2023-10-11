@@ -69,7 +69,7 @@ class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
                             checkoutNotifier.disbursementStatusResponse
                                         ?.isSuccessful ==
                                     true
-                                ? '${checkoutNotifier.disbursementStatusResponse?.message}  ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date != null ? '\nYour next pay date is ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date}' : ''}'
+                                ? '${checkoutNotifier.disbursementStatusResponse?.message}${checkoutNotifier.disbursementStatusResponse?.next_repayment_date != null ? ' \nYour next pay date is ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date}' : ''}'
                                 : checkoutNotifier
                                         .disbursementStatusResponse?.message ??
                                     '',
