@@ -374,6 +374,28 @@ void main() {
       expect(find.text('Continue'), findsOneWidget);
     });
 
+    testWidgets('PartnerAccountCredentials renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerAccountCredentials();
+            },
+          ),
+        ),
+      );
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(KCInputField), findsNWidgets(3));
+      expect(find.byType(SvgPicture), findsOneWidget);
+      expect(find.byType(Expanded), findsWidgets);
+      expect(find.text('Complete your account'), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+    });
     testWidgets('PartnerDecision renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
