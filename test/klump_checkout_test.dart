@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
@@ -51,11 +52,23 @@ void main() {
   );
 
   group('Chekout widget test:', () {
-    testWidgets('Bank popup menu content renders correctly', (tester) async {
+    testWidgets('Partner popup menu content renders correctly', (tester) async {
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           KCPartnerPopupMenuItemContent(
             logo: KCAssets.stanbicLogo,
+            title: 'Partner name',
+          ),
+        ),
+      );
+      expect(find.byType(Container), findsWidgets);
+      expect(find.byType(Image), findsOneWidget);
+      expect(find.text('Partner name'), findsOneWidget);
+    });
+    testWidgets('Bank popup menu content renders correctly', (tester) async {
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          const KCBankPopupMenuItemContent(
             title: 'Bank name',
           ),
         ),
@@ -156,7 +169,7 @@ void main() {
     expect(find.byType(PageView), findsOneWidget);
   });
 
-  group('Standbic Views:', () {
+  group('Partner Views:', () {
     testWidgets('SelectBankFlow renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.loanPartners).thenAnswer((_) => loanPartners);
@@ -393,6 +406,33 @@ void main() {
       expect(find.byType(SvgPicture), findsOneWidget);
       expect(find.byType(Expanded), findsWidgets);
       expect(find.text('Complete your account'), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+    });
+    testWidgets('PartnerInvoice renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.finalLoanStep).thenAnswer((_) => KCAPIResponse(
+              nextStep: NextStepModel.fromJson(
+                  newLoanJson['next_step'] as Map<String, dynamic>))
+          .nextStep);
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerInvoice();
+            },
+          ),
+        ),
+      );
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(SvgPicture), findsOneWidget);
+      expect(find.byType(Expanded), findsWidgets);
+      expect(find.byType(Spacer), findsOneWidget);
+      expect(find.byType(Html), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });
