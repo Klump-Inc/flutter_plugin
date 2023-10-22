@@ -65,3 +65,6 @@ const String KC_HTML_FOOTER = '''
       </body>
       </html>
       ''';
+
+const KC_MIX_PANEL_TOKEN_PROD = '49e554d50d53d1053cfd68f87521073e';
+const KC_MIX_PANEL_TOKEN_STAGING = 'e1b9e5dd4ac6691cb595772d402c7b1e';

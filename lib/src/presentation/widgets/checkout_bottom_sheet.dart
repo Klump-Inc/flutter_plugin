@@ -40,6 +40,15 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    MixPanelService.initMixpanel(widget.isLive
+            ? KC_MIX_PANEL_TOKEN_PROD
+            : KC_MIX_PANEL_TOKEN_STAGING)
+        .then(
+      (value) => MixPanelService.logEvent(
+        ' Checkout Widget Initiated',
+        properties: {'environment': widget.isLive ? 'production' : 'staging'},
+      ),
+    );
   }
 
   @override

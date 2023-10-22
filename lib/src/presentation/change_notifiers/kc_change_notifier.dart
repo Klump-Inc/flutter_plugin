@@ -38,6 +38,8 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetLoanPartnersUsecase getLoanPartnersUsecase;
   late AcceptTermsUsecase acceptTermsUsecase;
 
+  bool _isLive = false;
+  bool get isLive => _isLive;
   bool _isBusy = false;
   bool get isBusy => _isBusy;
   var _currentPage = 0;
@@ -154,6 +156,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void initiateTransaction(bool isLive, KlumpCheckoutData data) async {
     if (_stanbicSteps['initiated'] != true) {
+      _isLive = isLive;
       _checkoutData = data;
       _setBusy(true);
       initiateTransactionUsecase(

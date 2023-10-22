@@ -35,6 +35,15 @@ class _PartnerDecisionState extends State<PartnerDecision> {
   @override
   void initState() {
     Future.delayed(Duration.zero, _startStatusLookup);
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    MixPanelService.logEvent(
+      'NEW LOAN MODAL',
+      properties: {
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'partner': changeNotifier.selectedBankFlow?.slug,
+      },
+    );
     super.initState();
   }
 

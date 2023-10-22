@@ -13,8 +13,17 @@ class PartnerPaymentSplit extends StatefulWidget {
 class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   @override
   void initState() {
-    Future.delayed(Duration.zero, _loanInsurer);
     super.initState();
+    Future.delayed(Duration.zero, _loanInsurer);
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    MixPanelService.logEvent(
+      'LOAN OPTIONS MODAL',
+      properties: {
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'partner': changeNotifier.selectedBankFlow?.slug,
+      },
+    );
   }
 
   void _loanInsurer() {

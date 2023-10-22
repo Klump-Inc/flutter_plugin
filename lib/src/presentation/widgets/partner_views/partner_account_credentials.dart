@@ -47,7 +47,6 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
 
   @override
   void initState() {
-    super.initState();
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _dobCtrl = TextEditingController();
@@ -62,6 +61,16 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
       passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
       validateInputs();
     });
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    MixPanelService.logEvent(
+      'BIO DATA MODAL',
+      properties: {
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'partner': changeNotifier.selectedBankFlow?.slug,
+      },
+    );
+    super.initState();
   }
 
   @override

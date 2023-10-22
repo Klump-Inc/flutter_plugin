@@ -3,8 +3,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:provider/provider.dart';
 
-class PartnerInformation extends StatelessWidget {
+class PartnerInformation extends StatefulWidget {
   const PartnerInformation({super.key});
+
+  @override
+  State<PartnerInformation> createState() => _PartnerInformationState();
+}
+
+class _PartnerInformationState extends State<PartnerInformation> {
+  @override
+  void initState() {
+    super.initState();
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    MixPanelService.logEvent(
+      'PARTNER REQUIREMENTS MODAL',
+      properties: {
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'payload': {'bank': changeNotifier.selectedBankFlow?.slug},
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
