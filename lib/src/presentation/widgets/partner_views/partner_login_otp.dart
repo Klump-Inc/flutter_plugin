@@ -78,6 +78,15 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
       validateInputs();
     });
     _startCounter();
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    MixPanelService.logEvent(
+      'VERIFY OTP MODAL',
+      properties: {
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'partner': changeNotifier.selectedBankFlow?.slug,
+      },
+    );
   }
 
   @override

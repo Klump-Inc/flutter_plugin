@@ -30,6 +30,12 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     changeNotifier.getLoanPartners().then(
           (_) => changeNotifier.initiateTransaction(widget.isLive, widget.data),
         );
+    MixPanelService.logEvent(
+      'Select Payment institution Modal',
+      properties: {
+        'environment': widget.isLive ? 'production' : 'staging',
+      },
+    );
   }
 
   @override
@@ -231,6 +237,19 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                             ),
                             onTap: () {
                               checkoutNotfier.selectBank(banks[index]);
+                              MixPanelService.logEvent(
+                                  'Selected Payment institution',
+                                  properties: {
+                                    'environment': widget.isLive
+                                        ? 'production'
+                                        : 'staging',
+                                    'partner':
+                                        checkoutNotfier.selectedBankFlow?.name,
+                                    'payload': {
+                                      'bank':
+                                          checkoutNotfier.selectedBankFlow?.slug
+                                    },
+                                  });
                             },
                           );
                         },

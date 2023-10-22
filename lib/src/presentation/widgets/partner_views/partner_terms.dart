@@ -26,6 +26,19 @@ class _PartnerTermsState extends State<PartnerTerms> {
   @override
   void initState() {
     Future.delayed(Duration.zero, _fetchTerms);
+    final checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    if (checkoutNotifier.klumpUser?.maxLoanLimit != null &&
+        checkoutNotifier.termsCondition != null) {
+      MixPanelService.logEvent(
+        'ACCEPT LOAN TERMS MODAL',
+        properties: {
+          'environment': checkoutNotifier.isLive ? 'production' : 'staging',
+          'partner': checkoutNotifier.selectedBankFlow?.slug,
+        },
+      );
+    }
+
     super.initState();
   }
 

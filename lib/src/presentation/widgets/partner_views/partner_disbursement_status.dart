@@ -14,6 +14,23 @@ class PartnerDisbursementStatus extends StatefulWidget {
 
 class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
   @override
+  void initState() {
+    final checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    if (checkoutNotifier.disbursementStatusResponse?.isSuccessful == true) {
+      MixPanelService.logEvent(
+        'SUCCESSFUL MODAL',
+        properties: {
+          'environment': checkoutNotifier.isLive ? 'production' : 'staging',
+          'partner': checkoutNotifier.selectedBankFlow?.slug,
+        },
+      );
+    }
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);

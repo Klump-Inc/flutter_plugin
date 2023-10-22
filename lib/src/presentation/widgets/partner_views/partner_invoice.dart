@@ -16,6 +16,20 @@ class PartnerInvoice extends StatefulWidget {
 
 class _PartnerInvoiceState extends State<PartnerInvoice> {
   @override
+  void initState() {
+    final changeNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    MixPanelService.logEvent(
+      'REDIRECT MODAL',
+      properties: {
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'partner': changeNotifier.selectedBankFlow?.slug,
+      },
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     return LayoutBuilder(
