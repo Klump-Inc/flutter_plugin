@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 class KlumpUser extends Equatable {
-  final String firstname;
-  final String lastname;
-  final String email;
+  final String? firstname;
+  final String? lastname;
+  final String? email;
 
   final double? maxLoanLimit;
   final bool? requiresUserCredential;

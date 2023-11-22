@@ -19,7 +19,7 @@ class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
         Provider.of<KCChangeNotifier>(context, listen: false);
     if (checkoutNotifier.disbursementStatusResponse?.isSuccessful == true) {
       MixPanelService.logEvent(
-        'SUCCESSFUL MODAL',
+        '13 - SUCCESSFUL MODAL',
         properties: {
           'environment': checkoutNotifier.isLive ? 'production' : 'staging',
           'partner': checkoutNotifier.selectedBankFlow?.slug,
@@ -86,7 +86,7 @@ class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
                             checkoutNotifier.disbursementStatusResponse
                                         ?.isSuccessful ==
                                     true
-                                ? '${checkoutNotifier.disbursementStatusResponse?.message}  ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date != null ? '\nYour next pay date is ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date}' : ''}'
+                                ? '${checkoutNotifier.disbursementStatusResponse?.message}${checkoutNotifier.disbursementStatusResponse?.next_repayment_date != null ? ' \nYour next pay date is ${checkoutNotifier.disbursementStatusResponse?.next_repayment_date}' : ''}'
                                 : checkoutNotifier
                                         .disbursementStatusResponse?.message ??
                                     '',

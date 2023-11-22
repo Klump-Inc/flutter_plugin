@@ -38,7 +38,7 @@ class _PartnerDecisionState extends State<PartnerDecision> {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      'NEW LOAN MODAL',
+      '11 - NEW LOAN MODAL',
       properties: {
         'environment': changeNotifier.isLive ? 'production' : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,

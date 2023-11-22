@@ -31,7 +31,7 @@ class _PartnerTermsState extends State<PartnerTerms> {
     if (checkoutNotifier.klumpUser?.maxLoanLimit != null &&
         checkoutNotifier.termsCondition != null) {
       MixPanelService.logEvent(
-        'ACCEPT LOAN TERMS MODAL',
+        '9 - ACCEPT LOAN TERMS MODAL',
         properties: {
           'environment': checkoutNotifier.isLive ? 'production' : 'staging',
           'partner': checkoutNotifier.selectedBankFlow?.slug,

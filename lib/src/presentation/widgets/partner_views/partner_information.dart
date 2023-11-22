@@ -17,7 +17,7 @@ class _PartnerInformationState extends State<PartnerInformation> {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      'PARTNER REQUIREMENTS MODAL',
+      '5 - PARTNER REQUIREMENTS MODAL',
       properties: {
         'environment': changeNotifier.isLive ? 'production' : 'staging',
         'payload': {'bank': changeNotifier.selectedBankFlow?.slug},
