@@ -10,9 +10,9 @@ class KlumpUserModel extends KlumpUser {
   });
 
   factory KlumpUserModel.fromJson(Map<String, dynamic> json) => KlumpUserModel(
-        firstname: json['user']['firstname'],
-        lastname: json['user']['firstname'],
-        email: json['user']['email'],
+        firstname: json['user']?['firstname'],
+        lastname: json['user']?['firstname'],
+        email: json['user']?['email'],
         maxLoanLimit: double.tryParse(json['loanLimit']?.toString() ?? ''),
         requiresUserCredential: json['requiresUserCredential'],
       );
