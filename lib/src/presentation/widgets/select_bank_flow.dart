@@ -31,7 +31,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           (_) => changeNotifier.initiateTransaction(widget.isLive, widget.data),
         );
     MixPanelService.logEvent(
-      'Select Payment institution Modal',
+      '3 - Select Payment institution Modal',
       properties: {
         'environment': widget.isLive ? 'production' : 'staging',
       },
@@ -238,7 +238,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                             onTap: () {
                               checkoutNotfier.selectBank(banks[index]);
                               MixPanelService.logEvent(
-                                  'Selected Payment institution',
+                                  '4 - Selected Payment institution',
                                   properties: {
                                     'environment': widget.isLive
                                         ? 'production'

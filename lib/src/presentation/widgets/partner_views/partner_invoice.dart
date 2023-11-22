@@ -20,7 +20,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      'REDIRECT MODAL',
+      '12 - REDIRECT MODAL',
       properties: {
         'environment': changeNotifier.isLive ? 'production' : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,

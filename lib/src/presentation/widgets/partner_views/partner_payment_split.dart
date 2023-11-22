@@ -18,7 +18,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      'LOAN OPTIONS MODAL',
+      '8 - LOAN OPTIONS MODAL',
       properties: {
         'environment': changeNotifier.isLive ? 'production' : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
