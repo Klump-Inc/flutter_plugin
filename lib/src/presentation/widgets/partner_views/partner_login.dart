@@ -96,7 +96,10 @@ class _PartnerLoginState extends State<PartnerLogin> {
             ),
             child: IntrinsicHeight(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
+                padding: EdgeInsets.only(
+                    left: 26,
+                    right: 26,
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -225,13 +228,16 @@ class _PartnerLoginState extends State<PartnerLogin> {
                           title: 'Continue',
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
-                          onTap: () => Provider.of<KCChangeNotifier>(context,
-                                  listen: false)
-                              .validateAccount(
-                            _accountNoCtrl.text.trim(),
-                            _phoneNoCtrl.text.trim(),
-                            firstName: _firstNameCtrl.text.trim(),
-                          ),
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            Provider.of<KCChangeNotifier>(context,
+                                    listen: false)
+                                .validateAccount(
+                              _accountNoCtrl.text.trim(),
+                              _phoneNoCtrl.text.trim(),
+                              firstName: _firstNameCtrl.text.trim(),
+                            );
+                          },
                         );
                       },
                     ),

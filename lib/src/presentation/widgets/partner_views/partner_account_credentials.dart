@@ -95,7 +95,10 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
             ),
             child: IntrinsicHeight(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
+                padding: EdgeInsets.only(
+                    left: 26,
+                    right: 26,
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -266,13 +269,16 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
                           title: 'Continue',
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
-                          onTap: () => Provider.of<KCChangeNotifier>(context,
-                                  listen: false)
-                              .addAccountCredentials(
-                            _emailCtrl.text.trim(),
-                            _passwordCtrl.text.trim(),
-                            _dob,
-                          ),
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            Provider.of<KCChangeNotifier>(context,
+                                    listen: false)
+                                .addAccountCredentials(
+                              _emailCtrl.text.trim(),
+                              _passwordCtrl.text.trim(),
+                              _dob,
+                            );
+                          },
                         );
                       },
                     ),
