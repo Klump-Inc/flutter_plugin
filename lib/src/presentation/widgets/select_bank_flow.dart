@@ -237,19 +237,6 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                             ),
                             onTap: () {
                               checkoutNotfier.selectBank(banks[index]);
-                              MixPanelService.logEvent(
-                                  '4 - Selected Payment institution',
-                                  properties: {
-                                    'environment': widget.isLive
-                                        ? 'production'
-                                        : 'staging',
-                                    'partner':
-                                        checkoutNotfier.selectedBankFlow?.name,
-                                    'payload': {
-                                      'bank':
-                                          checkoutNotfier.selectedBankFlow?.slug
-                                    },
-                                  });
                             },
                           );
                         },
@@ -267,7 +254,17 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
-            onTap: checkoutNotfier.nextPage,
+            onTap: () {
+              MixPanelService.logEvent(
+                '4 - Selected Payment institution',
+                properties: {
+                  'environment': widget.isLive ? 'production' : 'staging',
+                  'partner': checkoutNotfier.selectedBankFlow?.name,
+                  'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
+                },
+              );
+              checkoutNotfier.nextPage.call();
+            },
           ),
           const YSpace(59)
         ],
