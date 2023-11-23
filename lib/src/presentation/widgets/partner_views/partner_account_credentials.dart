@@ -64,7 +64,7 @@ class _PartnerAccountCredentialsState extends State<PartnerAccountCredentials> {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      'BIO DATA MODAL',
+      '10 - BIO DATA MODAL',
       properties: {
         'environment': changeNotifier.isLive ? 'production' : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,

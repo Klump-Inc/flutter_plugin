@@ -31,7 +31,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           (_) => changeNotifier.initiateTransaction(widget.isLive, widget.data),
         );
     MixPanelService.logEvent(
-      'Select Payment institution Modal',
+      '3 - Select Payment institution Modal',
       properties: {
         'environment': widget.isLive ? 'production' : 'staging',
       },
@@ -237,19 +237,6 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                             ),
                             onTap: () {
                               checkoutNotfier.selectBank(banks[index]);
-                              MixPanelService.logEvent(
-                                  'Selected Payment institution',
-                                  properties: {
-                                    'environment': widget.isLive
-                                        ? 'production'
-                                        : 'staging',
-                                    'partner':
-                                        checkoutNotfier.selectedBankFlow?.name,
-                                    'payload': {
-                                      'bank':
-                                          checkoutNotfier.selectedBankFlow?.slug
-                                    },
-                                  });
                             },
                           );
                         },
@@ -267,7 +254,17 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
-            onTap: checkoutNotfier.nextPage,
+            onTap: () {
+              MixPanelService.logEvent(
+                '4 - Selected Payment institution',
+                properties: {
+                  'environment': widget.isLive ? 'production' : 'staging',
+                  'partner': checkoutNotfier.selectedBankFlow?.name,
+                  'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
+                },
+              );
+              checkoutNotfier.nextPage.call();
+            },
           ),
           const YSpace(59)
         ],

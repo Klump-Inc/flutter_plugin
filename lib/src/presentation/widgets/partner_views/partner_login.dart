@@ -67,7 +67,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      'ACCOUNT VERIFICATION MODAL',
+      '6 - ACCOUNT VERIFICATION MODAL',
       properties: {
         'environment': changeNotifier.isLive ? 'production' : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
