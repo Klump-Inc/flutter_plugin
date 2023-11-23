@@ -363,6 +363,11 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         returnValueForMissingStub: null,
       );
   @override
+  bool get isLive => (super.noSuchMethod(
+        Invocation.getter(#isLive),
+        returnValue: false,
+      ) as bool);
+  @override
   bool get isBusy => (super.noSuchMethod(
         Invocation.getter(#isBusy),
         returnValue: false,
@@ -405,6 +410,14 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   void setBankFlow(_i2.Partner? bank) => super.noSuchMethod(
         Invocation.method(
           #setBankFlow,
+          [bank],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void selectBank(Map<String, dynamic>? bank) => super.noSuchMethod(
+        Invocation.method(
+          #selectBank,
           [bank],
         ),
         returnValueForMissingStub: null,

@@ -45,7 +45,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
             : KC_MIX_PANEL_TOKEN_STAGING)
         .then(
       (value) => MixPanelService.logEvent(
-        ' Checkout Widget Initiated',
+        '1 - Checkout Widget Initiated',
         properties: {'environment': widget.isLive ? 'production' : 'staging'},
       ),
     );
