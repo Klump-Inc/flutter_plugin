@@ -2,7 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class MixPanelService {
-  static late Mixpanel mixpanel;
+  static Mixpanel? mixpanel;
 
   static Future<void> initMixpanel(String token) async {
     mixpanel = await Mixpanel.init(token, trackAutomaticEvents: true);
@@ -15,6 +15,8 @@ class MixPanelService {
       allProperties.addAll(properties);
     }
     Logger().d(allProperties);
-    mixpanel.track(event, properties: allProperties);
+    if (mixpanel != null) {
+      mixpanel!.track(event, properties: allProperties);
+    }
   }
 }
