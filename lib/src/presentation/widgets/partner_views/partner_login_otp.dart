@@ -115,7 +115,10 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
             ),
             child: IntrinsicHeight(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
+                padding: EdgeInsets.only(
+                    left: 26,
+                    right: 26,
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -243,10 +246,13 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                           title: 'Continue',
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
-                          onTap: () => checkoutNotfier.verifyOTP(
-                            _otpCtrl.text.trim(),
-                            _passwordCtrl.text.trim(),
-                          ),
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            checkoutNotfier.verifyOTP(
+                              _otpCtrl.text.trim(),
+                              _passwordCtrl.text.trim(),
+                            );
+                          },
                         );
                       },
                     ),
