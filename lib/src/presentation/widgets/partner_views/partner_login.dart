@@ -64,15 +64,6 @@ class _PartnerLoginState extends State<PartnerLogin> {
       firstNameStreamCtrl.sink.add(_firstNameCtrl.text.trim());
       validateInputs();
     });
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    MixPanelService.logEvent(
-      '6 - ACCOUNT VERIFICATION MODAL',
-      properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
-      },
-    );
   }
 
   @override

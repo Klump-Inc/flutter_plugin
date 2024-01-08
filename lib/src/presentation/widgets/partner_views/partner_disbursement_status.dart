@@ -4,31 +4,8 @@ import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class PartnerDisbursementStatus extends StatefulWidget {
+class PartnerDisbursementStatus extends StatelessWidget {
   const PartnerDisbursementStatus({super.key});
-
-  @override
-  State<PartnerDisbursementStatus> createState() =>
-      _PartnerDisbursementStatusState();
-}
-
-class _PartnerDisbursementStatusState extends State<PartnerDisbursementStatus> {
-  @override
-  void initState() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    if (checkoutNotifier.disbursementStatusResponse?.isSuccessful == true) {
-      MixPanelService.logEvent(
-        '13 - SUCCESSFUL MODAL',
-        properties: {
-          'environment': checkoutNotifier.isLive ? 'production' : 'staging',
-          'partner': checkoutNotifier.selectedBankFlow?.slug,
-        },
-      );
-    }
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

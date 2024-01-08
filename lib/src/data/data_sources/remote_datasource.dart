@@ -147,6 +147,17 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           'bank': bank,
         });
       }
+      MixPanelService.logEvent(
+        '6 - ACCOUNT VERIFICATION MODAL',
+        properties: {
+          'environment':
+              prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT
+                  ? 'production'
+                  : 'staging',
+          'partner': partner,
+          'payload': body,
+        },
+      );
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,

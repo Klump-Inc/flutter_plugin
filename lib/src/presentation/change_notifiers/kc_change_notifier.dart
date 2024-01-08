@@ -354,6 +354,13 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => null,
       (r) {
         _disbursementStatusResponse = r;
+        MixPanelService.logEvent(
+          '13 - SUCCESSFUL MODAL',
+          properties: {
+            'environment': isLive ? 'production' : 'staging',
+            'partner': selectedBankFlow?.slug,
+          },
+        );
         return r;
       },
     );

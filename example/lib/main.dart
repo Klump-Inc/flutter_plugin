@@ -42,12 +42,11 @@ class FirstScreen extends StatelessWidget {
           onPressed: () async {
             final klumpCheckout = KlumpCheckout();
             final res = await klumpCheckout.pay(
-              isLive: true,
+              isLive: false,
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    'klp_pk_2fa5e6c84957474cbe7a6f21bbfc715dbe4a6ab138024d25b4ac3ebd58962970',
-                //'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
+                    'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
                 amount: 100000,
                 shippingFee: 0,
                 merchantReference: "what-ever-you-want-this-to-be",
@@ -70,6 +69,7 @@ class FirstScreen extends StatelessWidget {
             );
             // ignore: avoid_print
             print(res);
+            //Perform action based on response returned from the checkout.
           },
           child: const Text('Text Checkout'),
         ),
