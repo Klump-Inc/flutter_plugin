@@ -11,6 +11,8 @@
 ## [1.0.10] - improvements
 ## [1.0.11] - Update Readme.md
 ## [1.0.12] - Add shipping data
+## [1.0.13] - Add new financial partners
+
 
 
 

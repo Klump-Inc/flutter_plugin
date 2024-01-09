@@ -7,11 +7,6 @@ class KCHttpRequester {
       BaseOptions(
         connectTimeout: const Duration(seconds: KC_CONNECT_TIMEOUT),
         receiveTimeout: const Duration(seconds: KC_RECEIVE_TIMEOUT),
-        headers: {
-          KC_CLIENT_ID: KC_CLIENT_ID_VALUE,
-          KC_CLIENT_KEY: KC_CLIENT_KEY_VALUE,
-          KC_CLIENT_SECRET: KC_CLIENT_SECRET_VALUE,
-        },
         contentType: KC_CONTENT_TYPE_DEFAULT,
       ),
     );
@@ -27,11 +22,16 @@ class KCHttpRequester {
     String? contentType,
     Map<String, dynamic>? headers,
   }) async {
+    final isLive = environment == KC_PRODUCTION_ENVIRONMENT;
     dio.options.headers['Authorization'] = 'Bearer $token';
+    dio.options.headers[KC_CLIENT_ID] =
+        isLive ? KC_CLIENT_ID_VALUE_PROD : KC_CLIENT_ID_VALUE_STAGING;
+    dio.options.headers[KC_CLIENT_KEY] =
+        isLive ? KC_CLIENT_KEY_VALUE_PROD : KC_CLIENT_KEY_VALUE_STAGING;
+    dio.options.headers[KC_CLIENT_SECRET] =
+        isLive ? KC_CLIENT_SECRET_VALUE_PROD : KC_CLIENT_SECRET_VALUE_STAGING;
     final response = await dio.post<dynamic>(
-      environment == KC_PRODUCTION_ENVIRONMENT
-          ? KC_BASE_URL + endpoint
-          : KC_STAGING_BASE_URL + endpoint,
+      isLive ? KC_BASE_URL + endpoint : KC_STAGING_BASE_URL + endpoint,
       data: body,
       queryParameters: queryParam,
       options: Options(
@@ -50,11 +50,16 @@ class KCHttpRequester {
     String? contentType,
     Map<String, dynamic>? headers,
   }) async {
+    final isLive = environment == KC_PRODUCTION_ENVIRONMENT;
     dio.options.headers['Authorization'] = 'Bearer $token';
+    dio.options.headers[KC_CLIENT_ID] =
+        isLive ? KC_CLIENT_ID_VALUE_PROD : KC_CLIENT_ID_VALUE_STAGING;
+    dio.options.headers[KC_CLIENT_KEY] =
+        isLive ? KC_CLIENT_KEY_VALUE_PROD : KC_CLIENT_KEY_VALUE_STAGING;
+    dio.options.headers[KC_CLIENT_SECRET] =
+        isLive ? KC_CLIENT_SECRET_VALUE_PROD : KC_CLIENT_SECRET_VALUE_STAGING;
     final response = dio.get<dynamic>(
-      environment == KC_PRODUCTION_ENVIRONMENT
-          ? KC_BASE_URL + endpoint
-          : KC_STAGING_BASE_URL + endpoint,
+      isLive ? KC_BASE_URL + endpoint : KC_STAGING_BASE_URL + endpoint,
       queryParameters: queryParam,
       options: Options(
         contentType: contentType,
@@ -73,11 +78,16 @@ class KCHttpRequester {
     String? contentType,
     Map<String, dynamic>? headers,
   }) async {
+    final isLive = environment == KC_PRODUCTION_ENVIRONMENT;
     dio.options.headers['Authorization'] = 'Bearer $token';
+    dio.options.headers[KC_CLIENT_ID] =
+        isLive ? KC_CLIENT_ID_VALUE_PROD : KC_CLIENT_ID_VALUE_STAGING;
+    dio.options.headers[KC_CLIENT_KEY] =
+        isLive ? KC_CLIENT_KEY_VALUE_PROD : KC_CLIENT_KEY_VALUE_STAGING;
+    dio.options.headers[KC_CLIENT_SECRET] =
+        isLive ? KC_CLIENT_SECRET_VALUE_PROD : KC_CLIENT_SECRET_VALUE_STAGING;
     final response = await dio.patch<dynamic>(
-      environment == KC_PRODUCTION_ENVIRONMENT
-          ? KC_BASE_URL + endpoint
-          : KC_STAGING_BASE_URL + endpoint,
+      isLive ? KC_BASE_URL + endpoint : KC_STAGING_BASE_URL + endpoint,
       data: body,
       queryParameters: queryParam,
       options: Options(

@@ -3,30 +3,30 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class GetLoanStatusUsecase
-    extends KCUsecase<StanbicStatusResponse, GetLoanStatusUsecaseParams> {
+    extends KCUsecase<DisbursementStatusResponse, GetLoanStatusUsecaseParams> {
   GetLoanStatusUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, StanbicStatusResponse>> call(
+  Future<Either<KCException, DisbursementStatusResponse>> call(
     GetLoanStatusUsecaseParams params,
   ) =>
-      stanbicRepository.getLoanStatus(
-          id: params.id, publicKey: params.publicKey);
+      partnerRepository.getLoanStatus(
+          url: params.url, publicKey: params.publicKey);
 }
 
 class GetLoanStatusUsecaseParams extends Equatable {
   const GetLoanStatusUsecaseParams({
-    required this.id,
+    required this.url,
     required this.publicKey,
   });
 
-  final String id;
+  final String url;
   final String publicKey;
 
   @override
-  List<Object?> get props => [id, publicKey];
+  List<Object?> get props => [url, publicKey];
 }

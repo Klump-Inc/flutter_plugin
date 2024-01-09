@@ -5,16 +5,16 @@ import 'package:klump_checkout/klump_checkout.dart';
 class InitiateTransactionUsecase
     extends KCUsecase<void, InitiateTransactionUsecaseParams> {
   InitiateTransactionUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
   Future<Either<KCException, void>> call(
     InitiateTransactionUsecaseParams params,
   ) =>
-      stanbicRepository.initiate(
+      partnerRepository.initiate(
         amount: params.amount,
         currency: params.currency,
         publicKey: params.publicKey,

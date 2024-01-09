@@ -3,25 +3,32 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class GetBankTCUsecase
-    extends KCUsecase<TermsAndCondition, GetBankTCUsecaseParams> {
+    extends KCUsecase<KCAPIResponse, GetBankTCUsecaseParams> {
   GetBankTCUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, TermsAndCondition>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     GetBankTCUsecaseParams params,
   ) =>
-      stanbicRepository.getBankTC(publicKey: params.publicKey);
+      partnerRepository.getBankTC(
+        publicKey: params.publicKey,
+        partner: params.partner,
+      );
 }
 
 class GetBankTCUsecaseParams extends Equatable {
   final String publicKey;
+  final String partner;
 
-  const GetBankTCUsecaseParams({required this.publicKey});
+  const GetBankTCUsecaseParams({
+    required this.publicKey,
+    required this.partner,
+  });
 
   @override
-  List<Object?> get props => [publicKey];
+  List<Object?> get props => [publicKey, partner];
 }

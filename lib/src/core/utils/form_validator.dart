@@ -22,6 +22,18 @@ class KCFormValidator {
     }
   }
 
+  static String? errorDOB(DateTime? dob, String message, bool showError) {
+    if (dob == null && !showError) {
+      return null;
+    } else if (dob == null && showError) {
+      return message;
+    } else if (DateTime.now().difference(dob!).inDays < (365 * 18)) {
+      return 'You are not eligible for a loan at this time';
+    } else {
+      return '';
+    }
+  }
+
   static String? errorEmail(String? text, String message) {
     if (text == null) {
       return null;
@@ -35,6 +47,30 @@ class KCFormValidator {
   }
 
   static String? errorPassword(String? text, String message) {
+    final hasUpperCase = RegExp('(?:[A-Z])');
+    final hasLowerCase = RegExp('(?:[a-z])');
+    final hasSymbols = RegExp(r"[!@#$%^&*(),\|+=;.?':{}|<>]");
+    final hasANumber = RegExp('(?=.*?[0-9])');
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (text.length <= 7) {
+      return 'Password must have 8 or more characters';
+    } else if (!hasANumber.hasMatch(text)) {
+      return 'Password must have at least a number';
+    } else if (!hasLowerCase.hasMatch(text)) {
+      return 'Password must have at a lower character';
+    } else if (!hasSymbols.hasMatch(text)) {
+      return 'Password must have at a special character';
+    } else if (!hasUpperCase.hasMatch(text)) {
+      return 'Password must have at a upper character';
+    } else {
+      return '';
+    }
+  }
+
+  static String? errorPassword2(String? text, String message) {
     if (text == null) {
       return null;
     } else if (text.isEmpty) {
@@ -46,13 +82,13 @@ class KCFormValidator {
     }
   }
 
-  static String? errorOTP(String? text, String message) {
+  static String? errorOTP(String? text, String message, [int length = 6]) {
     if (text == null) {
       return null;
     } else if (text.isEmpty) {
       return message;
-    } else if (text.length < 6) {
-      return 'OTP must have 6 numbers';
+    } else if (text.length != length) {
+      return 'OTP must have $length numbers';
     } else {
       return '';
     }

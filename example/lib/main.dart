@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: FirstScreen(),
     );
   }
@@ -45,7 +46,7 @@ class FirstScreen extends StatelessWidget {
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
+                    'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
                 amount: 100000,
                 shippingFee: 0,
                 merchantReference: "what-ever-you-want-this-to-be",
@@ -63,15 +64,12 @@ class FirstScreen extends StatelessWidget {
                     quantity: 2,
                   )
                 ],
-                shippingData: {
-                  "address": "Ediam road Akppa",
-                  "landmark": "extras",
-                  "city_id": "da513ab9-a28e-4451-af6b-16f029be2c37"
-                },
+                shippingData: null,
               ),
             );
             // ignore: avoid_print
             print(res);
+            //Perform action based on response returned from the checkout.
           },
           child: const Text('Text Checkout'),
         ),

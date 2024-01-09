@@ -2,18 +2,19 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
-class CreateNewUsecase extends KCUsecase<String, CreateNewUsecaseParams> {
+class CreateNewUsecase
+    extends KCUsecase<KCAPIResponse, CreateNewUsecaseParams> {
   CreateNewUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, String>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     CreateNewUsecaseParams params,
   ) =>
-      stanbicRepository.createNew(
+      partnerRepository.createNew(
         amount: params.amount,
         publicKey: params.publicKey,
         installment: params.installment,
@@ -21,6 +22,8 @@ class CreateNewUsecase extends KCUsecase<String, CreateNewUsecaseParams> {
         termsVersion: params.termsVersion,
         items: params.items,
         shippingData: params.shippingData,
+        insurerId: params.insurerId,
+        partner: params.partner,
       );
 }
 
@@ -33,15 +36,19 @@ class CreateNewUsecaseParams extends Equatable {
     required this.termsVersion,
     required this.items,
     required this.shippingData,
+    required this.insurerId,
+    required this.partner,
   });
 
   final double amount;
   final String publicKey;
-  final int installment;
-  final int repaymentDay;
-  final String termsVersion;
+  final int? installment;
+  final int? repaymentDay;
+  final String? termsVersion;
   final List<KlumpCheckoutItem> items;
   final Map<String, dynamic>? shippingData;
+  final int? insurerId;
+  final String partner;
 
   @override
   List<Object?> get props => [
@@ -52,5 +59,7 @@ class CreateNewUsecaseParams extends Equatable {
         termsVersion,
         items,
         shippingData,
+        insurerId,
+        partner,
       ];
 }

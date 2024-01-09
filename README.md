@@ -13,7 +13,7 @@ This library would help you add Klump Checkout to your hybrid android/ios applic
 To use this plugin, add `klump_checkout` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 ```pub
 dependencies:
-  klump_checkout: ^1.0.12
+  klump_checkout: ^1.0.13
 ```
 
 ### Usage
@@ -26,7 +26,7 @@ dependencies:
 
 3. Call the `pay` method with the isLive, context and data named paramaters to render the Klump checkout view.
 	
-4. Once request is successful, `KlumpCheckoutResponse` is return.
+4. Once request is successful, `KlumpCheckoutResponse` object is return.
 
 
 ## Installation
@@ -96,3 +96,4 @@ final res = await klumpCheckout.pay(
     ),
   );
 ```
+

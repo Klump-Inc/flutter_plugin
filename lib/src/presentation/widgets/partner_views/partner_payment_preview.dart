@@ -5,14 +5,14 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicPaymentPreview extends StatefulWidget {
-  const StanbicPaymentPreview({super.key});
+class PartnerPaymentPreview extends StatefulWidget {
+  const PartnerPaymentPreview({super.key});
 
   @override
-  State<StanbicPaymentPreview> createState() => _StanbicPaymentPreviewState();
+  State<PartnerPaymentPreview> createState() => _PartnerPaymentPreviewState();
 }
 
-class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
+class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
   final ValueNotifier<bool> _accepted = ValueNotifier(false);
 
   @override
@@ -74,8 +74,15 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                             KPPaymentItemTile(
                               title: 'Due Now',
                               amount:
-                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
-                              body: 'Paid at purchase',
+                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount + (repaymentDetails.managementFee ?? 0))}',
+                              body: repaymentDetails.downpaymentAmount != 0
+                                  ? 'Paid at purchase'
+                                  : repaymentDetails.managementFee != null &&
+                                          checkoutNotfier
+                                                  .selectedBankFlow?.slug ==
+                                              'polaris'
+                                      ? 'Polaris Fee '
+                                      : '',
                               bodyLines: 1,
                               firstItem: true,
                             ),
@@ -215,13 +222,10 @@ class _StanbicPaymentPreviewState extends State<StanbicPaymentPreview> {
                     valueListenable: _accepted,
                     builder: (_, accepted, __) {
                       return KCPrimaryButton(
-                        title:
-                            'Pay NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount)}',
+                        title: 'Continue',
                         disabled: !accepted || checkoutNotfier.isBusy,
                         loading: checkoutNotfier.isBusy,
-                        onTap: () => Provider.of<KCChangeNotifier>(context,
-                                listen: false)
-                            .createLoan(),
+                        onTap: () => checkoutNotfier.acceptTerms(),
                       );
                     },
                   ),

@@ -7,27 +7,36 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class StanbicLogin extends StatefulWidget {
-  const StanbicLogin({super.key});
+class PartnerLogin extends StatefulWidget {
+  const PartnerLogin({super.key});
 
   @override
-  State<StanbicLogin> createState() => _StanbicLoginState();
+  State<PartnerLogin> createState() => _PartnerLoginState();
 }
 
-class _StanbicLoginState extends State<StanbicLogin> {
+class _PartnerLoginState extends State<PartnerLogin> {
   late TextEditingController _accountNoCtrl;
   late TextEditingController _phoneNoCtrl;
+  late TextEditingController _firstNameCtrl;
 
   late StreamController<String> accountNoStreamCtrl;
   late StreamController<String> phoneNoStreamCtrl;
+  late StreamController<String> firstNameStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
+    final selectedBankFlow =
+        Provider.of<KCChangeNotifier>(context, listen: false).selectedBankFlow!;
     final accountNoError = KCFormValidator.errorAccountNumber(
         _accountNoCtrl.text.trim(), 'Required');
     final phoneNoError =
         KCFormValidator.errorPhoneNumber(_phoneNoCtrl.text.trim(), 'Required');
-    if (accountNoError?.isEmpty == true && phoneNoError?.isEmpty == true) {
+    final firstNameError =
+        KCFormValidator.errorGeneric(_firstNameCtrl.text.trim(), 'Required');
+    if (accountNoError?.isEmpty == true &&
+        phoneNoError?.isEmpty == true &&
+        (firstNameError?.isEmpty == true ||
+            selectedBankFlow.slug != 'polaris')) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -39,14 +48,20 @@ class _StanbicLoginState extends State<StanbicLogin> {
     super.initState();
     _accountNoCtrl = TextEditingController();
     _phoneNoCtrl = TextEditingController();
+    _firstNameCtrl = TextEditingController();
     accountNoStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
+    firstNameStreamCtrl = StreamController<String>.broadcast();
     _accountNoCtrl.addListener(() {
       accountNoStreamCtrl.sink.add(_accountNoCtrl.text.trim());
       validateInputs();
     });
     _phoneNoCtrl.addListener(() {
       phoneNoStreamCtrl.sink.add(_phoneNoCtrl.text.trim());
+      validateInputs();
+    });
+    _firstNameCtrl.addListener(() {
+      firstNameStreamCtrl.sink.add(_firstNameCtrl.text.trim());
       validateInputs();
     });
   }
@@ -56,6 +71,7 @@ class _StanbicLoginState extends State<StanbicLogin> {
     super.dispose();
     _accountNoCtrl.dispose();
     _phoneNoCtrl.dispose();
+    _firstNameCtrl.dispose();
   }
 
   @override
@@ -71,7 +87,10 @@ class _StanbicLoginState extends State<StanbicLogin> {
             ),
             child: IntrinsicHeight(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 26),
+                padding: EdgeInsets.only(
+                    left: 26,
+                    right: 26,
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -90,16 +109,19 @@ class _StanbicLoginState extends State<StanbicLogin> {
                       ),
                     ),
                     const YSpace(24.22),
-                    Image.asset(
-                      KCAssets.stanbicLogo,
+                    Image.network(
+                      checkoutNotfier.selectedBankFlow?.logo ?? '',
                       height: 55,
                       width: 47,
-                      package: KC_PACKAGE_NAME,
                     ),
                     const YSpace(22),
-                    KCHeadline3('Setup your account'),
-                    const YSpace(8),
-                    KCHeadline5('Login to your Stanbic IBTC account.'),
+                    if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic')
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: KCHeadline3('Setup your account'),
+                      ),
+                    KCHeadline5(
+                        'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.'),
                     const YSpace(24),
                     StreamBuilder<String>(
                       stream: accountNoStreamCtrl.stream,
@@ -140,26 +162,54 @@ class _StanbicLoginState extends State<StanbicLogin> {
                       },
                     ),
                     const YSpace(16),
-                    GestureDetector(
-                      onTap: () async {
-                        if (!await launchUrl(
-                          Uri.parse(
-                              "https://ienroll.stanbicibtc.com:8444/OnlineAccountOnboarding"),
-                          mode: LaunchMode.externalApplication,
-                        )) {
-                          // ignore: avoid_print
-                          print('Could not open link');
-                        }
-                      },
-                      child: KCBodyText1(
-                        'Don’t have a Stanbic account? Create one',
-                        fontSize: 16,
-                        color: KCColors.lightBlue,
-                        style: const TextStyle(
-                          decoration: TextDecoration.underline,
+                    if (checkoutNotfier.selectedBankFlow?.slug == 'polaris')
+                      StreamBuilder<String>(
+                        stream: firstNameStreamCtrl.stream,
+                        builder: (context, snapshot) {
+                          return KCInputField(
+                            controller: _firstNameCtrl,
+                            hint: 'First Name',
+                            textInputType: TextInputType.text,
+                            textInputAction: TextInputAction.done,
+                            validationMessage: KCFormValidator.errorGeneric(
+                              snapshot.data,
+                              'First Name is required',
+                            ),
+                          );
+                        },
+                      ),
+                    if (checkoutNotfier.selectedBankFlow?.nextStep?.displayData
+                                ?.createPartnerAccountText !=
+                            null &&
+                        checkoutNotfier.selectedBankFlow?.nextStep?.displayData
+                                ?.createPartnerAccountUrl !=
+                            null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (!await launchUrl(
+                              Uri.parse(checkoutNotfier
+                                  .selectedBankFlow!
+                                  .nextStep!
+                                  .displayData!
+                                  .createPartnerAccountUrl!),
+                              mode: LaunchMode.externalApplication,
+                            )) {
+                              // ignore: avoid_print
+                              print('Could not open link');
+                            }
+                          },
+                          child: KCBodyText1(
+                            '${checkoutNotfier.selectedBankFlow!.nextStep!.displayData!.createPartnerAccountText}',
+                            fontSize: 16,
+                            color: KCColors.lightBlue,
+                            style: const TextStyle(
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
                     const YSpace(25),
                     const Spacer(),
                     ValueListenableBuilder<bool>(
@@ -169,10 +219,16 @@ class _StanbicLoginState extends State<StanbicLogin> {
                           title: 'Continue',
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
-                          onTap: () => Provider.of<KCChangeNotifier>(context,
-                                  listen: false)
-                              .validateAccount(_accountNoCtrl.text.trim(),
-                                  _phoneNoCtrl.text.trim()),
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            Provider.of<KCChangeNotifier>(context,
+                                    listen: false)
+                                .validateAccount(
+                              _accountNoCtrl.text.trim(),
+                              _phoneNoCtrl.text.trim(),
+                              firstName: _firstNameCtrl.text.trim(),
+                            );
+                          },
                         );
                       },
                     ),

@@ -2,6 +2,12 @@ PODS:
   - Flutter (1.0.0)
   - klump_checkout (0.0.1):
     - Flutter
+  - Mixpanel-swift (4.1.0):
+    - Mixpanel-swift/Complete (= 4.1.0)
+  - Mixpanel-swift/Complete (4.1.0)
+  - mixpanel_flutter (2.1.1):
+    - Flutter
+    - Mixpanel-swift (= 4.1.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -11,14 +17,21 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - klump_checkout (from `.symlinks/plugins/klump_checkout/ios`)
+  - mixpanel_flutter (from `.symlinks/plugins/mixpanel_flutter/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Mixpanel-swift
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   klump_checkout:
     :path: ".symlinks/plugins/klump_checkout/ios"
+  mixpanel_flutter:
+    :path: ".symlinks/plugins/mixpanel_flutter/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/ios"
   url_launcher_ios:
@@ -27,9 +40,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   klump_checkout: 06c49320d3294d719ad2261a55d9afd69ca33979
+  Mixpanel-swift: 7b46c63259dec8398a7df9f8a1298fd00b6b3cb3
+  mixpanel_flutter: a530f9f27534f3c96a074e483ee425387f524e1c
   shared_preferences_foundation: 986fc17f3d3251412d18b0265f9c64113a8c2472
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.2

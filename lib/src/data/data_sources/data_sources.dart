@@ -1,1 +1,1 @@
-export 'stanbic_remote_datasource.dart';
+export 'remote_datasource.dart';

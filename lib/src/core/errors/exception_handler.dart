@@ -14,7 +14,7 @@ class KCExceptionHandler {
           e.type == DioErrorType.receiveTimeout) {
         return TimeoutKCException();
       }
-      if (e.response?.data != null) {
+      if (e.response?.data != null && e.response?.data.runtimeType != String) {
         return ServerKCException(
           message: (e.response!.data as Map<String, dynamic>?)?['message']
                   as String? ??

@@ -5,12 +5,10 @@ class KCBankPopupMenuItemContent extends StatelessWidget {
   const KCBankPopupMenuItemContent({
     super.key,
     required this.title,
-    required this.logo,
     this.withBG = false,
   });
 
   final String title;
-  final String logo;
   final bool withBG;
 
   @override
@@ -20,19 +18,11 @@ class KCBankPopupMenuItemContent extends StatelessWidget {
       color: withBG ? KCColors.grey3.withOpacity(0.15) : null,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Image.asset(
-            logo,
-            height: 20,
-            width: 17.09,
-            package: KC_PACKAGE_NAME,
-          ),
-          const XSpace(14),
-          KCBodyText1(
-            title,
-          ),
-        ],
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: KCBodyText1(
+          title,
+        ),
       ),
     );
   }

@@ -3,21 +3,24 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class AccountValidationUsecase
-    extends KCUsecase<void, AccountValidationUsecaseParams> {
+    extends KCUsecase<KCAPIResponse, AccountValidationUsecaseParams> {
   AccountValidationUsecase({
-    required this.stanbicRepository,
+    required this.partnerRepository,
   });
 
-  final StanbicRepository stanbicRepository;
+  final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, void>> call(
+  Future<Either<KCException, KCAPIResponse>> call(
     AccountValidationUsecaseParams params,
   ) =>
-      stanbicRepository.validateAccount(
+      partnerRepository.validateAccount(
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
         publicKey: params.publicKey,
+        partner: params.partner,
+        firstName: params.firstName,
+        bank: params.bank,
       );
 }
 
@@ -26,16 +29,25 @@ class AccountValidationUsecaseParams extends Equatable {
     required this.accountNumber,
     required this.phoneNumber,
     required this.publicKey,
+    required this.partner,
+    this.firstName,
+    this.bank,
   });
 
   final String accountNumber;
   final String phoneNumber;
   final String publicKey;
+  final String partner;
+  final String? firstName;
+  final String? bank;
 
   @override
   List<Object?> get props => [
         accountNumber,
         phoneNumber,
         publicKey,
+        partner,
+        firstName,
+        bank,
       ];
 }
