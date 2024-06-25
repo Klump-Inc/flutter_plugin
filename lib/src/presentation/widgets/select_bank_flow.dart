@@ -5,13 +5,7 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
-  const SelectBankFlow({
-    super.key,
-    required this.data,
-    required this.isLive,
-  });
-  final KlumpCheckoutData data;
-  final bool isLive;
+  const SelectBankFlow({super.key});
 
   @override
   State<SelectBankFlow> createState() => _SelectBankFlowState();
@@ -27,13 +21,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
   void _initiatTranx() {
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    changeNotifier.getLoanPartners().then(
-          (_) => changeNotifier.initiateTransaction(widget.isLive, widget.data),
-        );
     MixPanelService.logEvent(
       '3 - Select Payment institution Modal',
       properties: {
-        'environment': widget.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.isLive ? 'production' : 'staging',
       },
     );
   }
@@ -258,7 +249,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               MixPanelService.logEvent(
                 '4 - Selected Payment institution',
                 properties: {
-                  'environment': widget.isLive ? 'production' : 'staging',
+                  'environment':
+                      checkoutNotfier.isLive ? 'production' : 'staging',
                   'partner': checkoutNotfier.selectedBankFlow?.name,
                   'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
                 },

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class InitiateTransactionUsecase
-    extends KCUsecase<void, InitiateTransactionUsecaseParams> {
+    extends KCUsecase<bool, InitiateTransactionUsecaseParams> {
   InitiateTransactionUsecase({
     required this.partnerRepository,
   });
@@ -11,7 +11,7 @@ class InitiateTransactionUsecase
   final PartnerRepository partnerRepository;
 
   @override
-  Future<Either<KCException, void>> call(
+  Future<Either<KCException, bool>> call(
     InitiateTransactionUsecaseParams params,
   ) =>
       partnerRepository.initiate(
@@ -20,6 +20,8 @@ class InitiateTransactionUsecase
         publicKey: params.publicKey,
         metaData: params.metaData,
         isLive: params.isLive,
+        email: params.email,
+        phone: params.phone,
       );
 }
 
@@ -30,6 +32,8 @@ class InitiateTransactionUsecaseParams extends Equatable {
     required this.publicKey,
     required this.metaData,
     required this.isLive,
+    required this.email,
+    required this.phone,
   });
 
   final double amount;
@@ -37,6 +41,8 @@ class InitiateTransactionUsecaseParams extends Equatable {
   final String publicKey;
   final Map<String, dynamic> metaData;
   final bool isLive;
+  final String email;
+  final String phone;
 
   @override
   List<Object?> get props => [

@@ -46,7 +46,7 @@ class FirstScreen extends StatelessWidget {
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
+                    'klp_pk_test_d27ef09bd79347808b370a93968055eda39a8233a88c4b93860f119c8cd9a332',
                 amount: 100000,
                 shippingFee: 0,
                 merchantReference: "what-ever-you-want-this-to-be",

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:klump_checkout/src/presentation/widgets/account_email.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -101,10 +102,11 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                   child: Consumer<KCChangeNotifier>(
                     builder: (_, checkoutNotifier, __) {
                       var views = <Widget>[
-                        SelectBankFlow(
+                        AccountEmail(
                           data: widget.data,
                           isLive: widget.isLive,
                         ),
+                        const SelectBankFlow(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                                 'polaris' ||
                             checkoutNotifier.selectedBankFlow?.slug == 'specta')
