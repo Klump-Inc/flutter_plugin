@@ -123,6 +123,11 @@ class KCChangeNotifier extends ChangeNotifier {
   PartnerInsurer? _selectedPartnerInsurer;
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
 
+  void setTransactionData(bool isLive, KlumpCheckoutData data) {
+    _isLive = isLive;
+    _checkoutData = data;
+  }
+
   void _setBusy(bool value) {
     _isBusy = value;
     notifyListeners();
@@ -154,26 +159,30 @@ class KCChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void initiateTransaction(bool isLive, KlumpCheckoutData data) async {
-    if (_stanbicSteps['initiated'] != true) {
-      _isLive = isLive;
-      _checkoutData = data;
-      _setBusy(true);
-      initiateTransactionUsecase(
-        InitiateTransactionUsecaseParams(
-          amount: data.amount + (data.shippingFee ?? 0),
-          currency: data.currency ?? 'NGN',
-          publicKey: data.merchantPublicKey,
-          metaData: data.metaData,
-          isLive: isLive,
-        ),
-      ).then(
-        (_) {
-          _updateStanbicSteps('initiated');
-          _setBusy(false);
-        },
-      );
-    }
+  Future<bool> initiateTransaction({
+    required String email,
+    required String phone,
+  }) async {
+    _setBusy(true);
+    final response = await initiateTransactionUsecase(
+      InitiateTransactionUsecaseParams(
+        amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+        currency: _checkoutData!.currency ?? 'NGN',
+        publicKey: _checkoutData!.merchantPublicKey,
+        metaData: _checkoutData!.metaData,
+        isLive: isLive,
+        email: email,
+        phone: phone,
+      ),
+    );
+    _setBusy(false);
+    return response.fold(
+      (l) => false,
+      (r) {
+        _updateStanbicSteps('initiated');
+        return r;
+      },
+    );
   }
 
   Future<void> getLoanPartners() async {

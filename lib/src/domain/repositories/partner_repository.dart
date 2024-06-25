@@ -10,12 +10,14 @@ class PartnerRepository {
     );
   }
 
-  Future<Either<KCException, void>> initiate({
+  Future<Either<KCException, bool>> initiate({
     required double amount,
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
     required bool isLive,
+    required String email,
+    required String phone,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.initiate(
@@ -24,6 +26,8 @@ class PartnerRepository {
         publicKey: publicKey,
         metaData: metaData,
         isLive: isLive,
+        email: email,
+        phone: phone,
       );
       return Right(response);
     } catch (e) {

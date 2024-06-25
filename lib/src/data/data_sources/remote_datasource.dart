@@ -2,12 +2,14 @@ import 'package:klump_checkout/klump_checkout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
-  Future<void> initiate({
+  Future<bool> initiate({
     required double amount,
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
     required bool isLive,
+    required String email,
+    required String phone,
   });
   Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
@@ -85,12 +87,14 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   );
 
   @override
-  Future<void> initiate({
+  Future<bool> initiate({
     required double amount,
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
     required bool isLive,
+    required String email,
+    required String phone,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -103,6 +107,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "currency": currency,
         "klump_public_key": publicKey,
         "meta_data": metaData,
+        "email": email,
+        "phone": phone,
       };
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
@@ -111,6 +117,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       );
       await prefs.setString(KC_CKECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
+      return response.statusCode == 200;
     } else {
       throw NoInternetKCException();
     }

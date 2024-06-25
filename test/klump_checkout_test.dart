@@ -184,7 +184,7 @@ void main() {
           ChangeNotifierProvider<KCChangeNotifier>.value(
             value: kcChangeNotifier,
             builder: (context, kcChangeNotifier) {
-              return SelectBankFlow(isLive: false, data: checkoutData);
+              return const SelectBankFlow();
             },
           ),
         ),
