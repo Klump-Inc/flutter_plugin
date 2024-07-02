@@ -1,4 +1,3 @@
-import 'package:logger/logger.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class MixPanelService {
@@ -14,7 +13,6 @@ class MixPanelService {
     if (properties != null) {
       allProperties.addAll(properties);
     }
-    Logger().d(allProperties);
     if (mixpanel != null) {
       mixpanel!.track(event, properties: allProperties);
     }

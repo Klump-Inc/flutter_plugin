@@ -115,7 +115,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/transactions/initiate',
         body: body,
       );
-      await prefs.setString(KC_CKECKOUT_TOKEN,
+      await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
       return response.statusCode == 200;
     } else {
@@ -141,6 +141,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "accountNumber": accountNumber,
         "phoneNumber": phoneNumber,
         "partner": partner,
+        'klump_public_key': publicKey,
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
@@ -170,6 +171,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         headers: headers,
         endpoint: '/v1/loans/account/verification',
         body: body,
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
@@ -201,6 +203,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "phoneNumber": phoneNumber,
         "partner": partner,
         "email": "",
+        'klump_public_key': publicKey,
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
@@ -229,8 +232,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/account/verify-otp',
         headers: headers,
         body: body,
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
-      await prefs.setString(KC_LOGIN_TOKEN,
+      await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['data']['token']);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
@@ -261,7 +265,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         headers: headers,
         endpoint: '/v1/loans/partners/terms-and-conditions',
         queryParam: queryParams,
-        token: prefs.getString(KC_LOGIN_TOKEN),
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
@@ -306,7 +310,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/repayments-detail',
         body: body,
-        token: prefs.getString(KC_LOGIN_TOKEN),
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
         headers: headers,
       );
       return KCAPIResponseModel(
@@ -373,7 +377,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/account/new-loan',
         headers: headers,
         body: body,
-        token: prefs.getString(KC_LOGIN_TOKEN),
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
@@ -398,7 +402,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1$url',
         headers: headers,
-        token: prefs.getString(KC_LOGIN_TOKEN),
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return DisbursementStatusResponseModel.fromJson(response.data);
     } else {
@@ -433,7 +437,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         headers: headers,
         endpoint: '/v1/loans/account/credentials',
         body: body,
-        token: prefs.getString(KC_LOGIN_TOKEN),
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
@@ -461,6 +465,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint:
             '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner&amount=$amount',
         headers: headers,
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return PartnerInsurerListModel.fromJson(response.data).data;
     } else {
@@ -508,7 +513,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/account/accept-loan-terms',
         headers: headers,
         body: body,
-        token: prefs.getString(KC_LOGIN_TOKEN),
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),

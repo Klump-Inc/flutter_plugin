@@ -25,8 +25,7 @@ const String KC_CLIENT_SECRET_VALUE_PROD =
 const String KC_ENVIRONMENT_KEY = 'kc_environment_key';
 const String KC_PRODUCTION_ENVIRONMENT = 'kc_production_env';
 const String KC_STAGING_ENVIRONMENT = 'kc_staging_env';
-const String KC_CKECKOUT_TOKEN = 'kc_checkout_token';
-const String KC_LOGIN_TOKEN = 'kc_login_token';
+const String KC_CHECKOUT_TOKEN = 'kc_checkout_token';
 
 const int kC_OTP_RESEND_WAIT_TIME_IN_SECONDS = 60;
 const String KC_HTML_HEADER = '''
