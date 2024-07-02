@@ -98,19 +98,25 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                           fontSize: 15,
                         )
                       else
-                        Row(
-                          children: [
-                            Image.network(
-                              checkoutNotfier.selectedBankFlow!.logo ?? '',
-                              height: 20,
-                              width: 17.09,
-                            ),
-                            const XSpace(14),
-                            KCBodyText1(
-                              checkoutNotfier.selectedBankFlow!.name,
-                              fontSize: 15,
-                            )
-                          ],
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Image.network(
+                                checkoutNotfier.selectedBankFlow!.logo ?? '',
+                                height: 20,
+                                width: 17.09,
+                              ),
+                              const XSpace(14),
+                              Expanded(
+                                child: KCBodyText1(
+                                  checkoutNotfier.selectedBankFlow!.name,
+                                  fontSize: 15,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       Padding(
                         padding: const EdgeInsets.only(top: 2, right: 5),
