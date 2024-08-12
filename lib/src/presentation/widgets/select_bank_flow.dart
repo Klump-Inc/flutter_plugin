@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
@@ -252,6 +253,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: () {
+              if (checkoutNotfier.selectedBankFlow?.isActiveForMobile != true) {
+                showToast('Coming soon');
+                return;
+              }
               MixPanelService.logEvent(
                 '4 - Selected Payment institution',
                 properties: {

@@ -13,6 +13,8 @@
 ## [1.0.12] - Add shipping data
 ## [1.0.13] - Add new financial partners
 ## [1.0.15] - Analytics data
+## [1.0.16] - More partners
+
 
 
 
