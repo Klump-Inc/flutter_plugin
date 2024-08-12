@@ -1,6 +1,6 @@
 name: klump_checkout
 description:  A Flutter plugin for payment checkout on Klump gateway. Completely supports Android and iOS.
-version: 1.0.15
+version: 1.0.16
 homepage: https://github.com/Klump-Inc/flutter_plugin
 
 environment:
