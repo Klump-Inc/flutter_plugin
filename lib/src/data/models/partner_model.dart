@@ -16,6 +16,7 @@ class PartnerModel extends Partner {
     super.createdAt,
     super.updatedAt,
     super.nextStep,
+    super.isActiveForMobile,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) => PartnerModel(
@@ -37,6 +38,7 @@ class PartnerModel extends Partner {
         nextStep: json['next_step'] == null
             ? null
             : NextStepModel.fromJson(json['next_step']),
+        isActiveForMobile: json['is_active_for_mobile'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,5 +55,6 @@ class PartnerModel extends Partner {
         "config": config,
         "created_at": createdAt,
         "updated_at": updatedAt?.toIso8601String(),
+        "is_active_for_mobile": isActiveForMobile,
       };
 }
