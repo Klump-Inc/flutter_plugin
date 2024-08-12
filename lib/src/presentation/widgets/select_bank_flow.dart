@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
@@ -98,19 +99,25 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                           fontSize: 15,
                         )
                       else
-                        Row(
-                          children: [
-                            Image.network(
-                              checkoutNotfier.selectedBankFlow!.logo ?? '',
-                              height: 20,
-                              width: 17.09,
-                            ),
-                            const XSpace(14),
-                            KCBodyText1(
-                              checkoutNotfier.selectedBankFlow!.name,
-                              fontSize: 15,
-                            )
-                          ],
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Image.network(
+                                checkoutNotfier.selectedBankFlow!.logo ?? '',
+                                height: 20,
+                                width: 17.09,
+                              ),
+                              const XSpace(14),
+                              Expanded(
+                                child: KCBodyText1(
+                                  checkoutNotfier.selectedBankFlow!.name,
+                                  fontSize: 15,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       Padding(
                         padding: const EdgeInsets.only(top: 2, right: 5),
@@ -246,6 +253,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: () {
+              if (checkoutNotfier.selectedBankFlow?.isActiveForMobile != true) {
+                showToast('Coming soon');
+                return;
+              }
               MixPanelService.logEvent(
                 '4 - Selected Payment institution',
                 properties: {

@@ -16,6 +16,7 @@ class Partner extends Equatable {
   final dynamic createdAt;
   final DateTime? updatedAt;
   final NextStep? nextStep;
+  final bool? isActiveForMobile;
 
   const Partner({
     required this.id,
@@ -32,6 +33,7 @@ class Partner extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.nextStep,
+    this.isActiveForMobile,
   });
 
   @override
@@ -50,5 +52,6 @@ class Partner extends Equatable {
         createdAt,
         updatedAt,
         nextStep,
+        isActiveForMobile,
       ];
 }
