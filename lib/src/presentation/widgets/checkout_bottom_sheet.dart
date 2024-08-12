@@ -99,56 +99,49 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: Consumer<KCChangeNotifier>(
-                      builder: (_, checkoutNotifier, __) {
-                        var views = <Widget>[
-                          AccountEmail(
-                            data: widget.data,
-                            isLive: widget.isLive,
-                          ),
-                          const SelectBankFlow(),
-                          if (checkoutNotifier.selectedBankFlow?.slug ==
-                                  'polaris' ||
-                              checkoutNotifier.selectedBankFlow?.slug ==
-                                  'specta')
-                            const PartnerMobileExperience(),
-                          if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'polaris')
-                            const PartnerInformation(),
-                          const PartnerLogin(),
-                          const PartnerLoginOTP(),
-                          if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'stanbic')
-                            const PartnerTerms(),
-                          if (checkoutNotifier.selectedBankFlow?.slug !=
-                              'specta')
-                            const PartnerPaymentSplit(),
-                          if (checkoutNotifier.selectedBankFlow?.slug !=
-                              'specta')
-                            const PartnerPaymentPreview(),
-                          if (checkoutNotifier
-                                  .klumpUser?.requiresUserCredential ==
-                              true)
-                            const PartnerAccountCredentials(),
-                          if (checkoutNotifier.selectedBankFlow?.slug !=
-                              'stanbic')
-                            const PartnerInvoice(),
-                          if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'stanbic')
-                            const PartnerConfirmation(),
-                          const PartnerDecision(),
-                          const PartnerDisbursementStatus(),
-                        ];
-                        return PageView(
-                          controller: checkoutNotifier.pageController,
-                          physics: const NeverScrollableScrollPhysics(),
-                          children: views,
-                        );
-                      },
-                    ),
+                  child: Consumer<KCChangeNotifier>(
+                    builder: (_, checkoutNotifier, __) {
+                      var views = <Widget>[
+                        AccountEmail(
+                          data: widget.data,
+                          isLive: widget.isLive,
+                        ),
+                        const SelectBankFlow(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                                'polaris' ||
+                            checkoutNotifier.selectedBankFlow?.slug == 'specta')
+                          const PartnerMobileExperience(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'polaris')
+                          const PartnerInformation(),
+                        const PartnerLogin(),
+                        const PartnerLoginOTP(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'stanbic')
+                          const PartnerTerms(),
+                        if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                          const PartnerPaymentSplit(),
+                        if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                          const PartnerPaymentPreview(),
+                        if (checkoutNotifier
+                                .klumpUser?.requiresUserCredential ==
+                            true)
+                          const PartnerAccountCredentials(),
+                        if (checkoutNotifier.selectedBankFlow?.slug !=
+                            'stanbic')
+                          const PartnerInvoice(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'stanbic')
+                          const PartnerConfirmation(),
+                        const PartnerDecision(),
+                        const PartnerDisbursementStatus(),
+                      ];
+                      return PageView(
+                        controller: checkoutNotifier.pageController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: views,
+                      );
+                    },
                   ),
                 ),
               ],
