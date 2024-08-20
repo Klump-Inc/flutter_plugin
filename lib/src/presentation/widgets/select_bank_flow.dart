@@ -253,10 +253,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: () {
-              if (checkoutNotfier.selectedBankFlow?.isActiveForMobile != true) {
-                showToast('Coming soon');
-                return;
-              }
+              // if (checkoutNotfier.selectedBankFlow?.isActiveForMobile != true) {
+              //   showToast('Coming soon');
+              //   return;
+              // }
               MixPanelService.logEvent(
                 '4 - Selected Payment institution',
                 properties: {

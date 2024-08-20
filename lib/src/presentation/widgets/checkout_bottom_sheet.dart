@@ -112,8 +112,10 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug == 'specta')
                           const PartnerMobileExperience(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'polaris')
-                          const PartnerInformation(),
+                                'polaris' ||
+                            checkoutNotifier.selectedBankFlow?.slug ==
+                                'first_bank')
+                          const PartnerRequirements(),
                         const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==

@@ -1,11 +1,13 @@
-class FormFieldModel {
+import 'package:equatable/equatable.dart';
+
+class FormFieldModel extends Equatable {
   final String? type;
   final String? name;
   final String? label;
   final String? placeholder;
   final List? options;
 
-  FormFieldModel({
+  const FormFieldModel({
     this.type,
     this.name,
     this.label,
@@ -19,4 +21,13 @@ class FormFieldModel {
         placeholder: json['placeholder'],
         options: json['options'],
       );
+
+  @override
+  List<Object?> get props => [
+        type,
+        name,
+        label,
+        placeholder,
+        options,
+      ];
 }

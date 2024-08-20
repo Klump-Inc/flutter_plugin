@@ -2,7 +2,7 @@ import 'package:klump_checkout/klump_checkout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
-  Future<bool> initiate({
+  Future<InitiateResponseModel> initiate({
     required double amount,
     required String currency,
     required String publicKey,
@@ -10,6 +10,8 @@ abstract class RemoteDatasource {
     required bool isLive,
     required String email,
     required String phone,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   });
   Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
@@ -87,7 +89,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   );
 
   @override
-  Future<bool> initiate({
+  Future<InitiateResponseModel> initiate({
     required double amount,
     required String currency,
     required String publicKey,
@@ -95,6 +97,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required bool isLive,
     required String email,
     required String phone,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -109,7 +113,13 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "meta_data": metaData,
         "email": email,
         "phone": phone,
+        "items": items.map((e) => e.toMap()).toList(),
       };
+      if (shippingData != null) {
+        body.addAll({
+          'shipping_data': shippingData,
+        });
+      }
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/transactions/initiate',
@@ -117,7 +127,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       );
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
-      return response.statusCode == 200;
+      return InitiateResponseModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
     }
