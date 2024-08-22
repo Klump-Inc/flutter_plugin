@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
@@ -25,6 +26,7 @@ class KCChangeNotifier extends ChangeNotifier {
         GetLoanPartnersUsecase(partnerRepository: PartnerRepository());
     acceptTermsUsecase =
         AcceptTermsUsecase(partnerRepository: PartnerRepository());
+    partnersUsecase = PartnersUsecase(partnerRepository: PartnerRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
   late AccountValidationUsecase accountValidationUsecase;
@@ -37,6 +39,7 @@ class KCChangeNotifier extends ChangeNotifier {
   late AccountCredentialsUsecase accountCredentialsUsecase;
   late GetLoanPartnersUsecase getLoanPartnersUsecase;
   late AcceptTermsUsecase acceptTermsUsecase;
+  late PartnersUsecase partnersUsecase;
 
   bool _isLive = false;
   bool get isLive => _isLive;
@@ -57,9 +60,11 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _verifyOTPNextStepData;
   KCAPIResponse? get verifyOTPNextStepData => _verifyOTPNextStepData;
 
+  String? _email;
   String? _accountNumber;
   String? _phoneNumber;
   String? _firstName;
+  String? get email => _email;
   String? get accountNumber => _accountNumber;
   String? get phoneNumber => _phoneNumber;
   String? get firstName => _firstName;
@@ -157,6 +162,8 @@ class KCChangeNotifier extends ChangeNotifier {
     required String phone,
   }) async {
     _setBusy(true);
+    _email = email;
+    _phoneNumber = phoneNumber;
     final response = await initiateTransactionUsecase(
       InitiateTransactionUsecaseParams(
         amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
@@ -436,5 +443,26 @@ class KCChangeNotifier extends ChangeNotifier {
     } else {
       nextPage();
     }
+  }
+
+  Future<void> acceptRequirement() async {
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _selectedBankFlow?.nextStep?.method ?? '',
+        api: _selectedBankFlow?.nextStep?.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        Logger().d(r);
+        _nextStepData = r;
+        nextPage();
+      },
+    );
   }
 }

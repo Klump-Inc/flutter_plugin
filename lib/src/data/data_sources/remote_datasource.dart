@@ -77,6 +77,12 @@ abstract class RemoteDatasource {
     required String partner,
     required String publicKey,
   });
+  Future<KCAPIResponseModel> partners({
+    required String method,
+    required String api,
+    required String publicKey,
+    required String partner,
+  });
 }
 
 class RemoteDataSourceImpl implements RemoteDatasource {
@@ -523,6 +529,32 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/account/accept-loan-terms',
         headers: headers,
         body: body,
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
+      );
+      return KCAPIResponseModel(
+        nextStep: NextStepModel.fromJson(response.data['next_step']),
+      );
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<KCAPIResponseModel> partners({
+    required String method,
+    required String api,
+    required String publicKey,
+    required String partner,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final response = await kcHttpRequester.get(
+        environment: prefs.getString(KC_ENVIRONMENT_KEY),
+        endpoint: '/v1$api',
+        headers: headers,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
       return KCAPIResponseModel(

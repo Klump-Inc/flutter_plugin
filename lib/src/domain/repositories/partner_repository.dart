@@ -255,4 +255,25 @@ class PartnerRepository {
       );
     }
   }
+
+  Future<Either<KCException, KCAPIResponse>> partners({
+    required String method,
+    required String api,
+    required String publicKey,
+    required String partner,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.partners(
+        method: method,
+        api: api,
+        partner: partner,
+        publicKey: publicKey,
+      );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
 }

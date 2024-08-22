@@ -30,7 +30,6 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final nextStep = checkoutNotfier.selectedBankFlow?.nextStep;
-    print(nextStep?.formFields);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -117,13 +116,15 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                       valueListenable: _accepted,
                       builder: (_, accepted, __) {
                         return KCPrimaryButton(
-                          disabled: !accepted &&
-                              checkoutNotfier.selectedBankFlow?.slug ==
-                                  'first_bank',
+                          loading: checkoutNotfier.isBusy,
+                          disabled: (!accepted &&
+                                  checkoutNotfier.selectedBankFlow?.slug ==
+                                      'first_bank') ||
+                              checkoutNotfier.isBusy,
                           title: 'Continue',
-                          onTap: () => Provider.of<KCChangeNotifier>(context,
-                                  listen: false)
-                              .nextPage(),
+                          onTap: () => context
+                              .read<KCChangeNotifier>()
+                              .acceptRequirement(),
                         );
                       },
                     ),
