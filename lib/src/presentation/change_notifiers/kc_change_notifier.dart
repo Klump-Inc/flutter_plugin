@@ -57,8 +57,8 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _nextStepData;
   KCAPIResponse? get nextStepData => _nextStepData;
 
-  KCAPIResponse? _verifyOTPNextStepData;
-  KCAPIResponse? get verifyOTPNextStepData => _verifyOTPNextStepData;
+  KCAPIResponse? _verifyOTPStepData;
+  KCAPIResponse? get verifyOTPNextStepData => _verifyOTPStepData;
 
   String? _email;
   String? _accountNumber;
@@ -203,27 +203,33 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
   }
 
-  Future<void> validateAccount(String accountNumber, String phoneNumber,
-      {String? firstName}) async {
+  Future<void> validateAccount(
+    String accountNumber,
+    String phoneNumber, {
+    String? firstName,
+    String? email,
+  }) async {
     _setBusy(true);
     _accountNumber = accountNumber;
     _phoneNumber = phoneNumber;
     _firstName = firstName;
+    _email = email;
     final response = await accountValidationUsecase(
       AccountValidationUsecaseParams(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
-        firstName: firstName,
+        firstName: firstName?.isNotEmpty == true ? firstName : null,
         bank: _selectedBank != null ? _selectedBank!['slug'] : null,
+        email: email?.isNotEmpty == true ? email : null,
       ),
     );
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _verifyOTPNextStepData = r;
+        _verifyOTPStepData = r;
         nextPage();
       },
     );

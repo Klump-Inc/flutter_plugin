@@ -281,6 +281,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
                               _accountNoCtrl.text.trim(),
                               _phoneNoCtrl.text.trim(),
                               firstName: _firstNameCtrl.text.trim(),
+                              email: _emailCtrl.text.trim(),
                             );
                           },
                         );

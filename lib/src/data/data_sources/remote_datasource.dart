@@ -1,4 +1,5 @@
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -16,10 +17,11 @@ abstract class RemoteDatasource {
   Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
     required String phoneNumber,
-    String? firstName,
     required String publicKey,
     required String partner,
+    required String? firstName,
     required String? bank,
+    required String? email,
   });
   Future<KCAPIResponseModel> accountCredentials({
     required String email,
@@ -143,10 +145,11 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
     required String phoneNumber,
-    String? firstName,
     required String publicKey,
     required String partner,
+    required String? firstName,
     required String? bank,
+    required String? email,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -161,9 +164,14 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
-      if (partner == 'polaris') {
+      if (firstName != null) {
         body.addAll({
           'firstname': firstName,
+        });
+      }
+      if (email != null) {
+        body.addAll({
+          'email': email,
         });
       }
       if (bank != null) {
@@ -171,6 +179,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           'bank': bank,
         });
       }
+      Logger().d(body);
       MixPanelService.logEvent(
         '6 - ACCOUNT VERIFICATION MODAL',
         properties: {
@@ -189,6 +198,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
+      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['message'],

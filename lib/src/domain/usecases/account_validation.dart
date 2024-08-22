@@ -21,6 +21,7 @@ class AccountValidationUsecase
         partner: params.partner,
         firstName: params.firstName,
         bank: params.bank,
+        email: params.email,
       );
 }
 
@@ -32,6 +33,7 @@ class AccountValidationUsecaseParams extends Equatable {
     required this.partner,
     this.firstName,
     this.bank,
+    this.email,
   });
 
   final String accountNumber;
@@ -40,6 +42,7 @@ class AccountValidationUsecaseParams extends Equatable {
   final String partner;
   final String? firstName;
   final String? bank;
+  final String? email;
 
   @override
   List<Object?> get props => [
@@ -49,5 +52,6 @@ class AccountValidationUsecaseParams extends Equatable {
         partner,
         firstName,
         bank,
+        email,
       ];
 }

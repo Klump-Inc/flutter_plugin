@@ -48,6 +48,7 @@ class PartnerRepository {
     required String publicKey,
     required String partner,
     required String? bank,
+    required String? email,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.validateAccount(
@@ -57,6 +58,7 @@ class PartnerRepository {
         partner: partner,
         firstName: firstName,
         bank: bank,
+        email: email,
       );
       return Right(response);
     } catch (e) {
