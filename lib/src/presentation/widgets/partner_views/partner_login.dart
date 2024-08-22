@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,25 +19,38 @@ class _PartnerLoginState extends State<PartnerLogin> {
   late TextEditingController _accountNoCtrl;
   late TextEditingController _phoneNoCtrl;
   late TextEditingController _firstNameCtrl;
+  late TextEditingController _emailCtrl;
 
   late StreamController<String> accountNoStreamCtrl;
   late StreamController<String> phoneNoStreamCtrl;
   late StreamController<String> firstNameStreamCtrl;
+  late StreamController<String> emailStreamCtrl;
+
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final selectedBankFlow =
-        Provider.of<KCChangeNotifier>(context, listen: false).selectedBankFlow!;
+    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final formFields = (checkoutNotfier.nextStepData?.nextStep ??
+            checkoutNotfier.selectedBankFlow?.nextStep)
+        ?.formFields
+        ?.map((e) => e.name)
+        .toList();
     final accountNoError = KCFormValidator.errorAccountNumber(
         _accountNoCtrl.text.trim(), 'Required');
     final phoneNoError =
         KCFormValidator.errorPhoneNumber(_phoneNoCtrl.text.trim(), 'Required');
     final firstNameError =
         KCFormValidator.errorGeneric(_firstNameCtrl.text.trim(), 'Required');
-    if (accountNoError?.isEmpty == true &&
-        phoneNoError?.isEmpty == true &&
+    final emailError =
+        KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
+    if ((accountNoError?.isEmpty == true ||
+            formFields?.contains('accountNumber') != true) &&
+        (phoneNoError?.isEmpty == true ||
+            formFields?.contains('phoneNumber') != true) &&
         (firstNameError?.isEmpty == true ||
-            selectedBankFlow.slug != 'polaris')) {
+            formFields?.contains('firstName') != true) &&
+        (emailError?.isEmpty == true ||
+            formFields?.contains('email') != true)) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -49,9 +63,15 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _accountNoCtrl = TextEditingController();
     _phoneNoCtrl = TextEditingController();
     _firstNameCtrl = TextEditingController();
+    _emailCtrl = TextEditingController();
+    final checkoutNotfier = context.read<KCChangeNotifier>();
+    _emailCtrl.text = checkoutNotfier.email ?? '';
+    _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+    validateInputs();
     accountNoStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
     firstNameStreamCtrl = StreamController<String>.broadcast();
+    emailStreamCtrl = StreamController<String>.broadcast();
     _accountNoCtrl.addListener(() {
       accountNoStreamCtrl.sink.add(_accountNoCtrl.text.trim());
       validateInputs();
@@ -64,6 +84,10 @@ class _PartnerLoginState extends State<PartnerLogin> {
       firstNameStreamCtrl.sink.add(_firstNameCtrl.text.trim());
       validateInputs();
     });
+    _emailCtrl.addListener(() {
+      emailStreamCtrl.sink.add(_emailCtrl.text.trim());
+      validateInputs();
+    });
   }
 
   @override
@@ -72,11 +96,15 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _accountNoCtrl.dispose();
     _phoneNoCtrl.dispose();
     _firstNameCtrl.dispose();
+    _emailCtrl.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
+    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+        checkoutNotfier.selectedBankFlow?.nextStep;
+    final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -120,88 +148,114 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         padding: const EdgeInsets.only(bottom: 8),
                         child: KCHeadline3('Setup your account'),
                       ),
-                    KCHeadline5(
+                    KCHeadline5(stepData?.displayData?.subTitle ??
                         'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.'),
                     const YSpace(24),
-                    StreamBuilder<String>(
-                      stream: accountNoStreamCtrl.stream,
-                      builder: (context, snapshot) {
-                        return KCInputField(
-                          controller: _accountNoCtrl,
-                          hint: 'Account Number',
-                          textInputType: TextInputType.number,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                          validationMessage: KCFormValidator.errorAccountNumber(
-                            snapshot.data,
-                            'Accouunt number is required',
-                          ),
-                        );
-                      },
-                    ),
-                    const YSpace(16),
-                    StreamBuilder<String>(
-                      stream: phoneNoStreamCtrl.stream,
-                      builder: (context, snapshot) {
-                        return KCInputField(
-                          controller: _phoneNoCtrl,
-                          hint: 'Phone Number',
-                          textInputType: TextInputType.number,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                            LengthLimitingTextInputFormatter(11),
-                          ],
-                          textInputAction: TextInputAction.done,
-                          validationMessage: KCFormValidator.errorPhoneNumber(
-                            snapshot.data,
-                            'Phone Number is required',
-                          ),
-                        );
-                      },
-                    ),
-                    const YSpace(16),
-                    if (checkoutNotfier.selectedBankFlow?.slug == 'polaris')
-                      StreamBuilder<String>(
-                        stream: firstNameStreamCtrl.stream,
-                        builder: (context, snapshot) {
-                          return KCInputField(
-                            controller: _firstNameCtrl,
-                            hint: 'First Name',
-                            textInputType: TextInputType.text,
-                            textInputAction: TextInputAction.done,
-                            validationMessage: KCFormValidator.errorGeneric(
-                              snapshot.data,
-                              'First Name is required',
-                            ),
-                          );
-                        },
-                      ),
-                    if (checkoutNotfier.selectedBankFlow?.nextStep?.displayData
-                                ?.createPartnerAccountText !=
-                            null &&
-                        checkoutNotfier.selectedBankFlow?.nextStep?.displayData
-                                ?.createPartnerAccountUrl !=
-                            null)
+                    if (formFields?.contains('accountNumber') == true)
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: accountNoStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _accountNoCtrl,
+                              hint: 'Account Number',
+                              textInputType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                                LengthLimitingTextInputFormatter(10),
+                              ],
+                              validationMessage:
+                                  KCFormValidator.errorAccountNumber(
+                                snapshot.data,
+                                'Accouunt number is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('phoneNumber') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: phoneNoStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _phoneNoCtrl,
+                              hint: 'Phone Number',
+                              textInputType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                                LengthLimitingTextInputFormatter(11),
+                              ],
+                              textInputAction: TextInputAction.next,
+                              validationMessage:
+                                  KCFormValidator.errorPhoneNumber(
+                                snapshot.data,
+                                'Phone Number is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('email') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: emailStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _emailCtrl,
+                              hint: 'Email',
+                              textInputType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              validationMessage: KCFormValidator.errorEmail(
+                                snapshot.data,
+                                'Email is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('firstName') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: firstNameStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _firstNameCtrl,
+                              hint: 'First Name',
+                              textInputType: TextInputType.text,
+                              textInputAction: TextInputAction.done,
+                              validationMessage: KCFormValidator.errorGeneric(
+                                snapshot.data,
+                                'First Name is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (stepData?.displayData?.createPartnerAccountText !=
+                            null &&
+                        stepData?.displayData?.createPartnerAccountUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
                         child: GestureDetector(
                           onTap: () async {
                             if (!await launchUrl(
-                              Uri.parse(checkoutNotfier
-                                  .selectedBankFlow!
-                                  .nextStep!
-                                  .displayData!
-                                  .createPartnerAccountUrl!),
+                              Uri.parse(stepData!
+                                  .displayData!.createPartnerAccountUrl!),
                               mode: LaunchMode.externalApplication,
                             )) {
-                              // ignore: avoid_print
-                              print('Could not open link');
+                              showToast('Could not open link');
                             }
                           },
                           child: KCBodyText1(
-                            '${checkoutNotfier.selectedBankFlow!.nextStep!.displayData!.createPartnerAccountText}',
+                            '${stepData?.displayData?.createPartnerAccountText ?? stepData?.displayData!.createPartnerAccountText}',
                             fontSize: 16,
                             color: KCColors.lightBlue,
                             style: const TextStyle(

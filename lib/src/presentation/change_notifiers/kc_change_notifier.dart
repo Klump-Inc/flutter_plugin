@@ -163,7 +163,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }) async {
     _setBusy(true);
     _email = email;
-    _phoneNumber = phoneNumber;
+    _phoneNumber = phone;
     final response = await initiateTransactionUsecase(
       InitiateTransactionUsecaseParams(
         amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
