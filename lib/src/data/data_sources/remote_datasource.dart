@@ -1,4 +1,5 @@
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -497,6 +498,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/partners',
         headers: headers,
       );
+      Logger().d(response.data);
       return PartnerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
