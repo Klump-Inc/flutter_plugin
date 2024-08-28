@@ -18,6 +18,8 @@ class PartnerRepository {
     required bool isLive,
     required String email,
     required String phone,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.initiate(
@@ -28,6 +30,8 @@ class PartnerRepository {
         isLive: isLive,
         email: email,
         phone: phone,
+        items: items,
+        shippingData: shippingData,
       );
       return Right(response);
     } catch (e) {
@@ -71,6 +75,8 @@ class PartnerRepository {
     String? firstName,
     required String partner,
     required String? bank,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(

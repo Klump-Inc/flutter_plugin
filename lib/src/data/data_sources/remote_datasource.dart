@@ -10,6 +10,8 @@ abstract class RemoteDatasource {
     required bool isLive,
     required String email,
     required String phone,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   });
   Future<KCAPIResponseModel> validateAccount({
     required String accountNumber,
@@ -95,6 +97,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required bool isLive,
     required String email,
     required String phone,
+    required List<KlumpCheckoutItem> items,
+    required Map<String, dynamic>? shippingData,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
