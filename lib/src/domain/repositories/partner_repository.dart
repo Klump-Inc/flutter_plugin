@@ -75,8 +75,6 @@ class PartnerRepository {
     String? firstName,
     required String partner,
     required String? bank,
-    required List<KlumpCheckoutItem> items,
-    required Map<String, dynamic>? shippingData,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(

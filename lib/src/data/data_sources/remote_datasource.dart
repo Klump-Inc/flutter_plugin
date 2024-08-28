@@ -89,7 +89,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   );
 
   @override
-  Future<bool> initiate({
+  Future<InitiateResponseModel> initiate({
     required double amount,
     required String currency,
     required String publicKey,
@@ -113,7 +113,13 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "meta_data": metaData,
         "email": email,
         "phone": phone,
+        "items": items.map((e) => e.toMap()).toList(),
       };
+      if (shippingData != null) {
+        body.addAll({
+          'shipping_data': shippingData,
+        });
+      }
       final response = await kcHttpRequester.post(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/transactions/initiate',
@@ -121,7 +127,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       );
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
-      return response.statusCode == 200;
+      return InitiateResponseModel.fromJson(response.data);
     } else {
       throw NoInternetKCException();
     }
