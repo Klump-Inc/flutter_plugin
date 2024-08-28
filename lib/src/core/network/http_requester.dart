@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 
 class KCHttpRequester {
   KCHttpRequester() {
@@ -39,6 +40,7 @@ class KCHttpRequester {
         headers: headers,
       ),
     );
+    Logger().d(response.data);
     return response;
   }
 
@@ -58,7 +60,7 @@ class KCHttpRequester {
         isLive ? KC_CLIENT_KEY_VALUE_PROD : KC_CLIENT_KEY_VALUE_STAGING;
     dio.options.headers[KC_CLIENT_SECRET] =
         isLive ? KC_CLIENT_SECRET_VALUE_PROD : KC_CLIENT_SECRET_VALUE_STAGING;
-    final response = dio.get<dynamic>(
+    final response = await dio.get<dynamic>(
       isLive ? KC_BASE_URL + endpoint : KC_STAGING_BASE_URL + endpoint,
       queryParameters: queryParam,
       options: Options(
@@ -66,6 +68,7 @@ class KCHttpRequester {
         headers: headers,
       ),
     );
+    Logger().d(response.data);
     return response;
   }
 

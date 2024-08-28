@@ -18,6 +18,7 @@ class PartnersUsecase extends KCUsecase<KCAPIResponse, PartnersUsecaseParams> {
         api: params.api,
         publicKey: params.publicKey,
         partner: params.partner,
+        data: params.data,
       );
 }
 
@@ -26,14 +27,16 @@ class PartnersUsecaseParams extends Equatable {
   final String api;
   final String publicKey;
   final String partner;
+  final Map<String, dynamic>? data;
 
   const PartnersUsecaseParams({
     required this.method,
     required this.api,
     required this.publicKey,
     required this.partner,
+    required this.data,
   });
 
   @override
-  List<Object?> get props => [method, api, publicKey, partner];
+  List<Object?> get props => [method, api, publicKey, partner, data];
 }

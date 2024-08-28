@@ -36,8 +36,8 @@ class AccountValidationUsecaseParams extends Equatable {
     this.email,
   });
 
-  final String accountNumber;
-  final String phoneNumber;
+  final String? accountNumber;
+  final String? phoneNumber;
   final String publicKey;
   final String partner;
   final String? firstName;

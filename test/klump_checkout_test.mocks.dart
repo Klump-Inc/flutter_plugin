@@ -145,9 +145,20 @@ class _FakeAcceptTermsUsecase_10 extends _i1.SmartFake
         );
 }
 
-class _FakePageController_11 extends _i1.SmartFake
+class _FakePartnersUsecase_11 extends _i1.SmartFake
+    implements _i2.PartnersUsecase {
+  _FakePartnersUsecase_11(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakePageController_12 extends _i1.SmartFake
     implements _i5.PageController {
-  _FakePageController_11(
+  _FakePageController_12(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -385,6 +396,25 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
+  _i2.PartnersUsecase get partnersUsecase => (super.noSuchMethod(
+        Invocation.getter(#partnersUsecase),
+        returnValue: _FakePartnersUsecase_11(
+          this,
+          Invocation.getter(#partnersUsecase),
+        ),
+      ) as _i2.PartnersUsecase);
+
+  @override
+  set partnersUsecase(_i2.PartnersUsecase? _partnersUsecase) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #partnersUsecase,
+          _partnersUsecase,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   bool get isLive => (super.noSuchMethod(
         Invocation.getter(#isLive),
         returnValue: false,
@@ -405,7 +435,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   @override
   _i5.PageController get pageController => (super.noSuchMethod(
         Invocation.getter(#pageController),
-        returnValue: _FakePageController_11(
+        returnValue: _FakePageController_12(
           this,
           Invocation.getter(#pageController),
         ),
@@ -528,6 +558,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
     String? accountNumber,
     String? phoneNumber, {
     String? firstName,
+    String? email,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -536,7 +567,10 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             accountNumber,
             phoneNumber,
           ],
-          {#firstName: firstName},
+          {
+            #firstName: firstName,
+            #email: email,
+          },
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
@@ -648,6 +682,16 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   _i6.Future<void> acceptTerms() => (super.noSuchMethod(
         Invocation.method(
           #acceptTerms,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> acceptRequirement() => (super.noSuchMethod(
+        Invocation.method(
+          #acceptRequirement,
           [],
         ),
         returnValue: _i6.Future<void>.value(),

@@ -75,8 +75,8 @@ class KCFormValidator {
       return null;
     } else if (text.isEmpty) {
       return message;
-    } else if (text.length <= 7) {
-      return 'Password must have 8 or more characters';
+    } else if (text.length <= 4) {
+      return 'Password must have 5 or more characters';
     } else {
       return '';
     }

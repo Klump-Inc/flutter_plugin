@@ -17,6 +17,7 @@ class VerifyOTPUsecase
       partnerRepository.verifyOTP(
         accountNumber: params.accountNumber,
         phoneNumber: params.phoneNumber,
+        email: params.email,
         otp: params.otp,
         password: params.password,
         publicKey: params.publicKey,
@@ -30,16 +31,18 @@ class VerifyOTPUsecaseParams extends Equatable {
   const VerifyOTPUsecaseParams({
     required this.accountNumber,
     required this.phoneNumber,
-    this.otp,
-    this.password,
+    required this.email,
+    required this.otp,
+    required this.password,
     required this.publicKey,
     required this.partner,
-    this.firstName,
-    this.bank,
+    required this.firstName,
+    required this.bank,
   });
 
-  final String accountNumber;
-  final String phoneNumber;
+  final String? accountNumber;
+  final String? phoneNumber;
+  final String? email;
   final String? otp;
   final String? password;
   final String publicKey;
@@ -51,6 +54,7 @@ class VerifyOTPUsecaseParams extends Equatable {
   List<Object?> get props => [
         accountNumber,
         phoneNumber,
+        email,
         otp,
         publicKey,
         partner,

@@ -42,8 +42,8 @@ class PartnerRepository {
   }
 
   Future<Either<KCException, KCAPIResponse>> validateAccount({
-    required String accountNumber,
-    required String phoneNumber,
+    required String? accountNumber,
+    required String? phoneNumber,
     String? firstName,
     required String publicKey,
     required String partner,
@@ -69,12 +69,13 @@ class PartnerRepository {
   }
 
   Future<Either<KCException, KCAPIResponse>> verifyOTP({
-    required String accountNumber,
-    required String phoneNumber,
+    required String? accountNumber,
+    required String? phoneNumber,
+    required String? email,
     required String? otp,
     required String? password,
     required String publicKey,
-    String? firstName,
+    required String? firstName,
     required String partner,
     required String? bank,
   }) async {
@@ -82,6 +83,7 @@ class PartnerRepository {
       final response = await stanbicRmoteDatasource.verifyOTP(
         accountNumber: accountNumber,
         phoneNumber: phoneNumber,
+        email: email,
         otp: otp,
         password: password,
         publicKey: publicKey,
@@ -263,6 +265,7 @@ class PartnerRepository {
     required String api,
     required String publicKey,
     required String partner,
+    required Map<String, dynamic>? data,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.partners(
@@ -270,6 +273,7 @@ class PartnerRepository {
         api: api,
         partner: partner,
         publicKey: publicKey,
+        data: data,
       );
       return Right(response);
     } catch (e) {

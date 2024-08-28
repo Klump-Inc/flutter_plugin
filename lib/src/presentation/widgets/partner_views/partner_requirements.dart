@@ -122,18 +122,21 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                                       'first_bank') ||
                               checkoutNotfier.isBusy,
                           title: 'Continue',
-                          onTap: () => context
-                              .read<KCChangeNotifier>()
-                              .acceptRequirement(),
+                          onTap: () {
+                            if (nextStep?.api ==
+                                '/loans/account/verification') {
+                              checkoutNotfier.validateAccount(skipPage: true);
+                            } else {
+                              checkoutNotfier.nextPage();
+                            }
+                          },
                         );
                       },
                     ),
                     const YSpace(16),
                     KCSecondaryButton(
                       title: 'Go back',
-                      onTap: () =>
-                          Provider.of<KCChangeNotifier>(context, listen: false)
-                              .prevPage(),
+                      onTap: () => checkoutNotfier.prevPage(),
                     ),
                     const YSpace(59)
                   ],

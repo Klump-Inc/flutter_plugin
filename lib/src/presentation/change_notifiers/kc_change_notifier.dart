@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
@@ -56,9 +55,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KCAPIResponse? _nextStepData;
   KCAPIResponse? get nextStepData => _nextStepData;
-
-  KCAPIResponse? _verifyOTPStepData;
-  KCAPIResponse? get verifyOTPNextStepData => _verifyOTPStepData;
 
   String? _email;
   String? _accountNumber;
@@ -203,34 +199,46 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
   }
 
-  Future<void> validateAccount(
-    String accountNumber,
-    String phoneNumber, {
+  Future<void> validateAccount({
+    String? accountNumber,
+    String? phoneNumber,
     String? firstName,
     String? email,
+    bool? skipPage,
   }) async {
     _setBusy(true);
-    _accountNumber = accountNumber;
-    _phoneNumber = phoneNumber;
-    _firstName = firstName;
-    _email = email;
+    _accountNumber = accountNumber ?? _accountNumber;
+    _phoneNumber = phoneNumber ?? _phoneNumber;
+    _firstName = firstName ?? _firstName;
+    _email = email ?? _email;
     final response = await accountValidationUsecase(
       AccountValidationUsecaseParams(
-        accountNumber: accountNumber,
-        phoneNumber: phoneNumber,
+        accountNumber:
+            _accountNumber?.isNotEmpty == true ? _accountNumber : null,
+        phoneNumber: _phoneNumber?.isNotEmpty == true ? _phoneNumber : null,
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         firstName: firstName?.isNotEmpty == true ? firstName : null,
         bank: _selectedBank != null ? _selectedBank!['slug'] : null,
-        email: email?.isNotEmpty == true ? email : null,
+        email: _email?.isNotEmpty == true ? _email : null,
       ),
     );
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _verifyOTPStepData = r;
-        nextPage();
+        _nextStepData = r;
+        if (skipPage == true) {
+          _currentPage = _currentPage + 2;
+          _pageController.animateToPage(
+            _currentPage,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.linear,
+          );
+          notifyListeners();
+        } else {
+          nextPage();
+        }
       },
     );
   }
@@ -264,8 +272,10 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final response = await verifyOTPUsecase(
       VerifyOTPUsecaseParams(
-        accountNumber: _accountNumber ?? '',
-        phoneNumber: _phoneNumber ?? '',
+        accountNumber:
+            _accountNumber?.isNotEmpty == true ? _accountNumber : null,
+        phoneNumber: _phoneNumber?.isNotEmpty == true ? _phoneNumber : null,
+        email: _email?.isNotEmpty == true ? _email : null,
         otp: otp,
         password: password,
         publicKey: _checkoutData!.merchantPublicKey,
@@ -459,13 +469,13 @@ class KCChangeNotifier extends ChangeNotifier {
         api: _selectedBankFlow?.nextStep?.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
+        data: null,
       ),
     );
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        Logger().d(r);
         _nextStepData = r;
         nextPage();
       },

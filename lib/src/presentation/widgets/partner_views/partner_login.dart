@@ -278,8 +278,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
                             Provider.of<KCChangeNotifier>(context,
                                     listen: false)
                                 .validateAccount(
-                              _accountNoCtrl.text.trim(),
-                              _phoneNoCtrl.text.trim(),
+                              accountNumber: _accountNoCtrl.text.trim(),
+                              phoneNumber: _phoneNoCtrl.text.trim(),
                               firstName: _firstNameCtrl.text.trim(),
                               email: _emailCtrl.text.trim(),
                             );

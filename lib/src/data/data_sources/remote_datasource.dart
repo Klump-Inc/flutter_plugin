@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +16,8 @@ abstract class RemoteDatasource {
     required Map<String, dynamic>? shippingData,
   });
   Future<KCAPIResponseModel> validateAccount({
-    required String accountNumber,
-    required String phoneNumber,
+    required String? accountNumber,
+    required String? phoneNumber,
     required String publicKey,
     required String partner,
     required String? firstName,
@@ -31,12 +32,13 @@ abstract class RemoteDatasource {
     DateTime? dob,
   });
   Future<KCAPIResponseModel> verifyOTP({
-    required String accountNumber,
-    required String phoneNumber,
+    required String? accountNumber,
+    required String? phoneNumber,
+    required String? email,
     required String? otp,
     required String? password,
     required String publicKey,
-    String? firstName,
+    required String? firstName,
     required String partner,
     required String? bank,
   });
@@ -84,6 +86,7 @@ abstract class RemoteDatasource {
     required String api,
     required String publicKey,
     required String partner,
+    required Map<String, dynamic>? data,
   });
 }
 
@@ -143,8 +146,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
 
   @override
   Future<KCAPIResponseModel> validateAccount({
-    required String accountNumber,
-    required String phoneNumber,
+    required String? accountNumber,
+    required String? phoneNumber,
     required String publicKey,
     required String partner,
     required String? firstName,
@@ -157,13 +160,21 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'klump-public-key': publicKey,
       };
       final body = <String, dynamic>{
-        "accountNumber": accountNumber,
-        "phoneNumber": phoneNumber,
-        "partner": partner,
+        'partner': partner,
         'klump_public_key': publicKey,
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
+      if (accountNumber != null) {
+        body.addAll({
+          'accountNumber': accountNumber,
+        });
+      }
+      if (phoneNumber != null) {
+        body.addAll({
+          'phoneNumber': phoneNumber,
+        });
+      }
       if (firstName != null) {
         body.addAll({
           'firstname': firstName,
@@ -210,12 +221,13 @@ class RemoteDataSourceImpl implements RemoteDatasource {
 
   @override
   Future<KCAPIResponseModel> verifyOTP({
-    required String accountNumber,
-    required String phoneNumber,
+    required String? accountNumber,
+    required String? phoneNumber,
+    required String? email,
     required String? otp,
     required String? password,
     required String publicKey,
-    String? firstName,
+    required String? firstName,
     required String partner,
     required String? bank,
   }) async {
@@ -225,14 +237,27 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'klump-public-key': publicKey,
       };
       final body = <String, dynamic>{
-        "accountNumber": accountNumber,
-        "phoneNumber": phoneNumber,
         "partner": partner,
         "email": "",
         'klump_public_key': publicKey,
         'is_live':
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
+      if (accountNumber != null) {
+        body.addAll({
+          'accountNumber': accountNumber,
+        });
+      }
+      if (phoneNumber != null) {
+        body.addAll({
+          'phoneNumber': phoneNumber,
+        });
+      }
+      if (email != null) {
+        body.addAll({
+          'email': email,
+        });
+      }
       if (partner == 'polaris') {
         body.addAll({
           'firstname': firstName,
@@ -555,18 +580,30 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String api,
     required String publicKey,
     required String partner,
+    required Map<String, dynamic>? data,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final headers = {
         'klump-public-key': publicKey,
       };
-      final response = await kcHttpRequester.get(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
-        endpoint: '/v1$api',
-        headers: headers,
-        token: prefs.getString(KC_CHECKOUT_TOKEN),
-      );
+      late Response<dynamic> response;
+      if (method == 'POST') {
+        response = await kcHttpRequester.post(
+          environment: prefs.getString(KC_ENVIRONMENT_KEY),
+          endpoint: '/v1$api',
+          headers: headers,
+          token: prefs.getString(KC_CHECKOUT_TOKEN),
+          body: data,
+        );
+      } else {
+        response = await kcHttpRequester.get(
+          environment: prefs.getString(KC_ENVIRONMENT_KEY),
+          endpoint: '/v1$api',
+          headers: headers,
+          token: prefs.getString(KC_CHECKOUT_TOKEN),
+        );
+      }
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
       );
