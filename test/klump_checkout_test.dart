@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:klump_checkout/src/presentation/widgets/account_email.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -170,6 +171,33 @@ void main() {
   });
 
   group('Partner Views:', () {
+    testWidgets('AccountEmail renders correctly', (tester) async {
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return AccountEmail(
+                data: checkoutData,
+                isLive: false,
+              );
+            },
+          ),
+        ),
+      );
+      await tester.pump(Duration.zero);
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(SvgPicture), findsWidgets);
+      expect(find.text('Please enter your email and phone number to check out'),
+          findsOneWidget);
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+      expect(find.byType(KCInputField), findsNWidgets(2));
+      expect(find.text('Continue'), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsWidgets);
+    });
+
     testWidgets('SelectBankFlow renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
