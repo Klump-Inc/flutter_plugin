@@ -2,7 +2,7 @@ import 'package:klump_checkout/klump_checkout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
-  Future<bool> initiate({
+  Future<InitiateResponseModel> initiate({
     required double amount,
     required String currency,
     required String publicKey,

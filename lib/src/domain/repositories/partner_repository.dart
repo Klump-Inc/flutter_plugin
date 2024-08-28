@@ -10,7 +10,7 @@ class PartnerRepository {
     );
   }
 
-  Future<Either<KCException, bool>> initiate({
+  Future<Either<KCException, InitiateResponseModel>> initiate({
     required double amount,
     required String currency,
     required String publicKey,
