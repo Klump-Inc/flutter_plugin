@@ -47,6 +47,9 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KlumpCheckoutData? _checkoutData;
 
+  InitiateResponseModel? _initiateResponse;
+  InitiateResponseModel? get initiateResponse => _initiateResponse;
+
   KCAPIResponse? _nextStepData;
   KCAPIResponse? get nextStepData => _nextStepData;
 
@@ -54,9 +57,11 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? get verifyOTPNextStepData => _verifyOTPNextStepData;
 
   String? _accountNumber;
+  String? _email;
   String? _phoneNumber;
   String? _firstName;
   String? get accountNumber => _accountNumber;
+  String? get email => _email;
   String? get phoneNumber => _phoneNumber;
   String? get firstName => _firstName;
   TermsAndCondition? _termsCondition;
@@ -153,6 +158,8 @@ class KCChangeNotifier extends ChangeNotifier {
     required String phone,
   }) async {
     _setBusy(true);
+    _email = email;
+    _phoneNumber = phone;
     final response = await initiateTransactionUsecase(
       InitiateTransactionUsecaseParams(
         amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
@@ -162,15 +169,17 @@ class KCChangeNotifier extends ChangeNotifier {
         isLive: isLive,
         email: email,
         phone: phone,
+        items: _checkoutData?.items ?? [],
+        shippingData: _checkoutData?.shippingData,
       ),
     );
     _setBusy(false);
     return response.fold(
-      (l) {
-        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
-        return false;
+      (l) => false,
+      (r) {
+        _initiateResponse = r;
+        return true;
       },
-      (r) => r,
     );
   }
 
