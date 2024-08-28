@@ -45,13 +45,6 @@ class KCChangeNotifier extends ChangeNotifier {
   var _currentPage = 0;
   int get currentPage => _currentPage;
 
-  final Map<String, bool> _stanbicSteps = {
-    'initiated': false,
-    'account_validation': false,
-    'verify_otp': false,
-    'terms_and_condition': false,
-  };
-
   KlumpCheckoutData? _checkoutData;
 
   KCAPIResponse? _nextStepData;
@@ -86,10 +79,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Map<String, dynamic>? _selectedBank;
   Map<String, dynamic>? get selectedBank => _selectedBank;
-
-  void _updateStanbicSteps(String key) {
-    _stanbicSteps.update(key, (value) => true);
-  }
 
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
@@ -177,30 +166,28 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     _setBusy(false);
     return response.fold(
-      (l) => false,
-      (r) {
-        _updateStanbicSteps('initiated');
-        return r;
+      (l) {
+        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
+        return false;
       },
+      (r) => r,
     );
   }
 
   Future<void> getLoanPartners() async {
-    if (_stanbicSteps['initiated'] != true) {
-      _setBusy(true);
-      final response = await getLoanPartnersUsecase(
-        GetLoanPartnersUsecaseParams(
-          publicKey: _checkoutData?.merchantPublicKey ?? '',
-        ),
-      );
-      response.fold(
-        (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-        (r) {
-          _loanPartners = r;
-        },
-      );
-      _setBusy(false);
-    }
+    _setBusy(true);
+    final response = await getLoanPartnersUsecase(
+      GetLoanPartnersUsecaseParams(
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+      ),
+    );
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _loanPartners = r;
+      },
+    );
+    _setBusy(false);
   }
 
   Future<void> validateAccount(String accountNumber, String phoneNumber,

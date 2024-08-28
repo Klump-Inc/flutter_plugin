@@ -102,11 +102,16 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                   child: Consumer<KCChangeNotifier>(
                     builder: (_, checkoutNotifier, __) {
                       var views = <Widget>[
-                        AccountEmail(
+                        if (widget.data.email == null ||
+                            widget.data.phone == null)
+                          AccountEmail(
+                            data: widget.data,
+                            isLive: widget.isLive,
+                          ),
+                        SelectBankFlow(
                           data: widget.data,
                           isLive: widget.isLive,
                         ),
-                        const SelectBankFlow(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                                 'polaris' ||
                             checkoutNotifier.selectedBankFlow?.slug == 'specta')

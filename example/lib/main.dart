@@ -65,6 +65,8 @@ class FirstScreen extends StatelessWidget {
                   )
                 ],
                 shippingData: null,
+                email: 'agbamajeremiah@gmail.com',
+                phone: '08063753133',
               ),
             );
             // ignore: avoid_print

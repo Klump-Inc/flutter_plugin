@@ -172,6 +172,7 @@ void main() {
   group('Partner Views:', () {
     testWidgets('SelectBankFlow renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.loanPartners).thenAnswer((_) => loanPartners);
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
@@ -184,7 +185,10 @@ void main() {
           ChangeNotifierProvider<KCChangeNotifier>.value(
             value: kcChangeNotifier,
             builder: (context, kcChangeNotifier) {
-              return const SelectBankFlow();
+              return SelectBankFlow(
+                data: checkoutData,
+                isLive: false,
+              );
             },
           ),
         ),
