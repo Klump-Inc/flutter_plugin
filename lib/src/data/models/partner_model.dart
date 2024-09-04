@@ -17,6 +17,7 @@ class PartnerModel extends Partner {
     super.updatedAt,
     super.nextStep,
     super.isActiveForMobile,
+    super.metadata,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) => PartnerModel(
@@ -39,6 +40,7 @@ class PartnerModel extends Partner {
             ? null
             : NextStepModel.fromJson(json['next_step']),
         isActiveForMobile: json['is_active_for_mobile'],
+        metadata: json['metadata'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,5 +58,6 @@ class PartnerModel extends Partner {
         "created_at": createdAt,
         "updated_at": updatedAt?.toIso8601String(),
         "is_active_for_mobile": isActiveForMobile,
+        "metadata": metadata,
       };
 }

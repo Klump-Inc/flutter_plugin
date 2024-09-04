@@ -90,7 +90,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 enabled: activeLoanPartners.isNotEmpty,
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
-                  maxHeight: 250,
+                  maxWidth: costraint.maxWidth,
+                  maxHeight: 300,
                 ),
                 padding: EdgeInsets.zero,
                 elevation: 1,
@@ -157,6 +158,12 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                                 title: activeLoanPartners[index].name,
                                 logo: activeLoanPartners[index].logo,
                                 withBG: index % 2 == 0,
+                                isActive: activeLoanPartners[index].isActive &&
+                                    activeLoanPartners[index]
+                                            .isActiveForMobile ==
+                                        true,
+                                message: activeLoanPartners[index]
+                                    .metadata?['dropdown_message'],
                               ),
                               onTap: () {
                                 checkoutNotfier
@@ -265,6 +272,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
                 checkoutNotfier.selectedBankFlow?.isActive != true ||
+                checkoutNotfier.selectedBankFlow?.isActiveForMobile != true ||
                 (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
