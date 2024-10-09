@@ -6,7 +6,13 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class SelectBankFlow extends StatefulWidget {
-  const SelectBankFlow({super.key});
+  const SelectBankFlow({
+    super.key,
+    required this.data,
+    required this.isLive,
+  });
+  final KlumpCheckoutData data;
+  final bool isLive;
 
   @override
   State<SelectBankFlow> createState() => _SelectBankFlowState();
@@ -20,14 +26,24 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
   }
 
   void _initiatTranx() {
-    final changeNotifier =
+    final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '3 - Select Payment institution Modal',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': widget.isLive ? 'production' : 'staging',
       },
     );
+    Future.delayed(Duration.zero, () async {
+      if (widget.data.email != null && widget.data.phone != null) {
+        checkoutNotifier.setTransactionData(widget.isLive, widget.data);
+        await checkoutNotifier.initiateTransaction(
+          email: widget.data.email!,
+          phone: widget.data.phone!,
+        );
+      }
+      checkoutNotifier.getLoanPartners();
+    });
   }
 
   @override
@@ -74,7 +90,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 enabled: activeLoanPartners.isNotEmpty,
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
-                  maxHeight: 250,
+                  maxWidth: costraint.maxWidth,
+                  maxHeight: 300,
                 ),
                 padding: EdgeInsets.zero,
                 elevation: 1,
@@ -141,6 +158,12 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                                 title: activeLoanPartners[index].name,
                                 logo: activeLoanPartners[index].logo,
                                 withBG: index % 2 == 0,
+                                isActive: activeLoanPartners[index].isActive &&
+                                    activeLoanPartners[index]
+                                            .isActiveForMobile ==
+                                        true,
+                                message: activeLoanPartners[index]
+                                    .metadata?['dropdown_message'],
                               ),
                               onTap: () {
                                 checkoutNotfier
@@ -249,6 +272,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
                 checkoutNotfier.selectedBankFlow?.isActive != true ||
+                checkoutNotfier.selectedBankFlow?.isActiveForMobile != true ||
                 (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
             loading: checkoutNotfier.isBusy,
             title: 'Continue',

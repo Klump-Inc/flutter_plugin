@@ -10,7 +10,11 @@ import 'package:klump_checkout/src/presentation/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class AccountEmail extends StatefulWidget {
-  const AccountEmail({super.key, required this.data, required this.isLive});
+  const AccountEmail({
+    super.key,
+    required this.data,
+    required this.isLive,
+  });
   final KlumpCheckoutData data;
   final bool isLive;
 
@@ -45,7 +49,6 @@ class _AccountEmailState extends State<AccountEmail> {
     _phoneCtrl = TextEditingController();
     emailStreamCtrl = StreamController<String>.broadcast();
     phoneStreamCtrl = StreamController<String>.broadcast();
-
     _emailCtrl.addListener(() {
       emailStreamCtrl.sink.add(_emailCtrl.text.trim());
       validateInputs();
@@ -53,12 +56,6 @@ class _AccountEmailState extends State<AccountEmail> {
     _phoneCtrl.addListener(() {
       phoneStreamCtrl.sink.add(_phoneCtrl.text.trim());
       validateInputs();
-    });
-    Future.delayed(Duration.zero, () {
-      final changeNotifier =
-          Provider.of<KCChangeNotifier>(context, listen: false);
-      changeNotifier.setTransactionData(widget.isLive, widget.data);
-      changeNotifier.getLoanPartners();
     });
   }
 
@@ -162,6 +159,8 @@ class _AccountEmailState extends State<AccountEmail> {
                           loading: checkoutNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
+                            checkoutNotifier.setTransactionData(
+                                widget.isLive, widget.data);
                             checkoutNotifier
                                 .initiateTransaction(
                               email: _emailCtrl.text.trim(),

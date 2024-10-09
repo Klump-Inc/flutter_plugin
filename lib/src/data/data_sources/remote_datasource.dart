@@ -538,6 +538,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/partners',
         headers: headers,
       );
+      Logger().d(response.data);
       return PartnerListModel.fromJson(response.data).data;
     } else {
       throw NoInternetKCException();
