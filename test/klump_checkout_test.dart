@@ -279,10 +279,10 @@ void main() {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.verifyOTPNextStepData).thenAnswer((_) =>
-          KCAPIResponse(
-              nextStep: NextStepModel.fromJson(
-                  accountValidationJson['next_step'] as Map<String, dynamic>)));
+      // when(kcChangeNotifier.verifyOTPNextStepData).thenAnswer((_) =>
+      //     KCAPIResponse(
+      //         nextStep: NextStepModel.fromJson(
+      //             accountValidationJson['next_step'] as Map<String, dynamic>)));
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(

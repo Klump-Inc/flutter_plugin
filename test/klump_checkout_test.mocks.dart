@@ -554,22 +554,23 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as _i6.Future<void>);
 
   @override
-  _i6.Future<void> validateAccount(
+  _i6.Future<void> validateAccount({
     String? accountNumber,
-    String? phoneNumber, {
+    String? phoneNumber,
     String? firstName,
     String? email,
+    bool? skipPage,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
           #validateAccount,
-          [
-            accountNumber,
-            phoneNumber,
-          ],
+          [],
           {
+            #accountNumber: accountNumber,
+            #phoneNumber: phoneNumber,
             #firstName: firstName,
             #email: email,
+            #skipPage: skipPage,
           },
         ),
         returnValue: _i6.Future<void>.value(),

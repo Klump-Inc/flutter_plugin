@@ -53,20 +53,15 @@ class KCChangeNotifier extends ChangeNotifier {
   KlumpCheckoutData? _checkoutData;
   KlumpCheckoutData? get checkoutData => _checkoutData;
 
-  InitiateResponseModel? _initiateResponse;
-  InitiateResponseModel? get initiateResponse => _initiateResponse;
-
   KCAPIResponse? _nextStepData;
   KCAPIResponse? get nextStepData => _nextStepData;
 
   String? _email;
   String? _accountNumber;
-  String? _email;
   String? _phoneNumber;
   String? _firstName;
   String? get email => _email;
   String? get accountNumber => _accountNumber;
-  String? get email => _email;
   String? get phoneNumber => _phoneNumber;
   String? get firstName => _firstName;
   TermsAndCondition? _termsCondition;
