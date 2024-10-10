@@ -559,6 +559,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
     String? phoneNumber,
     String? firstName,
     String? email,
+    String? password,
     bool? skipPage,
   }) =>
       (super.noSuchMethod(
@@ -570,6 +571,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #phoneNumber: phoneNumber,
             #firstName: firstName,
             #email: email,
+            #password: password,
             #skipPage: skipPage,
           },
         ),

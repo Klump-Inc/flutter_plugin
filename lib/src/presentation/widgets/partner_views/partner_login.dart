@@ -47,7 +47,6 @@ class _PartnerLoginState extends State<PartnerLogin> {
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    print(passwordError);
     if ((accountNoError?.isEmpty == true ||
             formFields?.contains('accountNumber') != true) &&
         (phoneNoError?.isEmpty == true ||
