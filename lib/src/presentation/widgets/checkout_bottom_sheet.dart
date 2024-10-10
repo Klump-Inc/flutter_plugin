@@ -119,7 +119,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                                 'polaris' ||
                             checkoutNotifier.selectedBankFlow?.slug ==
-                                'first_bank')
+                                'first_bank' ||
+                            checkoutNotifier.selectedBankFlow?.slug ==
+                                'renmoney')
                           const PartnerRequirements(),
                         const PartnerLogin(),
                         const PartnerLoginOTP(),

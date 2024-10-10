@@ -607,6 +607,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       }
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
+        data: response.data['message'],
       );
     } else {
       throw NoInternetKCException();

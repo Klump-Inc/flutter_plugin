@@ -20,11 +20,13 @@ class _PartnerLoginState extends State<PartnerLogin> {
   late TextEditingController _phoneNoCtrl;
   late TextEditingController _firstNameCtrl;
   late TextEditingController _emailCtrl;
+  late TextEditingController _passwordCtrl;
 
   late StreamController<String> accountNoStreamCtrl;
   late StreamController<String> phoneNoStreamCtrl;
   late StreamController<String> firstNameStreamCtrl;
   late StreamController<String> emailStreamCtrl;
+  late StreamController<String> passwordStreamCtrl;
 
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
@@ -43,6 +45,9 @@ class _PartnerLoginState extends State<PartnerLogin> {
         KCFormValidator.errorGeneric(_firstNameCtrl.text.trim(), 'Required');
     final emailError =
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
+    final passwordError =
+        KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
+    print(passwordError);
     if ((accountNoError?.isEmpty == true ||
             formFields?.contains('accountNumber') != true) &&
         (phoneNoError?.isEmpty == true ||
@@ -50,7 +55,9 @@ class _PartnerLoginState extends State<PartnerLogin> {
         (firstNameError?.isEmpty == true ||
             formFields?.contains('firstName') != true) &&
         (emailError?.isEmpty == true ||
-            formFields?.contains('email') != true)) {
+            formFields?.contains('email') != true) &&
+        (passwordError?.isEmpty == true ||
+            formFields?.contains('password') != true)) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -64,6 +71,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _phoneNoCtrl = TextEditingController();
     _firstNameCtrl = TextEditingController();
     _emailCtrl = TextEditingController();
+    _passwordCtrl = TextEditingController();
     final checkoutNotfier = context.read<KCChangeNotifier>();
     _emailCtrl.text = checkoutNotfier.email ?? '';
     _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
@@ -72,6 +80,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
     phoneNoStreamCtrl = StreamController<String>.broadcast();
     firstNameStreamCtrl = StreamController<String>.broadcast();
     emailStreamCtrl = StreamController<String>.broadcast();
+    passwordStreamCtrl = StreamController<String>.broadcast();
     _accountNoCtrl.addListener(() {
       accountNoStreamCtrl.sink.add(_accountNoCtrl.text.trim());
       validateInputs();
@@ -88,6 +97,10 @@ class _PartnerLoginState extends State<PartnerLogin> {
       emailStreamCtrl.sink.add(_emailCtrl.text.trim());
       validateInputs();
     });
+    _passwordCtrl.addListener(() {
+      passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
+      validateInputs();
+    });
   }
 
   @override
@@ -97,6 +110,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _phoneNoCtrl.dispose();
     _firstNameCtrl.dispose();
     _emailCtrl.dispose();
+    _passwordCtrl.dispose();
   }
 
   @override
@@ -148,8 +162,17 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         padding: const EdgeInsets.only(bottom: 8),
                         child: KCHeadline3('Setup your account'),
                       ),
-                    KCHeadline5(stepData?.displayData?.subTitle ??
-                        'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.'),
+                    KCHeadline3(
+                      stepData?.displayData?.title ??
+                          'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.',
+                      fontSize: 24,
+                    ),
+                    if (stepData?.displayData?.subTitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child:
+                            KCHeadline5(stepData?.displayData?.subTitle ?? ''),
+                      ),
                     const YSpace(24),
                     if (formFields?.contains('accountNumber') == true)
                       Padding(
@@ -239,6 +262,25 @@ class _PartnerLoginState extends State<PartnerLogin> {
                           },
                         ),
                       ),
+                    if (formFields?.contains('password') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: passwordStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _passwordCtrl,
+                              hint: 'Password',
+                              textInputType: TextInputType.text,
+                              textInputAction: TextInputAction.done,
+                              validationMessage: KCFormValidator.errorPassword(
+                                snapshot.data,
+                                'Password is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     if (stepData?.displayData?.createPartnerAccountText !=
                             null &&
                         stepData?.displayData?.createPartnerAccountUrl != null)
@@ -282,6 +324,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
                               phoneNumber: _phoneNoCtrl.text.trim(),
                               firstName: _firstNameCtrl.text.trim(),
                               email: _emailCtrl.text.trim(),
+                              password: _passwordCtrl.text.trim(),
                             );
                           },
                         );

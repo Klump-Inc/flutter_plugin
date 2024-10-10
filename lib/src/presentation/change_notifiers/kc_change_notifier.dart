@@ -204,23 +204,64 @@ class KCChangeNotifier extends ChangeNotifier {
     String? phoneNumber,
     String? firstName,
     String? email,
+    String? password,
     bool? skipPage,
   }) async {
     _setBusy(true);
+
     _accountNumber = accountNumber ?? _accountNumber;
     _phoneNumber = phoneNumber ?? _phoneNumber;
     _firstName = firstName ?? _firstName;
     _email = email ?? _email;
-    final response = await accountValidationUsecase(
-      AccountValidationUsecaseParams(
-        accountNumber:
-            _accountNumber?.isNotEmpty == true ? _accountNumber : null,
-        phoneNumber: _phoneNumber?.isNotEmpty == true ? _phoneNumber : null,
+    final formFields = (nextStepData?.nextStep ?? selectedBankFlow?.nextStep)
+        ?.formFields
+        ?.map((e) => e.name)
+        .toList();
+    Map<String, dynamic> data = {
+      'is_live': isLive,
+      'partner': _selectedBankFlow!.slug,
+      'klump_public_key': _checkoutData?.merchantPublicKey,
+    };
+    if (formFields?.contains('accountNumber') == true) {
+      data['accountNumber'] = _accountNumber;
+    }
+    if (formFields?.contains('phoneNumber') == true) {
+      data['phoneNumber'] = _phoneNumber;
+    }
+    if (formFields?.contains('bank') == true) {
+      data['bank'] = _selectedBank != null ? _selectedBank!['slug'] : null;
+    }
+    if (formFields?.contains('firstName') == true) {
+      data['firstName'] = firstName;
+    }
+    if (formFields?.contains('password') == true) {
+      data['password'] = password;
+    }
+    if (formFields?.contains('amount') == true) {
+      data['amount'] =
+          _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
+    }
+    if (formFields?.contains('email') == true) {
+      data['email'] = email;
+    }
+    if (formFields?.contains('currency') == true) {
+      data['currency'] = 'NGN';
+    }
+    MixPanelService.logEvent(
+      '6 - ACCOUNT VERIFICATION MODAL',
+      properties: {
+        'environment': isLive ? 'production' : 'staging',
+        'partner': selectedBankFlow!.slug,
+        'payload': data,
+      },
+    );
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _nextStepData?.nextStep.method ?? '',
+        api: _nextStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
-        firstName: firstName?.isNotEmpty == true ? firstName : null,
-        bank: _selectedBank != null ? _selectedBank!['slug'] : null,
-        email: _email?.isNotEmpty == true ? _email : null,
+        data: data,
       ),
     );
     _setBusy(false);

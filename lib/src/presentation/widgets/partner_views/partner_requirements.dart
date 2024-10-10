@@ -49,7 +49,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                       child: Image.network(
                         checkoutNotfier.selectedBankFlow?.logo ?? '',
                         height: 55,
-                        width: 47,
+                        width: 120,
                       ),
                     ),
                     if (checkoutNotfier.initiateResponse?.merchant != null)
@@ -64,8 +64,21 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                         ),
                       ),
                     const YSpace(22.15),
-                    KCHeadline3(nextStep?.displayData?.title ?? ''),
-                    const YSpace(25),
+                    if (nextStep?.displayData?.title != null)
+                      KCHeadline3(
+                        nextStep?.displayData?.title ?? '',
+                        fontSize: 24,
+                      ),
+                    if (nextStep?.displayData?.subTitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: KCHeadline4(
+                          nextStep?.displayData?.subTitle ?? '',
+                          fontWeight: FontWeight.w500,
+                          maxLines: 3,
+                        ),
+                      ),
+                    const YSpace(24),
                     if (nextStep?.displayData?.list?.isNotEmpty == true)
                       Column(
                         children: List.generate(
@@ -74,6 +87,8 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                             title: nextStep?.displayData?.list![index]
                                     ?['text'] ??
                                 '',
+                            subTitle: nextStep?.displayData?.list![index]
+                                ?['smalltext'],
                             lastItem: index + 1 ==
                                 (checkoutNotfier.selectedBankFlow?.nextStep
                                         ?.displayData?.list!.length ??
@@ -118,14 +133,20 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                         return KCPrimaryButton(
                           loading: checkoutNotfier.isBusy,
                           disabled: (!accepted &&
-                                  checkoutNotfier.selectedBankFlow?.slug ==
-                                      'first_bank') ||
+                                  (checkoutNotfier.selectedBankFlow?.slug ==
+                                          'first_bank' ||
+                                      checkoutNotfier.selectedBankFlow?.slug ==
+                                          'renmoney')) ||
                               checkoutNotfier.isBusy,
                           title: 'Continue',
                           onTap: () {
                             if (nextStep?.api ==
                                 '/loans/account/verification') {
                               checkoutNotfier.validateAccount(skipPage: true);
+                            } else if (nextStep?.api
+                                    ?.contains('/requirements') ==
+                                true) {
+                              checkoutNotfier.acceptRequirement();
                             } else {
                               checkoutNotfier.nextPage();
                             }
@@ -155,15 +176,17 @@ class PartnerItemTile extends StatelessWidget {
     super.key,
     required this.title,
     this.lastItem = false,
+    this.subTitle,
   });
 
   final String title;
   final bool lastItem;
+  final String? subTitle;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 41 + 40,
+      height: 41 + (!lastItem ? 40 : 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -193,15 +216,32 @@ class PartnerItemTile extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 41,
-                  child: KCHeadline4(
-                    title,
-                    fontSize: 15,
-                    height: 1,
-                    maxLines: 2,
-                    fontWeight: FontWeight.w800,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      KCHeadline4(
+                        title,
+                        fontSize: 15,
+                        height: 1,
+                        maxLines: 2,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      if (subTitle != null)
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: KCHeadline4(
+                              subTitle!,
+                              fontSize: 12,
+                              height: 1,
+                              maxLines: 2,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                const YSpace(40),
               ],
             ),
           )
