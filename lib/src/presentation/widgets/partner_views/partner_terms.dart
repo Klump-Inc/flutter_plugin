@@ -172,8 +172,9 @@ class _PartnerTermsState extends State<PartnerTerms> {
                                         onChanged: (value) {
                                           _accepted.value = value ?? false;
                                         },
-                                        fillColor: MaterialStateProperty.all(
-                                            KCColors.primary),
+                                        activeColor: KCColors.primary,
+                                        side: const BorderSide(
+                                            color: KCColors.primary, width: 2),
                                       );
                                     },
                                   ),

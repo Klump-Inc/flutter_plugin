@@ -55,7 +55,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                     if (checkoutNotfier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
                             checkoutNotfier.initiateResponse!.merchant
                                 .toString(),

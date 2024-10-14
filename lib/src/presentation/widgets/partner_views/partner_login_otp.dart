@@ -121,13 +121,16 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                 child: Column(
                   children: [
                     const YSpace(30.82),
-                    InkWell(
-                      onTap: checkoutNotfier.prevPage,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: SvgPicture.asset(
-                          KCAssets.arrowBack,
-                          package: KC_PACKAGE_NAME,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: InkWell(
+                        onTap: checkoutNotfier.prevPage,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: SvgPicture.asset(
+                            KCAssets.arrowBack,
+                            package: KC_PACKAGE_NAME,
+                          ),
                         ),
                       ),
                     ),

@@ -149,13 +149,26 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         ),
                       ),
                     ),
-                    const YSpace(24.22),
-                    Image.network(
-                      checkoutNotfier.selectedBankFlow?.logo ?? '',
-                      height: 55,
-                      width: 47,
+                    const YSpace(10),
+                    Align(
+                      child: Image.network(
+                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                        height: 55,
+                        width: 120,
+                      ),
                     ),
-                    const YSpace(22),
+                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                      Align(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child: KCHeadline4(
+                            checkoutNotfier.initiateResponse!.merchant
+                                .toString(),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    const YSpace(22.15),
                     if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic')
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
