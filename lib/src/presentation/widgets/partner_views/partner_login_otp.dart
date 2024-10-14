@@ -67,7 +67,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
     _passwordCtrl = TextEditingController();
     otpStreamCtrl = StreamController<String>.broadcast();
     passwordStreamCtrl = StreamController<String>.broadcast();
-
+    validateInputs();
     _otpCtrl.addListener(() {
       otpStreamCtrl.sink.add(_otpCtrl.text.trim());
       validateInputs();
@@ -119,27 +119,36 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     right: 26,
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: KC_PACKAGE_NAME,
-                          ),
+                    InkWell(
+                      onTap: checkoutNotfier.prevPage,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: SvgPicture.asset(
+                          KCAssets.arrowBack,
+                          package: KC_PACKAGE_NAME,
                         ),
                       ),
                     ),
-                    const YSpace(24.22),
                     Image.network(
                       checkoutNotfier.selectedBankFlow!.logo ?? '',
                       height: 55,
-                      width: 47,
+                      width: 120,
+                    ),
+                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                      KCHeadline4(
+                        checkoutNotfier.initiateResponse!.merchant.toString(),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30, bottom: 10),
+                      child: Image.asset(
+                        KCAssets.safe,
+                        height: 109,
+                        width: 106,
+                        package: KC_PACKAGE_NAME,
+                      ),
                     ),
                     const YSpace(22),
                     KCHeadline3(stepData?.displayData?.title ??
@@ -247,11 +256,16 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                           disabled: !enabled || checkoutNotfier.isBusy,
                           loading: checkoutNotfier.isBusy,
                           onTap: () {
-                            FocusScope.of(context).unfocus();
-                            checkoutNotfier.verifyOTP(
-                              _otpCtrl.text.trim(),
-                              _passwordCtrl.text.trim(),
-                            );
+                            if (stepData?.name?.toUpperCase() ==
+                                'CONNECT_MONO') {
+                              checkoutNotfier.linkWithMono(context);
+                            } else {
+                              FocusScope.of(context).unfocus();
+                              checkoutNotfier.verifyOTP(
+                                _otpCtrl.text.trim(),
+                                _passwordCtrl.text.trim(),
+                              );
+                            }
                           },
                         );
                       },

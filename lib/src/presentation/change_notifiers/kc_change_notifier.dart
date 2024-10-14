@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
 class KCChangeNotifier extends ChangeNotifier {
@@ -521,5 +522,96 @@ class KCChangeNotifier extends ChangeNotifier {
         nextPage();
       },
     );
+  }
+
+  Future<void> newAccount() async {
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _nextStepData?.nextStep.method ?? '',
+        api: _nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: {
+          'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+          'currency': _checkoutData!.currency ?? 'NGN',
+          'partner': _selectedBankFlow!.slug,
+          'is_live': isLive,
+          'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+        },
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _nextStepData = r;
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> linkWithMono(BuildContext context) async {
+    String monoCode = '';
+    await showDialog(
+      barrierDismissible: false,
+      // ignore: use_build_context_synchronously
+      context: context,
+      builder: (_) {
+        return Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.height - 20,
+            child: MonoWebView(
+              apiKey: KC_MONO_KEY_TEST,
+              scope: "auth", // NEWLY INTRODUCED
+              data:
+                  // NEWLY INTRODUCED
+                  {
+                "customer": {
+                  "name": "$firstName", // REQUIRED
+                  "email": email, // REQUIRED
+                  "identity": {
+                    "type": "phone",
+                    "number": phoneNumber,
+                  }
+                }
+              },
+              onClosed: (data) {
+                monoCode = data ?? '';
+              },
+              onSuccess: (code) {
+                monoCode = code;
+              },
+            ),
+          ),
+        );
+      },
+    );
+    if (monoCode.isNotEmpty) {
+      _setBusy(true);
+      final response = await partnersUsecase(
+        PartnersUsecaseParams(
+          method: _nextStepData?.nextStep.method ?? '',
+          api: _nextStepData?.nextStep.api ?? '',
+          publicKey: _checkoutData?.merchantPublicKey ?? '',
+          partner: _selectedBankFlow!.slug,
+          data: {
+            'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+            'currency': _checkoutData!.currency ?? 'NGN',
+            'mono_auth_code': monoCode,
+            'partner': _selectedBankFlow!.slug,
+            'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+          },
+        ),
+      );
+      _setBusy(false);
+      response.fold(
+        (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+        (r) {
+          _nextStepData = r;
+          nextPage();
+        },
+      );
+    }
   }
 }

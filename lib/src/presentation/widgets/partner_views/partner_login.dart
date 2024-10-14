@@ -329,6 +329,18 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         );
                       },
                     ),
+                    if (checkoutNotfier.selectedBankFlow?.slug.toLowerCase() ==
+                        'renmoney')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: KCSecondaryButton(
+                          disabled: checkoutNotfier.isBusy,
+                          onTap: () {
+                            checkoutNotfier.newAccount();
+                          },
+                          title: "Don't have a Klump account? Click here",
+                        ),
+                      ),
                     const YSpace(59)
                   ],
                 ),
