@@ -4,6 +4,7 @@ class DisplayDataModel extends DisplayData {
   const DisplayDataModel({
     super.title,
     super.subTitle,
+    super.smallText,
     super.list,
     super.createPartnerAccountText,
     super.createPartnerAccountUrl,
@@ -12,6 +13,7 @@ class DisplayDataModel extends DisplayData {
       DisplayDataModel(
         title: json['title'],
         subTitle: json['subtitle'],
+        smallText: json['smalltext'],
         list: json['list'],
         createPartnerAccountText: json['create_partner_account_text'],
         createPartnerAccountUrl: json['create_partner_account_url'],

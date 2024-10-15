@@ -614,4 +614,55 @@ class KCChangeNotifier extends ChangeNotifier {
       );
     }
   }
+
+  Future<void> bioData({
+    required String? email,
+    required String? firstname,
+    required String? lastname,
+    required DateTime? dob,
+    required String? password,
+  }) async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      // 'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+      // 'currency': _checkoutData!.currency ?? 'NGN',
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (email?.isNotEmpty == true) {
+      data.addAll({'email': email});
+    }
+    if (password?.isNotEmpty == true) {
+      data.addAll({'password': password});
+    }
+    if (firstname?.isNotEmpty == true) {
+      data.addAll({'firstname': firstname});
+    }
+    if (lastname?.isNotEmpty == true) {
+      data.addAll({'lastname': lastname});
+    }
+    if (dob != null) {
+      data.addAll({
+        'date_of_birth': KCStringUtil.formatServerDate(dob),
+      });
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _nextStepData?.nextStep.method ?? '',
+        api: _nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _nextStepData = r;
+        nextPage();
+      },
+    );
+  }
 }

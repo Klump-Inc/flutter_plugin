@@ -27,9 +27,11 @@ class KCFormValidator {
       return null;
     } else if (dob == null && showError) {
       return message;
-    } else if (DateTime.now().difference(dob!).inDays < (365 * 18)) {
-      return 'You are not eligible for a loan at this time';
-    } else {
+    }
+    // else if (DateTime.now().difference(dob!).inDays < (365 * 18)) {
+    //   return 'You are not eligible for a loan at this time';
+    // }
+    else {
       return '';
     }
   }

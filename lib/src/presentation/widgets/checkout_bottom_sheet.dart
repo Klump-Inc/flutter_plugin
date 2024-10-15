@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/presentation/widgets/account_email.dart';
+import 'package:klump_checkout/src/presentation/widgets/partner_views/partner_bio_data.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -126,6 +127,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'renmoney')
+                          const PartnerBioData(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')
                           const PartnerTerms(),
                         if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
@@ -135,7 +139,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier
                                 .klumpUser?.requiresUserCredential ==
                             true)
-                          const PartnerAccountCredentials(),
+                          const PartnerBioData(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                             'stanbic')
                           const PartnerInvoice(),
