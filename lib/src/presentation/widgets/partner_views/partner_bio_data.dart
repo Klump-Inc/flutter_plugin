@@ -5,12 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:klump_checkout/src/core/constants/constants.dart';
 import 'package:klump_checkout/src/core/core.dart';
-import 'package:klump_checkout/src/core/utils/form_validator.dart';
-import 'package:klump_checkout/src/core/utils/string_util.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerBioData extends StatefulWidget {
@@ -143,7 +139,6 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     final stepData = checkoutNotfier.nextStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
-    print(formFields);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
