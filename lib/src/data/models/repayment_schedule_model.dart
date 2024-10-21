@@ -13,8 +13,7 @@ class RepaymentScheduleModel extends RepaymentSchedule {
       RepaymentScheduleModel(
         principal: json["principal"],
         interest: json["interest"],
-        monthlyRepayment:
-            double.tryParse(json["monthlyRepayment"]?.toString() ?? '') ?? 0,
+        monthlyRepayment: json["monthlyRepayment"],
         principalBalance: json["principalBalance"],
         repaymentDate: json["repayment_date"],
       );

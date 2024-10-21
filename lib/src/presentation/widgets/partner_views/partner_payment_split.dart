@@ -11,6 +11,30 @@ class PartnerPaymentSplit extends StatefulWidget {
 }
 
 class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
+  String? _installmentSplit;
+  int? _repaymentDay;
+  PartnerInsurer? _insurer;
+
+  final ValueNotifier<bool> _enabled = ValueNotifier(false);
+
+  void validateInputs() {
+    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final formFields = (checkoutNotfier.nextStepData?.nextStep ??
+            checkoutNotfier.selectedBankFlow?.nextStep)
+        ?.formFields
+        ?.map((e) => e.name)
+        .toList();
+    if ((_installmentSplit != null ||
+            formFields?.contains('installment') != true) &&
+        (_repaymentDay != null ||
+            formFields?.contains('repayment_day') != true) &&
+        (_insurer != null || formFields?.contains('insurerId') != true)) {
+      _enabled.value = true;
+    } else {
+      _enabled.value = false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -33,10 +57,10 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final paymentSplit = checkoutNotfier.nextStepData!.nextStep.formFields
-        ?.where((e) => e.name == 'installment');
-    final installments =
-        paymentSplit?.isNotEmpty == true ? paymentSplit!.first.options : [];
+    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+        checkoutNotfier.selectedBankFlow?.nextStep;
+    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final formMap = stepData?.formFields;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -65,90 +89,62 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                         ),
                       ),
                     ),
-                    const YSpace(18.22),
-                    KCHeadline3('Your installment split'),
-                    const YSpace(8),
-                    KCHeadline5('How would you like to split your payment?'),
-                    const YSpace(16),
-                    PopupMenuButton<int>(
-                      constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth - 52,
-                        maxHeight: 300,
+                    Align(
+                      child: Image.network(
+                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                        height: 55,
+                        width: 120,
                       ),
-                      padding: EdgeInsets.zero,
-                      elevation: 1,
-                      offset: const Offset(0, 60),
-                      child: Container(
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.11,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(color: KCColors.grey1, width: 0.88),
-                          borderRadius: BorderRadius.circular(4.4186),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (checkoutNotfier.paymentSplit == null)
-                              KCBodyText1(
-                                'Choose split',
-                                color: KCColors.grey2,
-                              )
-                            else
-                              KCBodyText1(
-                                '${checkoutNotfier.paymentSplit} instalments',
-                                fontSize: 15,
-                              ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2, right: 5),
-                              child: SvgPicture.asset(
-                                KCAssets.caretDown,
-                                package: KC_PACKAGE_NAME,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      itemBuilder: (context) {
-                        return installments == null || installments.isEmpty
-                            ? [2, 3, 4]
-                                .map(
-                                  (e) => PopupMenuItem<int>(
-                                    height: 0,
-                                    padding: EdgeInsets.zero,
-                                    child: KCInstallmentPopupMenuItemContent(
-                                      withBG: e == 2 || e == 4,
-                                      title: '$e instalments',
-                                      logo: KCAssets.stanbicLogo,
-                                    ),
-                                    onTap: () {
-                                      checkoutNotfier.setPaymentSplit(e);
-                                    },
-                                  ),
-                                )
-                                .toList()
-                            : installments
-                                .map(
-                                  (e) => PopupMenuItem<int>(
-                                    height: 0,
-                                    padding: EdgeInsets.zero,
-                                    child: KCInstallmentPopupMenuItemContent(
-                                      withBG: e['value'] % 2 == 0,
-                                      title: '${e['label']}',
-                                      logo: KCAssets.stanbicLogo,
-                                    ),
-                                    onTap: () {
-                                      checkoutNotfier
-                                          .setPaymentSplit(e['value']);
-                                    },
-                                  ),
-                                )
-                                .toList();
-                      },
                     ),
+                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                      Align(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child: KCHeadline4(
+                            checkoutNotfier.initiateResponse!.merchant
+                                .toString(),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    const YSpace(16),
+                    if (stepData?.displayData?.title != null)
+                      KCHeadline3(
+                        stepData?.displayData?.title ?? '',
+                        fontSize: 20,
+                      ),
+                    if (stepData?.displayData?.subTitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child:
+                            KCHeadline5(stepData?.displayData?.subTitle ?? ''),
+                      ),
+                    const YSpace(24),
+                    if (formFields?.contains('installment') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Builder(
+                          builder: (context) {
+                            final inputData = formMap!
+                                .where((e) => e.name == 'installment')
+                                .first;
+                            return KCDropdownInput(
+                              label: inputData.label ?? "Please select",
+                              items: inputData.options!
+                                  .map((e) => e['value'].toString())
+                                  .toList(),
+                              value: _installmentSplit,
+                              onSelected: (value) {
+                                setState(() {
+                                  _installmentSplit = value;
+                                });
+                                validateInputs();
+                              },
+                              minWidth: constraints.maxWidth - 52,
+                            );
+                          },
+                        ),
+                      ),
                     if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic')
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +209,10 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                     logo: KCAssets.stanbicLogo,
                                   ),
                                   onTap: () {
-                                    checkoutNotfier.setPaymentDay(index + 1);
+                                    setState(() {
+                                      _repaymentDay = index + 1;
+                                    });
+                                    validateInputs();
                                   },
                                 ),
                               ).toList();
@@ -290,9 +289,11 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                         .partnerInsurers![index].name,
                                   ),
                                   onTap: () {
-                                    checkoutNotfier.setPartnerInsurer(
-                                        checkoutNotfier
-                                            .partnerInsurers![index]);
+                                    setState(() {
+                                      _insurer = checkoutNotfier
+                                          .partnerInsurers![index];
+                                    });
+                                    validateInputs();
                                   },
                                 ),
                               );
@@ -302,20 +303,20 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                       ),
                     const YSpace(24),
                     const Spacer(),
-                    KCPrimaryButton(
-                      title: 'Continue',
-                      disabled: checkoutNotfier.paymentSplit == null ||
-                          checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
-                              checkoutNotfier.paymentDay == null ||
-                          checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
-                              checkoutNotfier.selectedPartnerInsurer == null ||
-                          checkoutNotfier.isBusy,
-                      loading: checkoutNotfier.isBusy,
-                      onTap: () =>
-                          Provider.of<KCChangeNotifier>(context, listen: false)
-                              .getRepaymentDetails(
-                                  checkoutNotfier.paymentSplit!,
-                                  checkoutNotfier.paymentDay),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _enabled,
+                      builder: (_, enabled, __) {
+                        return KCPrimaryButton(
+                          title: 'Continue',
+                          disabled: !enabled || checkoutNotfier.isBusy,
+                          loading: checkoutNotfier.isBusy,
+                          onTap: () => checkoutNotfier.getRepaymentDetails(
+                            installments: _installmentSplit,
+                            repaymentDay: _repaymentDay,
+                            insurer: _insurer,
+                          ),
+                        );
+                      },
                     ),
                     const YSpace(59)
                   ],

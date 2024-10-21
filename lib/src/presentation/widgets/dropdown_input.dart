@@ -47,15 +47,23 @@ class KCDropdownInput extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             if (value == null)
-              KCBodyText1(
-                label,
-                color: KCColors.grey2,
-                fontSize: 15,
+              Expanded(
+                child: KCBodyText1(
+                  label,
+                  color: KCColors.grey2,
+                  fontSize: 15,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               )
             else
-              KCBodyText1(
-                value!.capitalize(),
-                fontSize: 15,
+              Expanded(
+                child: KCBodyText1(
+                  value!.capitalize(),
+                  fontSize: 15,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             Padding(
               padding: const EdgeInsets.only(top: 2, right: 5),

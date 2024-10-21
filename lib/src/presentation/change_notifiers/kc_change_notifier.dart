@@ -115,8 +115,8 @@ class KCChangeNotifier extends ChangeNotifier {
   Partner? get selectedBankFlow => _selectedBankFlow;
   int? _paymentSplit;
   int? get paymentSplit => _paymentSplit;
-  int? _paymentDay;
-  int? get paymentDay => _paymentDay;
+  int? _repaymentDay;
+  int? get paymentDay => _repaymentDay;
   PartnerInsurer? _selectedPartnerInsurer;
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
 
@@ -138,21 +138,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void selectBank(Map<String, dynamic> bank) {
     _selectedBank = bank;
-    notifyListeners();
-  }
-
-  void setPaymentSplit(int split) {
-    _paymentSplit = split;
-    notifyListeners();
-  }
-
-  void setPaymentDay(int day) {
-    _paymentDay = day;
-    notifyListeners();
-  }
-
-  void setPartnerInsurer(PartnerInsurer insurer) {
-    _selectedPartnerInsurer = insurer;
     notifyListeners();
   }
 
@@ -357,29 +342,6 @@ class KCChangeNotifier extends ChangeNotifier {
       },
     );
     _setBusy(false);
-  }
-
-  Future<void> getRepaymentDetails(int installment, int? repaymentDay) async {
-    _setBusy(true);
-    final response = await getRepaymentDetailsUsecase(
-      GetRepaymentDetailsUsecaseParams(
-        amount: _checkoutData?.amount ?? 0,
-        publicKey: _checkoutData?.merchantPublicKey ?? '',
-        installment: installment,
-        repaymentDay: repaymentDay,
-        insurerId: _selectedPartnerInsurer?.value ?? 0,
-        partner: _selectedBankFlow!.slug,
-      ),
-    );
-    _setBusy(false);
-    response.fold(
-      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-      (r) {
-        _nextStepData = r;
-        _repaymentDetails = r.data;
-        nextPage();
-      },
-    );
   }
 
   Future<void> createLoan() async {
@@ -767,6 +729,52 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         _nextStepData = r;
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> getRepaymentDetails({
+    required String? installments,
+    required int? repaymentDay,
+    required PartnerInsurer? insurer,
+  }) async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      "amount": 150000, // _checkoutData?.amount ?? 0,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (installments?.isNotEmpty == true) {
+      data.addAll({'installment': int.parse(installments!)});
+    }
+    if (repaymentDay != null) {
+      _repaymentDay = repaymentDay;
+      data.addAll({'repayment_day': repaymentDay});
+    }
+    if (insurer != null) {
+      _selectedPartnerInsurer = insurer;
+      data.addAll({
+        'insurer_id': insurer.value,
+      });
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _nextStepData?.nextStep.method ?? '',
+        api:
+            '/loans/account/repayments-detail', //_nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _nextStepData = r;
+        _repaymentDetails = r.data;
         nextPage();
       },
     );

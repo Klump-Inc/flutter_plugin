@@ -613,7 +613,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'
             ? KlumpUserModel.fromJson(response.data['data'])
-            : response.data['message'],
+            : api == '/loans/account/repayments-detail'
+                ? RepaymentDetailsModel.fromJson(response.data['data'])
+                : response.data['message'],
       );
     } else {
       throw NoInternetKCException();

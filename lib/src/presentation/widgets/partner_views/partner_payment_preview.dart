@@ -74,7 +74,7 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                             KPPaymentItemTile(
                               title: 'Due Now',
                               amount:
-                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount + (repaymentDetails.managementFee ?? 0))}',
+                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount.toDouble() + (repaymentDetails.managementFee ?? 0))}',
                               body: repaymentDetails.downpaymentAmount != 0
                                   ? 'Paid at purchase'
                                   : repaymentDetails.managementFee != null &&
@@ -89,12 +89,12 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
-                                repaymentDetails.tenor,
+                                repaymentDetails.tenor ?? 0,
                                 (index) => KPPaymentItemTile(
                                   title:
-                                      'Due: ${repaymentDetails.repaymentSchedules[index].repaymentDate}',
+                                      'Due: ${repaymentDetails.repaymentSchedules![index].repaymentDate}',
                                   amount:
-                                      'NGN${KCStringUtil.formatAmount(repaymentDetails.repaymentSchedules[index].monthlyRepayment)}',
+                                      'NGN${KCStringUtil.formatAmount(repaymentDetails.repaymentSchedules![index].monthlyRepayment)}',
                                   body: index == repaymentDetails.tenor - 1
                                       ? 'Final payment, ${index + 1} month(s) later'
                                       : 'Paid automatically ${index + 1} month later',

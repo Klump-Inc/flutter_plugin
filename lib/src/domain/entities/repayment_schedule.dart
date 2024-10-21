@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class RepaymentSchedule extends Equatable {
   final dynamic principal;
   final dynamic interest;
-  final double monthlyRepayment;
+  final dynamic monthlyRepayment;
   final dynamic principalBalance;
   final String repaymentDate;
 

@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerKYC extends StatefulWidget {
@@ -253,7 +252,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final formMap = stepData?.formFields;
-    Logger().d(formMap);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -635,7 +633,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                               textInputType: TextInputType.text,
                               validationMessage: KCFormValidator.errorDate(
                                 _companyStartDate,
-                                'DOB move in?',
+                                'Start working here?',
                                 _validateCompanyStartdate,
                               ),
                               onTap: () {
@@ -713,7 +711,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                                     RegExp(r'[0-9]')),
                                 CurrencyTextInputFormatter.currency(
                                   locale: 'en_NG',
-                                  decimalDigits: 2,
+                                  decimalDigits: 0,
                                   symbol: '₦',
                                 ),
                               ],
