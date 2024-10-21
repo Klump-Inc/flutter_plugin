@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -100,7 +101,8 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   void prevPage() {
-    _currentPage--;
+    // _currentPage--;
+    _currentPage = 0;
     _pageController.animateToPage(
       _currentPage,
       duration: const Duration(milliseconds: 300),
@@ -624,8 +626,6 @@ class KCChangeNotifier extends ChangeNotifier {
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
-      // 'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
-      // 'currency': _checkoutData!.currency ?? 'NGN',
       'partner': _selectedBankFlow!.slug,
       'is_live': isLive,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
@@ -647,6 +647,112 @@ class KCChangeNotifier extends ChangeNotifier {
         'date_of_birth': KCStringUtil.formatServerDate(dob),
       });
     }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _nextStepData?.nextStep.method ?? '',
+        api: _nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _nextStepData = r;
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> partnerKYC({
+    required String? nin,
+    required String? maritalStatus,
+    required String? residentialStatus,
+    required String? address,
+    required String? landmark,
+    required String? city,
+    required String? state,
+    required DateTime? dateMovedIn,
+    required String? employmentStatus,
+    required String? companyName,
+    required String? companyIndustry,
+    required String? companyAddress,
+    required DateTime? companyStartDate,
+    required String? monthlyIncome,
+    required String? education,
+    required String? nextOfKinName,
+    required String? nextOfKinRetionship,
+    required String? nextOfKinPhone,
+  }) async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (nin?.isNotEmpty == true) {
+      data.addAll({'nin': nin});
+    }
+    if (maritalStatus?.isNotEmpty == true) {
+      data.addAll({'marital_status': maritalStatus});
+    }
+    if (residentialStatus?.isNotEmpty == true) {
+      data.addAll({'residential_status': residentialStatus});
+    }
+    if (address?.isNotEmpty == true) {
+      data.addAll({'address': address});
+    }
+    if (landmark?.isNotEmpty == true) {
+      data.addAll({'landmark': landmark});
+    }
+    if (city?.isNotEmpty == true) {
+      data.addAll({'city': city});
+    }
+    if (state?.isNotEmpty == true) {
+      data.addAll({'state': state});
+    }
+    if (dateMovedIn != null) {
+      data.addAll({
+        'date_moved_in': KCStringUtil.formatServerDate(dateMovedIn),
+      });
+    }
+    if (employmentStatus?.isNotEmpty == true) {
+      data.addAll({'employment_status': employmentStatus});
+    }
+    if (companyName?.isNotEmpty == true) {
+      data.addAll({'company_name': companyName});
+    }
+    if (companyIndustry?.isNotEmpty == true) {
+      data.addAll({'company_industry': companyIndustry});
+    }
+    if (companyAddress?.isNotEmpty == true) {
+      data.addAll({'company_address': companyAddress});
+    }
+    if (companyStartDate != null) {
+      data.addAll({
+        'company_start_date': KCStringUtil.formatServerDate(companyStartDate),
+      });
+    }
+    if (monthlyIncome?.isNotEmpty == true) {
+      data.addAll({
+        'monthly_income': KCStringUtil.convertTextFigure(monthlyIncome!),
+      });
+    }
+    if (education?.isNotEmpty == true) {
+      data.addAll({'education': education});
+    }
+    if (nextOfKinName?.isNotEmpty == true) {
+      data.addAll({'next_of_kin_name': nextOfKinName});
+    }
+    if (nextOfKinRetionship?.isNotEmpty == true) {
+      data.addAll({'next_of_kin_relationship': nextOfKinRetionship});
+    }
+    if (nextOfKinPhone?.isNotEmpty == true) {
+      data.addAll({'next_of_kin_phone': nextOfKinPhone});
+    }
+    Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: _nextStepData?.nextStep.method ?? '',

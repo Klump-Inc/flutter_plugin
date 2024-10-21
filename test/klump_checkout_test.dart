@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/presentation/widgets/account_email.dart';
-import 'package:klump_checkout/src/presentation/widgets/partner_views/partner_bio_data.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';

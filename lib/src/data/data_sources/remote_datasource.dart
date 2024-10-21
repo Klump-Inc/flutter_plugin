@@ -605,9 +605,15 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           token: prefs.getString(KC_CHECKOUT_TOKEN),
         );
       }
+      if (api == '/loans/account/verify-otp') {
+        await prefs.setString(KC_CHECKOUT_TOKEN,
+            (response.data as Map<String, dynamic>)['data']['token']);
+      }
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
-        data: response.data['message'],
+        data: api == '/loans/account/verify-otp'
+            ? KlumpUserModel.fromJson(response.data['data'])
+            : response.data['message'],
       );
     } else {
       throw NoInternetKCException();

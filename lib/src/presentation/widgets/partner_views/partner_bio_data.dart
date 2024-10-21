@@ -51,7 +51,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    final dobError = KCFormValidator.errorDOB(_dob, 'Required', _validateDate);
+    final dobError = KCFormValidator.errorDate(_dob, 'Required', _validateDate);
     if ((lastNameError?.isEmpty == true ||
             formFields?.contains('lastname') != true) &&
         (phoneNoError?.isEmpty == true ||
@@ -318,7 +318,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                               controller: _dobCtrl,
                               hint: 'Date of Birth',
                               textInputType: TextInputType.text,
-                              validationMessage: KCFormValidator.errorDOB(
+                              validationMessage: KCFormValidator.errorDate(
                                 _dob,
                                 'DOB is required',
                                 _validateDate,
@@ -378,14 +378,14 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                               readOnly: true,
                             ),
                             if (_validateDate &&
-                                KCFormValidator.errorDOB(_dob,
+                                KCFormValidator.errorDate(_dob,
                                             'DOB is required', _validateDate)
                                         ?.isNotEmpty ==
                                     true)
                               Padding(
                                 padding: const EdgeInsets.only(top: 4),
                                 child: KCBodyText1(
-                                  KCFormValidator.errorDOB(
+                                  KCFormValidator.errorDate(
                                       _dob, 'DOB is required', _validateDate)!,
                                   fontSize: 12,
                                   color: Colors.red,

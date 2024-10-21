@@ -19,6 +19,15 @@ class KCStringUtil {
     final formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(dateTime);
   }
+
+  static double convertTextFigure(String amount) {
+    if (amount.contains('₦') || amount.contains(',')) {
+      return double.tryParse(amount.replaceAll('₦', '').replaceAll(',', '')) ??
+          0;
+    } else {
+      return double.tryParse(amount) ?? 0;
+    }
+  }
 }
 
 extension StringExtension on String {

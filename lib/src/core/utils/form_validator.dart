@@ -22,7 +22,7 @@ class KCFormValidator {
     }
   }
 
-  static String? errorDOB(DateTime? dob, String message, bool showError) {
+  static String? errorDate(DateTime? dob, String message, bool showError) {
     if (dob == null && !showError) {
       return null;
     } else if (dob == null && showError) {
@@ -115,6 +115,30 @@ class KCFormValidator {
       return message;
     } else if (text.length != 10) {
       return 'Incomplte account number';
+    } else {
+      return '';
+    }
+  }
+
+  static String? errorNIN(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (text.length != 11) {
+      return 'Invalid NIN';
+    } else {
+      return '';
+    }
+  }
+
+  static String? errorAmount(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (KCStringUtil.convertTextFigure(text) <= 0) {
+      return 'Invalid figure';
     } else {
       return '';
     }
