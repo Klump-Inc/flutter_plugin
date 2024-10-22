@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
@@ -22,6 +23,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
   void initState() {
     Future.delayed(Duration.zero, _initiatTranx);
     super.initState();
+  }
+
+  void _getCameras() async {
+    cameras = await availableCameras();
   }
 
   void _initiatTranx() {
@@ -86,6 +91,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           LayoutBuilder(
             builder: (context, costraint) {
               return PopupMenuButton<Partner>(
+                color: Colors.white,
                 enabled: activeLoanPartners.isNotEmpty,
                 constraints: BoxConstraints(
                   minWidth: costraint.maxWidth,
@@ -94,7 +100,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 ),
                 padding: EdgeInsets.zero,
                 elevation: 1,
-                offset: const Offset(0, 76),
+                offset: const Offset(0, 70),
                 child: Container(
                   height: 60,
                   padding: const EdgeInsets.symmetric(
@@ -292,6 +298,9 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                   'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
                 },
               );
+              if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney') {
+                _getCameras();
+              }
               checkoutNotfier.nextPage.call();
             },
           ),

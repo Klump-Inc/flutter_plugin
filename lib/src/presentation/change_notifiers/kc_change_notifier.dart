@@ -101,8 +101,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   void prevPage() {
-    // _currentPage--;
-    _currentPage = 0;
+    _currentPage--;
     _pageController.animateToPage(
       _currentPage,
       duration: const Duration(milliseconds: 300),
@@ -119,6 +118,8 @@ class KCChangeNotifier extends ChangeNotifier {
   int? get paymentDay => _repaymentDay;
   PartnerInsurer? _selectedPartnerInsurer;
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
+  String? _documentType;
+  String? get documentType => _documentType;
 
   void setTransactionData(bool isLive, KlumpCheckoutData data) {
     _isLive = isLive;
@@ -139,6 +140,11 @@ class KCChangeNotifier extends ChangeNotifier {
   void selectBank(Map<String, dynamic> bank) {
     _selectedBank = bank;
     notifyListeners();
+  }
+
+  void selectDocumentType(String type) {
+    _documentType = type;
+    nextPage();
   }
 
   Future<bool> initiateTransaction({
@@ -572,6 +578,8 @@ class KCChangeNotifier extends ChangeNotifier {
       response.fold(
         (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
         (r) {
+          Logger().d(r);
+          _klumpUser = r.data as KlumpUser;
           _nextStepData = r;
           nextPage();
         },

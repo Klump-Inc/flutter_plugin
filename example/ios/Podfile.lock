@@ -1,5 +1,9 @@
 PODS:
+  - camera_avfoundation (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
+  - image_picker_ios (0.0.1):
+    - Flutter
   - klump_checkout (0.0.1):
     - Flutter
   - Mixpanel-swift (4.3.0):
@@ -18,7 +22,9 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - Flutter (from `Flutter`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - klump_checkout (from `.symlinks/plugins/klump_checkout/ios`)
   - mixpanel_flutter (from `.symlinks/plugins/mixpanel_flutter/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -30,8 +36,12 @@ SPEC REPOS:
     - Mixpanel-swift
 
 EXTERNAL SOURCES:
+  camera_avfoundation:
+    :path: ".symlinks/plugins/camera_avfoundation/ios"
   Flutter:
     :path: Flutter
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
   klump_checkout:
     :path: ".symlinks/plugins/klump_checkout/ios"
   mixpanel_flutter:
@@ -44,7 +54,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
+  camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   klump_checkout: 06c49320d3294d719ad2261a55d9afd69ca33979
   Mixpanel-swift: 2192b9a24cf41b870749e4e0e10fbc9822bb2b4a
   mixpanel_flutter: 455c6c7906a0bd21b609b32fef390245187068a6

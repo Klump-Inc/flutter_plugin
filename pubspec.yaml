@@ -29,7 +29,9 @@ dependencies:
   mixpanel_flutter: ^2.1.1
   mono_flutter: ^3.0.2
   currency_text_input_formatter: ^2.2.6
-
+  image_picker: ^1.1.2
+  camera: ^0.11.0+2
+  dotted_border: ^2.1.0
   
 dev_dependencies:
   flutter_test:

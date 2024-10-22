@@ -68,3 +68,8 @@ const String KC_HTML_FOOTER = '''
 const KC_MIX_PANEL_TOKEN_PROD = '49e554d50d53d1053cfd68f87521073e';
 const KC_MIX_PANEL_TOKEN_STAGING = 'e1b9e5dd4ac6691cb595772d402c7b1e';
 const KC_MONO_KEY_TEST = 'test_pk_V9abQR0o8x8HHz1p6aYu';
+
+const String INTERNATIONAL_PASSPORT = 'international_passport';
+const String DRIVER_LICENSE = 'driver_license';
+const String NATIONAL_ID_CARD = 'national_identity_card';
+const String VOTERS_CARD = 'voters_card';

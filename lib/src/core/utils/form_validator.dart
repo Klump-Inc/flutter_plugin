@@ -143,4 +143,38 @@ class KCFormValidator {
       return '';
     }
   }
+
+  static String? errorMessageIdNumber(
+      String? text, String message, String type) {
+    final intPasswordRegex =
+        RegExp(r'^(?=.*[0-9])(?=.*[A-Za-z])([A-Za-z][A-Za-z0-9]{8,11})$');
+    final driverLicenseRegex =
+        RegExp(r'^(?=.*[0-9])(?=.*[A-Za-z])([A-Za-z][A-Za-z0-9]{5,11})$');
+    final nationalIDRegex = RegExp(r'^[0-9]{11}$');
+    final votersCardRegex =
+        RegExp(r'^(?=.*[0-9])(?=.*[A-Za-z])([A-Za-z0-9]{9,19})$');
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else {
+      var error = false;
+      switch (type) {
+        case INTERNATIONAL_PASSPORT:
+          error = !intPasswordRegex.hasMatch(text);
+          break;
+        case DRIVER_LICENSE:
+          error = !driverLicenseRegex.hasMatch(text);
+          break;
+        case NATIONAL_ID_CARD:
+          error = !nationalIDRegex.hasMatch(text);
+          break;
+        case VOTERS_CARD:
+          error = !votersCardRegex.hasMatch(text);
+          break;
+        default:
+      }
+      return error ? 'Invalid ID Number' : '';
+    }
+  }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/presentation/widgets/account_email.dart';
+import 'package:klump_checkout/src/presentation/widgets/partner_views/partner_address_verify.dart';
+
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -139,9 +141,23 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
                           const PartnerPaymentPreview(),
                         if (checkoutNotifier
-                                .klumpUser?.requiresUserCredential ==
-                            true)
+                                    .klumpUser?.requiresUserCredential ==
+                                true &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'renmoney')
                           const PartnerBioData(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'renmoney')
+                          const PartnerDocumentType(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'renmoney')
+                          const PartnerDocumentUpload(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'renmoney')
+                          const PartnerAddressVerify(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'renmoney')
+                          const PartnerSelfieUpload(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                             'stanbic')
                           const PartnerInvoice(),

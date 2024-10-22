@@ -12,3 +12,6 @@ export 'partner_mobile_experience.dart';
 export 'partner_login_otp.dart';
 export 'partner_kyc.dart';
 export 'partner_bio_data.dart';
+export 'partner_selfie_upload.dart';
+export 'partner_document_type.dart';
+export 'partner_document_upload.dart';

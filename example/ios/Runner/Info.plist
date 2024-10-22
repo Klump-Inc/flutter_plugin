@@ -45,8 +45,12 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Library is used to upload documents.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera is used to capture documents.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone is used my Camera for selfie verification</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>
