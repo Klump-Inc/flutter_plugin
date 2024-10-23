@@ -15,6 +15,8 @@
 ## [1.0.15] - Analytics data
 ## [1.0.16] - More partners
 ## [1.0.17] - Improvements
+## [1.0.18] - Add new financial partners
+
 
 
 
