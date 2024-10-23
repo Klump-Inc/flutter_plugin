@@ -62,6 +62,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final stepData = checkoutNotfier.nextStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(

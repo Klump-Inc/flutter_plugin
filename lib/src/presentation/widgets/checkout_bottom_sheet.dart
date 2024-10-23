@@ -156,15 +156,22 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
                           const PartnerSelfieUpload(),
-                        if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                        if (checkoutNotifier.selectedBankFlow?.slug !=
+                                'specta' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'renmoney')
                           const PartnerPaymentPreview(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
-                            'stanbic')
+                                'stanbic' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'renmoney')
                           const PartnerInvoice(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')
                           const PartnerConfirmation(),
-                        const PartnerDecision(),
+                        if (checkoutNotifier.selectedBankFlow?.slug !=
+                            'renmoney')
+                          const PartnerDecision(),
                         const PartnerDisbursementStatus(),
                       ];
                       return PageView(

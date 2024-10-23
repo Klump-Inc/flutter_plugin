@@ -390,7 +390,7 @@ class KCChangeNotifier extends ChangeNotifier {
         publicKey: _checkoutData!.merchantPublicKey,
         installment: _repaymentDetails?.installment,
         repaymentDay: _repaymentDetails != null
-            ? int.parse(_repaymentDetails!.repaymentDay.toString())
+            ? int.tryParse(_repaymentDetails!.repaymentDay.toString())
             : null,
         termsVersion: _termsCondition?.version,
         items: _checkoutData?.items ?? [],
@@ -911,9 +911,11 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        Logger().d(r);
-        storeNextStepData(r);
-        nextPage();
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
       },
     );
   }
