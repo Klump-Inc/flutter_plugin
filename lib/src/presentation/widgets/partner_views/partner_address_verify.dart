@@ -198,7 +198,7 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                       loading: checkoutNotfier.isBusy,
                       onTap: () {
                         FocusScope.of(context).unfocus();
-                        checkoutNotfier.nextPage();
+                        checkoutNotfier.addressVerify(file: _documentFile!);
                       },
                     ),
                     const YSpace(59)

@@ -4,6 +4,7 @@ class KlumpUser extends Equatable {
   final String? firstname;
   final String? lastname;
   final String? email;
+  final dynamic dob;
 
   final double? maxLoanLimit;
   final bool? requiresUserCredential;
@@ -14,6 +15,7 @@ class KlumpUser extends Equatable {
     required this.email,
     required this.maxLoanLimit,
     required this.requiresUserCredential,
+    required this.dob,
   });
 
   @override
@@ -23,5 +25,6 @@ class KlumpUser extends Equatable {
         email,
         maxLoanLimit,
         requiresUserCredential,
+        dob,
       ];
 }

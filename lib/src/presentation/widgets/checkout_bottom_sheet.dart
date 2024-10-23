@@ -138,8 +138,6 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                           const PartnerTerms(),
                         if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
                           const PartnerPaymentSplit(),
-                        if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
-                          const PartnerPaymentPreview(),
                         if (checkoutNotifier
                                     .klumpUser?.requiresUserCredential ==
                                 true &&
@@ -158,6 +156,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
                           const PartnerSelfieUpload(),
+                        if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                          const PartnerPaymentPreview(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                             'stanbic')
                           const PartnerInvoice(),

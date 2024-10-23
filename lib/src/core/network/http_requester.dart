@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 
 class KCHttpRequester {
   KCHttpRequester() {
@@ -40,7 +39,6 @@ class KCHttpRequester {
         headers: headers,
       ),
     );
-    Logger().d(response.data);
     return response;
   }
 
@@ -68,7 +66,6 @@ class KCHttpRequester {
         headers: headers,
       ),
     );
-    Logger().d(response.data);
     return response;
   }
 

@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerDocumentUpload extends StatefulWidget {
@@ -87,6 +88,8 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final stepData = checkoutNotfier.nextStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
+    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    Logger().d(formFields);
     var cardSample = '';
     switch (checkoutNotfier.documentType) {
       case INTERNATIONAL_PASSPORT:
@@ -298,7 +301,10 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
                           loading: checkoutNotfier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotfier.nextPage();
+                            checkoutNotfier.uploadDocument(
+                              idNumber: _idNumberCtrl.text.trim(),
+                              file: _documentFile!,
+                            );
                           },
                         );
                       },

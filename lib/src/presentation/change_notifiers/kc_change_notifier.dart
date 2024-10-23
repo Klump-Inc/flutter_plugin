@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
@@ -101,6 +104,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   void prevPage() {
+    loadNextStepData();
     _currentPage--;
     _pageController.animateToPage(
       _currentPage,
@@ -120,6 +124,34 @@ class KCChangeNotifier extends ChangeNotifier {
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
   String? _documentType;
   String? get documentType => _documentType;
+
+  final List<dynamic> _nextStepDataContainer = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+  ];
+
+  void storeNextStepData(KCAPIResponse data) {
+    _nextStepData = data;
+    _nextStepDataContainer[currentPage + 1] = data;
+  }
+
+  void loadNextStepData() {
+    final data = _nextStepDataContainer[currentPage - 1];
+    if (data.runtimeType == KCAPIResponse) {
+      _nextStepData = data;
+    }
+  }
 
   void setTransactionData(bool isLive, KlumpCheckoutData data) {
     _isLive = isLive;
@@ -251,8 +283,8 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: _nextStepData?.nextStep.method ?? '',
-        api: _nextStepData?.nextStep.api ?? '',
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -262,7 +294,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         if (skipPage == true) {
           _currentPage = _currentPage + 2;
           _pageController.animateToPage(
@@ -322,7 +354,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         _klumpUser = r.data as KlumpUser;
         if (r.nextStep.name == 'NEW_LOAN') {
           createLoan();
@@ -343,7 +375,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => {},
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         _termsCondition = r.data;
       },
     );
@@ -488,7 +520,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         nextPage();
       },
     );
@@ -498,8 +530,8 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: _nextStepData?.nextStep.method ?? '',
-        api: _nextStepData?.nextStep.api ?? '',
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: {
@@ -515,7 +547,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         nextPage();
       },
     );
@@ -561,8 +593,8 @@ class KCChangeNotifier extends ChangeNotifier {
       _setBusy(true);
       final response = await partnersUsecase(
         PartnersUsecaseParams(
-          method: _nextStepData?.nextStep.method ?? '',
-          api: _nextStepData?.nextStep.api ?? '',
+          method: nextStepData?.nextStep.method ?? '',
+          api: nextStepData?.nextStep.api ?? '',
           publicKey: _checkoutData?.merchantPublicKey ?? '',
           partner: _selectedBankFlow!.slug,
           data: {
@@ -578,9 +610,8 @@ class KCChangeNotifier extends ChangeNotifier {
       response.fold(
         (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
         (r) {
-          Logger().d(r);
           _klumpUser = r.data as KlumpUser;
-          _nextStepData = r;
+          storeNextStepData(r);
           nextPage();
         },
       );
@@ -619,8 +650,8 @@ class KCChangeNotifier extends ChangeNotifier {
     }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: _nextStepData?.nextStep.method ?? '',
-        api: _nextStepData?.nextStep.api ?? '',
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -630,7 +661,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         nextPage();
       },
     );
@@ -725,8 +756,8 @@ class KCChangeNotifier extends ChangeNotifier {
     Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: _nextStepData?.nextStep.method ?? '',
-        api: _nextStepData?.nextStep.api ?? '',
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -736,7 +767,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         nextPage();
       },
     );
@@ -749,7 +780,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
-      "amount": 150000, // _checkoutData?.amount ?? 0,
+      "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
       'is_live': isLive,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
@@ -769,9 +800,8 @@ class KCChangeNotifier extends ChangeNotifier {
     }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: _nextStepData?.nextStep.method ?? '',
-        api:
-            '/loans/account/repayments-detail', //_nextStepData?.nextStep.api ?? '',
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -781,8 +811,75 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        _nextStepData = r;
+        storeNextStepData(r);
         _repaymentDetails = r.data;
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> uploadDocument({
+    required String idNumber,
+    required File file,
+  }) async {
+    _setBusy(true);
+    final fileBytes = await File(file.path).readAsBytes();
+    final base64File = 'data:image/jpeg;base64,${base64.encode(fileBytes)}';
+    final data = <String, dynamic>{
+      "amount": _checkoutData?.amount ?? 0,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      "number": idNumber,
+      "type": documentType,
+      "document_file": base64File,
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> addressVerify({
+    required File file,
+  }) async {
+    _setBusy(true);
+    final fileBytes = await File(file.path).readAsBytes();
+    final base64File = 'data:image/jpeg;base64,${base64.encode(fileBytes)}';
+    final data = <String, dynamic>{
+      "amount": _checkoutData?.amount ?? 0,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      "document_file": base64File,
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
         nextPage();
       },
     );

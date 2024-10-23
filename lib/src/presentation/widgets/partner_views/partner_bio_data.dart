@@ -113,6 +113,24 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     });
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
+    final klumpUser = changeNotifier.klumpUser;
+    if (changeNotifier.email != null) {
+      _emailCtrl.text = changeNotifier.email!;
+    }
+    if (klumpUser?.firstname != null) {
+      _firstNameCtrl.text = klumpUser!.firstname!;
+    }
+    if (klumpUser?.lastname != null) {
+      _lastNameCtrl.text = klumpUser!.lastname!;
+    }
+    if (klumpUser?.dob != null) {
+      setState(() {
+        _dob = DateTime.tryParse(klumpUser?.dob);
+      });
+      if (_dob != null) {
+        _dobCtrl.text = KCStringUtil.formatDate(_dob!);
+      }
+    }
     MixPanelService.logEvent(
       '10 - BIO DATA MODAL',
       properties: {
@@ -403,6 +421,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                             return KCInputField(
                               controller: _passwordCtrl,
                               hint: 'Password',
+                              // focusNode: _passwordNode,
                               textInputType: TextInputType.text,
                               textInputAction: TextInputAction.done,
                               validationMessage: KCFormValidator.errorPassword(
