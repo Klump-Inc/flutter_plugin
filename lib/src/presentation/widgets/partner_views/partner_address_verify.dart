@@ -116,7 +116,7 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                               child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
-                                  margin: EdgeInsets.only(bottom: 20),
+                                  margin: const EdgeInsets.only(bottom: 20),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
@@ -130,7 +130,7 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                                         KCAssets.repeat,
                                         package: KC_PACKAGE_NAME,
                                       ),
-                                      XSpace(5),
+                                      const XSpace(5),
                                       KCHeadline5(
                                         'Reupload photo',
                                         color: Colors.white,

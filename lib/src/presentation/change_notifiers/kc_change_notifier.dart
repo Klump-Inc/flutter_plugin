@@ -830,9 +830,9 @@ class KCChangeNotifier extends ChangeNotifier {
       'partner': _selectedBankFlow!.slug,
       'is_live': isLive,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
-      "number": idNumber,
-      "type": documentType,
-      "document_file": base64File,
+      'number': idNumber,
+      'type': documentType,
+      'document_file': base64File,
     };
     final response = await partnersUsecase(
       PartnersUsecaseParams(
@@ -864,7 +864,7 @@ class KCChangeNotifier extends ChangeNotifier {
       'partner': _selectedBankFlow!.slug,
       'is_live': isLive,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
-      "document_file": base64File,
+      'document_file': base64File,
     };
     final response = await partnersUsecase(
       PartnersUsecaseParams(
@@ -879,6 +879,39 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
+        storeNextStepData(r);
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> validateSelfie({
+    required String filePath,
+  }) async {
+    _setBusy(true);
+    final fileBytes = await File(filePath).readAsBytes();
+    final base64File = 'data:image/jpeg;base64,${base64.encode(fileBytes)}';
+    final data = <String, dynamic>{
+      "amount": _checkoutData?.amount ?? 0,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      'selfie_file': base64File,
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: nextStepData?.nextStep.method ?? '',
+        api: nextStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        Logger().d(r);
         storeNextStepData(r);
         nextPage();
       },

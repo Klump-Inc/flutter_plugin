@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -126,7 +128,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         height:
-                            (283 * (constraints.maxHeight < 670 ? 0.70 : 1)) +
+                            (300 * (constraints.maxHeight < 670 ? 0.70 : 1)) +
                                 (_step == VerificationStep.capture ||
                                         _step == VerificationStep.preview
                                     ? 75
@@ -153,6 +155,15 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                                 alignment: Alignment.center,
                                 children: [
                                   CameraPreview(_cameraController),
+                                  if (_filePath != null)
+                                    Image.file(
+                                      File(
+                                        _filePath!,
+                                      ),
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.fill,
+                                    ),
                                   Image.asset(
                                     KCAssets.selfieOverlay,
                                     width: double.infinity,
@@ -185,10 +196,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                YSpace(_step == VerificationStep.capture ||
-                                        _step == VerificationStep.preview
-                                    ? 0
-                                    : 24.75),
+                                const YSpace(24.75),
                                 const Icon(
                                   Icons.info,
                                   color: KCColors.primary,
@@ -207,6 +215,8 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                     const YSpace(25),
                     const Spacer(),
                     KCPrimaryButton(
+                      disabled: checkoutNotfier.isBusy,
+                      loading: checkoutNotfier.isBusy,
                       title: _step == VerificationStep.start
                           ? 'Get Started'
                           : _step == VerificationStep.capture
@@ -220,23 +230,34 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                         } else if (_step == VerificationStep.capture) {
                           _cameraController.takePicture().then((value) {
                             _filePath = value.path;
-                            _cameraController.pausePreview().then(
-                              (_) {
-                                setState(() {
-                                  _step = VerificationStep.preview;
-                                });
-                              },
-                            );
+                            setState(() {
+                              _step = VerificationStep.preview;
+                            });
                           });
                         } else if (_step == VerificationStep.preview &&
                             _filePath != null) {
-                          // onboardNot.validatePassport(
-                          //   context,
-                          //   filePath: _filePath!,
-                          // );
+                          checkoutNotfier.validateSelfie(
+                            filePath: _filePath!,
+                          );
                         }
                       },
                     ),
+                    if (_step == VerificationStep.preview)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: KCSecondaryButton(
+                          disabled: checkoutNotfier.isBusy,
+                          title: 'Change Image',
+                          onTap: () {
+                            setState(
+                              () {
+                                _filePath = null;
+                                _step = VerificationStep.capture;
+                              },
+                            );
+                          },
+                        ),
+                      ),
                     const YSpace(59)
                   ],
                 ),

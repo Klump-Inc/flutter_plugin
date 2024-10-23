@@ -22,13 +22,14 @@ class KCDropdownInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      color: Colors.white,
       enabled: true,
       constraints: BoxConstraints(
         minWidth: minWidth,
         maxHeight: 250,
       ),
       padding: EdgeInsets.zero,
-      elevation: 1,
+      elevation: 4,
       offset: const Offset(0, 54),
       child: Container(
         height: 52,
