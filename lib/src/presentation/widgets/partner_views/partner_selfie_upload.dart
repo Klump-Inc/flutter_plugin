@@ -60,7 +60,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.selfieStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
 
     return LayoutBuilder(

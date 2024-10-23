@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,7 +33,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
 
   void validateInputs() {
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.nextStepData?.nextStep ??
+    final formFields = (checkoutNotfier.verificationStepData?.nextStep ??
             checkoutNotfier.selectedBankFlow?.nextStep)
         ?.formFields
         ?.map((e) => e.name)
@@ -115,7 +116,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.verificationStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(

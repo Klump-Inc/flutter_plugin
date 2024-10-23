@@ -36,7 +36,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
 
   void validateInputs() {
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.nextStepData?.nextStep ??
+    final formFields = (checkoutNotfier.bioDataStepData?.nextStep ??
             checkoutNotfier.selectedBankFlow?.nextStep)
         ?.formFields
         ?.map((e) => e.name)
@@ -154,7 +154,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.bioDataStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(

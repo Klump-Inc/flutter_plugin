@@ -15,7 +15,7 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.documentVerificationStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {

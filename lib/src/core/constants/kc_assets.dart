@@ -20,4 +20,5 @@ class KCAssets {
   static String intlPassport = 'assets/images/intl_passport.png';
   static String ninCard = 'assets/images/nin_card.png';
   static String selfieOverlay = 'assets/images/selfie_overlay.png';
+  static String loading = 'assets/images/loading.png';
 }

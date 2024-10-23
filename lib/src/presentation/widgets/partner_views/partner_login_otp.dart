@@ -41,8 +41,8 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   void validateInputs() {
     final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    final formFields =
-        checkoutNotifier.nextStepData!.nextStep.formFields!.map((e) => e.name);
+    final formFields = checkoutNotifier.verifyOTPStepData!.nextStep.formFields!
+        .map((e) => e.name);
     final otpLength = checkoutNotifier.selectedBankFlow?.slug == 'stanbic'
         ? 6
         : checkoutNotifier.selectedBankFlow?.slug == 'polaris'
@@ -101,7 +101,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.verifyOTPStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
@@ -162,7 +162,8 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     KCHeadline5(stepData?.displayData?.subTitle ??
                         (formFields?.contains('otp') == true
                             ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
-                            : checkoutNotfier.nextStepData?.data.toString() ??
+                            : checkoutNotfier.verifyOTPStepData?.data
+                                    .toString() ??
                                 '')),
                     const YSpace(28),
                     if (formFields?.contains('otp') == true)

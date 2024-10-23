@@ -37,7 +37,7 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.proofAddressStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {

@@ -32,6 +32,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final stepData = checkoutNotifier.loanStatusStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -41,7 +42,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
               minHeight: constraints.maxHeight,
             ),
             child: IntrinsicHeight(
-              child: checkoutNotifier.finalLoanStep == null
+              child: stepData == null
                   ? const KCPageLoaderWidget()
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 26),
@@ -64,9 +65,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           ),
                           const YSpace(14),
                           KCHeadline3(
-                            checkoutNotifier
-                                    .finalLoanStep!.displayData?.title ??
-                                '',
+                            stepData.displayData?.title ?? '',
                             fontSize: 22,
                             height: 1.4318,
                             textAlign: TextAlign.left,
@@ -76,20 +75,15 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                             height: 50,
                             child: Html(
                               data:
-                                  "$KC_HTML_HEADER${checkoutNotifier.finalLoanStep!.displayData?.subTitle ?? ''}$KC_HTML_FOOTER",
+                                  "$KC_HTML_HEADER${stepData.displayData?.subTitle ?? ''}$KC_HTML_FOOTER",
                             ),
                           ),
-                          if (checkoutNotifier.finalLoanStep!.displayData?.list
-                                  ?.isNotEmpty ==
-                              true)
+                          if (stepData.displayData?.list?.isNotEmpty == true)
                             Column(
                               children: List.generate(
-                                  checkoutNotifier.finalLoanStep!.displayData!
-                                      .list!.length, (index) {
-                                final item = checkoutNotifier
-                                    .finalLoanStep!
-                                    .displayData!
-                                    .list![index] as Map<String, dynamic>;
+                                  stepData.displayData!.list!.length, (index) {
+                                final item = stepData.displayData!.list![index]
+                                    as Map<String, dynamic>;
                                 return KCCopyItemWidget(
                                   text: item['display'],
                                   copyText: item['value'].toString(),
@@ -101,11 +95,9 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           KCPrimaryButton(
                             title: 'Continue',
                             onTap: () async {
-                              if (checkoutNotifier.finalLoanStep!.redirectUrl !=
-                                  null) {
+                              if (stepData.redirectUrl != null) {
                                 if (!await launchUrl(
-                                  Uri.parse(checkoutNotifier
-                                      .finalLoanStep!.redirectUrl!),
+                                  Uri.parse(stepData.redirectUrl!),
                                   mode: LaunchMode.externalApplication,
                                 )) {
                                   showToast('Could not open link!');

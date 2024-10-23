@@ -357,7 +357,7 @@ void main() {
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
-      when(kcChangeNotifier.nextStepData).thenAnswer((_) => KCAPIResponse(
+      when(kcChangeNotifier.loanOptionStepData).thenAnswer((_) => KCAPIResponse(
           nextStep: NextStepModel.fromJson(
               acceptTermsJson['next_step'] as Map<String, dynamic>)));
       when(kcChangeNotifier.paymentSplit).thenAnswer((_) => null);
@@ -450,11 +450,9 @@ void main() {
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
-      when(kcChangeNotifier.finalLoanStep).thenAnswer((_) => KCAPIResponse(
-              nextStep: NextStepModel.fromJson(
-                  newLoanJson['next_step'] as Map<String, dynamic>))
-          .nextStep);
-
+      when(kcChangeNotifier.loanStatusStepData).thenAnswer((_) => KCAPIResponse(
+          nextStep: NextStepModel.fromJson(
+              newLoanJson['next_step'] as Map<String, dynamic>)));
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(

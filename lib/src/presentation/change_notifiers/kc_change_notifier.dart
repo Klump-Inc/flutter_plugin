@@ -58,9 +58,6 @@ class KCChangeNotifier extends ChangeNotifier {
   KlumpCheckoutData? _checkoutData;
   KlumpCheckoutData? get checkoutData => _checkoutData;
 
-  KCAPIResponse? _nextStepData;
-  KCAPIResponse? get nextStepData => _nextStepData;
-
   String? _email;
   String? _accountNumber;
   String? _phoneNumber;
@@ -75,8 +72,7 @@ class KCChangeNotifier extends ChangeNotifier {
   KlumpUser? get klumpUser => _klumpUser;
   RepaymentDetails? _repaymentDetails;
   RepaymentDetails? get repaymentDetails => _repaymentDetails;
-  NextStep? _finalLoanStep;
-  NextStep? get finalLoanStep => _finalLoanStep;
+
   DisbursementStatusResponse? _disbursementStatusResponse;
   DisbursementStatusResponse? get disbursementStatusResponse =>
       _disbursementStatusResponse;
@@ -93,6 +89,44 @@ class KCChangeNotifier extends ChangeNotifier {
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
 
+  //Step data
+  KCAPIResponse? _verificationStepData;
+  KCAPIResponse? get verificationStepData => _verificationStepData;
+
+  KCAPIResponse? _verifyOTPStepData;
+  KCAPIResponse? get verifyOTPStepData => _verifyOTPStepData;
+
+  KCAPIResponse? _acceptTermsStepData;
+  KCAPIResponse? get acceptTermsStepData => _acceptTermsStepData;
+
+  KCAPIResponse? _bioDataStepData;
+  KCAPIResponse? get bioDataStepData => _bioDataStepData;
+
+  KCAPIResponse? _loanOptionStepData;
+  KCAPIResponse? get loanOptionStepData => _loanOptionStepData;
+
+  KCAPIResponse? _repaymentDetailsStepData;
+  KCAPIResponse? get repaymentDetailsStepData => _repaymentDetailsStepData;
+
+  KCAPIResponse? _userKYCStepData;
+  KCAPIResponse? get userKYCStepData => _userKYCStepData;
+
+  KCAPIResponse? _documentVerificationStepData;
+  KCAPIResponse? get documentVerificationStepData =>
+      _documentVerificationStepData;
+
+  KCAPIResponse? _proofAddressStepData;
+  KCAPIResponse? get proofAddressStepData => _proofAddressStepData;
+
+  KCAPIResponse? _selfieStepData;
+  KCAPIResponse? get selfieStepData => _selfieStepData;
+
+  KCAPIResponse? _newLoanStepData;
+  KCAPIResponse? get newLoanStepData => _newLoanStepData;
+
+  KCAPIResponse? _loanStatusStepData;
+  KCAPIResponse? get loanStatusStepData => _loanStatusStepData;
+
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -104,7 +138,6 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   void prevPage() {
-    loadNextStepData();
     _currentPage--;
     _pageController.animateToPage(
       _currentPage,
@@ -124,34 +157,6 @@ class KCChangeNotifier extends ChangeNotifier {
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
   String? _documentType;
   String? get documentType => _documentType;
-
-  final List<dynamic> _nextStepDataContainer = [
-    '0',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-  ];
-
-  void storeNextStepData(KCAPIResponse data) {
-    _nextStepData = data;
-    _nextStepDataContainer[currentPage + 1] = data;
-  }
-
-  void loadNextStepData() {
-    final data = _nextStepDataContainer[currentPage - 1];
-    if (data.runtimeType == KCAPIResponse) {
-      _nextStepData = data;
-    }
-  }
 
   void setTransactionData(bool isLive, KlumpCheckoutData data) {
     _isLive = isLive;
@@ -177,6 +182,45 @@ class KCChangeNotifier extends ChangeNotifier {
   void selectDocumentType(String type) {
     _documentType = type;
     nextPage();
+  }
+
+  void storeNextStepData(KCAPIResponse data) {
+    final api = data.nextStep.name?.toUpperCase();
+    switch (api) {
+      case 'LOGIN':
+      case 'LOGIN_OR_CONNECT_MONO':
+        _verificationStepData = data;
+        break;
+      case 'CONNECT_MONO':
+      case 'VERIFY_OTP':
+        _verifyOTPStepData = data;
+        break;
+      case 'BIO_DATA':
+        _bioDataStepData = data;
+        break;
+      case 'USER_KYC':
+        _userKYCStepData = data;
+        break;
+      case 'LOAN_OPTIONS':
+        _loanOptionStepData = data;
+        break;
+      case 'DOCUMENT_VERIFICATION':
+        _documentVerificationStepData = data;
+        break;
+      case 'PROOF_OF_ADDRESS':
+        _proofAddressStepData = data;
+        break;
+      case 'FACE_VERIFICATION':
+        _selfieStepData = data;
+        break;
+      case 'NEW_LOAN':
+        _newLoanStepData = data;
+        break;
+      case 'LOAN_STATUS':
+        _loanStatusStepData = data;
+        break;
+      default:
+    }
   }
 
   Future<bool> initiateTransaction({
@@ -237,10 +281,11 @@ class KCChangeNotifier extends ChangeNotifier {
     _phoneNumber = phoneNumber ?? _phoneNumber;
     _firstName = firstName ?? _firstName;
     _email = email ?? _email;
-    final formFields = (nextStepData?.nextStep ?? selectedBankFlow?.nextStep)
-        ?.formFields
-        ?.map((e) => e.name)
-        .toList();
+    final formFields =
+        (verificationStepData?.nextStep ?? selectedBankFlow?.nextStep)
+            ?.formFields
+            ?.map((e) => e.name)
+            .toList();
     Map<String, dynamic> data = {
       'is_live': isLive,
       'partner': _selectedBankFlow!.slug,
@@ -281,8 +326,8 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: verificationStepData?.nextStep.method ?? '',
+        api: verificationStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -390,7 +435,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) async {
-        _finalLoanStep = r.nextStep;
+        storeNextStepData(r);
         _loanId = r.data;
         nextPage();
       },
@@ -403,7 +448,7 @@ class KCChangeNotifier extends ChangeNotifier {
       GetLoanStatusUsecaseParams(
         url: selectedBankFlow?.slug == 'stanbic'
             ? '/loans/account/new-loan/$loanId'
-            : _finalLoanStep?.api ?? '',
+            : loanOptionStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
@@ -469,7 +514,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> acceptTerms() async {
-    if (nextStepData?.nextStep.name == 'ACCEPT_LOAN_TERMS') {
+    if (repaymentDetailsStepData?.nextStep.name == 'ACCEPT_LOAN_TERMS') {
       _setBusy(true);
       final response = await acceptTermsUsecase(
         AcceptTermsUsecaseParams(
@@ -518,8 +563,8 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: verificationStepData?.nextStep.method ?? '',
+        api: verificationStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: {
@@ -581,8 +626,8 @@ class KCChangeNotifier extends ChangeNotifier {
       _setBusy(true);
       final response = await partnersUsecase(
         PartnersUsecaseParams(
-          method: nextStepData?.nextStep.method ?? '',
-          api: nextStepData?.nextStep.api ?? '',
+          method: verifyOTPStepData?.nextStep.method ?? '',
+          api: verifyOTPStepData?.nextStep.api ?? '',
           publicKey: _checkoutData?.merchantPublicKey ?? '',
           partner: _selectedBankFlow!.slug,
           data: {
@@ -620,6 +665,7 @@ class KCChangeNotifier extends ChangeNotifier {
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
     };
     if (email?.isNotEmpty == true) {
+      _email = email;
       data.addAll({'email': email});
     }
     if (password?.isNotEmpty == true) {
@@ -638,8 +684,8 @@ class KCChangeNotifier extends ChangeNotifier {
     }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: bioDataStepData?.nextStep.method ?? '',
+        api: bioDataStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -744,8 +790,8 @@ class KCChangeNotifier extends ChangeNotifier {
     Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: userKYCStepData?.nextStep.method ?? '',
+        api: userKYCStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -788,8 +834,8 @@ class KCChangeNotifier extends ChangeNotifier {
     }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: loanOptionStepData?.nextStep.method ?? '',
+        api: loanOptionStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -824,8 +870,8 @@ class KCChangeNotifier extends ChangeNotifier {
     };
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: documentVerificationStepData?.nextStep.method ?? '',
+        api: documentVerificationStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -856,8 +902,8 @@ class KCChangeNotifier extends ChangeNotifier {
     };
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: proofAddressStepData?.nextStep.method ?? '',
+        api: proofAddressStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -888,8 +934,8 @@ class KCChangeNotifier extends ChangeNotifier {
     };
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: nextStepData?.nextStep.method ?? '',
-        api: nextStepData?.nextStep.api ?? '',
+        method: selfieStepData?.nextStep.method ?? '',
+        api: selfieStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,

@@ -72,6 +72,7 @@ class _KCIOSDatePickerContainerState extends State<KCIOSDatePickerContainer> {
                     height: 55,
                     child: Center(
                       child: Material(
+                        color: Colors.white,
                         child: KCHeadline5(
                           'Confirm',
                           fontSize: 16,
@@ -96,6 +97,7 @@ class _KCIOSDatePickerContainerState extends State<KCIOSDatePickerContainer> {
               ),
               child: Center(
                 child: Material(
+                  color: Colors.white,
                   child: KCHeadline5(
                     'Cancel',
                     fontSize: 16,

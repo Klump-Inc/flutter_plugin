@@ -61,7 +61,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
 
   void validateInputs() {
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.nextStepData?.nextStep ??
+    final formFields = (checkoutNotfier.userKYCStepData?.nextStep ??
             checkoutNotfier.selectedBankFlow?.nextStep)
         ?.formFields
         ?.map((e) => e.name)
@@ -248,7 +248,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.nextStepData?.nextStep ??
+    final stepData = checkoutNotfier.userKYCStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final formMap = stepData?.formFields;

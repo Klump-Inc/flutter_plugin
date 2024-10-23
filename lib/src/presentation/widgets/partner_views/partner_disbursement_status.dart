@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerDisbursementStatus extends StatelessWidget {
@@ -11,8 +10,7 @@ class PartnerDisbursementStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.finalLoanStep;
-    Logger().d(stepData?.displayData?.title);
+    final stepData = checkoutNotfier.loanStatusStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -45,7 +43,6 @@ class PartnerDisbursementStatus extends StatelessWidget {
                           ),
                         ),
                       ),
-                    const YSpace(16),
                     const YSpace(24),
                     Expanded(
                       child: Column(
@@ -54,14 +51,20 @@ class PartnerDisbursementStatus extends StatelessWidget {
                           SizedBox(
                             height: 187.1,
                             width: 187.1,
-                            child: SvgPicture.asset(
-                              checkoutNotfier.disbursementStatusResponse
-                                          ?.isSuccessful ==
-                                      true
-                                  ? KCAssets.successIllus
-                                  : KCAssets.failureIllus,
-                              package: KC_PACKAGE_NAME,
-                            ),
+                            child: checkoutNotfier.selectedBankFlow?.slug ==
+                                    'renmoney'
+                                ? Image.asset(
+                                    KCAssets.loading,
+                                    package: KC_PACKAGE_NAME,
+                                  )
+                                : SvgPicture.asset(
+                                    checkoutNotfier.disbursementStatusResponse
+                                                ?.isSuccessful ==
+                                            true
+                                        ? KCAssets.successIllus
+                                        : KCAssets.failureIllus,
+                                    package: KC_PACKAGE_NAME,
+                                  ),
                           ),
                           const YSpace(22),
                           KCHeadline3(
