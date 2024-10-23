@@ -60,7 +60,7 @@ class FirstScreen extends StatelessWidget {
                         'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
                     itemUrl: 'https://www.paypal.com/in/webapps/mpp/home',
                     name: 'Awesome item',
-                    unitPrice: 50000,
+                    unitPrice: 150000,
                     quantity: 2,
                   )
                 ],
