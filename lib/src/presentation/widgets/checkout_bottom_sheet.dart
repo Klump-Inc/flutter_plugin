@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/presentation/widgets/account_email.dart';
-import 'package:klump_checkout/src/presentation/widgets/partner_views/partner_address_verify.dart';
-
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';

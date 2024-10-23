@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:logger/logger.dart';
