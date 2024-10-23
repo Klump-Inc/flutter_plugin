@@ -142,7 +142,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                           onTap: () {
                             if (nextStep?.api ==
                                 '/loans/account/verification') {
-                              checkoutNotfier.validateAccount(skipPage: true);
+                              checkoutNotfier.validateAccount();
                             } else if (nextStep?.api
                                     ?.contains('/requirements') ==
                                 true) {

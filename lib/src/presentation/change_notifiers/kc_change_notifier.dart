@@ -231,10 +231,8 @@ class KCChangeNotifier extends ChangeNotifier {
     String? firstName,
     String? email,
     String? password,
-    bool? skipPage,
   }) async {
     _setBusy(true);
-
     _accountNumber = accountNumber ?? _accountNumber;
     _phoneNumber = phoneNumber ?? _phoneNumber;
     _firstName = firstName ?? _firstName;
@@ -295,17 +293,7 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (skipPage == true) {
-          _currentPage = _currentPage + 2;
-          _pageController.animateToPage(
-            _currentPage,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.linear,
-          );
-          notifyListeners();
-        } else {
-          nextPage();
-        }
+        nextPage();
       },
     );
   }
