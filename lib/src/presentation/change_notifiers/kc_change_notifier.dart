@@ -600,7 +600,7 @@ class KCChangeNotifier extends ChangeNotifier {
           child: SizedBox(
             width: MediaQuery.of(context).size.height - 20,
             child: MonoWebView(
-              apiKey: KC_MONO_KEY_TEST,
+              apiKey: isLive ? KC_MONO_KEY_LIVE : KC_MONO_KEY_TEST,
               scope: "auth", // NEWLY INTRODUCED
               data:
                   // NEWLY INTRODUCED
