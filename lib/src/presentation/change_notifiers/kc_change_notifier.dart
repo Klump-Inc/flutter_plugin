@@ -245,7 +245,10 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     _setBusy(false);
     return response.fold(
-      (l) => false,
+      (l) {
+        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
+        return false;
+      },
       (r) {
         _initiateResponse = r;
         return true;
