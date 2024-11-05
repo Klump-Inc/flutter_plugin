@@ -17,6 +17,8 @@
 ## [1.0.17] - Improvements
 ## [1.0.18] - Add new financial partners
 ## [1.0.19] - Add new financial partners
+## [1.0.20] - Improvements
+
 
 
 
