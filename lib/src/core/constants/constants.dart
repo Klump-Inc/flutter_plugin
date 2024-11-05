@@ -7,6 +7,8 @@ const String KC_PACKAGE_NAME = 'klump_checkout';
 const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
 
+const bool dev = true;
+
 const String KC_BASE_URL = 'https://api.useklump.com';
 const String KC_STAGING_BASE_URL = 'https://staging-api.useklump.com';
 const int KC_CONNECT_TIMEOUT = 30;

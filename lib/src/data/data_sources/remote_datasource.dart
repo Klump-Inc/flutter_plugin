@@ -132,7 +132,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         });
       }
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/transactions/initiate',
         body: body,
       );
@@ -203,7 +202,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         },
       );
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
         endpoint: '/v1/loans/account/verification',
         body: body,
@@ -279,7 +277,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         });
       }
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/verify-otp',
         headers: headers,
         body: body,
@@ -358,7 +355,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         });
       }
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/repayments-detail',
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
@@ -424,7 +420,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       }
 
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/new-loan',
         headers: headers,
         body: body,
@@ -484,7 +479,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'klump-public-key': publicKey,
       };
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
         endpoint: '/v1/loans/account/credentials',
         body: body,
@@ -561,7 +555,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
             prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
       };
       final response = await kcHttpRequester.post(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/account/accept-loan-terms',
         headers: headers,
         body: body,
@@ -591,7 +584,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       late Response<dynamic> response;
       if (method == 'POST') {
         response = await kcHttpRequester.post(
-          environment: prefs.getString(KC_ENVIRONMENT_KEY),
           endpoint: '/v1$api',
           headers: headers,
           token: prefs.getString(KC_CHECKOUT_TOKEN),
