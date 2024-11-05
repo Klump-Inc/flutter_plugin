@@ -21,12 +21,16 @@ class _PartnerLoginState extends State<PartnerLogin> {
   late TextEditingController _firstNameCtrl;
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
+  late TextEditingController _usernameCtrl;
+  late TextEditingController _pinCtrl;
 
   late StreamController<String> accountNoStreamCtrl;
   late StreamController<String> phoneNoStreamCtrl;
   late StreamController<String> firstNameStreamCtrl;
   late StreamController<String> emailStreamCtrl;
   late StreamController<String> passwordStreamCtrl;
+  late StreamController<String> usernameStreamCtrl;
+  late StreamController<String> pinStreamCtrl;
 
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
@@ -43,10 +47,13 @@ class _PartnerLoginState extends State<PartnerLogin> {
         KCFormValidator.errorPhoneNumber(_phoneNoCtrl.text.trim(), 'Required');
     final firstNameError =
         KCFormValidator.errorGeneric(_firstNameCtrl.text.trim(), 'Required');
+    final usernameError =
+        KCFormValidator.errorGeneric(_usernameCtrl.text.trim(), 'Required');
     final emailError =
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
+    final pinError = KCFormValidator.errorPin(_pinCtrl.text.trim(), 'Required');
     if ((accountNoError?.isEmpty == true ||
             formFields?.contains('accountNumber') != true) &&
         (phoneNoError?.isEmpty == true ||
@@ -56,7 +63,10 @@ class _PartnerLoginState extends State<PartnerLogin> {
         (emailError?.isEmpty == true ||
             formFields?.contains('email') != true) &&
         (passwordError?.isEmpty == true ||
-            formFields?.contains('password') != true)) {
+            formFields?.contains('password') != true) &&
+        (usernameError?.isEmpty == true ||
+            formFields?.contains('username') != true) &&
+        (pinError?.isEmpty == true || formFields?.contains('pin') != true)) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -71,6 +81,9 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _firstNameCtrl = TextEditingController();
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
+    _usernameCtrl = TextEditingController();
+    _pinCtrl = TextEditingController();
+
     final checkoutNotfier = context.read<KCChangeNotifier>();
     _emailCtrl.text = checkoutNotfier.email ?? '';
     _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
@@ -80,6 +93,9 @@ class _PartnerLoginState extends State<PartnerLogin> {
     firstNameStreamCtrl = StreamController<String>.broadcast();
     emailStreamCtrl = StreamController<String>.broadcast();
     passwordStreamCtrl = StreamController<String>.broadcast();
+    usernameStreamCtrl = StreamController<String>.broadcast();
+    pinStreamCtrl = StreamController<String>.broadcast();
+
     _accountNoCtrl.addListener(() {
       accountNoStreamCtrl.sink.add(_accountNoCtrl.text.trim());
       validateInputs();
@@ -100,6 +116,14 @@ class _PartnerLoginState extends State<PartnerLogin> {
       passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
       validateInputs();
     });
+    _usernameCtrl.addListener(() {
+      usernameStreamCtrl.sink.add(_usernameCtrl.text.trim());
+      validateInputs();
+    });
+    _pinCtrl.addListener(() {
+      pinStreamCtrl.sink.add(_pinCtrl.text.trim());
+      validateInputs();
+    });
   }
 
   @override
@@ -110,6 +134,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _firstNameCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
+    _usernameCtrl.dispose();
+    _pinCtrl.dispose();
   }
 
   @override
@@ -265,7 +291,7 @@ class _PartnerLoginState extends State<PartnerLogin> {
                               controller: _firstNameCtrl,
                               hint: 'First Name',
                               textInputType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
+                              textInputAction: TextInputAction.next,
                               validationMessage: KCFormValidator.errorGeneric(
                                 snapshot.data,
                                 'First Name is required',
@@ -288,6 +314,49 @@ class _PartnerLoginState extends State<PartnerLogin> {
                               validationMessage: KCFormValidator.errorPassword(
                                 snapshot.data,
                                 'Password is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('username') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: usernameStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _usernameCtrl,
+                              hint: 'Username',
+                              textInputType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
+                              validationMessage: KCFormValidator.errorGeneric(
+                                snapshot.data,
+                                'Username is required',
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('pin') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: StreamBuilder<String>(
+                          stream: pinStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            return KCInputField(
+                              controller: _pinCtrl,
+                              hint: 'Pin',
+                              textInputType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]')),
+                                LengthLimitingTextInputFormatter(11),
+                              ],
+                              textInputAction: TextInputAction.done,
+                              validationMessage: KCFormValidator.errorPin(
+                                snapshot.data,
+                                'Pin is required',
                               ),
                             );
                           },
@@ -337,6 +406,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
                               firstName: _firstNameCtrl.text.trim(),
                               email: _emailCtrl.text.trim(),
                               password: _passwordCtrl.text.trim(),
+                              username: _usernameCtrl.text.trim(),
+                              pin: _pinCtrl.text.trim(),
                             );
                           },
                         );

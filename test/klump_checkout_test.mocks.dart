@@ -469,24 +469,6 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  void storeNextStepData(_i2.KCAPIResponse? data) => super.noSuchMethod(
-        Invocation.method(
-          #storeNextStepData,
-          [data],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
-  void loadNextStepData() => super.noSuchMethod(
-        Invocation.method(
-          #loadNextStepData,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   void setTransactionData(
     bool? isLive,
     _i2.KlumpCheckoutData? data,
@@ -530,6 +512,15 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
+  void storeNextStepData(_i2.KCAPIResponse? data) => super.noSuchMethod(
+        Invocation.method(
+          #storeNextStepData,
+          [data],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i6.Future<bool> initiateTransaction({
     required String? email,
     required String? phone,
@@ -563,7 +554,8 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
     String? firstName,
     String? email,
     String? password,
-    bool? skipPage,
+    String? username,
+    String? pin,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -575,7 +567,8 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #firstName: firstName,
             #email: email,
             #password: password,
-            #skipPage: skipPage,
+            #username: username,
+            #pin: pin,
           },
         ),
         returnValue: _i6.Future<void>.value(),

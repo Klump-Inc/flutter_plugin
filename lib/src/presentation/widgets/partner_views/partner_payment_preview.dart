@@ -19,6 +19,7 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final repaymentDetails = checkoutNotfier.repaymentDetails;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(

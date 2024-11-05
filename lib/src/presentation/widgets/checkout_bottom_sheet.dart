@@ -120,7 +120,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug ==
                                 'first_bank' ||
                             checkoutNotifier.selectedBankFlow?.slug ==
-                                'renmoney')
+                                'renmoney' ||
+                            checkoutNotifier.selectedBankFlow?.slug ==
+                                'fidelity')
                           const PartnerRequirements(),
                         const PartnerLogin(),
                         const PartnerLoginOTP(),

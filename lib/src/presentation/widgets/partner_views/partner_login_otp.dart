@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
-
 import 'package:provider/provider.dart';
 
 class PartnerLoginOTP extends StatefulWidget {
@@ -144,15 +143,16 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                         checkoutNotfier.initiateResponse!.merchant.toString(),
                         fontWeight: FontWeight.w700,
                       ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30, bottom: 10),
-                      child: Image.asset(
-                        KCAssets.safe,
-                        height: 109,
-                        width: 106,
-                        package: KC_PACKAGE_NAME,
+                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30, bottom: 10),
+                        child: Image.asset(
+                          KCAssets.safe,
+                          height: 109,
+                          width: 106,
+                          package: KC_PACKAGE_NAME,
+                        ),
                       ),
-                    ),
                     const YSpace(22),
                     KCHeadline3(stepData?.displayData?.title ??
                         (formFields?.contains('otp') == true

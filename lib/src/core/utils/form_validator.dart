@@ -84,6 +84,18 @@ class KCFormValidator {
     }
   }
 
+  static String? errorPin(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (text.length != 4) {
+      return 'Invalid';
+    } else {
+      return '';
+    }
+  }
+
   static String? errorOTP(String? text, String message, [int length = 6]) {
     if (text == null) {
       return null;

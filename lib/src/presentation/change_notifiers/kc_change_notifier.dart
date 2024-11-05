@@ -189,6 +189,7 @@ class KCChangeNotifier extends ChangeNotifier {
     switch (api) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
+      case 'ACCOUNT_VERIFICATION':
         _verificationStepData = data;
         break;
       case 'CONNECT_MONO':
@@ -278,6 +279,8 @@ class KCChangeNotifier extends ChangeNotifier {
     String? firstName,
     String? email,
     String? password,
+    String? username,
+    String? pin,
   }) async {
     _setBusy(true);
     _accountNumber = accountNumber ?? _accountNumber;
@@ -309,16 +312,25 @@ class KCChangeNotifier extends ChangeNotifier {
     if (formFields?.contains('password') == true) {
       data['password'] = password;
     }
-    if (formFields?.contains('amount') == true) {
+    if (formFields?.contains('amount') == true ||
+        selectedBankFlow?.slug == 'fidelity') {
       data['amount'] =
           _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
     }
     if (formFields?.contains('email') == true) {
       data['email'] = email;
     }
+
     if (formFields?.contains('currency') == true) {
       data['currency'] = 'NGN';
     }
+    if (formFields?.contains('username') == true) {
+      data['username'] = username;
+    }
+    if (formFields?.contains('pin') == true) {
+      data['pin'] = pin;
+    }
+    Logger().d(data);
     MixPanelService.logEvent(
       '6 - ACCOUNT VERIFICATION MODAL',
       properties: {
@@ -340,6 +352,8 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
+        Logger().d(r);
+        Logger().d(r.nextStep.name);
         storeNextStepData(r);
         nextPage();
       },
@@ -556,6 +570,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
+        Logger().d(r.nextStep.name);
         storeNextStepData(r);
         nextPage();
       },
