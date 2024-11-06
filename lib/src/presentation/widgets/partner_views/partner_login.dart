@@ -60,6 +60,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
             formFields?.contains('phoneNumber') != true) &&
         (firstNameError?.isEmpty == true ||
             formFields?.contains('firstName') != true) &&
+        (firstNameError?.isEmpty == true ||
+            formFields?.contains('firstname') != true) &&
         (emailError?.isEmpty == true ||
             formFields?.contains('email') != true) &&
         (passwordError?.isEmpty == true ||
@@ -276,7 +278,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('firstName') == true)
+                    if (formFields?.contains('firstName') == true ||
+                        formFields?.contains('firstname') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(

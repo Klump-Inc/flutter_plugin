@@ -304,6 +304,9 @@ class KCChangeNotifier extends ChangeNotifier {
     if (formFields?.contains('firstName') == true) {
       data['firstName'] = firstName;
     }
+    if (formFields?.contains('firstname') == true) {
+      data['firstname'] = firstName;
+    }
     if (formFields?.contains('password') == true) {
       data['password'] = password;
     }
