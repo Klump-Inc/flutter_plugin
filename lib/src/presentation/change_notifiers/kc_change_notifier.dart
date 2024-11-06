@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -326,9 +325,6 @@ class KCChangeNotifier extends ChangeNotifier {
     if (formFields?.contains('pin') == true) {
       data['pin'] = pin;
     }
-    Logger().d(data);
-    Logger().d(data);
-
     MixPanelService.logEvent(
       '6 - ACCOUNT VERIFICATION MODAL',
       properties: {
@@ -354,8 +350,6 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        Logger().d(r);
-        Logger().d(r.nextStep.name);
         storeNextStepData(r);
         nextPage();
       },
@@ -436,7 +430,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> createLoan() async {
     _setBusy(true);
-    Logger().d(newLoanStepData?.nextStep.formFields);
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
@@ -605,7 +598,6 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        Logger().d(r.nextStep.name);
         storeNextStepData(r);
         nextPage();
       },
@@ -840,7 +832,6 @@ class KCChangeNotifier extends ChangeNotifier {
     if (nextOfKinPhone?.isNotEmpty == true) {
       data.addAll({'next_of_kin_phone': nextOfKinPhone});
     }
-    Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: userKYCStepData?.nextStep.method ?? '',
