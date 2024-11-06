@@ -227,26 +227,32 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                       ValueListenableBuilder<int>(
                         valueListenable: _timeLeft,
                         builder: (_, timeLeft, __) {
-                          return InkWell(
-                            onTap: timeLeft != 0 || checkoutNotfier.isBusy
-                                ? null
-                                : () {
-                                    checkoutNotfier
-                                        .resendAccountOTP()
-                                        .then((value) {
-                                      _startCounter();
-                                    });
-                                  },
-                            child: KCBodyText1(
-                              timeLeft == 0
-                                  ? 'Resend code'
-                                  : '${timeLeft ~/ 60}:${timeLeft >= 60 ? '00' : timeLeft} remaining',
-                              fontSize: 16,
-                              color: KCColors.lightBlue,
-                              style: const TextStyle(
-                                decoration: TextDecoration.underline,
+                          return Row(
+                            children: [
+                              InkWell(
+                                onTap: timeLeft != 0 || checkoutNotfier.isBusy
+                                    ? null
+                                    : () {
+                                        checkoutNotfier
+                                            .resendAccountOTP()
+                                            .then((value) {
+                                          _startCounter();
+                                        });
+                                      },
+                                child: KCBodyText1(
+                                  timeLeft == 0
+                                      ? 'Resend code'
+                                      : 'Resend code in ${timeLeft ~/ 60}:${timeLeft >= 60 ? '00' : timeLeft}',
+                                  fontSize: 14,
+                                  color: KCColors.lightBlue,
+                                  style: timeLeft == 0
+                                      ? const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                        )
+                                      : null,
+                                ),
                               ),
-                            ),
+                            ],
                           );
                         },
                       ),

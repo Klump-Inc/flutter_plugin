@@ -17,9 +17,12 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final repaymentDetails = checkoutNotfier.repaymentDetails;
-
+    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final stepData = checkoutNotifier.repaymentDetailsStepData?.nextStep ??
+        checkoutNotifier.selectedBankFlow?.nextStep;
+    final checkBoxFields =
+        stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
+    final repaymentDetails = stepData?.displayData?.list ?? [];
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -29,41 +32,57 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
           ),
           child: IntrinsicHeight(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 26),
+              padding: EdgeInsets.only(
+                  left: 26,
+                  right: 26,
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const YSpace(30.82),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: checkoutNotfier.prevPage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: KC_PACKAGE_NAME,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.6),
-                        child: Image.asset(
-                          KCAssets.stanbicLogo,
-                          height: 45,
-                          width: 38.45,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InkWell(
+                      onTap: checkoutNotifier.prevPage,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: SvgPicture.asset(
+                          KCAssets.arrowBack,
                           package: KC_PACKAGE_NAME,
                         ),
                       ),
-                      const XSpace(24)
-                    ],
+                    ),
                   ),
-                  const YSpace(22),
+                  const YSpace(10),
+                  Align(
+                    child: Image.network(
+                      checkoutNotifier.selectedBankFlow?.logo ?? '',
+                      height: 55,
+                      width: 120,
+                    ),
+                  ),
+                  if (checkoutNotifier.initiateResponse?.merchant != null)
+                    Align(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 0),
+                        child: KCHeadline4(
+                          checkoutNotifier.initiateResponse!.merchant
+                              .toString(),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  const YSpace(22.15),
                   KCHeadline3(
-                    '${repaymentDetails!.installment} instalments charged on your card over ${repaymentDetails.tenor} months',
+                    stepData?.displayData?.title ?? '',
+                    fontSize: 24,
                   ),
+                  if (stepData?.displayData?.subTitle != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: KCHeadline5(stepData?.displayData?.subTitle ?? ''),
+                    ),
+                  const YSpace(24),
                   const YSpace(10),
                   Expanded(
                     child: SingleChildScrollView(
@@ -72,162 +91,134 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            KPPaymentItemTile(
-                              title: 'Due Now',
-                              amount:
-                                  'NGN${KCStringUtil.formatAmount(repaymentDetails.downpaymentAmount.toDouble() + (repaymentDetails.managementFee ?? 0))}',
-                              body: repaymentDetails.downpaymentAmount != 0
-                                  ? 'Paid at purchase'
-                                  : repaymentDetails.managementFee != null &&
-                                          checkoutNotfier
-                                                  .selectedBankFlow?.slug ==
-                                              'polaris'
-                                      ? 'Polaris Fee '
-                                      : '',
-                              bodyLines: 1,
-                              firstItem: true,
-                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: List.generate(
-                                repaymentDetails.tenor ?? 0,
+                                repaymentDetails.length,
                                 (index) => KPPaymentItemTile(
-                                  title:
-                                      'Due: ${repaymentDetails.repaymentSchedules![index].repaymentDate}',
-                                  amount:
-                                      'NGN${KCStringUtil.formatAmount(repaymentDetails.repaymentSchedules![index].monthlyRepayment)}',
-                                  body: index == repaymentDetails.tenor - 1
-                                      ? 'Final payment, ${index + 1} month(s) later'
-                                      : 'Paid automatically ${index + 1} month later',
+                                  title: repaymentDetails[index]['title']
+                                          ['text']
+                                      .toString(),
+                                  amount: repaymentDetails[index]['title']
+                                          ['value']
+                                      .toString(),
+                                  subtitle: repaymentDetails[index]['subtitle']
+                                          ['text']
+                                      .toString(),
+                                  note: repaymentDetails[index]['subtitle']
+                                          ['value']
+                                      .toString(),
+                                  colorValue: repaymentDetails[index]['color']
+                                      .toString(),
                                   bodyLines: 2,
-                                  lastItem: index == repaymentDetails.tenor - 1,
+                                  lastItem:
+                                      index == repaymentDetails.length - 1,
                                 ),
                               ),
                             ),
                             const YSpace(18),
-                            KCHeadline5(
-                              repaymentDetails.installment.toString() == '2'
-                                  ? 'Get your order  immediately at half the payment upfront. The balance will be scheduled for one month post your first instalment.'
-                                  : repaymentDetails.installment.toString() ==
-                                          '3'
-                                      ? 'Get your order  immediately at one third of the payment upfront. The balance will be split into two (2) equal instalments over 2 months.'
-                                      : repaymentDetails.installment
-                                                  .toString() ==
-                                              '4'
-                                          ? 'Get your order  immediately at one fourth of the payment upfront. The balance will be split into three (3) equal instalments over 3 months.'
-                                          : repaymentDetails.installment
-                                                      .toString() ==
-                                                  '5'
-                                              ? 'Get your order  immediately at one fifth of the payment upfront. The balance will be split into four (4) equal instalments over 4 months.'
-                                              : repaymentDetails.installment
-                                                          .toString() ==
-                                                      '6'
-                                                  ? 'Get your order  immediately at one sixth of the payment upfront. The balance will be split into four (5) equal instalments over 5 months.'
-                                                  : '',
-                              fontSize: 14,
-                              height: 1.714,
-                            )
                           ],
                         ),
                       ),
                     ),
                   ),
                   const YSpace(10),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 5),
-                        child: SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: ValueListenableBuilder<bool>(
-                            valueListenable: _accepted,
-                            builder: (_, accepted, __) {
-                              return Checkbox(
-                                value: accepted,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.padded,
-                                onChanged: (value) {
-                                  _accepted.value = value ?? false;
-                                },
-                                activeColor: KCColors.primary,
-                                side: const BorderSide(
-                                    color: KCColors.primary, width: 2),
-                              );
-                            },
+                  if (checkBoxFields?.isNotEmpty == true)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 5),
+                          child: SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: ValueListenableBuilder<bool>(
+                              valueListenable: _accepted,
+                              builder: (_, accepted, __) {
+                                return Checkbox(
+                                  value: accepted,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.padded,
+                                  onChanged: (value) {
+                                    _accepted.value = value ?? false;
+                                  },
+                                  activeColor: KCColors.primary,
+                                  side: const BorderSide(
+                                      color: KCColors.primary, width: 2),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      const XSpace(10.5),
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: 'I agree to this according to Klump’s ',
-                              ),
-                              TextSpan(
-                                text: 'Customer Agreement',
-                                style: const TextStyle(
-                                  color: KCColors.black3,
-                                  fontWeight: FontWeight.w800,
-                                  decoration: TextDecoration.underline,
+                        const XSpace(10.5),
+                        Expanded(
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'I agree to this according to Klump’s ',
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    if (!await launchUrl(
-                                      Uri.parse(
-                                          "https://useklump.com/legal/terms-of-service-customer"),
-                                      mode: LaunchMode.externalApplication,
-                                    )) {
-                                      // ignore: avoid_print
-                                      print('Could not open link');
-                                    }
-                                  },
-                              ),
-                              const TextSpan(text: ' and'),
-                              TextSpan(
-                                text: ' Terms and Conditions',
-                                style: const TextStyle(
-                                  color: KCColors.black3,
-                                  fontWeight: FontWeight.w800,
-                                  decoration: TextDecoration.underline,
+                                TextSpan(
+                                  text: 'Customer Agreement',
+                                  style: const TextStyle(
+                                    color: KCColors.black3,
+                                    fontWeight: FontWeight.w800,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      if (!await launchUrl(
+                                        Uri.parse(
+                                            "https://useklump.com/legal/terms-of-service-customer"),
+                                        mode: LaunchMode.externalApplication,
+                                      )) {
+                                        // ignore: avoid_print
+                                        print('Could not open link');
+                                      }
+                                    },
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    if (!await launchUrl(
-                                      Uri.parse(
-                                          "https://useklump.com/legal/terms-of-service"),
-                                      mode: LaunchMode.externalApplication,
-                                    )) {
-                                      // ignore: avoid_print
-                                      print('Could not open link');
-                                    }
-                                  },
-                              )
-                            ],
-                          ),
-                          style: const TextStyle(
-                            color: KCColors.grey5,
-                            fontSize: 11,
-                            height: 1.818,
-                            fontFamily: KCFonts.avenir,
-                            fontWeight: FontWeight.w400,
+                                const TextSpan(text: ' and'),
+                                TextSpan(
+                                  text: ' Terms and Conditions',
+                                  style: const TextStyle(
+                                    color: KCColors.black3,
+                                    fontWeight: FontWeight.w800,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      if (!await launchUrl(
+                                        Uri.parse(
+                                            "https://useklump.com/legal/terms-of-service"),
+                                        mode: LaunchMode.externalApplication,
+                                      )) {
+                                        // ignore: avoid_print
+                                        print('Could not open link');
+                                      }
+                                    },
+                                )
+                              ],
+                            ),
+                            style: const TextStyle(
+                              color: KCColors.grey5,
+                              fontSize: 11,
+                              height: 1.818,
+                              fontFamily: KCFonts.avenir,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   const YSpace(24),
                   ValueListenableBuilder<bool>(
                     valueListenable: _accepted,
                     builder: (_, accepted, __) {
                       return KCPrimaryButton(
                         title: 'Continue',
-                        disabled: !accepted || checkoutNotfier.isBusy,
-                        loading: checkoutNotfier.isBusy,
-                        onTap: () => checkoutNotfier.acceptTerms(),
+                        disabled: !accepted || checkoutNotifier.isBusy,
+                        loading: checkoutNotifier.isBusy,
+                        onTap: () => checkoutNotifier.acceptTerms(),
                       );
                     },
                   ),
@@ -247,18 +238,21 @@ class KPPaymentItemTile extends StatelessWidget {
     super.key,
     required this.title,
     required this.amount,
-    required this.body,
+    required this.subtitle,
     required this.bodyLines,
-    this.firstItem = false,
+    required this.note,
+    required this.colorValue,
     this.lastItem = false,
   });
 
-  final String title, amount, body;
+  final String title, amount, subtitle, note;
   final int bodyLines;
-  final bool firstItem, lastItem;
+  final bool lastItem;
+  final String colorValue;
 
   @override
   Widget build(BuildContext context) {
+    final color = colorValue == 'green' ? KCColors.green : null;
     return SizedBox(
       height: 20.49 + 4.95 + (bodyLines * 19.12) + (lastItem ? 0 : 32),
       child: Row(
@@ -272,7 +266,7 @@ class KPPaymentItemTile extends StatelessWidget {
                   height: 11.34,
                   width: 11.34,
                   decoration: BoxDecoration(
-                    color: firstItem ? KCColors.green : KCColors.grey6,
+                    color: color ?? KCColors.grey6,
                     borderRadius: BorderRadius.circular(30.2483),
                   ),
                 ),
@@ -303,8 +297,7 @@ class KPPaymentItemTile extends StatelessWidget {
                             height: 20.49,
                             child: KCAutoSizedText(
                               title,
-                              color:
-                                  firstItem ? KCColors.green : KCColors.primary,
+                              color: color ?? KCColors.primary,
                               fontWeight: FontWeight.w900,
                               height: 1.366,
                             ),
@@ -313,7 +306,7 @@ class KPPaymentItemTile extends StatelessWidget {
                           SizedBox(
                             height: bodyLines * 19.12,
                             child: KCAutoSizedText(
-                              body,
+                              subtitle,
                               fontSize: 14,
                               color: KCColors.grey5,
                               height: 1.3657,
@@ -332,10 +325,19 @@ class KPPaymentItemTile extends StatelessWidget {
                             height: 20.49,
                             child: KCAutoSizedText(
                               amount,
-                              color:
-                                  firstItem ? KCColors.green : KCColors.primary,
+                              color: color ?? KCColors.primary,
                               fontWeight: FontWeight.w900,
                               height: 1.366,
+                            ),
+                          ),
+                          const YSpace(4.95),
+                          SizedBox(
+                            height: bodyLines * 19.12,
+                            child: KCAutoSizedText(
+                              note,
+                              fontSize: 14,
+                              color: KCColors.grey5,
+                              height: 1.3657,
                             ),
                           ),
                         ],

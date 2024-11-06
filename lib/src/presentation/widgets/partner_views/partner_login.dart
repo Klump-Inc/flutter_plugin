@@ -195,11 +195,6 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         ),
                       ),
                     const YSpace(22.15),
-                    if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic')
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: KCHeadline3('Setup your account'),
-                      ),
                     KCHeadline3(
                       stepData?.displayData?.title ??
                           'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.',

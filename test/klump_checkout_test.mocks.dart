@@ -3,12 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:io' as _i7;
-import 'dart:ui' as _i8;
+import 'dart:async' as _i5;
+import 'dart:io' as _i6;
+import 'dart:ui' as _i7;
 
-import 'package:flutter/material.dart' as _i5;
-import 'package:klump_checkout/src/domain/usecases/accept_terms.dart' as _i4;
+import 'package:flutter/material.dart' as _i4;
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart'
     as _i3;
 import 'package:klump_checkout/src/src.dart' as _i2;
@@ -137,20 +136,9 @@ class _FakeGetLoanPartnersUsecase_9 extends _i1.SmartFake
         );
 }
 
-class _FakeAcceptTermsUsecase_10 extends _i1.SmartFake
-    implements _i4.AcceptTermsUsecase {
-  _FakeAcceptTermsUsecase_10(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakePartnersUsecase_11 extends _i1.SmartFake
+class _FakePartnersUsecase_10 extends _i1.SmartFake
     implements _i2.PartnersUsecase {
-  _FakePartnersUsecase_11(
+  _FakePartnersUsecase_10(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -159,9 +147,9 @@ class _FakePartnersUsecase_11 extends _i1.SmartFake
         );
 }
 
-class _FakePageController_12 extends _i1.SmartFake
-    implements _i5.PageController {
-  _FakePageController_12(
+class _FakePageController_11 extends _i1.SmartFake
+    implements _i4.PageController {
+  _FakePageController_11(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -380,28 +368,9 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  _i4.AcceptTermsUsecase get acceptTermsUsecase => (super.noSuchMethod(
-        Invocation.getter(#acceptTermsUsecase),
-        returnValue: _FakeAcceptTermsUsecase_10(
-          this,
-          Invocation.getter(#acceptTermsUsecase),
-        ),
-      ) as _i4.AcceptTermsUsecase);
-
-  @override
-  set acceptTermsUsecase(_i4.AcceptTermsUsecase? _acceptTermsUsecase) =>
-      super.noSuchMethod(
-        Invocation.setter(
-          #acceptTermsUsecase,
-          _acceptTermsUsecase,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   _i2.PartnersUsecase get partnersUsecase => (super.noSuchMethod(
         Invocation.getter(#partnersUsecase),
-        returnValue: _FakePartnersUsecase_11(
+        returnValue: _FakePartnersUsecase_10(
           this,
           Invocation.getter(#partnersUsecase),
         ),
@@ -436,13 +405,13 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as int);
 
   @override
-  _i5.PageController get pageController => (super.noSuchMethod(
+  _i4.PageController get pageController => (super.noSuchMethod(
         Invocation.getter(#pageController),
-        returnValue: _FakePageController_12(
+        returnValue: _FakePageController_11(
           this,
           Invocation.getter(#pageController),
         ),
-      ) as _i5.PageController);
+      ) as _i4.PageController);
 
   @override
   bool get hasListeners => (super.noSuchMethod(
@@ -521,7 +490,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  _i6.Future<bool> initiateTransaction({
+  _i5.Future<bool> initiateTransaction({
     required String? email,
     required String? phone,
   }) =>
@@ -534,21 +503,21 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #phone: phone,
           },
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<void> getLoanPartners() => (super.noSuchMethod(
+  _i5.Future<void> getLoanPartners() => (super.noSuchMethod(
         Invocation.method(
           #getLoanPartners,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> validateAccount({
+  _i5.Future<void> validateAccount({
     String? accountNumber,
     String? phoneNumber,
     String? firstName,
@@ -571,21 +540,21 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #pin: pin,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<bool> resendAccountOTP() => (super.noSuchMethod(
+  _i5.Future<bool> resendAccountOTP() => (super.noSuchMethod(
         Invocation.method(
           #resendAccountOTP,
           [],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<void> verifyOTP(
+  _i5.Future<void> verifyOTP(
     String? otp,
     String? password,
   ) =>
@@ -597,52 +566,52 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             password,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> fetchBankTC() => (super.noSuchMethod(
+  _i5.Future<void> fetchBankTC() => (super.noSuchMethod(
         Invocation.method(
           #fetchBankTC,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> createLoan() => (super.noSuchMethod(
+  _i5.Future<void> createLoan() => (super.noSuchMethod(
         Invocation.method(
           #createLoan,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<_i2.DisbursementStatusResponse?> getLoanStatus() =>
+  _i5.Future<_i2.DisbursementStatusResponse?> getLoanStatus() =>
       (super.noSuchMethod(
         Invocation.method(
           #getLoanStatus,
           [],
         ),
-        returnValue: _i6.Future<_i2.DisbursementStatusResponse?>.value(),
-      ) as _i6.Future<_i2.DisbursementStatusResponse?>);
+        returnValue: _i5.Future<_i2.DisbursementStatusResponse?>.value(),
+      ) as _i5.Future<_i2.DisbursementStatusResponse?>);
 
   @override
-  _i6.Future<void> getPartnerInsurer() => (super.noSuchMethod(
+  _i5.Future<void> getPartnerInsurer() => (super.noSuchMethod(
         Invocation.method(
           #getPartnerInsurer,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> addAccountCredentials(
+  _i5.Future<void> addAccountCredentials(
     String? email,
     String? password,
     DateTime? dob,
@@ -656,53 +625,53 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             dob,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> acceptTerms() => (super.noSuchMethod(
+  _i5.Future<void> acceptTerms() => (super.noSuchMethod(
         Invocation.method(
           #acceptTerms,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> acceptRequirement() => (super.noSuchMethod(
+  _i5.Future<void> acceptRequirement() => (super.noSuchMethod(
         Invocation.method(
           #acceptRequirement,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> newAccount() => (super.noSuchMethod(
+  _i5.Future<void> newAccount() => (super.noSuchMethod(
         Invocation.method(
           #newAccount,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> linkWithMono(_i5.BuildContext? context) =>
+  _i5.Future<void> linkWithMono(_i4.BuildContext? context) =>
       (super.noSuchMethod(
         Invocation.method(
           #linkWithMono,
           [context],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> bioData({
+  _i5.Future<void> bioData({
     required String? email,
     required String? firstname,
     required String? lastname,
@@ -721,12 +690,12 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #password: password,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> partnerKYC({
+  _i5.Future<void> partnerKYC({
     required String? nin,
     required String? maritalStatus,
     required String? residentialStatus,
@@ -771,12 +740,12 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #nextOfKinPhone: nextOfKinPhone,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> getRepaymentDetails({
+  _i5.Future<void> getRepaymentDetails({
     required String? installments,
     required int? repaymentDay,
     required _i2.PartnerInsurer? insurer,
@@ -791,14 +760,14 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #insurer: insurer,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> uploadDocument({
+  _i5.Future<void> uploadDocument({
     required String? idNumber,
-    required _i7.File? file,
+    required _i6.File? file,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -809,36 +778,36 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #file: file,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> addressVerify({required _i7.File? file}) =>
+  _i5.Future<void> addressVerify({required _i6.File? file}) =>
       (super.noSuchMethod(
         Invocation.method(
           #addressVerify,
           [],
           {#file: file},
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<void> validateSelfie({required String? filePath}) =>
+  _i5.Future<void> validateSelfie({required String? filePath}) =>
       (super.noSuchMethod(
         Invocation.method(
           #validateSelfie,
           [],
           {#filePath: filePath},
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  void addListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #addListener,
           [listener],
@@ -847,7 +816,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  void removeListener(_i8.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
         Invocation.method(
           #removeListener,
           [listener],

@@ -77,10 +77,6 @@ abstract class RemoteDatasource {
   Future<List<PartnerModel>> getLoanPartners({
     required String publicKey,
   });
-  Future<KCAPIResponseModel> acceptTerms({
-    required String partner,
-    required String publicKey,
-  });
   Future<KCAPIResponseModel> partners({
     required String method,
     required String api,
@@ -532,37 +528,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         endpoint: '/v1/loans/partners',
         headers: headers,
       );
-      Logger().d(response.data);
       return PartnerListModel.fromJson(response.data).data;
-    } else {
-      throw NoInternetKCException();
-    }
-  }
-
-  @override
-  Future<KCAPIResponseModel> acceptTerms({
-    required String partner,
-    required String publicKey,
-  }) async {
-    if (await kcInternetInfo.isConnected) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final headers = {
-        'klump-public-key': publicKey,
-      };
-      final body = {
-        'partner': partner,
-        'is_live':
-            prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
-      };
-      final response = await kcHttpRequester.post(
-        endpoint: '/v1/loans/account/accept-loan-terms',
-        headers: headers,
-        body: body,
-        token: prefs.getString(KC_CHECKOUT_TOKEN),
-      );
-      return KCAPIResponseModel(
-        nextStep: NextStepModel.fromJson(response.data['next_step']),
-      );
     } else {
       throw NoInternetKCException();
     }

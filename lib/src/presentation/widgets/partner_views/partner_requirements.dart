@@ -78,16 +78,6 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                           maxLines: 3,
                         ),
                       ),
-                    if (nextStep?.displayData?.smallText != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: KCHeadline4(
-                          nextStep?.displayData?.smallText ?? '',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          maxLines: 3,
-                        ),
-                      ),
                     const YSpace(24),
                     if (nextStep?.displayData?.list?.isNotEmpty == true)
                       Column(
@@ -104,6 +94,16 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                                         ?.displayData?.list!.length ??
                                     0),
                           ),
+                        ),
+                      ),
+                    if (nextStep?.displayData?.smallText != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: KCHeadline4(
+                          nextStep?.displayData?.smallText ?? '',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                          maxLines: 3,
                         ),
                       ),
                     if (nextStep?.formFields?.isNotEmpty == true)

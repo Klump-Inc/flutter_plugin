@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:klump_checkout/src/domain/usecases/accept_terms.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:logger/logger.dart';
@@ -28,8 +27,6 @@ class KCChangeNotifier extends ChangeNotifier {
         AccountCredentialsUsecase(partnerRepository: PartnerRepository());
     getLoanPartnersUsecase =
         GetLoanPartnersUsecase(partnerRepository: PartnerRepository());
-    acceptTermsUsecase =
-        AcceptTermsUsecase(partnerRepository: PartnerRepository());
     partnersUsecase = PartnersUsecase(partnerRepository: PartnerRepository());
   }
   late InitiateTransactionUsecase initiateTransactionUsecase;
@@ -42,7 +39,6 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetPartnerInsurersUsecase getPartnerInsurersUsecase;
   late AccountCredentialsUsecase accountCredentialsUsecase;
   late GetLoanPartnersUsecase getLoanPartnersUsecase;
-  late AcceptTermsUsecase acceptTermsUsecase;
   late PartnersUsecase partnersUsecase;
 
   bool _isLive = false;
@@ -220,6 +216,8 @@ class KCChangeNotifier extends ChangeNotifier {
       case 'LOAN_STATUS':
         _loanStatusStepData = data;
         break;
+      case 'ACCEPT_LOAN_TERMS':
+        _repaymentDetailsStepData = data;
       default:
     }
   }
@@ -331,6 +329,8 @@ class KCChangeNotifier extends ChangeNotifier {
       data['pin'] = pin;
     }
     Logger().d(data);
+    Logger().d(data);
+
     MixPanelService.logEvent(
       '6 - ACCOUNT VERIFICATION MODAL',
       properties: {
@@ -341,8 +341,12 @@ class KCChangeNotifier extends ChangeNotifier {
     );
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: verificationStepData?.nextStep.method ?? '',
-        api: verificationStepData?.nextStep.api ?? '',
+        method: verificationStepData?.nextStep.method ??
+            selectedBankFlow?.nextStep?.method ??
+            '',
+        api: verificationStepData?.nextStep.api ??
+            selectedBankFlow?.nextStep?.api ??
+            '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
         data: data,
@@ -531,28 +535,31 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> acceptTerms() async {
-    if (repaymentDetailsStepData?.nextStep.name == 'ACCEPT_LOAN_TERMS') {
-      _setBusy(true);
-      final response = await acceptTermsUsecase(
-        AcceptTermsUsecaseParams(
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+          method: repaymentDetailsStepData?.nextStep.method ?? '',
+          api: repaymentDetailsStepData?.nextStep.api ?? '',
           publicKey: _checkoutData?.merchantPublicKey ?? '',
           partner: _selectedBankFlow!.slug,
-        ),
-      );
-      _setBusy(false);
-      response.fold(
-        (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
-        (r) {
-          if (r.nextStep.name == 'NEW_LOAN') {
-            createLoan();
-          } else {
-            nextPage();
-          }
-        },
-      );
-    } else {
-      nextPage();
-    }
+          data: {
+            'partner': _selectedBankFlow!.slug,
+            'is_live': isLive,
+            'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+          }),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        Logger().d(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
   }
 
   Future<void> acceptRequirement() async {

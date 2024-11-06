@@ -243,23 +243,6 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, KCAPIResponse>> acceptTerms({
-    required String partner,
-    required String publicKey,
-  }) async {
-    try {
-      final response = await stanbicRmoteDatasource.acceptTerms(
-        partner: partner,
-        publicKey: publicKey,
-      );
-      return Right(response);
-    } catch (e) {
-      return Left(
-        KCExceptionHandler.networkError(e),
-      );
-    }
-  }
-
   Future<Either<KCException, KCAPIResponse>> partners({
     required String method,
     required String api,
