@@ -54,17 +54,7 @@ abstract class RemoteDatasource {
     required int? insurerId,
     required String partner,
   });
-  Future<KCAPIResponseModel> createNew({
-    required double amount,
-    required String publicKey,
-    required int? installment,
-    required int? repaymentDay,
-    required String? termsVersion,
-    required List<KlumpCheckoutItem> items,
-    required Map<String, dynamic>? shippingData,
-    required int? insurerId,
-    required String partner,
-  });
+
   Future<DisbursementStatusResponseModel> getLoanStatus({
     required String url,
     required String publicKey,
@@ -366,71 +356,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<KCAPIResponseModel> createNew({
-    required double amount,
-    required String publicKey,
-    required int? installment,
-    required int? repaymentDay,
-    required String? termsVersion,
-    required List<KlumpCheckoutItem> items,
-    required Map<String, dynamic>? shippingData,
-    required int? insurerId,
-    required String partner,
-  }) async {
-    if (await kcInternetInfo.isConnected) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final headers = {
-        'klump-public-key': publicKey,
-      };
-      final body = {
-        "amount": amount,
-        "klump_public_key": publicKey,
-        "items": items.map((e) => e.toMap()).toList(),
-        "partner": partner,
-      };
-      if (shippingData != null) {
-        body.addAll({
-          'shipping_data': shippingData,
-        });
-      }
-      if (insurerId != null) {
-        body.addAll({
-          "insurerId": insurerId,
-        });
-      }
-
-      if (termsVersion != null) {
-        body.addAll({
-          "termsAndConditionVersion": termsVersion,
-        });
-      }
-      if (installment != null) {
-        body.addAll({
-          "installment": installment,
-        });
-      }
-      if (repaymentDay != null) {
-        body.addAll({
-          "repaymentDay": repaymentDay,
-        });
-      }
-
-      final response = await kcHttpRequester.post(
-        endpoint: '/v1/loans/account/new-loan',
-        headers: headers,
-        body: body,
-        token: prefs.getString(KC_CHECKOUT_TOKEN),
-      );
-      return KCAPIResponseModel(
-        nextStep: NextStepModel.fromJson(response.data['next_step']),
-        data: response.data['data']['id'],
-      );
-    } else {
-      throw NoInternetKCException();
-    }
-  }
-
-  @override
   Future<DisbursementStatusResponseModel> getLoanStatus({
     required String url,
     required String publicKey,
@@ -567,13 +492,16 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         await prefs.setString(KC_CHECKOUT_TOKEN,
             (response.data as Map<String, dynamic>)['data']['token']);
       }
+      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'
             ? KlumpUserModel.fromJson(response.data['data'])
             : api == '/loans/account/repayments-detail'
                 ? RepaymentDetailsModel.fromJson(response.data['data'])
-                : response.data['message'],
+                : api == '/v1/loans/account/new-loan'
+                    ? response.data['data']['id']
+                    : response.data['message'],
       );
     } else {
       throw NoInternetKCException();

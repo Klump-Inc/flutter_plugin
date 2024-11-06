@@ -81,20 +81,9 @@ class _FakeGetRepaymentDetailsUsecase_4 extends _i1.SmartFake
         );
 }
 
-class _FakeCreateNewUsecase_5 extends _i1.SmartFake
-    implements _i2.CreateNewUsecase {
-  _FakeCreateNewUsecase_5(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeGetLoanStatusUsecase_6 extends _i1.SmartFake
+class _FakeGetLoanStatusUsecase_5 extends _i1.SmartFake
     implements _i2.GetLoanStatusUsecase {
-  _FakeGetLoanStatusUsecase_6(
+  _FakeGetLoanStatusUsecase_5(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -103,9 +92,9 @@ class _FakeGetLoanStatusUsecase_6 extends _i1.SmartFake
         );
 }
 
-class _FakeGetPartnerInsurersUsecase_7 extends _i1.SmartFake
+class _FakeGetPartnerInsurersUsecase_6 extends _i1.SmartFake
     implements _i2.GetPartnerInsurersUsecase {
-  _FakeGetPartnerInsurersUsecase_7(
+  _FakeGetPartnerInsurersUsecase_6(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -114,9 +103,9 @@ class _FakeGetPartnerInsurersUsecase_7 extends _i1.SmartFake
         );
 }
 
-class _FakeAccountCredentialsUsecase_8 extends _i1.SmartFake
+class _FakeAccountCredentialsUsecase_7 extends _i1.SmartFake
     implements _i3.AccountCredentialsUsecase {
-  _FakeAccountCredentialsUsecase_8(
+  _FakeAccountCredentialsUsecase_7(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -125,9 +114,9 @@ class _FakeAccountCredentialsUsecase_8 extends _i1.SmartFake
         );
 }
 
-class _FakeGetLoanPartnersUsecase_9 extends _i1.SmartFake
+class _FakeGetLoanPartnersUsecase_8 extends _i1.SmartFake
     implements _i2.GetLoanPartnersUsecase {
-  _FakeGetLoanPartnersUsecase_9(
+  _FakeGetLoanPartnersUsecase_8(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -136,9 +125,9 @@ class _FakeGetLoanPartnersUsecase_9 extends _i1.SmartFake
         );
 }
 
-class _FakePartnersUsecase_10 extends _i1.SmartFake
+class _FakePartnersUsecase_9 extends _i1.SmartFake
     implements _i2.PartnersUsecase {
-  _FakePartnersUsecase_10(
+  _FakePartnersUsecase_9(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -147,9 +136,9 @@ class _FakePartnersUsecase_10 extends _i1.SmartFake
         );
 }
 
-class _FakePageController_11 extends _i1.SmartFake
+class _FakePageController_10 extends _i1.SmartFake
     implements _i4.PageController {
-  _FakePageController_11(
+  _FakePageController_10(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -268,28 +257,9 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  _i2.CreateNewUsecase get createNewUsecase => (super.noSuchMethod(
-        Invocation.getter(#createNewUsecase),
-        returnValue: _FakeCreateNewUsecase_5(
-          this,
-          Invocation.getter(#createNewUsecase),
-        ),
-      ) as _i2.CreateNewUsecase);
-
-  @override
-  set createNewUsecase(_i2.CreateNewUsecase? _createNewUsecase) =>
-      super.noSuchMethod(
-        Invocation.setter(
-          #createNewUsecase,
-          _createNewUsecase,
-        ),
-        returnValueForMissingStub: null,
-      );
-
-  @override
   _i2.GetLoanStatusUsecase get getLoanStatusUsecase => (super.noSuchMethod(
         Invocation.getter(#getLoanStatusUsecase),
-        returnValue: _FakeGetLoanStatusUsecase_6(
+        returnValue: _FakeGetLoanStatusUsecase_5(
           this,
           Invocation.getter(#getLoanStatusUsecase),
         ),
@@ -309,7 +279,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   _i2.GetPartnerInsurersUsecase get getPartnerInsurersUsecase =>
       (super.noSuchMethod(
         Invocation.getter(#getPartnerInsurersUsecase),
-        returnValue: _FakeGetPartnerInsurersUsecase_7(
+        returnValue: _FakeGetPartnerInsurersUsecase_6(
           this,
           Invocation.getter(#getPartnerInsurersUsecase),
         ),
@@ -330,7 +300,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   _i3.AccountCredentialsUsecase get accountCredentialsUsecase =>
       (super.noSuchMethod(
         Invocation.getter(#accountCredentialsUsecase),
-        returnValue: _FakeAccountCredentialsUsecase_8(
+        returnValue: _FakeAccountCredentialsUsecase_7(
           this,
           Invocation.getter(#accountCredentialsUsecase),
         ),
@@ -350,7 +320,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   @override
   _i2.GetLoanPartnersUsecase get getLoanPartnersUsecase => (super.noSuchMethod(
         Invocation.getter(#getLoanPartnersUsecase),
-        returnValue: _FakeGetLoanPartnersUsecase_9(
+        returnValue: _FakeGetLoanPartnersUsecase_8(
           this,
           Invocation.getter(#getLoanPartnersUsecase),
         ),
@@ -370,7 +340,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   @override
   _i2.PartnersUsecase get partnersUsecase => (super.noSuchMethod(
         Invocation.getter(#partnersUsecase),
-        returnValue: _FakePartnersUsecase_10(
+        returnValue: _FakePartnersUsecase_9(
           this,
           Invocation.getter(#partnersUsecase),
         ),
@@ -407,7 +377,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   @override
   _i4.PageController get pageController => (super.noSuchMethod(
         Invocation.getter(#pageController),
-        returnValue: _FakePageController_11(
+        returnValue: _FakePageController_10(
           this,
           Invocation.getter(#pageController),
         ),

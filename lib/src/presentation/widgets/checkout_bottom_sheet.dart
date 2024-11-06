@@ -163,7 +163,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                                 'stanbic' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'renmoney')
+                                'renmoney' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'fidelity')
                           const PartnerInvoice(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')

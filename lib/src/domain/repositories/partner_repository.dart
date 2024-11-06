@@ -141,37 +141,6 @@ class PartnerRepository {
     }
   }
 
-  Future<Either<KCException, KCAPIResponse>> createNew({
-    required double amount,
-    required String publicKey,
-    required int? installment,
-    required int? repaymentDay,
-    required String? termsVersion,
-    required List<KlumpCheckoutItem> items,
-    required Map<String, dynamic>? shippingData,
-    required int? insurerId,
-    required String partner,
-  }) async {
-    try {
-      final response = await stanbicRmoteDatasource.createNew(
-        amount: amount,
-        publicKey: publicKey,
-        installment: installment,
-        repaymentDay: repaymentDay,
-        termsVersion: termsVersion,
-        items: items,
-        shippingData: shippingData,
-        insurerId: insurerId,
-        partner: partner,
-      );
-      return Right(response);
-    } catch (e) {
-      return Left(
-        KCExceptionHandler.networkError(e),
-      );
-    }
-  }
-
   Future<Either<KCException, DisbursementStatusResponse>> getLoanStatus({
     required String url,
     required String publicKey,

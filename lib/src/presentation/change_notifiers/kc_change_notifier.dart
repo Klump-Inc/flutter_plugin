@@ -18,7 +18,6 @@ class KCChangeNotifier extends ChangeNotifier {
     getBankTCUsecase = GetBankTCUsecase(partnerRepository: PartnerRepository());
     getRepaymentDetailsUsecase =
         GetRepaymentDetailsUsecase(partnerRepository: PartnerRepository());
-    createNewUsecase = CreateNewUsecase(partnerRepository: PartnerRepository());
     getLoanStatusUsecase =
         GetLoanStatusUsecase(partnerRepository: PartnerRepository());
     getPartnerInsurersUsecase =
@@ -34,7 +33,6 @@ class KCChangeNotifier extends ChangeNotifier {
   late VerifyOTPUsecase verifyOTPUsecase;
   late GetBankTCUsecase getBankTCUsecase;
   late GetRepaymentDetailsUsecase getRepaymentDetailsUsecase;
-  late CreateNewUsecase createNewUsecase;
   late GetLoanStatusUsecase getLoanStatusUsecase;
   late GetPartnerInsurersUsecase getPartnerInsurersUsecase;
   late AccountCredentialsUsecase accountCredentialsUsecase;
@@ -438,21 +436,51 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> createLoan() async {
     _setBusy(true);
-    final response = await createNewUsecase(
-      CreateNewUsecaseParams(
-        amount: _checkoutData!.amount,
-        publicKey: _checkoutData!.merchantPublicKey,
-        installment: _repaymentDetails?.installment,
-        repaymentDay: _repaymentDetails != null
-            ? int.tryParse(_repaymentDetails!.repaymentDay.toString())
-            : null,
-        termsVersion: _termsCondition?.version,
-        items: _checkoutData?.items ?? [],
-        shippingData: _checkoutData?.shippingData,
-        insurerId: _selectedPartnerInsurer?.value,
+    Logger().d(newLoanStepData?.nextStep.formFields);
+    final data = <String, dynamic>{
+      "amount": _checkoutData?.amount ?? 0,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': isLive,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      "items": (_checkoutData?.items ?? []).map((e) => e.toMap()).toList(),
+    };
+    if (_checkoutData?.shippingData != null) {
+      data.addAll({
+        'shipping_data': _checkoutData?.shippingData,
+      });
+    }
+    if (_selectedPartnerInsurer?.value != null) {
+      data.addAll({
+        "insurerId": _selectedPartnerInsurer?.value,
+      });
+    }
+
+    if (_termsCondition?.version != null) {
+      data.addAll({
+        "termsAndConditionVersion": _termsCondition?.version,
+      });
+    }
+    if (_repaymentDetails?.installment != null) {
+      data.addAll({
+        "installment": _repaymentDetails?.installment,
+      });
+    }
+    if (_repaymentDetails?.repaymentDay != null) {
+      data.addAll({
+        "repaymentDay":
+            int.tryParse(_repaymentDetails!.repaymentDay.toString()),
+      });
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: newLoanStepData?.nextStep.method ?? '',
+        api: newLoanStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
+        data: data,
       ),
     );
+
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) async {
@@ -469,7 +497,7 @@ class KCChangeNotifier extends ChangeNotifier {
       GetLoanStatusUsecaseParams(
         url: selectedBankFlow?.slug == 'stanbic'
             ? '/loans/account/new-loan/$loanId'
-            : loanOptionStepData?.nextStep.api ?? '',
+            : loanStatusStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
@@ -552,7 +580,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        Logger().d(r);
+        storeNextStepData(r);
         if (r.nextStep.name == 'NEW_LOAN') {
           createLoan();
         } else {
