@@ -89,6 +89,10 @@ class _PartnerLoginState extends State<PartnerLogin> {
     final checkoutNotfier = context.read<KCChangeNotifier>();
     _emailCtrl.text = checkoutNotfier.email ?? '';
     _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+    _accountNoCtrl.text = checkoutNotfier.accountNumber ?? '';
+    _firstNameCtrl.text = checkoutNotfier.firstName ?? '';
+    _usernameCtrl.text = checkoutNotfier.username ?? '';
+
     validateInputs();
     accountNoStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();

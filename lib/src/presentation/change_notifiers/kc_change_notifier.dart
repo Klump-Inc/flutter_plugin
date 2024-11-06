@@ -55,10 +55,14 @@ class KCChangeNotifier extends ChangeNotifier {
   String? _accountNumber;
   String? _phoneNumber;
   String? _firstName;
+  String? _username;
+
   String? get email => _email;
   String? get accountNumber => _accountNumber;
   String? get phoneNumber => _phoneNumber;
   String? get firstName => _firstName;
+  String? get username => _username;
+
   TermsAndCondition? _termsCondition;
   TermsAndCondition? get termsCondition => _termsCondition;
   KlumpUser? _klumpUser;
@@ -282,6 +286,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _phoneNumber = phoneNumber ?? _phoneNumber;
     _firstName = firstName ?? _firstName;
     _email = email ?? _email;
+    _username = username ?? _username;
     final formFields =
         (verificationStepData?.nextStep ?? selectedBankFlow?.nextStep)
             ?.formFields
