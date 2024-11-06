@@ -70,11 +70,25 @@ class _PartnerDecisionState extends State<PartnerDecision> {
               child: Column(
                 children: [
                   const YSpace(32.59),
-                  Image.network(
-                    checkoutNotifier.selectedBankFlow?.logo ?? '',
-                    height: 55,
-                    width: 47,
+                  Align(
+                    child: Image.network(
+                      checkoutNotifier.selectedBankFlow?.logo ?? '',
+                      height: 40,
+                      width: 120,
+                    ),
                   ),
+                  if (checkoutNotifier.initiateResponse?.merchant != null)
+                    Align(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 0),
+                        child: KCHeadline4(
+                          checkoutNotifier.initiateResponse!.merchant
+                              .toString(),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  const YSpace(24),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
