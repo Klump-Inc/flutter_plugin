@@ -15,13 +15,20 @@ class KlumpCheckoutItem extends Equatable {
     required this.quantity,
   });
 
-  Map<String, dynamic> toMap() => {
-        'image_url': imageUrl ?? '',
-        'item_url': itemUrl ?? '',
-        'name': name,
-        'unit_price': unitPrice,
-        'quantity': quantity,
-      };
+  Map<String, dynamic> toMap() {
+    var data = {
+      'name': name,
+      'unit_price': unitPrice,
+      'quantity': quantity,
+    };
+    if (itemUrl != null) {
+      data['item_url'] = itemUrl!;
+    }
+    if (imageUrl != null) {
+      data['image_url'] = imageUrl!;
+    }
+    return data;
+  }
 
   Map<String, dynamic> toJson() => {
         'image_url': "'${imageUrl ?? ''}'",
