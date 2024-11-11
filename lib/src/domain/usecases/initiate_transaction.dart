@@ -16,6 +16,7 @@ class InitiateTransactionUsecase
   ) =>
       partnerRepository.initiate(
         amount: params.amount,
+        shippingFee: params.shippingFee,
         currency: params.currency,
         publicKey: params.publicKey,
         metaData: params.metaData,
@@ -30,6 +31,7 @@ class InitiateTransactionUsecase
 class InitiateTransactionUsecaseParams extends Equatable {
   const InitiateTransactionUsecaseParams({
     required this.amount,
+    required this.shippingFee,
     required this.currency,
     required this.publicKey,
     required this.metaData,
@@ -41,6 +43,7 @@ class InitiateTransactionUsecaseParams extends Equatable {
   });
 
   final double amount;
+  final double? shippingFee;
   final String currency;
   final String publicKey;
   final Map<String, dynamic> metaData;

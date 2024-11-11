@@ -527,6 +527,7 @@ void main() {
           isSuccessful: true,
           message: 'Loan has been disbursed successfully',
           next_repayment_date: null,
+          responseMessage: '',
         ),
       );
       await mockNetworkImagesFor(

@@ -56,9 +56,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.loanOptionStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
+    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final stepData = checkoutNotifier.loanOptionStepData?.nextStep ??
+        checkoutNotifier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final formMap = stepData?.formFields;
     return LayoutBuilder(
@@ -79,7 +79,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                        onTap: checkoutNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -91,17 +91,17 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                     ),
                     Align(
                       child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                        checkoutNotifier.selectedBankFlow?.logo ?? '',
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (checkoutNotifier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            checkoutNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -145,7 +145,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                           },
                         ),
                       ),
-                    if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic')
+                    if (formFields?.contains('repaymentDay') == true)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -154,6 +154,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                               'What day of the month would you like to pay?'),
                           const YSpace(16),
                           PopupMenuButton<int>(
+                            color: Colors.white,
                             constraints: BoxConstraints(
                               minWidth: constraints.maxWidth - 52,
                               maxHeight: 309,
@@ -176,14 +177,14 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  if (checkoutNotfier.paymentDay == null)
+                                  if (_repaymentDay == null)
                                     KCBodyText1(
                                       'Choose day',
                                       color: KCColors.grey2,
                                     )
                                   else
                                     KCBodyText1(
-                                      '${checkoutNotfier.paymentDay}',
+                                      '$_repaymentDay',
                                       fontSize: 15,
                                     ),
                                   Padding(
@@ -220,8 +221,8 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                           ),
                         ],
                       ),
-                    if (checkoutNotfier.selectedBankFlow?.slug == 'stanbic' &&
-                        checkoutNotfier.partnerInsurers?.isNotEmpty == true)
+                    if (formFields?.contains('insurerId') == true &&
+                        checkoutNotifier.partnerInsurers?.isNotEmpty == true)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -229,6 +230,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                           KCHeadline5('Choose your insurer'),
                           const YSpace(8),
                           PopupMenuButton<PartnerInsurer>(
+                            color: Colors.white,
                             constraints: BoxConstraints(
                               minWidth: constraints.maxWidth - 52,
                               maxWidth: constraints.maxWidth - 52,
@@ -250,8 +252,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  if (checkoutNotfier.selectedPartnerInsurer ==
-                                      null)
+                                  if (_insurer == null)
                                     KCBodyText1(
                                       'Choose insurer',
                                       color: KCColors.grey2,
@@ -260,8 +261,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   else
                                     Expanded(
                                       child: KCAutoSizedText(
-                                        checkoutNotfier
-                                            .selectedPartnerInsurer!.name,
+                                        _insurer!.name,
                                         fontSize: 15,
                                         maxLines: 1,
                                       ),
@@ -279,18 +279,18 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                             ),
                             itemBuilder: (context) {
                               return List.generate(
-                                checkoutNotfier.partnerInsurers!.length,
+                                checkoutNotifier.partnerInsurers!.length,
                                 (index) => PopupMenuItem<PartnerInsurer>(
                                   height: 0,
                                   padding: EdgeInsets.zero,
                                   child: KCInsurerPopupMenuItemContent(
                                     withBG: index % 2 != 0,
-                                    title: checkoutNotfier
+                                    title: checkoutNotifier
                                         .partnerInsurers![index].name,
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      _insurer = checkoutNotfier
+                                      _insurer = checkoutNotifier
                                           .partnerInsurers![index];
                                     });
                                     validateInputs();
@@ -308,9 +308,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
-                          onTap: () => checkoutNotfier.getRepaymentDetails(
+                          disabled: !enabled || checkoutNotifier.isBusy,
+                          loading: checkoutNotifier.isBusy,
+                          onTap: () => checkoutNotifier.getRepaymentDetails(
                             installments: _installmentSplit,
                             repaymentDay: _repaymentDay,
                             insurer: _insurer,

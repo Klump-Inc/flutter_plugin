@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class RemoteDatasource {
   Future<InitiateResponseModel> initiate({
     required double amount,
+    required double? shippingFee,
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
@@ -87,6 +88,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   @override
   Future<InitiateResponseModel> initiate({
     required double amount,
+    required double? shippingFee,
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
@@ -111,6 +113,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "phone": phone,
         "items": items.map((e) => e.toMap()).toList(),
       };
+      if (shippingFee != null) {
+        body['shipping_fee'] = shippingFee;
+      }
       if (shippingData != null) {
         body.addAll({
           'shipping_data': shippingData,

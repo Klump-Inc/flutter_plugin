@@ -233,6 +233,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final response = await initiateTransactionUsecase(
       InitiateTransactionUsecaseParams(
         amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+        shippingFee: checkoutData!.shippingFee,
         currency: _checkoutData!.currency ?? 'NGN',
         publicKey: _checkoutData!.merchantPublicKey,
         metaData: _checkoutData!.metaData,
@@ -496,9 +497,7 @@ class KCChangeNotifier extends ChangeNotifier {
   Future<DisbursementStatusResponse?> getLoanStatus() async {
     final response = await getLoanStatusUsecase(
       GetLoanStatusUsecaseParams(
-        url: selectedBankFlow?.slug == 'stanbic'
-            ? '/loans/account/new-loan/$loanId'
-            : loanStatusStepData?.nextStep.api ?? '',
+        url: loanStatusStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
@@ -881,7 +880,7 @@ class KCChangeNotifier extends ChangeNotifier {
     if (insurer != null) {
       _selectedPartnerInsurer = insurer;
       data.addAll({
-        'insurer_id': insurer.value,
+        'insurerId': insurer.value,
       });
     }
     final response = await partnersUsecase(

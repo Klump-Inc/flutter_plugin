@@ -12,6 +12,7 @@ class PartnerRepository {
 
   Future<Either<KCException, InitiateResponseModel>> initiate({
     required double amount,
+    required double? shippingFee,
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
@@ -24,6 +25,7 @@ class PartnerRepository {
     try {
       final response = await stanbicRmoteDatasource.initiate(
         amount: amount,
+        shippingFee: shippingFee,
         currency: currency,
         publicKey: publicKey,
         metaData: metaData,
