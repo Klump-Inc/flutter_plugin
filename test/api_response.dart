@@ -464,7 +464,7 @@ final acceptTermsJson = {
   }
 };
 
-final newLoanJson = {
+final newLoanJsonPolaris = {
   "status": true,
   "message": "Loan created.",
   "next_step": {
@@ -524,5 +524,199 @@ final newLoanJson = {
     "isCompleted": false,
     "partnerReference": "Xx3\$LhQxRD!BsmPxi2",
     "partnerDataUpdates": {"message": "Loan created."}
+  }
+};
+
+final initiateLoanResponse = {
+  "message":
+      "5 instalments charged on your card or bank account over 4 months.",
+  "data": [
+    {
+      "amount": 100,
+      "currency": "NGN",
+      "message": "Paid at purchase",
+      "repayment_date": "Now"
+    },
+    {
+      "amount": 88297.9,
+      "currency": "NGN",
+      "message": "Paid automatically 1 month later",
+      "repayment_date": "Dec 12, 2024"
+    },
+    {
+      "amount": 88297.9,
+      "currency": "NGN",
+      "message": "Paid automatically 2 months later",
+      "repayment_date": "Jan 12, 2025"
+    },
+    {
+      "amount": 88297.9,
+      "currency": "NGN",
+      "message": "Paid automatically 3 months later",
+      "repayment_date": "Feb 12, 2025"
+    },
+    {
+      "amount": 88297.9,
+      "currency": "NGN",
+      "message": "Final payment, 4 months later",
+      "repayment_date": "Mar 12, 2025"
+    }
+  ],
+  "totalAmountToBePaid": "353291.60",
+  "currency": "NGN",
+  "merchant": "Shop Cheap Gadgets",
+  "is_live": false,
+  "interest": "5%",
+  "token":
+      "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJqd3RVc2VyIjp7InJlcUlkIjoiM2QzWEtNMnpBTTgiLCJ0eXBlIjoidHJhbnNhY3Rpb24iLCJpZCI6IjE3MzE0MjAwNzI0MjQwLjIzNDMxMzU1NjIyNzQ0OTIiLCJ0cnhSZWYiOiJLTFAtMTczMS00MjAwNzItNDI0MSIsImFtb3VudCI6MzEzMjAwLCJyZXBheW1lbnRQbGFucyI6W3siYW1vdW50IjoxMDAsImN1cnJlbmN5IjoiTkdOIiwibWVzc2FnZSI6IlBhaWQgYXQgcHVyY2hhc2UiLCJyZXBheW1lbnRfZGF0ZSI6Ik5vdyJ9LHsiYW1vdW50Ijo4ODI5Ny45LCJjdXJyZW5jeSI6Ik5HTiIsIm1lc3NhZ2UiOiJQYWlkIGF1dG9tYXRpY2FsbHkgMSBtb250aCBsYXRlciIsInJlcGF5bWVudF9kYXRlIjoiRGVjIDEyLCAyMDI0In0seyJhbW91bnQiOjg4Mjk3LjksImN1cnJlbmN5IjoiTkdOIiwibWVzc2FnZSI6IlBhaWQgYXV0b21hdGljYWxseSAyIG1vbnRocyBsYXRlciIsInJlcGF5bWVudF9kYXRlIjoiSmFuIDEyLCAyMDI1In0seyJhbW91bnQiOjg4Mjk3LjksImN1cnJlbmN5IjoiTkdOIiwibWVzc2FnZSI6IlBhaWQgYXV0b21hdGljYWxseSAzIG1vbnRocyBsYXRlciIsInJlcGF5bWVudF9kYXRlIjoiRmViIDEyLCAyMDI1In0seyJhbW91bnQiOjg4Mjk3LjksImN1cnJlbmN5IjoiTkdOIiwibWVzc2FnZSI6IkZpbmFsIHBheW1lbnQsIDQgbW9udGhzIGxhdGVyIiwicmVwYXltZW50X2RhdGUiOiJNYXIgMTIsIDIwMjUifV0sIm1lcmNoYW50Ij"
+};
+
+final repaymentResponse = {
+  "status": true,
+  "message": "Loan repayment plan retrieved successfully.",
+  "next_step": {
+    "name": "ACCEPT_LOAN_TERMS",
+    "display_data": {
+      "title": "2 instalments charged on your bank account over 2 months",
+      "list": [
+        {
+          "title": {"text": "Due Now", "value": "NGN 5,420.75"},
+          "subtitle": {"text": "VAT, Management Fee + Insurance", "value": ""},
+          "color": "green"
+        },
+        {
+          "title": {"text": "Due: Dec 1, 2024", "value": "NGN 157,204.63"},
+          "subtitle": {
+            "text": "Paid automatically 1 month later",
+            "value": "+2.5% Interest"
+          },
+          "color": "grey"
+        },
+        {
+          "title": {"text": "Due: Jan 1, 2025", "value": "NGN 157,204.63"},
+          "subtitle": {
+            "text": "Paid automatically 2 month later",
+            "value": "+2.5% Interest"
+          },
+          "color": "grey"
+        }
+      ]
+    },
+    "form_fields": [
+      {
+        "type": "checkbox",
+        "name": "is_accepted",
+        "label":
+            "By selecting this button, you are confirming that you have read and agreed to Stanbic IBTC's <u><a href=\"https://staging-api.useklump.com/v1/stanbic/terms-and-conditions target=\"_blank\">privacy policy</a></u> and Buy Now Pay Later terms and conditions"
+      }
+    ],
+    "method": "POST",
+    "api": "/loans/account/accept-loan-terms"
+  },
+  "data": {
+    "amount": 303000,
+    "loanAmount": 303000,
+    "downpaymentAmount": 0,
+    "monthlyRepayment": 157204.63,
+    "totalRepayment": 314409.26,
+    "interest": 2.5,
+    "tenor": 2,
+    "installment": 2,
+    "minimumBalanceRequired": 5420.75,
+    "repaymentDay": 1,
+    "other_charges": {
+      "managementFee": 3030,
+      "vat": 227.25,
+      "insurance": 1363.5,
+      "stampDuty": 500
+    },
+    "repaymentSchedules": [
+      {
+        "principal": 149629.63,
+        "interest": 7575,
+        "monthlyRepayment": 157204.63,
+        "principalBalance": 153370.37,
+        "repayment_date": "Dec 1, 2024"
+      },
+      {
+        "principal": 153370.37,
+        "interest": 3834.26,
+        "monthlyRepayment": 157204.63,
+        "principalBalance": 0,
+        "repayment_date": "Jan 1, 2025"
+      }
+    ],
+    "repaymentCycle": 2
+  }
+};
+
+final newLoanResponse = {
+  "status": true,
+  "message": "We are still processing your Loan Request, please wait.",
+  "next_step": {
+    "name": "LOAN_STATUS",
+    "method": "GET",
+    "api": "/loans/account/new-loan/4f417267-31f1-470c-a915-932fb687f8a2"
+  },
+  "data": {
+    "is_live": false,
+    "original_amount": 300000,
+    "currency": "NGN",
+    "user_id": "5b0029a4-bff7-41e0-a668-154639d48a8a",
+    "reference": "KLP-1731-422421-2721",
+    "status": "new",
+    "repayment_cycle": 2,
+    "req_id": "3d3XKM2zAM8",
+    "merchant_id": "a39a8233-a88c-4b93-860f-119c8cd9a332",
+    "commission": 5,
+    "amount": "314409.26",
+    "merchant_payout_amount": 285000,
+    "partner": "stanbic",
+    "integrator_merchant_id": null,
+    "management_fee_commission": 1,
+    "interest": 2.5,
+    "processor_webhook_data": {
+      "amount": 303000,
+      "loanAmount": 303000,
+      "downpaymentAmount": 0,
+      "monthlyRepayment": 157204.63,
+      "totalRepayment": 314409.26,
+      "interest": 2.5,
+      "tenor": 2,
+      "installment": 2,
+      "minimumBalanceRequired": 5420.75,
+      "repaymentDay": 1,
+      "other_charges": {
+        "managementFee": 3030,
+        "vat": 227.25,
+        "insurance": 1363.5,
+        "stampDuty": 500
+      },
+      "repaymentSchedules": [
+        {
+          "principal": 149629.63,
+          "interest": 7575,
+          "monthlyRepayment": 157204.63,
+          "principalBalance": 153370.37,
+          "repayment_date": "Dec 1, 2024"
+        },
+        {
+          "principal": 153370.37,
+          "interest": 3834.26,
+          "monthlyRepayment": 157204.63,
+          "principalBalance": 0,
+          "repayment_date": "Jan 1, 2025"
+        }
+      ],
+      "repaymentCycle": 2,
+      "processor": "stanbic"
+    },
+    "created_at": "2024-11-12T14:40:21.281Z",
+    "id": "4f417267-31f1-470c-a915-932fb687f8a2",
+    "isCompleted": false,
+    "partnerReference": "EqxuyqWoMygPNgBCeAJ",
+    "partnerDataUpdates": {
+      "message": "We are still processing your Loan Request, please wait."
+    }
   }
 };

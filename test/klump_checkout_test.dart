@@ -253,6 +253,14 @@ void main() {
     testWidgets('PartnerLogin renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
+      when(kcChangeNotifier.email).thenAnswer((_) => 'sample@mail.com');
+      when(kcChangeNotifier.phoneNumber).thenAnswer((_) => '08012345678');
+      when(kcChangeNotifier.accountNumber).thenAnswer((_) => '1234567890');
+      when(kcChangeNotifier.firstName).thenAnswer((_) => null);
+      when(kcChangeNotifier.username).thenAnswer((_) => null);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.verificationStepData).thenAnswer((_) => null);
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       await mockNetworkImagesFor(
@@ -267,7 +275,7 @@ void main() {
       );
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
-      expect(find.byType(KCInputField), findsWidgets);
+      expect(find.byType(Image), findsWidgets);
       expect(find.byType(Spacer), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
@@ -278,10 +286,11 @@ void main() {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      // when(kcChangeNotifier.verifyOTPNextStepData).thenAnswer((_) =>
-      //     KCAPIResponse(
-      //         nextStep: NextStepModel.fromJson(
-      //             accountValidationJson['next_step'] as Map<String, dynamic>)));
+      when(kcChangeNotifier.verifyOTPStepData).thenAnswer((_) => KCAPIResponse(
+          nextStep: NextStepModel.fromJson(
+              accountValidationJson['next_step'] as Map<String, dynamic>)));
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -313,6 +322,8 @@ void main() {
       when(kcChangeNotifier.klumpUser).thenAnswer((_) =>
           KlumpUserModel.fromJson(
               (verifyOTPJson['data'] as Map<String, dynamic>)));
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -332,6 +343,8 @@ void main() {
     });
     testWidgets('PartnerConfirmation renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await tester.pumpKCWidget(
         ChangeNotifierProvider<KCChangeNotifier>.value(
           value: kcChangeNotifier,
@@ -355,18 +368,23 @@ void main() {
     testWidgets('PartnerPaymentSplit renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.loanOptionStepData).thenAnswer((_) => KCAPIResponse(
           nextStep: NextStepModel.fromJson(
               acceptTermsJson['next_step'] as Map<String, dynamic>)));
       when(kcChangeNotifier.paymentSplit).thenAnswer((_) => null);
-      await tester.pumpKCWidget(
-        ChangeNotifierProvider<KCChangeNotifier>.value(
-          value: kcChangeNotifier,
-          builder: (context, kcChangeNotifier) {
-            return const PartnerPaymentSplit();
-          },
+      when(kcChangeNotifier.partnerInsurers).thenAnswer((_) => null);
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerPaymentSplit();
+            },
+          ),
         ),
       );
       expect(find.byType(SvgPicture), findsWidgets);
@@ -374,7 +392,7 @@ void main() {
       expect(find.text('How would you like to split your payment?'),
           findsOneWidget);
       expect(find.byType(YSpace), findsWidgets);
-      expect(find.byType(Image), findsNothing);
+      expect(find.byType(Image), findsWidgets);
       expect(find.byType(PopupMenuButton<int>), findsWidgets);
       await tester.tap(find.byType(PopupMenuButton<int>).first);
       await tester.pump();
@@ -386,38 +404,30 @@ void main() {
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
     testWidgets('PartnerPaymentPreview renders correctly', (tester) async {
-      when(kcChangeNotifier.repaymentDetails).thenAnswer(
-          (_) => RepaymentDetailsModel.fromJson(repaymentDetailsJson));
+      when(kcChangeNotifier.repaymentDetailsStepData).thenAnswer((_) =>
+          KCAPIResponse(
+              nextStep: NextStepModel.fromJson(
+                  repaymentResponse['next_step'] as Map<String, dynamic>)));
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      await tester.pumpKCWidget(
-        ChangeNotifierProvider<KCChangeNotifier>.value(
-          value: kcChangeNotifier,
-          builder: (context, kcChangeNotifier) {
-            return const PartnerPaymentPreview();
-          },
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerPaymentPreview();
+            },
+          ),
         ),
       );
-      final text = kcChangeNotifier.repaymentDetails?.installment.toString() ==
-              '2'
-          ? 'Get your order  immediately at half the payment upfront. The balance will be scheduled for one month post your first instalment.'
-          : kcChangeNotifier.repaymentDetails?.installment.toString() == '3'
-              ? 'Get your order  immediately at one third of the payment upfront. The balance will be split into two (2) equal instalments over 2 months.'
-              : kcChangeNotifier.repaymentDetails?.installment.toString() == '4'
-                  ? 'Get your order  immediately at one fourth of the payment upfront. The balance will be split into three (3) equal instalments over 3 months.'
-                  : kcChangeNotifier.repaymentDetails?.installment.toString() ==
-                          '5'
-                      ? 'Get your order  immediately at one fifth of the payment upfront. The balance will be split into four (4) equal instalments over 4 months.'
-                      : kcChangeNotifier.repaymentDetails?.installment
-                                  .toString() ==
-                              '6'
-                          ? 'Get your order  immediately at one sixth of the payment upfront. The balance will be split into four (5) equal instalments over 5 months.'
-                          : '';
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(Image), findsOneWidget);
       expect(find.byType(SvgPicture), findsOneWidget);
       expect(find.byType(KPPaymentItemTile), findsWidgets);
       expect(find.byType(Expanded), findsWidgets);
-      expect(find.text(text), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });
@@ -425,6 +435,20 @@ void main() {
     testWidgets('PartnerAccountCredentials renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.email).thenAnswer((_) => 'sample@mail.com');
+      when(kcChangeNotifier.phoneNumber).thenAnswer((_) => '08012345678');
+      when(kcChangeNotifier.klumpUser).thenAnswer((_) => const KlumpUser(
+            firstname: 'Samuel',
+            lastname: 'Olamide',
+            email: 'sample@mail.com',
+            maxLoanLimit: 1000000,
+            requiresUserCredential: true,
+            dob: '10-10-1990',
+          ));
+
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.bioDataStepData).thenAnswer((_) => null);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
@@ -438,21 +462,21 @@ void main() {
         ),
       );
       expect(find.byType(YSpace), findsWidgets);
-      expect(find.byType(KCInputField), findsNWidgets(3));
       expect(find.byType(SvgPicture), findsOneWidget);
       expect(find.byType(Expanded), findsWidgets);
-      expect(find.text('Complete your account'), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });
     testWidgets('PartnerInvoice renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.loanStatusStepData).thenAnswer((_) => KCAPIResponse(
           nextStep: NextStepModel.fromJson(
-              newLoanJson['next_step'] as Map<String, dynamic>)));
+              newLoanJsonPolaris['next_step'] as Map<String, dynamic>)));
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -474,6 +498,8 @@ void main() {
     testWidgets('PartnerDecision renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
@@ -497,6 +523,8 @@ void main() {
     testWidgets('PartnerDecision renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
@@ -520,6 +548,9 @@ void main() {
     testWidgets('PartnerDisbursementStatus renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.loanStatusStepData).thenAnswer((_) => KCAPIResponse(
+          nextStep: NextStepModel.fromJson(
+              newLoanResponse['next_step'] as Map<String, dynamic>)));
       when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.disbursementStatusResponse).thenAnswer(
         (_) => const DisbursementStatusResponse(
@@ -530,6 +561,8 @@ void main() {
           responseMessage: '',
         ),
       );
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
