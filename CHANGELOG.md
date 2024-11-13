@@ -19,6 +19,8 @@
 ## [1.0.19] - Add new financial partners
 ## [1.0.20] - Improvements
 ## [1.0.21] - Add new financial partners
+## [1.0.22] - Improvements
+
 
 
 
