@@ -66,6 +66,7 @@ abstract class RemoteDatasource {
   });
   Future<List<PartnerModel>> getLoanPartners({
     required String publicKey,
+    required double amount,
   });
   Future<KCAPIResponseModel> partners({
     required String method,
@@ -444,6 +445,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   @override
   Future<List<PartnerModel>> getLoanPartners({
     required String publicKey,
+    required double amount,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -452,7 +454,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       };
       final response = await kcHttpRequester.get(
         environment: prefs.getString(KC_ENVIRONMENT_KEY),
-        endpoint: '/v1/loans/partners',
+        endpoint: '/v1/loans/partners?amount=$amount',
         headers: headers,
       );
       return PartnerListModel.fromJson(response.data).data;

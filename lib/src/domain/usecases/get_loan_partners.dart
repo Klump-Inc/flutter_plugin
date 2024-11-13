@@ -14,16 +14,19 @@ class GetLoanPartnersUsecase
   Future<Either<KCException, List<Partner>>> call(
     GetLoanPartnersUsecaseParams params,
   ) =>
-      partnerRepository.getLoanPartners(publicKey: params.publicKey);
+      partnerRepository.getLoanPartners(
+          publicKey: params.publicKey, amount: params.amount);
 }
 
 class GetLoanPartnersUsecaseParams extends Equatable {
   final String publicKey;
+  final double amount;
 
   const GetLoanPartnersUsecaseParams({
     required this.publicKey,
+    required this.amount,
   });
 
   @override
-  List<Object?> get props => [publicKey];
+  List<Object?> get props => [publicKey, amount];
 }

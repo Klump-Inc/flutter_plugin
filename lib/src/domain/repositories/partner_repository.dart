@@ -202,10 +202,11 @@ class PartnerRepository {
 
   Future<Either<KCException, List<Partner>>> getLoanPartners({
     required String publicKey,
+    required double amount,
   }) async {
     try {
-      final response =
-          await stanbicRmoteDatasource.getLoanPartners(publicKey: publicKey);
+      final response = await stanbicRmoteDatasource.getLoanPartners(
+          publicKey: publicKey, amount: amount);
       return Right(response);
     } catch (e) {
       return Left(

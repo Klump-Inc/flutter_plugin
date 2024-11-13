@@ -262,6 +262,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final response = await getLoanPartnersUsecase(
       GetLoanPartnersUsecaseParams(
         publicKey: _checkoutData?.merchantPublicKey ?? '',
+        amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
       ),
     );
     response.fold(
