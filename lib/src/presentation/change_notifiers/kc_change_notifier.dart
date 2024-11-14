@@ -997,6 +997,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
+        storeNextStepData(r);
         if (r.nextStep.name == 'NEW_LOAN') {
           createLoan();
         } else {
