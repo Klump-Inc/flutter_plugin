@@ -21,6 +21,7 @@ class PartnerRepository {
     required String phone,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
+    required String merchantReference,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.initiate(
@@ -34,6 +35,7 @@ class PartnerRepository {
         phone: phone,
         items: items,
         shippingData: shippingData,
+        merchantReference: merchantReference,
       );
       return Right(response);
     } catch (e) {

@@ -241,7 +241,8 @@ class KCChangeNotifier extends ChangeNotifier {
         email: email,
         phone: phone,
         items: _checkoutData?.items ?? [],
-        shippingData: _checkoutData?.shippingData,
+        shippingData: _checkoutData!.shippingData,
+        merchantReference: _checkoutData!.merchantReference,
       ),
     );
     _setBusy(false);
@@ -446,6 +447,7 @@ class KCChangeNotifier extends ChangeNotifier {
       'is_live': isLive,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       "items": (_checkoutData?.items ?? []).map((e) => e.toMap()).toList(),
+      "merchant_reference": _checkoutData!.merchantReference,
     };
     if (_checkoutData?.shippingData != null) {
       data.addAll({
