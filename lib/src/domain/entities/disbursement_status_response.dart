@@ -8,6 +8,7 @@ class DisbursementStatusResponse extends Equatable {
   final String message;
   final String? next_repayment_date;
   final String? responseMessage;
+  final dynamic transaction;
 
   const DisbursementStatusResponse({
     required this.isCompleted,
@@ -15,6 +16,7 @@ class DisbursementStatusResponse extends Equatable {
     required this.message,
     required this.next_repayment_date,
     required this.responseMessage,
+    required this.transaction,
   });
 
   @override
@@ -24,5 +26,6 @@ class DisbursementStatusResponse extends Equatable {
         message,
         next_repayment_date,
         responseMessage,
+        transaction,
       ];
 }

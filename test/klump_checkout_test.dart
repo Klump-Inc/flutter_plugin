@@ -559,6 +559,7 @@ void main() {
           message: 'Loan has been disbursed successfully',
           next_repayment_date: null,
           responseMessage: '',
+          transaction: null,
         ),
       );
       when(kcChangeNotifier.initiateResponse).thenAnswer(

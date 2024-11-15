@@ -123,7 +123,8 @@ class PartnerDisbursementStatus extends StatelessWidget {
                               : CheckoutStatus.error,
                           checkoutNotfier.disbursementStatusResponse?.message ??
                               '',
-                          null,
+                          checkoutNotfier
+                              .disbursementStatusResponse?.transaction,
                         );
                         Navigator.pop(context, checkoutResponse);
                       },

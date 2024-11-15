@@ -9,6 +9,7 @@ class DisbursementStatusResponseModel extends DisbursementStatusResponse {
     required super.message,
     required super.next_repayment_date,
     required super.responseMessage,
+    required super.transaction,
   });
 
   factory DisbursementStatusResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -19,6 +20,7 @@ class DisbursementStatusResponseModel extends DisbursementStatusResponse {
         next_repayment_date: json["next_repayment_date"],
         responseMessage: json['transaction']?['processor_webhook_data']
             ?['responseMessage'],
+        transaction: json['transaction'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -26,5 +28,6 @@ class DisbursementStatusResponseModel extends DisbursementStatusResponse {
         "success": isSuccessful,
         "message": message,
         "next_repayment_date": next_repayment_date,
+        "transaction": transaction,
       };
 }
