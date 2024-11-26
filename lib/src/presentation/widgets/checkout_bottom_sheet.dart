@@ -122,10 +122,17 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug ==
                                 'renmoney' ||
                             checkoutNotifier.selectedBankFlow?.slug ==
-                                'fidelity')
+                                'fidelity' ||
+                            checkoutNotifier.selectedBankFlow?.slug ==
+                                'fcmb_credit_direct')
                           const PartnerRequirements(),
-                        const PartnerLogin(),
+                        if (checkoutNotifier.selectedBankFlow?.slug !=
+                            'fcmb_credit_direct')
+                          const PartnerLogin(),
                         const PartnerLoginOTP(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'fcmb_credit_direct')
+                          const CDLWebview(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
                           const PartnerBioData(),

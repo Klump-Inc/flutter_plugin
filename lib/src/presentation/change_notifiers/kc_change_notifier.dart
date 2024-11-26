@@ -324,7 +324,7 @@ class KCChangeNotifier extends ChangeNotifier {
           _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
     }
     if (formFields?.contains('email') == true) {
-      data['email'] = email;
+      data['email'] = _email;
     }
 
     if (formFields?.contains('currency') == true) {
@@ -1008,4 +1008,7 @@ class KCChangeNotifier extends ChangeNotifier {
       },
     );
   }
+
+  double get totalAmount =>
+      _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
 }
