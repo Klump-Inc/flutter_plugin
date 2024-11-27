@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -16,7 +17,7 @@ class _CDLWebviewState extends State<CDLWebview> {
   @override
   void initState() {
     super.initState();
-
+    final checkoutNotfier = context.read<KCChangeNotifier>();
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -31,8 +32,26 @@ class _CDLWebviewState extends State<CDLWebview> {
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},
         ),
+      )
+      ..addJavaScriptChannel(
+        'FlutterOnClose',
+        onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.nextPage();
+        },
+      )
+      ..addJavaScriptChannel(
+        'FlutterOnError',
+        onMessageReceived: (JavaScriptMessage message) {
+          Logger().d(message.message);
+        },
+      )
+      ..addJavaScriptChannel(
+        'FlutterOnSuccess',
+        onMessageReceived: (JavaScriptMessage message) {
+          Logger().d(message.message);
+        },
       );
-    final checkoutNotfier = context.read<KCChangeNotifier>();
+
     final html = ''' <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -83,12 +102,15 @@ class _CDLWebviewState extends State<CDLWebview> {
           isLive: false,
           onSuccess: function (response) {
             console.log(JSON.stringify(response));
+            FlutterOnSuccess.postMessage(JSON.stringify(data));
           },
           onClose: function () {
             console.log('User closed checkout widget.');
+            FlutterOnClose.postMessage('User closed checkout widget.');
           },
           onError: function () {
-            console.log('error occurred');
+            console.log('Error occurred');
+            FlutterOnError.postMessage('Error occurred');
           },
           onPopup: function (response) {
             console.log('popup occurred', response);
