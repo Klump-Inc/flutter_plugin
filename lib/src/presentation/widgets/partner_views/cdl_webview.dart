@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -42,13 +41,14 @@ class _CDLWebviewState extends State<CDLWebview> {
       ..addJavaScriptChannel(
         'FlutterOnError',
         onMessageReceived: (JavaScriptMessage message) {
-          Logger().d(message.message);
+          checkoutNotfier.nextPage();
         },
       )
       ..addJavaScriptChannel(
         'FlutterOnSuccess',
         onMessageReceived: (JavaScriptMessage message) {
-          Logger().d(message.message);
+          checkoutNotfier.setCDLDisbursementMessage(message.message);
+          checkoutNotfier.nextPage();
         },
       );
 

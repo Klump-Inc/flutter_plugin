@@ -1011,4 +1011,22 @@ class KCChangeNotifier extends ChangeNotifier {
 
   double get totalAmount =>
       _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
+
+  void setCDLDisbursementMessage(dynamic message) {
+    _disbursementStatusResponse = DisbursementStatusResponseModel(
+      isCompleted: true,
+      isSuccessful: true,
+      message: '',
+      next_repayment_date: null,
+      responseMessage: null,
+      transaction: message,
+    );
+    MixPanelService.logEvent(
+      '13 - SUCCESSFUL MODAL',
+      properties: {
+        'environment': isLive ? 'production' : 'staging',
+        'partner': selectedBankFlow?.slug,
+      },
+    );
+  }
 }
