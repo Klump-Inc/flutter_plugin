@@ -7,7 +7,7 @@ const String KC_PACKAGE_NAME = 'klump_checkout';
 const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
 
-const bool dev = false;
+const bool dev = true;
 
 const String KC_BASE_URL = 'https://api.useklump.com';
 const String KC_STAGING_BASE_URL = 'https://staging-api.useklump.com';
@@ -76,3 +76,10 @@ const String INTERNATIONAL_PASSPORT = 'international_passport';
 const String DRIVER_LICENSE = 'driver_license';
 const String NATIONAL_ID_CARD = 'national_identity_card';
 const String VOTERS_CARD = 'voters_card';
+
+const CDL_PUBLIC_KEY = dev
+    ? '6d6f404d444c430187f5d8e8b9bec144'
+    : '0c343cda73fc43fab534ee78a7f930ef';
+const CDL_PRIVATE_KEY = dev
+    ? '9137fe9ba1aaaba736c11dc02cf6a9415e70bc097264219ffe4f5ac9081d46d5'
+    : '7005ed423019b5678cd20038331a63c678ad9890dd573bb01decef3eebb2b6bd';

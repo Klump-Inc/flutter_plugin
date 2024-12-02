@@ -94,10 +94,7 @@ class _CDLWebviewState extends State<CDLWebview> {
           ]
         }
         let config = {
-          publicKey: "6d6f404d444c430187f5d8e8b9bec144",
-          // signature: "jh783923232300",
-          // publicKey: "YOUR_PUBLIC_KEY_HERE",
-          // signature: "YOUR_SIGNED_TRANSACTION_STRING",
+          publicKey: "$CDL_PUBLIC_KEY",
           transaction: transaction,
           isLive: false,
           onSuccess: function (response) {
@@ -130,7 +127,6 @@ class _CDLWebviewState extends State<CDLWebview> {
           console.log('sessionId', transaction);
           console.log('generateUniqueSessionId',  sessionId);
           transaction.sessionId = sessionId;
-          // transaction.sessionId = generateUniqueSessionId(15);
           config.signature = signTransaction(transaction);
           console.log('config',  config);
           connect = new Connect(config);
@@ -139,8 +135,7 @@ class _CDLWebviewState extends State<CDLWebview> {
         }
         // Server code sample
         function signTransaction(transaction) {
-          const privateKey = '9137fe9ba1aaaba736c11dc02cf6a9415e70bc097264219ffe4f5ac9081d46d5';
-          // const privateKey = 'YOUR_PRIVATE_KEY';
+          const privateKey = "$CDL_PRIVATE_KEY";
           const sm = transaction.sessionId + transaction.customerEmail + transaction.totalAmount;
           const st = signTransactionRequest(sm, privateKey);
           return st;
