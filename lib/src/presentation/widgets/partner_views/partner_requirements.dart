@@ -146,7 +146,9 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                                   (checkoutNotfier.selectedBankFlow?.slug ==
                                           'first_bank' ||
                                       checkoutNotfier.selectedBankFlow?.slug ==
-                                          'renmoney')) ||
+                                          'renmoney' ||
+                                      checkoutNotfier.selectedBankFlow?.slug ==
+                                          'fcmb_credit_direct')) ||
                               checkoutNotfier.isBusy,
                           title: 'Continue',
                           onTap: () {

@@ -49,7 +49,11 @@ class PartnerDisbursementStatus extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            height: 187.1,
+                            height: checkoutNotfier.disbursementStatusResponse
+                                        ?.isSuccessful ==
+                                    true
+                                ? 187.1
+                                : 130,
                             width: 187.1,
                             child: checkoutNotfier.selectedBankFlow?.slug ==
                                     'renmoney'

@@ -324,7 +324,7 @@ class KCChangeNotifier extends ChangeNotifier {
           _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
     }
     if (formFields?.contains('email') == true) {
-      data['email'] = email;
+      data['email'] = _email;
     }
 
     if (formFields?.contains('currency') == true) {
@@ -1005,6 +1005,27 @@ class KCChangeNotifier extends ChangeNotifier {
         } else {
           nextPage();
         }
+      },
+    );
+  }
+
+  double get totalAmount =>
+      _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
+
+  void setCDLDisbursementMessage(dynamic message) {
+    _disbursementStatusResponse = DisbursementStatusResponseModel(
+      isCompleted: true,
+      isSuccessful: true,
+      message: '',
+      next_repayment_date: null,
+      responseMessage: null,
+      transaction: message,
+    );
+    MixPanelService.logEvent(
+      '13 - SUCCESSFUL MODAL',
+      properties: {
+        'environment': isLive ? 'production' : 'staging',
+        'partner': selectedBankFlow?.slug,
       },
     );
   }

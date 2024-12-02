@@ -122,9 +122,13 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug ==
                                 'renmoney' ||
                             checkoutNotifier.selectedBankFlow?.slug ==
-                                'fidelity')
+                                'fidelity' ||
+                            checkoutNotifier.selectedBankFlow?.slug ==
+                                'fcmb_credit_direct')
                           const PartnerRequirements(),
-                        const PartnerLogin(),
+                        if (checkoutNotifier.selectedBankFlow?.slug !=
+                            'fcmb_credit_direct')
+                          const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
@@ -135,7 +139,10 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')
                           const PartnerTerms(),
-                        if (checkoutNotifier.selectedBankFlow?.slug != 'specta')
+                        if (checkoutNotifier.selectedBankFlow?.slug !=
+                                'specta' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'fcmb_credit_direct')
                           const PartnerPaymentSplit(),
                         if (checkoutNotifier
                                     .klumpUser?.requiresUserCredential ==
@@ -143,6 +150,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug !=
                                 'renmoney')
                           const PartnerBioData(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'fcmb_credit_direct')
+                          const CDLWebview(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
                           const PartnerDocumentType(),
@@ -158,20 +168,20 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                                 'specta' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'renmoney')
-                          const PartnerPaymentPreview(),
-                        if (checkoutNotifier.selectedBankFlow?.slug !=
-                                'stanbic' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
                                 'renmoney' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'fidelity')
+                                'fcmb_credit_direct')
+                          const PartnerPaymentPreview(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'polaris')
                           const PartnerInvoice(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')
                           const PartnerConfirmation(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
-                            'renmoney')
+                                'renmoney' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'fcmb_credit_direct')
                           const PartnerDecision(),
                         const PartnerDisbursementStatus(),
                       ];
