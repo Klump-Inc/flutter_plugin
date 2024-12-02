@@ -79,19 +79,7 @@ class _CDLWebviewState extends State<CDLWebview> {
           "totalAmount": ${checkoutNotfier.totalAmount},
           "customerEmail": "${checkoutNotfier.email}",
           "customerPhone": "${checkoutNotfier.phoneNumber}",
-          sessionId,
-          "products": [
-            {
-              "productName": "Iphone",
-              "productAmount": 400,
-              "productId": "2"
-            },
-            {
-              "productName": "Iphone 2",
-              "productAmount": 200,
-              "productId": "3"
-            }
-          ]
+          sessionId
         }
         let config = {
           publicKey: "$CDL_PUBLIC_KEY",
