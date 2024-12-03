@@ -397,7 +397,7 @@ void main() {
       await tester.tap(find.byType(PopupMenuButton<int>).first);
       await tester.pump();
       expect(find.byType(KCInstallmentPopupMenuItemContent), findsWidgets);
-      await tester.tap(find.byType(LayoutBuilder));
+      await tester.tap(find.byType(LayoutBuilder), warnIfMissed: false);
       await tester.pumpAndSettle();
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.byType(Spacer), findsOneWidget);
