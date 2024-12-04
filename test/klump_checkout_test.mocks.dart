@@ -384,6 +384,12 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as _i4.PageController);
 
   @override
+  double get totalAmount => (super.noSuchMethod(
+        Invocation.getter(#totalAmount),
+        returnValue: 0.0,
+      ) as double);
+
+  @override
   bool get hasListeners => (super.noSuchMethod(
         Invocation.getter(#hasListeners),
         returnValue: false,
@@ -775,6 +781,15 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
+  @override
+  void setCDLDisbursementMessage(dynamic message) => super.noSuchMethod(
+        Invocation.method(
+          #setCDLDisbursementMessage,
+          [message],
+        ),
+        returnValueForMissingStub: null,
+      );
 
   @override
   void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
