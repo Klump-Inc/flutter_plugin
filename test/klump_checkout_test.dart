@@ -397,7 +397,7 @@ void main() {
       await tester.tap(find.byType(PopupMenuButton<int>).first);
       await tester.pump();
       expect(find.byType(KCInstallmentPopupMenuItemContent), findsWidgets);
-      await tester.tap(find.byType(LayoutBuilder));
+      await tester.tap(find.byType(LayoutBuilder), warnIfMissed: false);
       await tester.pumpAndSettle();
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.byType(Spacer), findsOneWidget);
@@ -580,6 +580,25 @@ void main() {
       expect(find.text('Successful'), findsOneWidget);
       expect(find.text('Loan has been disbursed successfully'), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
+    });
+
+    testWidgets('CDLWebview renders correctly', (tester) async {
+      when(kcChangeNotifier.totalAmount).thenAnswer((_) => 50000);
+      when(kcChangeNotifier.email).thenAnswer((_) => 'sample@gmail.com');
+      when(kcChangeNotifier.phoneNumber).thenAnswer((_) => 'phoneNumber');
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const CDLWebview();
+            },
+          ),
+        ),
+      );
+      expect(find.byType(Center), findsWidgets);
+      expect(find.byType(KCPageLoaderWidget), findsOneWidget);
     });
   });
 }
