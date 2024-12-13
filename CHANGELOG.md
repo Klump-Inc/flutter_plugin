@@ -22,7 +22,7 @@
 ## [1.0.22] - Improvements
 ## [1.0.23] - Fixes
 ## [1.0.24] - Fixes
-
+## [1.0.25] - Insurance partners update
 
 
 
