@@ -454,9 +454,9 @@ class KCChangeNotifier extends ChangeNotifier {
         'shipping_data': _checkoutData?.shippingData,
       });
     }
-    if (_selectedPartnerInsurer?.value != null) {
+    if (_selectedPartnerInsurer?.id != null) {
       data.addAll({
-        "insurerId": _selectedPartnerInsurer?.value,
+        "insurerId": _selectedPartnerInsurer?.id,
       });
     }
 
@@ -883,7 +883,7 @@ class KCChangeNotifier extends ChangeNotifier {
     if (insurer != null) {
       _selectedPartnerInsurer = insurer;
       data.addAll({
-        'insurerId': insurer.value,
+        'insurerId': insurer.id,
       });
     }
     final response = await partnersUsecase(
