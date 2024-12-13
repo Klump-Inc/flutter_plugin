@@ -2,13 +2,17 @@ import 'package:klump_checkout/src/src.dart';
 
 class PartnerInsurerModel extends PartnerInsurer {
   const PartnerInsurerModel({
-    required super.name,
-    required super.value,
+    required super.id,
+    required super.insurance,
+    required super.rate,
+    required super.range,
   });
 
   factory PartnerInsurerModel.fromJson(Map<String, dynamic> json) =>
       PartnerInsurerModel(
-        name: json['name'],
-        value: json['value'],
+        id: json['id'],
+        insurance: json['insurance'],
+        rate: json['rate'],
+        range: json['range'],
       );
 }

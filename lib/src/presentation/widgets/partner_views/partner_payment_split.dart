@@ -261,7 +261,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   else
                                     Expanded(
                                       child: KCAutoSizedText(
-                                        _insurer!.name,
+                                        _insurer!.insurance,
                                         fontSize: 15,
                                         maxLines: 1,
                                       ),
@@ -286,7 +286,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   child: KCInsurerPopupMenuItemContent(
                                     withBG: index % 2 != 0,
                                     title: checkoutNotifier
-                                        .partnerInsurers![index].name,
+                                        .partnerInsurers![index].insurance,
                                   ),
                                   onTap: () {
                                     setState(() {

@@ -1,14 +1,23 @@
 import 'package:equatable/equatable.dart';
 
 class PartnerInsurer extends Equatable {
-  final String name;
-  final int value;
+  final dynamic id;
+  final dynamic insurance;
+  final dynamic rate;
+  final dynamic range;
 
   const PartnerInsurer({
-    required this.name,
-    required this.value,
+    required this.id,
+    required this.insurance,
+    required this.rate,
+    required this.range,
   });
 
   @override
-  List<Object?> get props => [name, value];
+  List<Object?> get props => [
+        id,
+        insurance,
+        rate,
+        range,
+      ];
 }
