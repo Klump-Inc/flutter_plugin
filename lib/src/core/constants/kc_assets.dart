@@ -21,4 +21,10 @@ class KCAssets {
   static String ninCard = 'assets/images/nin_card.png';
   static String selfieOverlay = 'assets/images/selfie_overlay.png';
   static String loading = 'assets/images/loading.png';
+  static String wemaIllus1 = 'assets/images/wema_1.png';
+  static String wemaIllus2 = 'assets/images/wema_2.png';
+  static String wemaIllus3 = 'assets/images/wema_3.png';
+  static String wemaIllus4 = 'assets/images/wema_4.png';
+  static String wemaIllus5 = 'assets/images/wema_5.png';
+  static String wemaIllus6 = 'assets/images/wema_6.png';
 }
