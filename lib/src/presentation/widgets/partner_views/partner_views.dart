@@ -19,3 +19,4 @@ export 'partner_address_verify.dart';
 export 'account_email.dart';
 export 'cdl_webview.dart';
 export 'wema_illustration.dart';
+export 'firstbank_webview.dart';

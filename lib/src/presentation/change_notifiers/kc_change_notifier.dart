@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -183,6 +184,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void storeNextStepData(KCAPIResponse data) {
     final api = data.nextStep.name?.toUpperCase();
+    Logger().d(api);
     switch (api) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
@@ -394,6 +396,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> verifyOTP(String? otp, String? password) async {
     _setBusy(true);
+    Logger().d(verifyOTPStepData);
     final response = await verifyOTPUsecase(
       VerifyOTPUsecaseParams(
         accountNumber:
@@ -595,6 +598,9 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> acceptRequirement() async {
     _setBusy(true);
+    Logger().d(
+      _selectedBankFlow?.nextStep?.api ?? '',
+    );
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: _selectedBankFlow?.nextStep?.method ?? '',
@@ -712,6 +718,7 @@ class KCChangeNotifier extends ChangeNotifier {
     required String? lastname,
     required DateTime? dob,
     required String? password,
+    required double? amount,
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
@@ -736,6 +743,9 @@ class KCChangeNotifier extends ChangeNotifier {
       data.addAll({
         'date_of_birth': KCStringUtil.formatServerDate(dob),
       });
+    }
+    if (amount != null) {
+      data.addAll({'amount': amount});
     }
     final response = await partnersUsecase(
       PartnersUsecaseParams(

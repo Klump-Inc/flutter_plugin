@@ -107,10 +107,12 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             data: widget.data,
                             isLive: widget.isLive,
                           ),
+                        // const FirstbankWebview(),
                         SelectBankFlow(
                           data: widget.data,
                           isLive: widget.isLive,
                         ),
+                        // const WemaIllustration(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                                 'polaris' ||
                             checkoutNotifier.selectedBankFlow?.slug == 'specta')
@@ -124,14 +126,16 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug ==
                                 'fidelity' ||
                             checkoutNotifier.selectedBankFlow?.slug ==
-                                'fcmb_credit_direct')
+                                'fcmb_credit_direct' ||
+                            checkoutNotifier.selectedBankFlow?.slug == 'wema')
                           const PartnerRequirements(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                             'fcmb_credit_direct')
                           const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'renmoney')
+                                'renmoney' ||
+                            checkoutNotifier.selectedBankFlow?.slug == 'wema')
                           const PartnerBioData(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
