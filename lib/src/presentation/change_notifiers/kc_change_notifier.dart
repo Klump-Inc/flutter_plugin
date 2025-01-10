@@ -155,6 +155,8 @@ class KCChangeNotifier extends ChangeNotifier {
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
   String? _documentType;
   String? get documentType => _documentType;
+  double? _downPayment;
+  double? get downPayment => _downPayment;
 
   void setTransactionData(bool isLive, KlumpCheckoutData data) {
     _isLive = isLive;
@@ -477,6 +479,11 @@ class KCChangeNotifier extends ChangeNotifier {
       data.addAll({
         "repaymentDay":
             int.tryParse(_repaymentDetails!.repaymentDay.toString()),
+      });
+    }
+    if (_downPayment != null) {
+      data.addAll({
+        "downpayment_amount": _downPayment,
       });
     }
     final response = await partnersUsecase(
@@ -875,6 +882,7 @@ class KCChangeNotifier extends ChangeNotifier {
     required String? installments,
     required int? repaymentDay,
     required PartnerInsurer? insurer,
+    required double? downpaymentAmount,
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
@@ -896,6 +904,12 @@ class KCChangeNotifier extends ChangeNotifier {
         'insurerId': insurer.id,
       });
     }
+    if (downpaymentAmount != null) {
+      _downPayment = downpaymentAmount;
+      data.addAll({
+        'downpayment_amount': downpaymentAmount,
+      });
+    }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: loanOptionStepData?.nextStep.method ?? '',
@@ -910,8 +924,12 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        _repaymentDetails = r.data;
-        nextPage();
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          _repaymentDetails = r.data;
+          nextPage();
+        }
       },
     );
   }

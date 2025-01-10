@@ -6,6 +6,9 @@ class FormFieldModel extends Equatable {
   final String? label;
   final String? placeholder;
   final List? options;
+  final dynamic smalltext;
+  final dynamic min;
+  final dynamic max;
 
   const FormFieldModel({
     this.type,
@@ -13,6 +16,9 @@ class FormFieldModel extends Equatable {
     this.label,
     this.placeholder,
     this.options,
+    this.smalltext,
+    this.max,
+    this.min,
   });
   factory FormFieldModel.fromJson(Map<String, dynamic> json) => FormFieldModel(
         type: json['type'],
@@ -20,6 +26,9 @@ class FormFieldModel extends Equatable {
         label: json['label'],
         placeholder: json['placeholder'],
         options: json['options'],
+        smalltext: json['smalltext'],
+        min: json['min'],
+        max: json['max'],
       );
 
   @override
@@ -29,5 +38,8 @@ class FormFieldModel extends Equatable {
         label,
         placeholder,
         options,
+        smalltext,
+        min,
+        max,
       ];
 }
