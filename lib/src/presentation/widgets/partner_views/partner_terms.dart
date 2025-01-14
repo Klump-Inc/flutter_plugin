@@ -59,11 +59,15 @@ class _PartnerTermsState extends State<PartnerTerms> {
                     padding: const EdgeInsets.symmetric(horizontal: 26),
                     child: Column(
                       children: [
-                        const YSpace(32.59),
-                        Image.network(
-                          checkoutNotifier.selectedBankFlow!.logo ?? '',
-                          height: 55,
-                          width: 47,
+                        const DraggableBar(),
+                        const YSpace(24),
+                        LogoHeaderWidget(
+                          onTap: checkoutNotifier.prevPage,
+                          logo: Image.network(
+                            checkoutNotifier.selectedBankFlow!.logo ?? '',
+                            height: 55,
+                            width: 120,
+                          ),
                         ),
                         const YSpace(24),
                         Expanded(
@@ -115,32 +119,15 @@ class _PartnerTermsState extends State<PartnerTerms> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const YSpace(30.82),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                InkWell(
-                                  onTap: () => checkoutNotifier.prevPage(),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: SvgPicture.asset(
-                                      KCAssets.arrowBack,
-                                      package: KC_PACKAGE_NAME,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 2.6),
-                                  child: Image.network(
-                                    checkoutNotifier.selectedBankFlow!.logo ??
-                                        '',
-                                    height: 45,
-                                    width: 38.45,
-                                  ),
-                                ),
-                                const XSpace(24)
-                              ],
+                            const DraggableBar(),
+                            const YSpace(24),
+                            LogoHeaderWidget(
+                              onTap: checkoutNotifier.prevPage,
+                              logo: Image.network(
+                                checkoutNotifier.selectedBankFlow!.logo ?? '',
+                                height: 55,
+                                width: 120,
+                              ),
                             ),
                             const YSpace(22),
                             KCHeadline3(

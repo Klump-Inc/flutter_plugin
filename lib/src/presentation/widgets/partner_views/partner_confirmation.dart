@@ -26,11 +26,12 @@ class _PartnerConfirmationState extends State<PartnerConfirmation> {
                 padding: const EdgeInsets.symmetric(horizontal: 26),
                 child: Column(
                   children: [
-                    const YSpace(32.59),
+                    const DraggableBar(),
+                    const YSpace(24),
                     Image.asset(
                       KCAssets.stanbicLogo,
                       height: 55,
-                      width: 47,
+                      width: 120,
                       package: KC_PACKAGE_NAME,
                     ),
                     const YSpace(24),

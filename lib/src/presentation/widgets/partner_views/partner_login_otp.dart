@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -118,30 +117,28 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     right: 26,
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: KC_PACKAGE_NAME,
-                          ),
-                        ),
+                    const DraggableBar(),
+                    const YSpace(24),
+                    LogoHeaderWidget(
+                      onTap: checkoutNotfier.prevPage,
+                      logo: Image.network(
+                        checkoutNotfier.selectedBankFlow!.logo ?? '',
+                        height: 55,
+                        width: 120,
                       ),
                     ),
-                    Image.network(
-                      checkoutNotfier.selectedBankFlow!.logo ?? '',
-                      height: 55,
-                      width: 120,
-                    ),
                     if (checkoutNotfier.initiateResponse?.merchant != null)
-                      KCHeadline4(
-                        checkoutNotfier.initiateResponse!.merchant.toString(),
-                        fontWeight: FontWeight.w700,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Align(
+                          child: KCHeadline4(
+                            checkoutNotfier.initiateResponse!.merchant
+                                .toString(),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     if (stepData?.name?.toUpperCase() == 'CONNECT_MONO')
                       Padding(

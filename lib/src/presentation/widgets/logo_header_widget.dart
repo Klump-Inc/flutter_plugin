@@ -28,7 +28,7 @@ class LogoHeaderWidget extends StatelessWidget {
           ),
         ),
         if (logo != null) logo!,
-        const SizedBox(width: 50)
+        const SizedBox(width: 30)
       ],
     );
   }
