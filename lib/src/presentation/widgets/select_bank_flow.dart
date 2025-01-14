@@ -69,6 +69,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const DraggableBar(),
           const YSpace(30.82),
           Align(
             alignment: Alignment.centerLeft,
@@ -84,10 +85,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             ),
           ),
           const YSpace(24.22),
-          KCHeadline3('Choose a bank'),
+          KCHeadline3('Choose your bank'),
           const YSpace(8),
-          KCHeadline5('Choose the bank you want to pay with'),
-          const YSpace(8),
+          KCHeadline5('Select a bank to Buy Now and Pay Later.'),
+          const YSpace(16),
           LayoutBuilder(
             builder: (context, costraint) {
               return PopupMenuButton<Partner>(

@@ -88,15 +88,6 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
             textAlign: TextAlign.center,
             child: Column(
               children: [
-                const YSpace(4.6),
-                Container(
-                  height: 4.96,
-                  width: 35.73,
-                  decoration: BoxDecoration(
-                    color: KCColors.black2.withOpacity(0.24),
-                    borderRadius: BorderRadius.circular(9.92367),
-                  ),
-                ),
                 Expanded(
                   child: Consumer<KCChangeNotifier>(
                     builder: (_, checkoutNotifier, __) {
@@ -107,7 +98,6 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             data: widget.data,
                             isLive: widget.isLive,
                           ),
-                        // const FirstbankWebview(),
                         SelectBankFlow(
                           data: widget.data,
                           isLive: widget.isLive,
