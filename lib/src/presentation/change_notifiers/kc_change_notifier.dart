@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -125,6 +124,9 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _loanStatusStepData;
   KCAPIResponse? get loanStatusStepData => _loanStatusStepData;
 
+  KCAPIResponse? _redirectStepData;
+  KCAPIResponse? get redirectStepData => _redirectStepData;
+
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -186,7 +188,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void storeNextStepData(KCAPIResponse data) {
     final api = data.nextStep.name?.toUpperCase();
-    Logger().d(api);
     switch (api) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
@@ -223,6 +224,10 @@ class KCChangeNotifier extends ChangeNotifier {
         break;
       case 'ACCEPT_LOAN_TERMS':
         _repaymentDetailsStepData = data;
+        break;
+      case 'REDIRECT':
+        _redirectStepData = data;
+        break;
       default:
     }
   }
@@ -398,7 +403,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> verifyOTP(String? otp, String? password) async {
     _setBusy(true);
-    Logger().d(verifyOTPStepData);
     final response = await verifyOTPUsecase(
       VerifyOTPUsecaseParams(
         accountNumber:
@@ -510,7 +514,9 @@ class KCChangeNotifier extends ChangeNotifier {
   Future<DisbursementStatusResponse?> getLoanStatus() async {
     final response = await getLoanStatusUsecase(
       GetLoanStatusUsecaseParams(
-        url: loanStatusStepData?.nextStep.api ?? '',
+        url: loanStatusStepData?.nextStep.api ??
+            redirectStepData?.nextStep.api ??
+            '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
@@ -605,9 +611,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> acceptRequirement() async {
     _setBusy(true);
-    Logger().d(
-      _selectedBankFlow?.nextStep?.api ?? '',
-    );
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: _selectedBankFlow?.nextStep?.method ?? '',
@@ -768,7 +771,11 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        nextPage();
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
       },
     );
   }

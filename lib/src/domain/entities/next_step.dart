@@ -9,6 +9,7 @@ class NextStep extends Equatable {
   final String? redirectUrl;
   final String? api;
   final dynamic timeout;
+  final String? mobileCheckoutUrl;
 
   const NextStep({
     this.name,
@@ -18,6 +19,7 @@ class NextStep extends Equatable {
     this.redirectUrl,
     this.api,
     this.timeout,
+    this.mobileCheckoutUrl,
   });
   @override
   List<Object?> get props => [
@@ -27,5 +29,6 @@ class NextStep extends Equatable {
         redirectUrl,
         api,
         timeout,
+        mobileCheckoutUrl,
       ];
 }

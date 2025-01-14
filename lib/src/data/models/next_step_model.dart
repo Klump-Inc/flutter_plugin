@@ -9,6 +9,7 @@ class NextStepModel extends NextStep {
     super.redirectUrl,
     super.api,
     super.timeout,
+    super.mobileCheckoutUrl,
   });
 
   factory NextStepModel.fromJson(Map<String, dynamic> json) => NextStepModel(
@@ -24,5 +25,6 @@ class NextStepModel extends NextStep {
         redirectUrl: json['redirect_url'],
         api: json['api'],
         timeout: json['timeout'],
+        mobileCheckoutUrl: json['mobileCheckoutUrl'],
       );
 }

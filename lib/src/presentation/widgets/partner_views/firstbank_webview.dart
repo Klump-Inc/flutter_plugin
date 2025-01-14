@@ -47,13 +47,12 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
       ..addJavaScriptChannel(
         'FlutterOnSuccess',
         onMessageReceived: (JavaScriptMessage message) {
-          checkoutNotfier.setCDLDisbursementMessage(message.message);
           checkoutNotfier.nextPage();
         },
       );
 
-    _webViewController
-        .loadRequest(Uri.parse('https://firstbank-checkout.vercel.app/'));
+    _webViewController.loadRequest(Uri.parse(
+        checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? ''));
   }
 
   @override

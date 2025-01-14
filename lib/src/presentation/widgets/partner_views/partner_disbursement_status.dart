@@ -35,7 +35,7 @@ class PartnerDisbursementStatus extends StatelessWidget {
                     if (checkoutNotfier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
+                          padding: const EdgeInsets.only(top: 10),
                           child: KCHeadline4(
                             checkoutNotfier.initiateResponse!.merchant
                                 .toString(),

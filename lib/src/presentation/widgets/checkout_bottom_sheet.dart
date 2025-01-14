@@ -146,7 +146,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                                 'specta' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'fcmb_credit_direct')
+                                'fcmb_credit_direct' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'first_bank')
                           const PartnerPaymentSplit(),
                         if (checkoutNotifier
                                     .klumpUser?.requiresUserCredential ==
@@ -154,6 +156,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug !=
                                 'renmoney')
                           const PartnerBioData(),
+                        if (checkoutNotifier.selectedBankFlow?.slug ==
+                            'first_bank')
+                          const FirstbankWebview(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'fcmb_credit_direct')
                           const CDLWebview(),
@@ -174,7 +179,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug !=
                                 'renmoney' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'fcmb_credit_direct')
+                                'fcmb_credit_direct' &&
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'first_bank')
                           const PartnerPaymentPreview(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'polaris')
