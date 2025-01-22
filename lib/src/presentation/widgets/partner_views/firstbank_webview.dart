@@ -52,7 +52,7 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
       );
 
     _webViewController.loadRequest(Uri.parse(
-        checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? ''));
+        '${checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? ''}&environment=staging'));
   }
 
   @override
