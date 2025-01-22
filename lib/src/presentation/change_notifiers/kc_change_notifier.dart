@@ -187,9 +187,8 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   void storeNextStepData(KCAPIResponse data) {
-    final api = data.nextStep.name?.toUpperCase();
-
-    switch (api) {
+    final stepName = data.nextStep.name?.toUpperCase();
+    switch (stepName) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
       case 'ACCOUNT_VERIFICATION':
@@ -240,32 +239,36 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     _email = email;
     _phoneNumber = phone;
-    final response = await initiateTransactionUsecase(
-      InitiateTransactionUsecaseParams(
-        amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
-        shippingFee: checkoutData!.shippingFee,
-        currency: _checkoutData!.currency ?? 'NGN',
-        publicKey: _checkoutData!.merchantPublicKey,
-        metaData: _checkoutData!.metaData,
-        isLive: isLive,
-        email: email,
-        phone: phone,
-        items: _checkoutData?.items ?? [],
-        shippingData: _checkoutData!.shippingData,
-        merchantReference: _checkoutData!.merchantReference,
-      ),
-    );
-    _setBusy(false);
-    return response.fold(
-      (l) {
-        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
-        return false;
-      },
-      (r) {
-        _initiateResponse = r;
-        return true;
-      },
-    );
+    if (initiateResponse == null) {
+      final response = await initiateTransactionUsecase(
+        InitiateTransactionUsecaseParams(
+          amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+          shippingFee: checkoutData!.shippingFee,
+          currency: _checkoutData!.currency ?? 'NGN',
+          publicKey: _checkoutData!.merchantPublicKey,
+          metaData: _checkoutData!.metaData,
+          isLive: isLive,
+          email: email,
+          phone: phone,
+          items: _checkoutData?.items ?? [],
+          shippingData: _checkoutData!.shippingData,
+          merchantReference: _checkoutData!.merchantReference,
+        ),
+      );
+      _setBusy(false);
+      return response.fold(
+        (l) {
+          showToast(KCExceptionsToMessage.mapErrorToMessage(l));
+          return false;
+        },
+        (r) {
+          _initiateResponse = r;
+          return true;
+        },
+      );
+    } else {
+      return false;
+    }
   }
 
   Future<void> getLoanPartners() async {
