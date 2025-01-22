@@ -188,6 +188,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void storeNextStepData(KCAPIResponse data) {
     final api = data.nextStep.name?.toUpperCase();
+
     switch (api) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':

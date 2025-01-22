@@ -141,27 +141,33 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                         ),
                       ),
                     if (stepData?.name?.toUpperCase() == 'CONNECT_MONO')
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30, bottom: 10),
-                        child: Image.asset(
-                          KCAssets.safe,
-                          height: 109,
-                          width: 106,
-                          package: KC_PACKAGE_NAME,
+                      Align(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 30, bottom: 10),
+                          child: Image.asset(
+                            KCAssets.safe,
+                            height: 109,
+                            width: 106,
+                            package: KC_PACKAGE_NAME,
+                          ),
                         ),
                       ),
                     const YSpace(22),
-                    KCHeadline3(stepData?.displayData?.title ??
-                        (formFields?.contains('otp') == true
-                            ? 'Enter the code'
-                            : 'Enter password')),
+                    Align(
+                      child: KCHeadline3(stepData?.displayData?.title ??
+                          (formFields?.contains('otp') == true
+                              ? 'Enter the code'
+                              : 'Enter password')),
+                    ),
                     const YSpace(8),
-                    KCHeadline5(stepData?.displayData?.subTitle ??
-                        (formFields?.contains('otp') == true
-                            ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
-                            : checkoutNotfier.verifyOTPStepData?.data
-                                    .toString() ??
-                                '')),
+                    Align(
+                      child: KCHeadline5(stepData?.displayData?.subTitle ??
+                          (formFields?.contains('otp') == true
+                              ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
+                              : checkoutNotfier.verifyOTPStepData?.data
+                                      .toString() ??
+                                  '')),
+                    ),
                     const YSpace(28),
                     if (formFields?.contains('otp') == true)
                       Padding(

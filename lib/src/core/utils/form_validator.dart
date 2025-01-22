@@ -156,7 +156,7 @@ class KCFormValidator {
       final amount = KCStringUtil.convertTextFigure(text);
       if (amount < min) {
         return 'Amount must be greater than NGN$min';
-      } else if (amount > max) {
+      } else if (amount > max && max > 0) {
         return 'Amount must be less than NGN$max';
       } else {
         return '';

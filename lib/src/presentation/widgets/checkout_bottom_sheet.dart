@@ -102,7 +102,6 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                           data: widget.data,
                           isLive: widget.isLive,
                         ),
-                        // const WemaIllustration(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                                 'polaris' ||
                             checkoutNotifier.selectedBankFlow?.slug == 'specta')
@@ -124,15 +123,15 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                           const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
-                                'renmoney' ||
-                            checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                            'stanbic')
+                          const PartnerTerms(),
+                        if (checkoutNotifier
+                                .klumpUser?.requiresUserCredential ==
+                            true)
                           const PartnerBioData(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
                           const PartnerKYC(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'stanbic')
-                          const PartnerTerms(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                                 'specta' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
@@ -140,12 +139,6 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug !=
                                 'first_bank')
                           const PartnerPaymentSplit(),
-                        if (checkoutNotifier
-                                    .klumpUser?.requiresUserCredential ==
-                                true &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'renmoney')
-                          const PartnerBioData(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'first_bank')
                           const FirstbankWebview(),
@@ -171,8 +164,11 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug !=
                                 'fcmb_credit_direct' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'first_bank')
+                                'first_bank' &&
+                            checkoutNotifier.selectedBankFlow?.slug != 'wema')
                           const PartnerPaymentPreview(),
+                        if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                          const WemaIllustration(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'polaris')
                           const PartnerInvoice(),
