@@ -7,7 +7,7 @@ const String KC_PACKAGE_NAME = 'klump_checkout';
 const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
 
-const bool dev = false;
+const bool dev = true;
 
 const String KC_BASE_URL = 'https://api.useklump.com';
 
