@@ -154,6 +154,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                       ),
                     const YSpace(22),
                     Align(
+                      alignment: Alignment.centerLeft,
                       child: KCHeadline3(stepData?.displayData?.title ??
                           (formFields?.contains('otp') == true
                               ? 'Enter the code'
@@ -161,6 +162,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     ),
                     const YSpace(8),
                     Align(
+                      alignment: Alignment.centerLeft,
                       child: KCHeadline5(stepData?.displayData?.subTitle ??
                           (formFields?.contains('otp') == true
                               ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'

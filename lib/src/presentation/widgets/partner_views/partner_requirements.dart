@@ -31,7 +31,6 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     final nextStep = checkoutNotifier.selectedBankFlow?.nextStep;
     final formFields = nextStep?.formFields?.map((e) => e.name).toList();
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(

@@ -119,7 +119,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug == 'wema')
                           const PartnerRequirements(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
-                            'fcmb_credit_direct')
+                                'fcmb_credit_direct' &&
+                            checkoutNotifier.loanOptionStepData != null)
                           const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
