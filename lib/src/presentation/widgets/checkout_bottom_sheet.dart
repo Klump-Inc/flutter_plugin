@@ -120,7 +120,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                           const PartnerRequirements(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                                 'fcmb_credit_direct' &&
-                            checkoutNotifier.loanOptionStepData != null)
+                            checkoutNotifier.selectedBankFlow?.slug !=
+                                'first_bank')
                           const PartnerLogin(),
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
