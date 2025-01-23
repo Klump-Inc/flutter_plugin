@@ -178,6 +178,11 @@ class _PartnerLoginState extends State<PartnerLogin> {
                       width: 55,
                     ),
                     const YSpace(16),
+                    KCHeadline3(
+                      stepData?.displayData?.title ??
+                          'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.',
+                      fontSize: 24,
+                    ),
                     if (stepData?.displayData?.subTitle != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),

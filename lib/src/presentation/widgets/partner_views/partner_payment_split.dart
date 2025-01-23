@@ -29,19 +29,19 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final downPaymentFormList =
         stepData?.formFields?.where((e) => e.name == 'downpayment_amount');
-    final dowmpaymentInputData = downPaymentFormList?.isNotEmpty == true
+    final downpaymentInputData = downPaymentFormList?.isNotEmpty == true
         ? downPaymentFormList?.first
         : null;
 
     final errorAmount = KCFormValidator.errorAmount(
       _amountCtrl.text.trim(),
       'Amount is required',
-      min: dowmpaymentInputData == null
+      min: downpaymentInputData == null
           ? 0
-          : (double.tryParse(dowmpaymentInputData.min.toString()) ?? 0),
-      max: dowmpaymentInputData == null
+          : (double.tryParse(downpaymentInputData.min.toString()) ?? 0),
+      max: downpaymentInputData == null
           ? 0
-          : (double.tryParse(dowmpaymentInputData.max.toString()) ?? 0),
+          : (double.tryParse(downpaymentInputData.max.toString()) ?? 0),
     );
     if ((errorAmount?.isEmpty == true ||
             formFields?.contains('downpayment_amount') != true) &&

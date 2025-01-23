@@ -66,6 +66,14 @@ class _PartnerKYCState extends State<PartnerKYC> {
         ?.formFields
         ?.map((e) => e.name)
         .toList();
+    final monthlyIncomeFormList = (checkoutNotfier.userKYCStepData?.nextStep ??
+            checkoutNotfier.selectedBankFlow?.nextStep)
+        ?.formFields
+        ?.where((e) => e.name == 'monthly_income');
+    final monthlyIncomeInputData = monthlyIncomeFormList?.isNotEmpty == true
+        ? monthlyIncomeFormList?.first
+        : null;
+
     final ninError = KCFormValidator.errorNIN(_ninCtrl.text.trim(), 'Required');
     final addressError =
         KCFormValidator.errorGeneric(_addressCtrl.text.trim(), 'Required');
@@ -85,8 +93,13 @@ class _PartnerKYCState extends State<PartnerKYC> {
         _companyAddressCtrl.text.trim(), 'Required');
     final companyStartDateError =
         KCFormValidator.errorDate(_companyStartDate, 'Required', true);
-    final monthlyIncomeError =
-        KCFormValidator.errorAmount(_monthlyIncomeCtrl.text.trim(), 'Required');
+    final monthlyIncomeError = KCFormValidator.errorAmount(
+      _monthlyIncomeCtrl.text.trim(),
+      'Required',
+      min: monthlyIncomeInputData == null
+          ? 0
+          : (double.tryParse(monthlyIncomeInputData.min.toString()) ?? 0),
+    );
     final nextOfKinNameError = KCFormValidator.errorGeneric(
         _nextOfkinNameCtrl.text.trim(), 'Required');
     final nextOfKinPhoneError = KCFormValidator.errorPhoneNumber(
@@ -701,24 +714,49 @@ class _PartnerKYCState extends State<PartnerKYC> {
                         child: StreamBuilder<String>(
                           stream: monthlyIncomeStreamCtrl.stream,
                           builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _monthlyIncomeCtrl,
-                              hint: "What's your monthly income? (Naira)",
-                              textInputType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                CurrencyTextInputFormatter.currency(
-                                  locale: 'en_NG',
-                                  decimalDigits: 0,
-                                  symbol: '₦',
+                            final inputData = formMap!
+                                .where((e) => e.name == 'monthly_income')
+                                .first;
+                            return Column(
+                              children: [
+                                KCInputField(
+                                  controller: _monthlyIncomeCtrl,
+                                  hint: "What's your monthly income? (Naira)",
+                                  textInputType: TextInputType.number,
+                                  textInputAction: TextInputAction.next,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9]')),
+                                    CurrencyTextInputFormatter.currency(
+                                      locale: 'en_NG',
+                                      decimalDigits: 0,
+                                      symbol: '₦',
+                                    ),
+                                  ],
+                                  validationMessage:
+                                      KCFormValidator.errorAmount(
+                                    snapshot.data,
+                                    'Income is required',
+                                    min: double.tryParse(
+                                            inputData.min.toString()) ??
+                                        0,
+                                  ),
                                 ),
+                                if (inputData.min != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: KCBodyText1(
+                                        'Min: NGN${KCStringUtil.formatAmount(double.tryParse(inputData.min.toString()) ?? 0, round: true)}',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w800,
+                                        color: KCColors.primary,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  )
                               ],
-                              validationMessage: KCFormValidator.errorAmount(
-                                snapshot.data,
-                                'Income is required',
-                              ),
                             );
                           },
                         ),

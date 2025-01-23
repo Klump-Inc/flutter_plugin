@@ -1,8 +1,13 @@
 import 'package:intl/intl.dart';
 
 class KCStringUtil {
-  static String formatAmount(double value) {
-    final f = NumberFormat('#,##0.00', 'en_US');
+  static String formatAmount(double value, {bool round = false}) {
+    NumberFormat f;
+    if (round) {
+      f = NumberFormat('#,##0', 'en_US');
+    } else {
+      f = NumberFormat('#,##0.00', 'en_US');
+    }
     return f.format(value);
   }
 
