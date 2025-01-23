@@ -494,6 +494,9 @@ class KCChangeNotifier extends ChangeNotifier {
         "downpayment_amount": _downPayment,
       });
     }
+    data.addAll({
+      'meta_data': checkoutData!.metaData,
+    });
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: newLoanStepData?.nextStep.method ?? '',
