@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
 import 'package:provider/provider.dart';
@@ -153,9 +152,9 @@ class _PartnerBioDataState extends State<PartnerBioData> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.bioDataStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
+    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final stepData = checkoutNotifier.bioDataStepData?.nextStep ??
+        checkoutNotifier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -174,43 +173,31 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: KC_PACKAGE_NAME,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                    const DraggableBar(),
+                    const YSpace(24),
+                    LogoHeaderWidget(
+                      onTap: checkoutNotifier.prevPage,
+                      logo: Image.network(
+                        checkoutNotifier.selectedBankFlow!.logo ?? '',
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
-                      Align(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
+                    if (checkoutNotifier.initiateResponse?.merchant != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Align(
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            checkoutNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                    const YSpace(16),
+                    const YSpace(24),
                     if (stepData?.displayData?.title != null)
                       KCHeadline3(
                         stepData?.displayData?.title ?? '',
-                        fontSize: 20,
                       ),
                     if (stepData?.displayData?.subTitle != null)
                       Padding(
@@ -451,11 +438,11 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
+                          disabled: !enabled || checkoutNotifier.isBusy,
+                          loading: checkoutNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotfier.bioData(
+                            checkoutNotifier.bioData(
                                 email: formFields?.contains('email') == true
                                     ? _emailCtrl.text.trim()
                                     : null,
@@ -476,7 +463,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                                         ? _passwordCtrl.text.trim()
                                         : null,
                                 amount: formFields?.contains('amount') == true
-                                    ? checkoutNotfier.totalAmount
+                                    ? checkoutNotifier.totalAmount
                                     : null);
                           },
                         );
