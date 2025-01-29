@@ -1071,4 +1071,21 @@ class KCChangeNotifier extends ChangeNotifier {
       },
     );
   }
+
+  void selectBankSubmitted() {
+    _verificationStepData = null;
+    _verifyOTPStepData = null;
+    _acceptTermsStepData = null;
+    _bioDataStepData = null;
+    _loanOptionStepData = null;
+    _repaymentDetailsStepData = null;
+    _userKYCStepData = null;
+    _documentVerificationStepData = null;
+    _proofAddressStepData = null;
+    _selfieStepData = null;
+    _newLoanStepData = null;
+    _loanStatusStepData = null;
+    _redirectStepData = null;
+    nextPage();
+  }
 }

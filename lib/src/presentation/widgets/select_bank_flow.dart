@@ -296,7 +296,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney') {
                 _getCameras();
               }
-              checkoutNotfier.nextPage.call();
+              checkoutNotfier.selectBankSubmitted();
             },
           ),
           const YSpace(59)
