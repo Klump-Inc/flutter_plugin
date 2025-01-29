@@ -787,10 +787,10 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as _i5.Future<void>);
 
   @override
-  void setCDLDisbursementMessage(dynamic message) => super.noSuchMethod(
+  void selectBankSubmitted() => super.noSuchMethod(
         Invocation.method(
-          #setCDLDisbursementMessage,
-          [message],
+          #selectBankSubmitted,
+          [],
         ),
         returnValueForMissingStub: null,
       );
