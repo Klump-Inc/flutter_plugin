@@ -69,18 +69,19 @@ class _PartnerDecisionState extends State<PartnerDecision> {
               padding: const EdgeInsets.symmetric(horizontal: 26),
               child: Column(
                 children: [
-                  const YSpace(32.59),
+                  const DraggableBar(),
+                  const YSpace(24),
                   Align(
                     child: Image.network(
                       checkoutNotifier.selectedBankFlow?.logo ?? '',
-                      height: 40,
+                      height: 55,
                       width: 120,
                     ),
                   ),
                   if (checkoutNotifier.initiateResponse?.merchant != null)
-                    Align(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Align(
                         child: KCHeadline4(
                           checkoutNotifier.initiateResponse!.merchant
                               .toString(),

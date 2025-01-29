@@ -653,6 +653,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
     required String? lastname,
     required DateTime? dob,
     required String? password,
+    required double? amount,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -664,6 +665,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #lastname: lastname,
             #dob: dob,
             #password: password,
+            #amount: amount,
           },
         ),
         returnValue: _i5.Future<void>.value(),
@@ -725,6 +727,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
     required String? installments,
     required int? repaymentDay,
     required _i2.PartnerInsurer? insurer,
+    required double? downpaymentAmount,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -734,6 +737,7 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #installments: installments,
             #repaymentDay: repaymentDay,
             #insurer: insurer,
+            #downpaymentAmount: downpaymentAmount,
           },
         ),
         returnValue: _i5.Future<void>.value(),

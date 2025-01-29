@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
@@ -118,53 +117,59 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     right: 26,
                     bottom: MediaQuery.of(context).viewInsets.bottom),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                    const DraggableBar(),
+                    const YSpace(24),
+                    LogoHeaderWidget(
+                      onTap: checkoutNotfier.prevPage,
+                      logo: Image.network(
+                        checkoutNotfier.selectedBankFlow!.logo ?? '',
+                        height: 55,
+                        width: 120,
+                      ),
+                    ),
+                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Align(
+                          child: KCHeadline4(
+                            checkoutNotfier.initiateResponse!.merchant
+                                .toString(),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO')
+                      Align(
                         child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
+                          padding: const EdgeInsets.only(top: 30, bottom: 10),
+                          child: Image.asset(
+                            KCAssets.safe,
+                            height: 109,
+                            width: 106,
                             package: KC_PACKAGE_NAME,
                           ),
                         ),
                       ),
-                    ),
-                    Image.network(
-                      checkoutNotfier.selectedBankFlow!.logo ?? '',
-                      height: 55,
-                      width: 120,
-                    ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
-                      KCHeadline4(
-                        checkoutNotfier.initiateResponse!.merchant.toString(),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO')
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30, bottom: 10),
-                        child: Image.asset(
-                          KCAssets.safe,
-                          height: 109,
-                          width: 106,
-                          package: KC_PACKAGE_NAME,
-                        ),
-                      ),
                     const YSpace(22),
-                    KCHeadline3(stepData?.displayData?.title ??
-                        (formFields?.contains('otp') == true
-                            ? 'Enter the code'
-                            : 'Enter password')),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: KCHeadline3(stepData?.displayData?.title ??
+                          (formFields?.contains('otp') == true
+                              ? 'Enter the code'
+                              : 'Enter password')),
+                    ),
                     const YSpace(8),
-                    KCHeadline5(stepData?.displayData?.subTitle ??
-                        (formFields?.contains('otp') == true
-                            ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
-                            : checkoutNotfier.verifyOTPStepData?.data
-                                    .toString() ??
-                                '')),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: KCHeadline5(stepData?.displayData?.subTitle ??
+                          (formFields?.contains('otp') == true
+                              ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
+                              : checkoutNotfier.verifyOTPStepData?.data
+                                      .toString() ??
+                                  '')),
+                    ),
                     const YSpace(28),
                     if (formFields?.contains('otp') == true)
                       Padding(

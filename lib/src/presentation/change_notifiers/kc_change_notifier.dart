@@ -124,6 +124,9 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _loanStatusStepData;
   KCAPIResponse? get loanStatusStepData => _loanStatusStepData;
 
+  KCAPIResponse? _redirectStepData;
+  KCAPIResponse? get redirectStepData => _redirectStepData;
+
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -154,6 +157,8 @@ class KCChangeNotifier extends ChangeNotifier {
   PartnerInsurer? get selectedPartnerInsurer => _selectedPartnerInsurer;
   String? _documentType;
   String? get documentType => _documentType;
+  double? _downPayment;
+  double? get downPayment => _downPayment;
 
   void setTransactionData(bool isLive, KlumpCheckoutData data) {
     _isLive = isLive;
@@ -182,8 +187,8 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   void storeNextStepData(KCAPIResponse data) {
-    final api = data.nextStep.name?.toUpperCase();
-    switch (api) {
+    final stepName = data.nextStep.name?.toUpperCase();
+    switch (stepName) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
       case 'ACCOUNT_VERIFICATION':
@@ -219,6 +224,10 @@ class KCChangeNotifier extends ChangeNotifier {
         break;
       case 'ACCEPT_LOAN_TERMS':
         _repaymentDetailsStepData = data;
+        break;
+      case 'REDIRECT':
+        _redirectStepData = data;
+        break;
       default:
     }
   }
@@ -230,32 +239,36 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     _email = email;
     _phoneNumber = phone;
-    final response = await initiateTransactionUsecase(
-      InitiateTransactionUsecaseParams(
-        amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
-        shippingFee: checkoutData!.shippingFee,
-        currency: _checkoutData!.currency ?? 'NGN',
-        publicKey: _checkoutData!.merchantPublicKey,
-        metaData: _checkoutData!.metaData,
-        isLive: isLive,
-        email: email,
-        phone: phone,
-        items: _checkoutData?.items ?? [],
-        shippingData: _checkoutData!.shippingData,
-        merchantReference: _checkoutData!.merchantReference,
-      ),
-    );
-    _setBusy(false);
-    return response.fold(
-      (l) {
-        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
-        return false;
-      },
-      (r) {
-        _initiateResponse = r;
-        return true;
-      },
-    );
+    if (initiateResponse == null) {
+      final response = await initiateTransactionUsecase(
+        InitiateTransactionUsecaseParams(
+          amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+          shippingFee: checkoutData!.shippingFee,
+          currency: _checkoutData!.currency ?? 'NGN',
+          publicKey: _checkoutData!.merchantPublicKey,
+          metaData: _checkoutData!.metaData,
+          isLive: isLive,
+          email: email,
+          phone: phone,
+          items: _checkoutData?.items ?? [],
+          shippingData: _checkoutData!.shippingData,
+          merchantReference: _checkoutData!.merchantReference,
+        ),
+      );
+      _setBusy(false);
+      return response.fold(
+        (l) {
+          showToast(KCExceptionsToMessage.mapErrorToMessage(l));
+          return false;
+        },
+        (r) {
+          _initiateResponse = r;
+          return true;
+        },
+      );
+    } else {
+      return false;
+    }
   }
 
   Future<void> getLoanPartners() async {
@@ -476,6 +489,14 @@ class KCChangeNotifier extends ChangeNotifier {
             int.tryParse(_repaymentDetails!.repaymentDay.toString()),
       });
     }
+    if (_downPayment != null) {
+      data.addAll({
+        "downpayment_amount": _downPayment,
+      });
+    }
+    data.addAll({
+      'meta_data': checkoutData!.metaData,
+    });
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: newLoanStepData?.nextStep.method ?? '',
@@ -500,7 +521,9 @@ class KCChangeNotifier extends ChangeNotifier {
   Future<DisbursementStatusResponse?> getLoanStatus() async {
     final response = await getLoanStatusUsecase(
       GetLoanStatusUsecaseParams(
-        url: loanStatusStepData?.nextStep.api ?? '',
+        url: loanStatusStepData?.nextStep.api ??
+            redirectStepData?.nextStep.api ??
+            '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
       ),
     );
@@ -712,6 +735,7 @@ class KCChangeNotifier extends ChangeNotifier {
     required String? lastname,
     required DateTime? dob,
     required String? password,
+    required double? amount,
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
@@ -737,6 +761,9 @@ class KCChangeNotifier extends ChangeNotifier {
         'date_of_birth': KCStringUtil.formatServerDate(dob),
       });
     }
+    if (amount != null) {
+      data.addAll({'amount': amount});
+    }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: bioDataStepData?.nextStep.method ?? '',
@@ -751,7 +778,11 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        nextPage();
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
       },
     );
   }
@@ -865,6 +896,7 @@ class KCChangeNotifier extends ChangeNotifier {
     required String? installments,
     required int? repaymentDay,
     required PartnerInsurer? insurer,
+    required double? downpaymentAmount,
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
@@ -886,6 +918,12 @@ class KCChangeNotifier extends ChangeNotifier {
         'insurerId': insurer.id,
       });
     }
+    if (downpaymentAmount != null) {
+      _downPayment = downpaymentAmount;
+      data.addAll({
+        'downpayment_amount': downpaymentAmount,
+      });
+    }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: loanOptionStepData?.nextStep.method ?? '',
@@ -900,8 +938,12 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        _repaymentDetails = r.data;
-        nextPage();
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          _repaymentDetails = r.data;
+          nextPage();
+        }
       },
     );
   }
@@ -1012,21 +1054,20 @@ class KCChangeNotifier extends ChangeNotifier {
   double get totalAmount =>
       _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
 
-  void setCDLDisbursementMessage(dynamic message) {
-    _disbursementStatusResponse = DisbursementStatusResponseModel(
-      isCompleted: true,
-      isSuccessful: true,
-      message: '',
-      next_repayment_date: null,
-      responseMessage: null,
-      transaction: message,
-    );
-    MixPanelService.logEvent(
-      '13 - SUCCESSFUL MODAL',
-      properties: {
-        'environment': isLive ? 'production' : 'staging',
-        'partner': selectedBankFlow?.slug,
-      },
-    );
+  void selectBankSubmitted() {
+    _verificationStepData = null;
+    _verifyOTPStepData = null;
+    _acceptTermsStepData = null;
+    _bioDataStepData = null;
+    _loanOptionStepData = null;
+    _repaymentDetailsStepData = null;
+    _userKYCStepData = null;
+    _documentVerificationStepData = null;
+    _proofAddressStepData = null;
+    _selfieStepData = null;
+    _newLoanStepData = null;
+    _loanStatusStepData = null;
+    _redirectStepData = null;
+    nextPage();
   }
 }

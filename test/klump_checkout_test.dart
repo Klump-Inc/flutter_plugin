@@ -223,8 +223,9 @@ void main() {
       await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
-      expect(find.text('Choose a bank'), findsOneWidget);
-      expect(find.text('Choose the bank you want to pay with'), findsOneWidget);
+      expect(find.text('Choose your bank'), findsOneWidget);
+      expect(
+          find.text('Select a bank to Buy Now and Pay Later.'), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });

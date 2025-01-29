@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -167,40 +166,18 @@ class _PartnerLoginState extends State<PartnerLogin> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const DraggableBar(),
                     const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: KC_PACKAGE_NAME,
-                          ),
-                        ),
-                      ),
+                    LogoHeaderWidget(
+                      onTap: checkoutNotfier.prevPage,
                     ),
-                    const YSpace(10),
-                    Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
-                        height: 55,
-                        width: 120,
-                      ),
+                    const YSpace(24),
+                    Image.network(
+                      checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      height: 55,
+                      width: 55,
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
-                      Align(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
-                          child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
-                                .toString(),
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    const YSpace(22.15),
+                    const YSpace(16),
                     KCHeadline3(
                       stepData?.displayData?.title ??
                           'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.',

@@ -144,7 +144,8 @@ class KCFormValidator {
     }
   }
 
-  static String? errorAmount(String? text, String message) {
+  static String? errorAmount(String? text, String message,
+      {double min = 0, double max = 0}) {
     if (text == null) {
       return null;
     } else if (text.isEmpty) {
@@ -152,7 +153,14 @@ class KCFormValidator {
     } else if (KCStringUtil.convertTextFigure(text) <= 0) {
       return 'Invalid figure';
     } else {
-      return '';
+      final amount = KCStringUtil.convertTextFigure(text);
+      if (amount < min) {
+        return 'Amount must be greater than NGN$min';
+      } else if (amount > max && max > 0) {
+        return 'Amount must be less than NGN$max';
+      } else {
+        return '';
+      }
     }
   }
 

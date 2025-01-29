@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
@@ -11,6 +13,9 @@ class PartnerPaymentSplit extends StatefulWidget {
 }
 
 class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
+  late TextEditingController _amountCtrl;
+  late StreamController<String> amountStreamCtrl;
+
   String? _installmentSplit;
   int? _repaymentDay;
   PartnerInsurer? _insurer;
@@ -19,12 +24,28 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
 
   void validateInputs() {
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.loanOptionStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
-        ?.formFields
-        ?.map((e) => e.name)
-        .toList();
-    if ((_installmentSplit != null ||
+    final stepData = checkoutNotfier.loanOptionStepData?.nextStep ??
+        checkoutNotfier.selectedBankFlow?.nextStep;
+    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final downPaymentFormList =
+        stepData?.formFields?.where((e) => e.name == 'downpayment_amount');
+    final downpaymentInputData = downPaymentFormList?.isNotEmpty == true
+        ? downPaymentFormList?.first
+        : null;
+
+    final errorAmount = KCFormValidator.errorAmount(
+      _amountCtrl.text.trim(),
+      'Amount is required',
+      min: downpaymentInputData == null
+          ? 0
+          : (double.tryParse(downpaymentInputData.min.toString()) ?? 0),
+      max: downpaymentInputData == null
+          ? 0
+          : (double.tryParse(downpaymentInputData.max.toString()) ?? 0),
+    );
+    if ((errorAmount?.isEmpty == true ||
+            formFields?.contains('downpayment_amount') != true) &&
+        (_installmentSplit != null ||
             formFields?.contains('installment') != true) &&
         (_repaymentDay != null ||
             formFields?.contains('repayment_day') != true) &&
@@ -48,6 +69,19 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
+    _amountCtrl = TextEditingController();
+    amountStreamCtrl = StreamController<String>.broadcast();
+    _amountCtrl.addListener(() {
+      amountStreamCtrl.sink.add(_amountCtrl.text.trim());
+      validateInputs();
+    });
+  }
+
+  @override
+  void dispose() {
+    _amountCtrl.dispose();
+    amountStreamCtrl.close();
+    super.dispose();
   }
 
   void _loanInsurer() {
@@ -75,31 +109,20 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: checkoutNotifier.prevPage,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: KC_PACKAGE_NAME,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      child: Image.network(
-                        checkoutNotifier.selectedBankFlow?.logo ?? '',
+                    const DraggableBar(),
+                    const YSpace(24),
+                    LogoHeaderWidget(
+                      onTap: checkoutNotifier.prevPage,
+                      logo: Image.network(
+                        checkoutNotifier.selectedBankFlow!.logo ?? '',
                         height: 55,
                         width: 120,
                       ),
                     ),
                     if (checkoutNotifier.initiateResponse?.merchant != null)
-                      Align(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Align(
                           child: KCHeadline4(
                             checkoutNotifier.initiateResponse!.merchant
                                 .toString(),
@@ -107,11 +130,10 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                           ),
                         ),
                       ),
-                    const YSpace(16),
+                    const YSpace(24),
                     if (stepData?.displayData?.title != null)
                       KCHeadline3(
                         stepData?.displayData?.title ?? '',
-                        fontSize: 20,
                       ),
                     if (stepData?.displayData?.subTitle != null)
                       Padding(
@@ -120,9 +142,53 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                             KCHeadline5(stepData?.displayData?.subTitle ?? ''),
                       ),
                     const YSpace(24),
+                    if (formFields?.contains('downpayment_amount') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
+                        child: StreamBuilder<String>(
+                          stream: amountStreamCtrl.stream,
+                          builder: (context, snapshot) {
+                            final inputData = formMap!
+                                .where((e) => e.name == 'downpayment_amount')
+                                .first;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                KCInputField(
+                                  controller: _amountCtrl,
+                                  hint: inputData.label ?? '',
+                                  textInputType: TextInputType.number,
+                                  textInputAction: TextInputAction.done,
+                                  validationMessage:
+                                      KCFormValidator.errorAmount(
+                                    snapshot.data,
+                                    'Amount is required',
+                                    min: double.tryParse(
+                                            inputData.min.toString()) ??
+                                        0,
+                                    max: double.tryParse(
+                                            inputData.max.toString()) ??
+                                        0,
+                                  ),
+                                ),
+                                if (inputData.smalltext != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: KCBodyText1(
+                                      inputData.smalltext,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      color: KCColors.primary,
+                                    ),
+                                  )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                     if (formFields?.contains('installment') == true)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.only(bottom: 24),
                         child: Builder(
                           builder: (context) {
                             final inputData = formMap!
@@ -311,6 +377,11 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                           disabled: !enabled || checkoutNotifier.isBusy,
                           loading: checkoutNotifier.isBusy,
                           onTap: () => checkoutNotifier.getRepaymentDetails(
+                            downpaymentAmount:
+                                formFields?.contains('downpayment_amount') ==
+                                        true
+                                    ? double.parse(_amountCtrl.text.trim())
+                                    : null,
                             installments: _installmentSplit,
                             repaymentDay: _repaymentDay,
                             insurer: _insurer,
