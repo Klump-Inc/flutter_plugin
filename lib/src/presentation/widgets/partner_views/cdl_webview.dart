@@ -47,7 +47,6 @@ class _CDLWebviewState extends State<CDLWebview> {
       ..addJavaScriptChannel(
         'FlutterOnSuccess',
         onMessageReceived: (JavaScriptMessage message) {
-          checkoutNotfier.setCDLDisbursementMessage(message.message);
           checkoutNotfier.nextPage();
         },
       );
