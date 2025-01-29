@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,32 +38,20 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const YSpace(30.82),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkWell(
-                      onTap: checkoutNotifier.prevPage,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: SvgPicture.asset(
-                          KCAssets.arrowBack,
-                          package: KC_PACKAGE_NAME,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const YSpace(10),
-                  Align(
-                    child: Image.network(
-                      checkoutNotifier.selectedBankFlow?.logo ?? '',
+                  const DraggableBar(),
+                  const YSpace(24),
+                  LogoHeaderWidget(
+                    onTap: checkoutNotifier.prevPage,
+                    logo: Image.network(
+                      checkoutNotifier.selectedBankFlow!.logo ?? '',
                       height: 55,
                       width: 120,
                     ),
                   ),
                   if (checkoutNotifier.initiateResponse?.merchant != null)
-                    Align(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Align(
                         child: KCHeadline4(
                           checkoutNotifier.initiateResponse!.merchant
                               .toString(),
@@ -72,10 +59,9 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                         ),
                       ),
                     ),
-                  const YSpace(22.15),
+                  const YSpace(24),
                   KCHeadline3(
                     stepData?.displayData?.title ?? '',
-                    fontSize: 24,
                   ),
                   if (stepData?.displayData?.subTitle != null)
                     Padding(
@@ -83,7 +69,6 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                       child: KCHeadline5(stepData?.displayData?.subTitle ?? ''),
                     ),
                   const YSpace(24),
-                  const YSpace(10),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Padding(

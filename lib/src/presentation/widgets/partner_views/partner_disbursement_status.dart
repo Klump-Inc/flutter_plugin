@@ -24,18 +24,19 @@ class PartnerDisbursementStatus extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 26),
                 child: Column(
                   children: [
-                    const YSpace(32.59),
+                    const DraggableBar(),
+                    const YSpace(24),
                     Align(
                       child: Image.network(
                         checkoutNotfier.selectedBankFlow?.logo ?? '',
-                        height: 40,
+                        height: 55,
                         width: 120,
                       ),
                     ),
                     if (checkoutNotfier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
+                          padding: const EdgeInsets.only(top: 10),
                           child: KCHeadline4(
                             checkoutNotfier.initiateResponse!.merchant
                                 .toString(),

@@ -28,8 +28,9 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final nextStep = checkoutNotfier.selectedBankFlow?.nextStep;
+    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final nextStep = checkoutNotifier.selectedBankFlow?.nextStep;
+    final formFields = nextStep?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -44,30 +45,30 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const YSpace(32.6),
+                    const DraggableBar(),
+                    const YSpace(24),
                     Align(
                       child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                        checkoutNotifier.selectedBankFlow?.logo ?? '',
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
-                      Align(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 0),
+                    if (checkoutNotifier.initiateResponse?.merchant != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Align(
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            checkoutNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                    const YSpace(22.15),
+                    const YSpace(24),
                     if (nextStep?.displayData?.title != null)
                       KCHeadline3(
                         nextStep?.displayData?.title ?? '',
-                        fontSize: 24,
                       ),
                     if (nextStep?.displayData?.subTitle != null)
                       Padding(
@@ -90,7 +91,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                             subTitle: nextStep?.displayData?.list![index]
                                 ?['smalltext'],
                             lastItem: index + 1 ==
-                                (checkoutNotfier.selectedBankFlow?.nextStep
+                                (checkoutNotifier.selectedBankFlow?.nextStep
                                         ?.displayData?.list!.length ??
                                     0),
                           ),
@@ -141,26 +142,22 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                       valueListenable: _accepted,
                       builder: (_, accepted, __) {
                         return KCPrimaryButton(
-                          loading: checkoutNotfier.isBusy,
+                          loading: checkoutNotifier.isBusy,
                           disabled: (!accepted &&
-                                  (checkoutNotfier.selectedBankFlow?.slug ==
-                                          'first_bank' ||
-                                      checkoutNotfier.selectedBankFlow?.slug ==
-                                          'renmoney' ||
-                                      checkoutNotfier.selectedBankFlow?.slug ==
-                                          'fcmb_credit_direct')) ||
-                              checkoutNotfier.isBusy,
+                                  formFields?.contains('is_accepted') ==
+                                      true) ||
+                              checkoutNotifier.isBusy,
                           title: 'Continue',
                           onTap: () {
                             if (nextStep?.api ==
                                 '/loans/account/verification') {
-                              checkoutNotfier.validateAccount();
+                              checkoutNotifier.validateAccount();
                             } else if (nextStep?.api
                                     ?.contains('/requirements') ==
                                 true) {
-                              checkoutNotfier.acceptRequirement();
+                              checkoutNotifier.acceptRequirement();
                             } else {
-                              checkoutNotfier.nextPage();
+                              checkoutNotifier.nextPage();
                             }
                           },
                         );
@@ -168,8 +165,8 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                     ),
                     const YSpace(16),
                     KCSecondaryButton(
-                      title: 'Go back',
-                      onTap: () => checkoutNotfier.prevPage(),
+                      title: 'Back',
+                      onTap: () => checkoutNotifier.prevPage(),
                     ),
                     const YSpace(59)
                   ],

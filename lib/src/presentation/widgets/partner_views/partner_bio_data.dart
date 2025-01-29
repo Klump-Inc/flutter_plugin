@@ -422,6 +422,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                               controller: _passwordCtrl,
                               hint: 'Password',
                               // focusNode: _passwordNode,
+                              password: true,
                               textInputType: TextInputType.text,
                               textInputAction: TextInputAction.done,
                               validationMessage: KCFormValidator.errorPassword(
@@ -439,7 +440,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                           (stepData?.displayData?.smallText ?? '')
                               .replaceAll('<strong>', '')
                               .replaceAll('</strong>', ''),
-                          fontSize: 12,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     const YSpace(25),
@@ -454,12 +456,28 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                           onTap: () {
                             FocusScope.of(context).unfocus();
                             checkoutNotfier.bioData(
-                              email: _emailCtrl.text.trim(),
-                              firstname: _firstNameCtrl.text.trim(),
-                              lastname: _lastNameCtrl.text.trim(),
-                              dob: _dob,
-                              password: _passwordCtrl.text.trim(),
-                            );
+                                email: formFields?.contains('email') == true
+                                    ? _emailCtrl.text.trim()
+                                    : null,
+                                firstname:
+                                    formFields?.contains('firstname') == true
+                                        ? _firstNameCtrl.text.trim()
+                                        : null,
+                                lastname:
+                                    formFields?.contains('lastname') == true
+                                        ? _lastNameCtrl.text.trim()
+                                        : null,
+                                dob: formFields?.contains('date_of_birth') ==
+                                        true
+                                    ? _dob
+                                    : null,
+                                password:
+                                    formFields?.contains('password') == true
+                                        ? _passwordCtrl.text.trim()
+                                        : null,
+                                amount: formFields?.contains('amount') == true
+                                    ? checkoutNotfier.totalAmount
+                                    : null);
                           },
                         );
                       },

@@ -86,27 +86,16 @@ class _AccountEmailState extends State<AccountEmail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const DraggableBar(),
                     const YSpace(30.82),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: SvgPicture.asset(
-                            KCAssets.arrowBack,
-                            package: 'klump_checkout',
-                          ),
+                    LogoHeaderWidget(
+                      logo: Align(
+                        child: SvgPicture.asset(
+                          KCAssets.klumpLogo,
+                          height: 30,
+                          width: 47,
+                          package: KC_PACKAGE_NAME,
                         ),
-                      ),
-                    ),
-                    const YSpace(16),
-                    Align(
-                      child: SvgPicture.asset(
-                        KCAssets.klumpLogo,
-                        height: 30,
-                        width: 47,
-                        package: KC_PACKAGE_NAME,
                       ),
                     ),
                     const YSpace(24),
