@@ -69,7 +69,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.verifyOTPStepData?.nextStep ??
+    final stepData = checkoutNotfier.redirectStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -118,17 +118,24 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                         fontWeight: FontWeight.w700,
                       ),
                     const YSpace(22.15),
-                    KCHeadline3(
-                      stepData?.displayData?.title ?? '',
-                      fontSize: 24,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: KCHeadline3(
+                        stepData?.displayData?.title ?? '',
+                      ),
                     ),
                     if (stepData?.displayData?.subTitle != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child:
-                            KCHeadline5(stepData?.displayData?.subTitle ?? ''),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: KCHeadline5(
+                            stepData?.displayData?.subTitle ?? '',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
-                    const YSpace(24),
+                    const YSpace(16),
                     SizedBox(
                       height: 267,
                       child: PageView(
@@ -147,7 +154,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                             .toList(),
                       ),
                     ),
-                    const YSpace(24),
+                    const YSpace(16),
                     ValueListenableBuilder<int>(
                         valueListenable: _currentPage,
                         builder: (_, currentPage, __) {
@@ -185,10 +192,12 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: KCPrimaryButton(
-                        title: 'Continue',
+                        title: 'Complete payment',
                         disabled: checkoutNotfier.isBusy,
                         loading: checkoutNotfier.isBusy,
-                        onTap: () {},
+                        onTap: () {
+                          checkoutNotfier.nextPage();
+                        },
                       ),
                     ),
                     const YSpace(59)
