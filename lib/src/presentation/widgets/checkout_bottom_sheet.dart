@@ -6,13 +6,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class KCBottomSheet extends StatefulWidget {
-  final bool isLive;
   final KlumpCheckoutData data;
 
-  const KCBottomSheet({super.key, required this.data, required this.isLive});
+  const KCBottomSheet({super.key, required this.data});
 
-  static dynamic route(
-      BuildContext context, KlumpCheckoutData data, bool isLive) {
+  static dynamic route(BuildContext context, KlumpCheckoutData data) {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       isDismissible: false,
@@ -25,7 +23,7 @@ class KCBottomSheet extends StatefulWidget {
           topRight: Radius.circular(9.92367),
         ),
       ),
-      builder: (context) => KCBottomSheet(data: data, isLive: isLive),
+      builder: (context) => KCBottomSheet(data: data),
     );
   }
 
@@ -40,13 +38,12 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    MixPanelService.initMixpanel(widget.isLive
-            ? KC_MIX_PANEL_TOKEN_PROD
-            : KC_MIX_PANEL_TOKEN_STAGING)
+    MixPanelService.initMixpanel(
+            !dev ? KC_MIX_PANEL_TOKEN_PROD : KC_MIX_PANEL_TOKEN_STAGING)
         .then(
       (value) => MixPanelService.logEvent(
         '1 - Checkout Widget Initiated',
-        properties: {'environment': widget.isLive ? 'production' : 'staging'},
+        properties: {'environment': !dev ? 'production' : 'staging'},
       ),
     );
   }
@@ -96,11 +93,9 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             widget.data.phone == null)
                           AccountEmail(
                             data: widget.data,
-                            isLive: widget.isLive,
                           ),
                         SelectBankFlow(
                           data: widget.data,
-                          isLive: widget.isLive,
                         ),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                                 'polaris' ||

@@ -16,7 +16,6 @@ class PartnerRepository {
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
-    required bool isLive,
     required String email,
     required String phone,
     required List<KlumpCheckoutItem> items,
@@ -30,7 +29,6 @@ class PartnerRepository {
         currency: currency,
         publicKey: publicKey,
         metaData: metaData,
-        isLive: isLive,
         email: email,
         phone: phone,
         items: items,
@@ -53,6 +51,7 @@ class PartnerRepository {
     required String partner,
     required String? bank,
     required String? email,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.validateAccount(
@@ -63,6 +62,7 @@ class PartnerRepository {
         firstName: firstName,
         bank: bank,
         email: email,
+        isLive: isLive,
       );
       return Right(response);
     } catch (e) {
@@ -82,6 +82,7 @@ class PartnerRepository {
     required String? firstName,
     required String partner,
     required String? bank,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.verifyOTP(
@@ -94,6 +95,7 @@ class PartnerRepository {
         firstName: firstName,
         partner: partner,
         bank: bank,
+        isLive: isLive,
       );
       return Right(response);
     } catch (e) {
@@ -106,11 +108,13 @@ class PartnerRepository {
   Future<Either<KCException, KCAPIResponse>> getBankTC({
     required String publicKey,
     required String partner,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getBankTC(
         publicKey: publicKey,
         partner: partner,
+        isLive: isLive,
       );
       return Right(response);
     } catch (e) {
@@ -127,6 +131,7 @@ class PartnerRepository {
     required int? repaymentDay,
     required int? insurerId,
     required String partner,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getRepaymentDetails(
@@ -136,6 +141,7 @@ class PartnerRepository {
         repaymentDay: repaymentDay,
         insurerId: insurerId,
         partner: partner,
+        isLive: isLive,
       );
       return Right(response);
     } catch (e) {
@@ -148,10 +154,14 @@ class PartnerRepository {
   Future<Either<KCException, DisbursementStatusResponse>> getLoanStatus({
     required String url,
     required String publicKey,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getLoanStatus(
-          url: url, publicKey: publicKey);
+        url: url,
+        publicKey: publicKey,
+        isLive: isLive,
+      );
       return Right(response);
     } catch (e) {
       return Left(
@@ -165,6 +175,7 @@ class PartnerRepository {
     required String password,
     required String publicKey,
     required String partner,
+    required bool isLive,
     DateTime? dob,
   }) async {
     try {
@@ -173,6 +184,7 @@ class PartnerRepository {
         password: password,
         publicKey: publicKey,
         partner: partner,
+        isLive: isLive,
         dob: dob,
       );
       return Right(response);
@@ -187,12 +199,14 @@ class PartnerRepository {
     required String partner,
     required String publicKey,
     required double amount,
+    required bool isLive,
   }) async {
     try {
       final response = await stanbicRmoteDatasource.getPartnerInsurers(
         partner: partner,
         publicKey: publicKey,
         amount: amount,
+        isLive: isLive,
       );
       return Right(response);
     } catch (e) {

@@ -22,7 +22,9 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
     MixPanelService.logEvent(
       '12 - REDIRECT MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

@@ -33,7 +33,9 @@ class _PartnerTermsState extends State<PartnerTerms> {
       MixPanelService.logEvent(
         '9 - ACCEPT LOAN TERMS MODAL',
         properties: {
-          'environment': checkoutNotifier.isLive ? 'production' : 'staging',
+          'environment': checkoutNotifier.initiateResponse?.isLive == true
+              ? 'production'
+              : 'staging',
           'partner': checkoutNotifier.selectedBankFlow?.slug,
         },
       );

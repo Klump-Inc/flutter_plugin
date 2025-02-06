@@ -40,7 +40,9 @@ class _PartnerDecisionState extends State<PartnerDecision> {
     MixPanelService.logEvent(
       '11 - NEW LOAN MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

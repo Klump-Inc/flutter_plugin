@@ -18,6 +18,7 @@ class GetPartnerInsurersUsecase
         partner: params.partner,
         publicKey: params.publicKey,
         amount: params.amount,
+        isLive: params.isLive,
       );
 }
 
@@ -25,13 +26,20 @@ class GetPartnerInsurersUsecaseParams extends Equatable {
   final String publicKey;
   final String partner;
   final double amount;
+  final bool isLive;
 
   const GetPartnerInsurersUsecaseParams({
     required this.publicKey,
     required this.partner,
     required this.amount,
+    required this.isLive,
   });
 
   @override
-  List<Object?> get props => [publicKey, partner, amount];
+  List<Object?> get props => [
+        publicKey,
+        partner,
+        amount,
+        isLive,
+      ];
 }

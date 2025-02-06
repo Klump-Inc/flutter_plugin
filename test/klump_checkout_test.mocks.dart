@@ -357,12 +357,6 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  bool get isLive => (super.noSuchMethod(
-        Invocation.getter(#isLive),
-        returnValue: false,
-      ) as bool);
-
-  @override
   bool get isBusy => (super.noSuchMethod(
         Invocation.getter(#isBusy),
         returnValue: false,
@@ -414,17 +408,10 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  void setTransactionData(
-    bool? isLive,
-    _i2.KlumpCheckoutData? data,
-  ) =>
-      super.noSuchMethod(
+  void setTransactionData(_i2.KlumpCheckoutData? data) => super.noSuchMethod(
         Invocation.method(
           #setTransactionData,
-          [
-            isLive,
-            data,
-          ],
+          [data],
         ),
         returnValueForMissingStub: null,
       );

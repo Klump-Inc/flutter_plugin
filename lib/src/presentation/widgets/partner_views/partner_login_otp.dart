@@ -80,7 +80,9 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
     MixPanelService.logEvent(
       '7 - VERIFY OTP MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

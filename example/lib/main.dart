@@ -42,7 +42,6 @@ class FirstScreen extends StatelessWidget {
           onPressed: () async {
             final klumpCheckout = KlumpCheckout();
             final res = await klumpCheckout.pay(
-              isLive: false,
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:

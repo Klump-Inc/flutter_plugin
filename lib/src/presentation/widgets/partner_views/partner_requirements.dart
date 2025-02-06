@@ -20,7 +20,9 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
     MixPanelService.logEvent(
       '5 - PARTNER REQUIREMENTS MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'payload': {'bank': changeNotifier.selectedBankFlow?.slug},
       },
     );

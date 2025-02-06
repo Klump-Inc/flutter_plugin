@@ -233,7 +233,9 @@ class _PartnerKYCState extends State<PartnerKYC> {
     MixPanelService.logEvent(
       '10 - KYC MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

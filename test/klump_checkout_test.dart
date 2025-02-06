@@ -159,8 +159,7 @@ void main() {
       expect(find.text('text'), findsOneWidget);
     });
     testWidgets('KCBottomSheet renders correctly', (tester) async {
-      await tester
-          .pumpKCWidget(KCBottomSheet(data: checkoutData, isLive: false));
+      await tester.pumpKCWidget(KCBottomSheet(data: checkoutData));
       await tester.pumpAndSettle();
       expect(find.byType(SizedBox), findsWidgets);
       expect(find.byType(YSpace), findsWidgets);
@@ -172,7 +171,6 @@ void main() {
   group('Partner Views:', () {
     testWidgets('AccountEmail renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -180,7 +178,6 @@ void main() {
             builder: (context, kcChangeNotifier) {
               return AccountEmail(
                 data: checkoutData,
-                isLive: false,
               );
             },
           ),
@@ -199,7 +196,6 @@ void main() {
 
     testWidgets('SelectBankFlow renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.loanPartners).thenAnswer((_) => loanPartners);
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
@@ -214,7 +210,6 @@ void main() {
             builder: (context, kcChangeNotifier) {
               return SelectBankFlow(
                 data: checkoutData,
-                isLive: false,
               );
             },
           ),
@@ -253,7 +248,6 @@ void main() {
 
     testWidgets('PartnerLogin renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.email).thenAnswer((_) => 'sample@mail.com');
       when(kcChangeNotifier.phoneNumber).thenAnswer((_) => '08012345678');
       when(kcChangeNotifier.accountNumber).thenAnswer((_) => '1234567890');
@@ -283,7 +277,6 @@ void main() {
     });
     testWidgets('PartnerLoginOTP renders correctly', (tester) async {
       when(kcChangeNotifier.phoneNumber).thenAnswer((_) => phoneNumber);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
@@ -319,7 +312,6 @@ void main() {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.klumpUser).thenAnswer((_) =>
           KlumpUserModel.fromJson(
               (verifyOTPJson['data'] as Map<String, dynamic>)));
@@ -372,7 +364,6 @@ void main() {
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.loanOptionStepData).thenAnswer((_) => KCAPIResponse(
           nextStep: NextStepModel.fromJson(
               acceptTermsJson['next_step'] as Map<String, dynamic>)));
@@ -451,7 +442,6 @@ void main() {
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.bioDataStepData).thenAnswer((_) => null);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -474,7 +464,6 @@ void main() {
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.loanStatusStepData).thenAnswer((_) => KCAPIResponse(
           nextStep: NextStepModel.fromJson(
               newLoanJsonPolaris['next_step'] as Map<String, dynamic>)));
@@ -501,7 +490,6 @@ void main() {
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -526,7 +514,6 @@ void main() {
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
           ChangeNotifierProvider<KCChangeNotifier>.value(
@@ -552,7 +539,6 @@ void main() {
       when(kcChangeNotifier.loanStatusStepData).thenAnswer((_) => KCAPIResponse(
           nextStep: NextStepModel.fromJson(
               newLoanResponse['next_step'] as Map<String, dynamic>)));
-      when(kcChangeNotifier.isLive).thenAnswer((_) => false);
       when(kcChangeNotifier.disbursementStatusResponse).thenAnswer(
         (_) => const DisbursementStatusResponse(
           isCompleted: true,

@@ -13,10 +13,9 @@ class KlumpCheckout {
   ///
   /// returns [KlumpCheckoutResponse]
   Future<KlumpCheckoutResponse?> pay({
-    bool isLive = true,
     required BuildContext context,
     required KlumpCheckoutData data,
   }) async {
-    return await KCBottomSheet.route(context, data, isLive);
+    return await KCBottomSheet.route(context, data);
   }
 }

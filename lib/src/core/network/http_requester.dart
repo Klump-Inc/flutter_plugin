@@ -41,7 +41,6 @@ class KCHttpRequester {
   }
 
   Future<Response<dynamic>> get({
-    required String? environment,
     required String endpoint,
     String? token,
     Map<String, dynamic>? queryParam,
@@ -67,7 +66,6 @@ class KCHttpRequester {
   }
 
   Future<Response<dynamic>> patch({
-    required String? environment,
     required String endpoint,
     required dynamic body,
     String? token,

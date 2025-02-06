@@ -65,7 +65,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
     MixPanelService.logEvent(
       '8 - LOAN OPTIONS MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

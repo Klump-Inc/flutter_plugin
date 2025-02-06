@@ -133,7 +133,9 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     MixPanelService.logEvent(
       '10 - BIO DATA MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

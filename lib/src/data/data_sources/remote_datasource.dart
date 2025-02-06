@@ -9,7 +9,6 @@ abstract class RemoteDatasource {
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
-    required bool isLive,
     required String email,
     required String phone,
     required List<KlumpCheckoutItem> items,
@@ -24,6 +23,7 @@ abstract class RemoteDatasource {
     required String? firstName,
     required String? bank,
     required String? email,
+    required bool isLive,
   });
   Future<KCAPIResponseModel> accountCredentials({
     required String email,
@@ -31,6 +31,7 @@ abstract class RemoteDatasource {
     required String publicKey,
     required String partner,
     DateTime? dob,
+    required bool isLive,
   });
   Future<KCAPIResponseModel> verifyOTP({
     required String? accountNumber,
@@ -42,10 +43,12 @@ abstract class RemoteDatasource {
     required String? firstName,
     required String partner,
     required String? bank,
+    required bool isLive,
   });
   Future<KCAPIResponseModel> getBankTC({
     required String publicKey,
     required String partner,
+    required bool isLive,
   });
   Future<KCAPIResponseModel> getRepaymentDetails({
     required double amount,
@@ -54,16 +57,19 @@ abstract class RemoteDatasource {
     required int? repaymentDay,
     required int? insurerId,
     required String partner,
+    required bool isLive,
   });
 
   Future<DisbursementStatusResponseModel> getLoanStatus({
     required String url,
     required String publicKey,
+    required bool isLive,
   });
   Future<List<PartnerInsurerModel>> getPartnerInsurers({
     required String partner,
     required String publicKey,
     required double amount,
+    required bool isLive,
   });
   Future<List<PartnerModel>> getLoanPartners({
     required String publicKey,
@@ -94,7 +100,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String currency,
     required String publicKey,
     required Map<String, dynamic> metaData,
-    required bool isLive,
     required String email,
     required String phone,
     required List<KlumpCheckoutItem> items,
@@ -103,10 +108,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-        KC_ENVIRONMENT_KEY,
-        isLive ? KC_PRODUCTION_ENVIRONMENT : KC_STAGING_ENVIRONMENT,
-      );
+      final headers = {
+        'klump-public-key': publicKey,
+      };
       final body = {
         "amount": amount,
         "currency": currency,
@@ -128,6 +132,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final response = await kcHttpRequester.post(
         endpoint: '/v1/transactions/initiate',
         body: body,
+        headers: headers,
       );
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
@@ -146,6 +151,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String? firstName,
     required String? bank,
     required String? email,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -155,8 +161,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final body = <String, dynamic>{
         'partner': partner,
         'klump_public_key': publicKey,
-        'is_live':
-            prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
+        'is_live': isLive,
       };
       if (accountNumber != null) {
         body.addAll({
@@ -186,10 +191,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       MixPanelService.logEvent(
         '6 - ACCOUNT VERIFICATION MODAL',
         properties: {
-          'environment':
-              prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT
-                  ? 'production'
-                  : 'staging',
+          'environment': isLive ? 'production' : 'staging',
           'partner': partner,
           'payload': body,
         },
@@ -220,6 +222,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String? firstName,
     required String partner,
     required String? bank,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -230,8 +233,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "partner": partner,
         "email": "",
         'klump_public_key': publicKey,
-        'is_live':
-            prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
+        'is_live': isLive,
       };
       if (accountNumber != null) {
         body.addAll({
@@ -289,6 +291,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   Future<KCAPIResponseModel> getBankTC({
     required String publicKey,
     required String partner,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -297,11 +300,9 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       };
       final queryParams = {
         'partner': partner,
-        'is_live':
-            prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT,
+        'is_live': isLive,
       };
       final response = await kcHttpRequester.get(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         headers: headers,
         endpoint: '/v1/loans/partners/terms-and-conditions',
         queryParam: queryParams,
@@ -324,6 +325,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required int? repaymentDay,
     required int? insurerId,
     required String partner,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -335,6 +337,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "installment": installment,
         "klump_public_key": publicKey,
         "partner": partner,
+        'is_live': isLive,
       };
       if (partner == 'stanbic') {
         body.addAll({
@@ -365,6 +368,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   Future<DisbursementStatusResponseModel> getLoanStatus({
     required String url,
     required String publicKey,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -372,7 +376,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'klump-public-key': publicKey,
       };
       final response = await kcHttpRequester.get(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1$url',
         headers: headers,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
@@ -384,18 +387,21 @@ class RemoteDataSourceImpl implements RemoteDatasource {
   }
 
   @override
-  Future<KCAPIResponseModel> accountCredentials(
-      {required String email,
-      required String password,
-      required String publicKey,
-      required String partner,
-      DateTime? dob}) async {
+  Future<KCAPIResponseModel> accountCredentials({
+    required String email,
+    required String password,
+    required String publicKey,
+    required String partner,
+    required bool isLive,
+    DateTime? dob,
+  }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final body = {
         "email": email,
         "password": password,
         "partner": partner,
+        'is_live': isLive,
       };
       if (partner == 'polaris' && dob != null) {
         body.addAll({
@@ -424,16 +430,14 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String partner,
     required String publicKey,
     required double amount,
+    required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final headers = {
         'klump-public-key': publicKey,
       };
-      final isLive =
-          prefs.getString(KC_ENVIRONMENT_KEY) == KC_PRODUCTION_ENVIRONMENT;
       final response = await kcHttpRequester.get(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint:
             '/v1/loans/partners/insurers?is_live=$isLive&partner=$partner&amount=$amount',
         headers: headers,
@@ -451,12 +455,10 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required double amount,
   }) async {
     if (await kcInternetInfo.isConnected) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final headers = {
         'klump-public-key': publicKey,
       };
       final response = await kcHttpRequester.get(
-        environment: prefs.getString(KC_ENVIRONMENT_KEY),
         endpoint: '/v1/loans/partners?amount=$amount',
         headers: headers,
       );
@@ -489,7 +491,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         );
       } else {
         response = await kcHttpRequester.get(
-          environment: prefs.getString(KC_ENVIRONMENT_KEY),
           endpoint: '/v1$api',
           headers: headers,
           token: prefs.getString(KC_CHECKOUT_TOKEN),
