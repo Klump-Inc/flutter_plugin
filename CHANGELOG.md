@@ -23,7 +23,9 @@
 ## [1.0.23] - Fixes
 ## [1.0.24] - Fixes
 ## [1.0.25] - Insurance partners update
-## [1.0.26] - Return Metadata after checkout
+## [1.0.26] - Return Metadata after 
+## [1.0.27] - Fixes
+
 
 
 

@@ -83,7 +83,7 @@ class _CDLWebviewState extends State<CDLWebview> {
         let config = {
           publicKey: "$CDL_PUBLIC_KEY",
           transaction: transaction,
-          isLive: false,
+          isLive: ${checkoutNotfier.initiateResponse?.isLive == true},
           onSuccess: function (response) {
             console.log(JSON.stringify(response));
             FlutterOnSuccess.postMessage(JSON.stringify(data));
