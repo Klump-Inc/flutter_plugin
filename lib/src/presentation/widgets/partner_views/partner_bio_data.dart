@@ -208,31 +208,6 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                             KCHeadline5(stepData?.displayData?.subTitle ?? ''),
                       ),
                     const YSpace(24),
-                    if (formFields?.contains('accountNumber') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: lastNameStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _lastNameCtrl,
-                              hint: 'Account Number',
-                              textInputType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(10),
-                              ],
-                              validationMessage:
-                                  KCFormValidator.errorAccountNumber(
-                                snapshot.data,
-                                'Accouunt number is required',
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                     if (formFields?.contains('phoneNumber') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
