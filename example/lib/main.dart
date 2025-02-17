@@ -45,7 +45,8 @@ class FirstScreen extends StatelessWidget {
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    'klp_pk_9ab98d0ddf0e447c9e0a615f4e546604a39a8233a88c4b93860f119c8cd9a332',
+                    'klp_pk_ce504aaab7e64f4dbb97d46b6b1c1ff3418672c7eef34db4a0dab9391eb2e174',
+                // 'klp_pk_9ab98d0ddf0e447c9e0a615f4e546604a39a8233a88c4b93860f119c8cd9a332',
                 // 'klp_pk_test_9d7e5259a162417ead4f7743f516a71c7d05e0c7af2c4756907425c47f52767d',
                 amount: 300000,
                 shippingFee: 10000,
@@ -65,8 +66,8 @@ class FirstScreen extends StatelessWidget {
                   )
                 ],
                 shippingData: null,
-                email: 'sample@gmail.com',
-                phone: '08012345678',
+                email: 'jerry@useklump.com',
+                phone: '08063753133',
               ),
             );
             // ignore: avoid_print

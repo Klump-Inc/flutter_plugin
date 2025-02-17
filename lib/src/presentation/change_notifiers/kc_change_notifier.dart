@@ -690,24 +690,22 @@ class KCChangeNotifier extends ChangeNotifier {
                   ? KC_MONO_KEY_LIVE
                   : KC_MONO_KEY_TEST,
               scope: "auth", // NEWLY INTRODUCED
-              data:
-                  // NEWLY INTRODUCED
-                  {
-                "customer": {
-                  "name": "$firstName", // REQUIRED
-                  "email": email, // REQUIRED
-                  "identity": {
-                    "type": "phone",
-                    "number": phoneNumber,
-                  }
-                }
-              },
               onClosed: (data) {
                 monoCode = data ?? '';
               },
               onSuccess: (code) {
                 monoCode = code;
               },
+              customer: MonoCustomer(
+                newCustomer: MonoNewCustomerModel(
+                  email: "$email",
+                  name: "$firstName",
+                  identity: MonoNewCustomerIdentity(
+                    type: "phone",
+                    number: "$phoneNumber",
+                  ),
+                ),
+              ),
             ),
           ),
         );
