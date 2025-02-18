@@ -154,6 +154,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')
                           const PartnerSelfieUpload(),
+                        if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                          const WemaIllustration(),
                         if (checkoutNotifier.selectedBankFlow?.slug !=
                                 'specta' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
@@ -161,11 +163,10 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                             checkoutNotifier.selectedBankFlow?.slug !=
                                 'fcmb_credit_direct' &&
                             checkoutNotifier.selectedBankFlow?.slug !=
-                                'first_bank' &&
-                            checkoutNotifier.selectedBankFlow?.slug != 'wema')
+                                'first_bank')
                           const PartnerPaymentPreview(),
                         if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
-                          const WemaIllustration(),
+                          const PartnerTermsCondition(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'polaris')
                           const PartnerInvoice(),

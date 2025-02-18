@@ -196,7 +196,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                         disabled: checkoutNotfier.isBusy,
                         loading: checkoutNotfier.isBusy,
                         onTap: () {
-                          checkoutNotfier.nextPage();
+                          checkoutNotfier.wemaRedirect();
                         },
                       ),
                     ),
