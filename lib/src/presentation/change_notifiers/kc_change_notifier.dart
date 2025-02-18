@@ -761,16 +761,18 @@ class KCChangeNotifier extends ChangeNotifier {
               onSuccess: (code) {
                 monoCode = code;
               },
-              customer: MonoCustomer(
-                newCustomer: MonoNewCustomerModel(
-                  email: "$email",
-                  name: "$firstName",
-                  identity: MonoNewCustomerIdentity(
-                    type: "phone",
-                    number: "$phoneNumber",
-                  ),
-                ),
-              ),
+              data:
+                  // NEWLY INTRODUCED
+                  {
+                'customer': {
+                  'name': '$firstName', // REQUIRED
+                  'email': '$email', // REQUIRED
+                  'identity': {
+                    'type': "phone",
+                    'number': "$phoneNumber",
+                  }
+                }
+              },
             ),
           ),
         );
