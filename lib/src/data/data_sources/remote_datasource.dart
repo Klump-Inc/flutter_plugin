@@ -507,7 +507,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
             : api == '/loans/account/repayments-detail'
                 ? RepaymentDetailsModel.fromJson(response.data['data'])
                 : api == '/v1/loans/account/new-loan'
-                    ? response.data['data']['id']
+                    ? response.data['data']
                     : response.data['message'],
       );
     } else {

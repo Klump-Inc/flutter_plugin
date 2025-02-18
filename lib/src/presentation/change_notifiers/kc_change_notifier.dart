@@ -225,6 +225,9 @@ class KCChangeNotifier extends ChangeNotifier {
       case 'REDIRECT':
         _redirectStepData = data;
         break;
+      case 'TERM_CONDITIONS':
+        _acceptTermsStepData = data;
+        break;
       default:
     }
   }
@@ -598,19 +601,25 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
-  Future<void> acceptTerms() async {
+  Future<void> acceptRepaymentTerms({
+    String? reference,
+  }) async {
     _setBusy(true);
+    var data = {
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (reference != null) {
+      data['reference'] = reference;
+    }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: repaymentDetailsStepData?.nextStep.method ?? '',
         api: repaymentDetailsStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
-        data: {
-          'partner': _selectedBankFlow!.slug,
-          'is_live': initiateResponse?.isLive == true,
-          'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
-        },
+        data: data,
       ),
     );
     _setBusy(false);
@@ -623,6 +632,62 @@ class KCChangeNotifier extends ChangeNotifier {
         } else {
           nextPage();
         }
+      },
+    );
+  }
+
+  Future<void> acceptTermsAndCondition({
+    String? reference,
+  }) async {
+    _setBusy(true);
+    var data = {
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (reference != null) {
+      data['reference'] = reference;
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: acceptTermsStepData?.nextStep.method ?? '',
+        api: acceptTermsStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> wemaRedirect() async {
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _redirectStepData?.nextStep.method ?? '',
+        api: _redirectStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: null,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        nextPage();
       },
     );
   }
