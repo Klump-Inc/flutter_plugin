@@ -593,9 +593,33 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<void> acceptTerms() => (super.noSuchMethod(
+  _i5.Future<void> acceptRepaymentTerms({String? reference}) =>
+      (super.noSuchMethod(
         Invocation.method(
-          #acceptTerms,
+          #acceptRepaymentTerms,
+          [],
+          {#reference: reference},
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> acceptTermsAndCondition({String? reference}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #acceptTermsAndCondition,
+          [],
+          {#reference: reference},
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> wemaRedirect() => (super.noSuchMethod(
+        Invocation.method(
+          #wemaRedirect,
           [],
         ),
         returnValue: _i5.Future<void>.value(),
