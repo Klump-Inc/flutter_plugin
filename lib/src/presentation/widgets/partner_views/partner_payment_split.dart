@@ -177,7 +177,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: KCBodyText1(
-                                      inputData.smalltext,
+                                      inputData.smalltext
+                                          .toString()
+                                          .replaceAll('<br>', '\n'),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w800,
                                       color: KCColors.primary,
