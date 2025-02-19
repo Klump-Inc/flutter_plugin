@@ -121,7 +121,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PartnerLoginOTP(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')
-                          const PartnerTerms(),
+                          const PartnerTermsCondition(),
                         if (checkoutNotifier
                                 .klumpUser?.requiresUserCredential ==
                             true)

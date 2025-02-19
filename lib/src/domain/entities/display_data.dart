@@ -8,6 +8,7 @@ class DisplayData extends Equatable {
   final String? createPartnerAccountText;
   final String? createPartnerAccountUrl;
   final String? text;
+  final dynamic version;
 
   const DisplayData({
     this.title,
@@ -17,6 +18,7 @@ class DisplayData extends Equatable {
     this.createPartnerAccountText,
     this.createPartnerAccountUrl,
     this.text,
+    this.version,
   });
 
   @override
@@ -28,5 +30,6 @@ class DisplayData extends Equatable {
         createPartnerAccountText,
         createPartnerAccountUrl,
         text,
+        version,
       ];
 }

@@ -305,10 +305,8 @@ void main() {
       expect(find.text('Continue'), findsOneWidget);
     });
     testWidgets('PartnerTerms renders correctly', (tester) async {
-      when(kcChangeNotifier.termsCondition).thenAnswer(
-        (_) => const TermsAndCondition(
-            title: '', doc: '', version: '1', channel: 'web', text: ''),
-      );
+      when(kcChangeNotifier.acceptTermsStepData)
+          .thenAnswer((_) => const KCAPIResponse(nextStep: NextStep()));
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
@@ -322,7 +320,7 @@ void main() {
           ChangeNotifierProvider<KCChangeNotifier>.value(
             value: kcChangeNotifier,
             builder: (context, kcChangeNotifier) {
-              return const PartnerTerms();
+              return const PartnerTermsCondition();
             },
           ),
         ),

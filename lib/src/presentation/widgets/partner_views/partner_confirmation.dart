@@ -74,7 +74,7 @@ class _PartnerConfirmationState extends State<PartnerConfirmation> {
                     KCSecondaryButton(
                       title: 'Go back',
                       disabled: checkoutNotifier.isBusy,
-                      onTap: () => checkoutNotifier.prevPage(),
+                      onTap: () => checkoutNotifier.createLoan(),
                     ),
                     const YSpace(59)
                   ],

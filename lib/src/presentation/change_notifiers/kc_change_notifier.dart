@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -61,8 +62,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get firstName => _firstName;
   String? get username => _username;
 
-  TermsAndCondition? _termsCondition;
-  TermsAndCondition? get termsCondition => _termsCondition;
+  // TermsAndCondition? _termsCondition;
+  // TermsAndCondition? get termsCondition => _termsCondition;
   KlumpUser? _klumpUser;
   KlumpUser? get klumpUser => _klumpUser;
   RepaymentDetails? _repaymentDetails;
@@ -185,6 +186,7 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void storeNextStepData(KCAPIResponse data) {
     final stepName = data.nextStep.name?.toUpperCase();
+    Logger().d(stepName);
     switch (stepName) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
@@ -444,22 +446,22 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
   }
 
-  Future<void> fetchBankTC() async {
-    _setBusy(true);
-    final response = await getBankTCUsecase(GetBankTCUsecaseParams(
-      publicKey: _checkoutData?.merchantPublicKey ?? '',
-      partner: _selectedBankFlow!.slug,
-      isLive: initiateResponse?.isLive == true,
-    ));
-    response.fold(
-      (l) => {},
-      (r) {
-        storeNextStepData(r);
-        _termsCondition = r.data;
-      },
-    );
-    _setBusy(false);
-  }
+  // Future<void> fetchBankTC() async {
+  //   _setBusy(true);
+  //   final response = await getBankTCUsecase(GetBankTCUsecaseParams(
+  //     publicKey: _checkoutData?.merchantPublicKey ?? '',
+  //     partner: _selectedBankFlow!.slug,
+  //     isLive: initiateResponse?.isLive == true,
+  //   ));
+  //   response.fold(
+  //     (l) => {},
+  //     (r) {
+  //       storeNextStepData(r);
+  //       _termsCondition = r.data;
+  //     },
+  //   );
+  //   _setBusy(false);
+  // }
 
   Future<void> createLoan() async {
     _setBusy(true);
@@ -482,9 +484,10 @@ class KCChangeNotifier extends ChangeNotifier {
       });
     }
 
-    if (_termsCondition?.version != null) {
+    if (_acceptTermsStepData?.nextStep.displayData?.version != null) {
       data.addAll({
-        "termsAndConditionVersion": _termsCondition?.version,
+        "termsAndConditionVersion":
+            _acceptTermsStepData?.nextStep.displayData?.version.toString(),
       });
     }
     if (_repaymentDetails?.installment != null) {
@@ -592,7 +595,8 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        if (r.nextStep.name == 'NEW_LOAN') {
+        if (r.nextStep.name == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
@@ -627,7 +631,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name == 'NEW_LOAN') {
+        if (r.nextStep.name == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
@@ -662,7 +667,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name == 'NEW_LOAN') {
+        if (r.nextStep.name == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
@@ -857,7 +863,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
@@ -1017,7 +1024,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           _repaymentDetails = r.data;

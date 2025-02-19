@@ -62,6 +62,7 @@ class _PartnerTermsConditionState extends State<PartnerTermsCondition> {
                   const YSpace(24),
                   KCHeadline3(
                     stepData?.displayData?.title ?? '',
+                    fontSize: 16,
                   ),
                   if (stepData?.displayData?.subTitle != null)
                     Padding(
