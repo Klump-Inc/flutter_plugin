@@ -140,8 +140,7 @@ class _PartnerTermsState extends State<PartnerTerms> {
                             Expanded(
                               child: SingleChildScrollView(
                                 child: Html(
-                                  data:
-                                      "$KC_HTML_HEADER${bankTerms.text ?? ''}$KC_HTML_FOOTER",
+                                  data: bankTerms.text ?? '',
                                 ),
                               ),
                             ),
