@@ -35,12 +35,14 @@ class _CDLWebviewState extends State<CDLWebview> {
       ..addJavaScriptChannel(
         'FlutterOnClose',
         onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.setWebViewFailed();
           checkoutNotfier.nextPage();
         },
       )
       ..addJavaScriptChannel(
         'FlutterOnError',
         onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.setWebViewFailed();
           checkoutNotfier.nextPage();
         },
       )
