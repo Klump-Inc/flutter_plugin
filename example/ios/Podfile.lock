@@ -12,8 +12,6 @@ PODS:
   - mixpanel_flutter (2.3.3):
     - Flutter
     - Mixpanel-swift (= 4.3.0)
-  - permission_handler_apple (9.3.0):
-    - Flutter
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -29,7 +27,6 @@ DEPENDENCIES:
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - klump_checkout (from `.symlinks/plugins/klump_checkout/ios`)
   - mixpanel_flutter (from `.symlinks/plugins/mixpanel_flutter/ios`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
@@ -49,8 +46,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/klump_checkout/ios"
   mixpanel_flutter:
     :path: ".symlinks/plugins/mixpanel_flutter/ios"
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   url_launcher_ios:
@@ -65,7 +60,6 @@ SPEC CHECKSUMS:
   klump_checkout: 06c49320d3294d719ad2261a55d9afd69ca33979
   Mixpanel-swift: 2192b9a24cf41b870749e4e0e10fbc9822bb2b4a
   mixpanel_flutter: 455c6c7906a0bd21b609b32fef390245187068a6
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
