@@ -524,26 +524,16 @@ class _PartnerKYCState extends State<PartnerKYC> {
                                     },
                                   );
                                 } else {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return KCAndroidDatePickerContainer(
-                                        initialDate: _dateMovedIn,
-                                        onDateSelected: (value) {
-                                          _dateMovedInCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _dateMovedIn = value;
-                                          });
-                                          validateInputs();
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _dateMovedIn,
+                                    onDateSelected: (value) {
+                                      _dateMovedInCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _dateMovedIn = value;
+                                      });
+                                      validateInputs();
                                     },
                                   );
                                 }
@@ -681,26 +671,16 @@ class _PartnerKYCState extends State<PartnerKYC> {
                                     },
                                   );
                                 } else {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return KCAndroidDatePickerContainer(
-                                        initialDate: _companyStartDate,
-                                        onDateSelected: (value) {
-                                          _companyStartDateCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _companyStartDate = value;
-                                          });
-                                          validateInputs();
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _companyStartDate,
+                                    onDateSelected: (value) {
+                                      _companyStartDateCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _companyStartDate = value;
+                                      });
+                                      validateInputs();
                                     },
                                   );
                                 }

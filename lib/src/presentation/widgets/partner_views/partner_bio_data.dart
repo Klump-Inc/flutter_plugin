@@ -334,25 +334,15 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                                     },
                                   );
                                 } else {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return KCAndroidDatePickerContainer(
-                                        initialDate: _dob,
-                                        onDateSelected: (value) {
-                                          _dobCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _dob = value;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _dob,
+                                    onDateSelected: (value) {
+                                      _dobCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _dob = value;
+                                      });
                                     },
                                   );
                                 }

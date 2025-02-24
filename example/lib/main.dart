@@ -20,9 +20,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        datePickerTheme: const DatePickerThemeData(
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.white,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
-      home: FirstScreen(),
+      home: const FirstScreen(),
     );
   }
 }
