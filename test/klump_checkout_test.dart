@@ -55,8 +55,7 @@ void main() {
     testWidgets('Partner popup menu content renders correctly', (tester) async {
       await mockNetworkImagesFor(
         () async => await tester.pumpKCWidget(
-          KCPartnerPopupMenuItemContent(
-            logo: KCAssets.stanbicLogo,
+          const KCPartnerPopupMenuItemContent(
             title: 'Partner name',
           ),
         ),
@@ -131,8 +130,7 @@ void main() {
     testWidgets('KCInstallmentPopupMenuItemContent renders correctly',
         (tester) async {
       await tester.pumpKCWidget(
-        KCInstallmentPopupMenuItemContent(
-          logo: KCAssets.stanbicLogo,
+        const KCInstallmentPopupMenuItemContent(
           title: 'Bank name',
         ),
       );

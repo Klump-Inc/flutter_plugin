@@ -309,6 +309,11 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
           as _i4.PageController);
 
   @override
+  bool get webviewFailed =>
+      (super.noSuchMethod(Invocation.getter(#webviewFailed), returnValue: false)
+          as bool);
+
+  @override
   double get totalAmount =>
       (super.noSuchMethod(Invocation.getter(#totalAmount), returnValue: 0.0)
           as double);
@@ -317,6 +322,12 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
+
+  @override
+  void setWebViewFailed() => super.noSuchMethod(
+    Invocation.method(#setWebViewFailed, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   void nextPage() => super.noSuchMethod(
@@ -441,6 +452,12 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             returnValue: _i5.Future<_i2.DisbursementStatusResponse?>.value(),
           )
           as _i5.Future<_i2.DisbursementStatusResponse?>);
+
+  @override
+  void skipLoanStatus() => super.noSuchMethod(
+    Invocation.method(#skipLoanStatus, []),
+    returnValueForMissingStub: null,
+  );
 
   @override
   _i5.Future<void> getPartnerInsurer() =>

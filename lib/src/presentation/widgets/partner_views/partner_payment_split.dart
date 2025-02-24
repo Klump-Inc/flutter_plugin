@@ -277,7 +277,6 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   child: KCInstallmentPopupMenuItemContent(
                                     withBG: (index + 1) % 2 != 0,
                                     title: '${index + 1}',
-                                    logo: KCAssets.stanbicLogo,
                                   ),
                                   onTap: () {
                                     setState(() {
