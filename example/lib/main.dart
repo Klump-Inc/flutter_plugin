@@ -71,8 +71,8 @@ class FirstScreen extends StatelessWidget {
                   )
                 ],
                 shippingData: null,
-                email: 'jerry@useklump.com',
-                phone: '08063753133',
+                email: 'sample@gmail.com',
+                phone: '08012345678',
               ),
             );
             // ignore: avoid_print
