@@ -27,6 +27,7 @@
 ## [1.0.27] - Fixes
 ## [1.0.28] - Add new financial partners
 ## [1.0.29] - Add new financial partners
+## [1.0.30] - Add Shipping fee to amount when creating loan
 
 
 
