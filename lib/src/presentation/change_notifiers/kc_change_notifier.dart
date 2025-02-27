@@ -471,7 +471,7 @@ class KCChangeNotifier extends ChangeNotifier {
   Future<void> createLoan() async {
     _setBusy(true);
     final data = <String, dynamic>{
-      "amount": totalAmount,
+      "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
@@ -580,7 +580,7 @@ class KCChangeNotifier extends ChangeNotifier {
         GetPartnerInsurersUsecaseParams(
           publicKey: _checkoutData?.merchantPublicKey ?? '',
           partner: _selectedBankFlow!.slug,
-          amount: totalAmount,
+          amount: _checkoutData?.amount ?? 0,
           isLive: initiateResponse?.isLive == true,
         ),
       );
@@ -1002,7 +1002,7 @@ class KCChangeNotifier extends ChangeNotifier {
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
-      "amount": totalAmount,
+      "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
@@ -1059,7 +1059,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final fileBytes = await File(file.path).readAsBytes();
     final base64File = 'data:image/jpeg;base64,${base64.encode(fileBytes)}';
     final data = <String, dynamic>{
-      "amount": totalAmount,
+      "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
@@ -1093,7 +1093,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final fileBytes = await File(file.path).readAsBytes();
     final base64File = 'data:image/jpeg;base64,${base64.encode(fileBytes)}';
     final data = <String, dynamic>{
-      "amount": totalAmount,
+      "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
@@ -1125,7 +1125,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final fileBytes = await File(filePath).readAsBytes();
     final base64File = 'data:image/jpeg;base64,${base64.encode(fileBytes)}';
     final data = <String, dynamic>{
-      "amount": totalAmount,
+      "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
