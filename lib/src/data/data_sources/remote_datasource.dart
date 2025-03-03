@@ -506,7 +506,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
             ? KlumpUserModel.fromJson(response.data['data'])
             : api == '/loans/account/repayments-detail'
                 ? RepaymentDetailsModel.fromJson(response.data['data'])
-                : api == '/v1/loans/account/new-loan'
+                : api == '/loans/account/new-loan'
                     ? response.data['data']
                     : response.data['message'],
       );
