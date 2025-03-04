@@ -80,7 +80,9 @@ class _CDLWebviewState extends State<CDLWebview> {
           "totalAmount": ${checkoutNotfier.totalAmount},
           "customerEmail": "${checkoutNotfier.email}",
           "customerPhone": "${checkoutNotfier.phoneNumber}",
-          sessionId
+          sessionId,
+          products: ${checkoutNotfier.productDetails},
+          metaData: "${checkoutNotfier.tranxReference}"
         }
         let config = {
           publicKey: "$CDL_PUBLIC_KEY",

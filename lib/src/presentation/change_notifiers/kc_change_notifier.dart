@@ -75,8 +75,6 @@ class KCChangeNotifier extends ChangeNotifier {
   List<PartnerInsurer>? get partnerInsurers => _partnerInsurers;
   List<Partner>? _loanPartners;
   List<Partner>? get loanPartners => _loanPartners;
-  String? _loanId;
-  String? get loanId => _loanId;
 
   Map<String, dynamic>? _selectedBank;
   Map<String, dynamic>? get selectedBank => _selectedBank;
@@ -528,7 +526,6 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) async {
         storeNextStepData(r);
-        _loanId = r.data;
         nextPage();
       },
     );
@@ -1156,6 +1153,22 @@ class KCChangeNotifier extends ChangeNotifier {
 
   double get totalAmount =>
       _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
+
+  String get tranxReference =>
+      redirectStepData?.data != null ? redirectStepData?.data['reference'] : '';
+
+  List<Map<String, dynamic>> get productDetails {
+    List<Map<String, dynamic>> items = [];
+    for (var i = 0; i < _checkoutData!.items.length; i++) {
+      final e = _checkoutData!.items[i];
+      items.add({
+        'productName': "'${e.name}'",
+        'productAmount': "'${e.unitPrice}'",
+        'productId': "'${i + 1}'",
+      });
+    }
+    return items;
+  }
 
   void selectBankSubmitted() {
     _verificationStepData = null;
