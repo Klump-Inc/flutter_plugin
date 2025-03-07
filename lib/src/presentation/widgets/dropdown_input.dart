@@ -11,12 +11,14 @@ class KCDropdownInput extends StatelessWidget {
     required this.value,
     required this.onSelected,
     required this.minWidth,
+    required this.itemsValue,
   });
 
   final String label;
   final List<String> items;
+  final List<String> itemsValue;
   final String? value;
-  final void Function(String)? onSelected;
+  final void Function(KCDropdownInputAns)? onSelected;
   final double minWidth;
 
   @override
@@ -88,7 +90,12 @@ class KCDropdownInput extends StatelessWidget {
                 withBG: index % 2 == 0,
               ),
               onTap: () {
-                onSelected!.call(items[index]);
+                onSelected!.call(
+                  KCDropdownInputAns(
+                    label: items[index].capitalize(),
+                    value: itemsValue[index],
+                  ),
+                );
               },
             );
           },
@@ -123,4 +130,14 @@ class KCPopupMenuItemContent extends StatelessWidget {
       ),
     );
   }
+}
+
+class KCDropdownInputAns {
+  final String label;
+  final String value;
+
+  KCDropdownInputAns({
+    required this.label,
+    required this.value,
+  });
 }

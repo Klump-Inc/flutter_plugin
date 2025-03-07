@@ -16,7 +16,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   late TextEditingController _amountCtrl;
   late StreamController<String> amountStreamCtrl;
 
-  String? _installmentSplit;
+  KCDropdownInputAns? _installmentSplit;
   int? _repaymentDay;
   PartnerInsurer? _insurer;
 
@@ -201,9 +201,12 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _installmentSplit,
+                              value: _installmentSplit?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _installmentSplit = value;
@@ -385,7 +388,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                         true
                                     ? double.parse(_amountCtrl.text.trim())
                                     : null,
-                            installments: _installmentSplit,
+                            installments: _installmentSplit?.value,
                             repaymentDay: _repaymentDay,
                             insurer: _insurer,
                           ),

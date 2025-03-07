@@ -32,13 +32,13 @@ class _PartnerKYCState extends State<PartnerKYC> {
   late TextEditingController _nextOfkinNameCtrl;
   late TextEditingController _nextOfkinPhoneCtrl;
 
-  String? _maritalStatus;
-  String? _residentialStatus;
+  KCDropdownInputAns? _maritalStatus;
+  KCDropdownInputAns? _residentialStatus;
   DateTime? _dateMovedIn;
-  String? _employmentStatus;
+  KCDropdownInputAns? _employmentStatus;
   DateTime? _companyStartDate;
-  String? _educationStatus;
-  String? _nextOfkinRelationship;
+  KCDropdownInputAns? _educationStatus;
+  KCDropdownInputAns? _nextOfkinRelationship;
 
   bool _validateDateMovedIn = false;
   bool _validateCompanyStartdate = false;
@@ -364,9 +364,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _maritalStatus,
+                              value: _maritalStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _maritalStatus = value;
@@ -389,9 +392,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _residentialStatus,
+                              value: _residentialStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _residentialStatus = value;
@@ -554,9 +560,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _employmentStatus,
+                              value: _employmentStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _employmentStatus = value;
@@ -754,9 +763,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _educationStatus,
+                              value: _educationStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _educationStatus = value;
@@ -800,9 +812,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _nextOfkinRelationship,
+                              value: _nextOfkinRelationship?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _nextOfkinRelationship = value;
@@ -861,22 +876,23 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             FocusScope.of(context).unfocus();
                             checkoutNotfier.partnerKYC(
                               nin: _ninCtrl.text.trim(),
-                              maritalStatus: _maritalStatus,
-                              residentialStatus: _residentialStatus,
+                              maritalStatus: _maritalStatus?.value,
+                              residentialStatus: _residentialStatus?.value,
                               address: _addressCtrl.text.trim(),
                               landmark: _landmarkCtrl.text.trim(),
                               city: _cityCtrl.text.trim(),
                               state: _stateCtrl.text.trim(),
                               dateMovedIn: _dateMovedIn,
-                              employmentStatus: _employmentStatus,
+                              employmentStatus: _employmentStatus?.value,
                               companyName: _companyCtrl.text.trim(),
                               companyIndustry: _companyIndustryCtrl.text.trim(),
                               companyAddress: _companyAddressCtrl.text.trim(),
                               companyStartDate: _companyStartDate,
                               monthlyIncome: _monthlyIncomeCtrl.text.trim(),
-                              education: _educationStatus,
+                              education: _educationStatus?.value,
                               nextOfKinName: _nextOfkinNameCtrl.text.trim(),
-                              nextOfKinRetionship: _nextOfkinRelationship,
+                              nextOfKinRetionship:
+                                  _nextOfkinRelationship?.value,
                               nextOfKinPhone: _nextOfkinPhoneCtrl.text.trim(),
                             );
                           },
