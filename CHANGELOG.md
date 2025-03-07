@@ -29,6 +29,8 @@
 ## [1.0.29] - Add new financial partners
 ## [1.0.30] - Add Shipping fee to amount when creating loan
 ## [1.0.31] - Fixes
+## [1.0.32] - UI improvement
+
 
 
 
