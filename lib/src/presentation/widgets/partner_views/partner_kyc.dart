@@ -584,7 +584,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           builder: (context, snapshot) {
                             return KCInputField(
                               controller: _companyCtrl,
-                              hint: _employmentStatus == 'employed'
+                              hint: _employmentStatus?.value == 'employed'
                                   ? 'What is the name of the company you work for?'
                                   : 'What is the name of your company?',
                               textInputType: TextInputType.text,
