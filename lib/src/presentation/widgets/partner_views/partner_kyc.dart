@@ -21,7 +21,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
   late TextEditingController _ninCtrl;
   late TextEditingController _addressCtrl;
   late TextEditingController _landmarkCtrl;
-  late TextEditingController _cityCtrl;
   late TextEditingController _stateCtrl;
   late TextEditingController _companyCtrl;
   late TextEditingController _companyIndustryCtrl;
@@ -36,6 +35,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
   KCDropdownInputAns? _residentialStatus;
   DateTime? _dateMovedIn;
   KCDropdownInputAns? _employmentStatus;
+  KCDropdownInputAns? _city;
   DateTime? _companyStartDate;
   KCDropdownInputAns? _educationStatus;
   KCDropdownInputAns? _nextOfkinRelationship;
@@ -79,8 +79,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
         KCFormValidator.errorGeneric(_addressCtrl.text.trim(), 'Required');
     final landmarkError =
         KCFormValidator.errorGeneric(_landmarkCtrl.text.trim(), 'Required');
-    final cityError =
-        KCFormValidator.errorGeneric(_cityCtrl.text.trim(), 'Required');
+
     final stateError =
         KCFormValidator.errorGeneric(_stateCtrl.text.trim(), 'Required');
     final dateMovedInError =
@@ -113,7 +112,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
             formFields?.contains('address') != true) &&
         (landmarkError?.isEmpty == true ||
             formFields?.contains('landmark') != true) &&
-        (cityError?.isEmpty == true || formFields?.contains('city') != true) &&
+        (_city != null || formFields?.contains('city') != true) &&
         (stateError?.isEmpty == true ||
             formFields?.contains('state') != true) &&
         (dateMovedInError?.isEmpty == true ||
@@ -150,7 +149,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
     _ninCtrl = TextEditingController();
     _addressCtrl = TextEditingController();
     _landmarkCtrl = TextEditingController();
-    _cityCtrl = TextEditingController();
     _stateCtrl = TextEditingController();
     _companyCtrl = TextEditingController();
     _companyIndustryCtrl = TextEditingController();
@@ -182,10 +180,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
     });
     _addressCtrl.addListener(() {
       addressStreamCtrl.sink.add(_addressCtrl.text.trim());
-      validateInputs();
-    });
-    _cityCtrl.addListener(() {
-      cityStreamCtrl.sink.add(_cityCtrl.text.trim());
       validateInputs();
     });
     _landmarkCtrl.addListener(() {
@@ -230,6 +224,15 @@ class _PartnerKYCState extends State<PartnerKYC> {
     });
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
+    final stepData = changeNotifier.userKYCStepData?.nextStep ??
+        changeNotifier.selectedBankFlow?.nextStep;
+    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final formMap = stepData?.formFields;
+    if (formFields?.contains('state') == true) {
+      final inputData = formMap!.where((e) => e.name == 'state').first;
+      _stateCtrl.text = inputData.value.toString();
+    }
+
     MixPanelService.logEvent(
       '10 - KYC MODAL',
       properties: {
@@ -247,8 +250,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
     _ninCtrl.dispose();
     _addressCtrl.dispose();
     _landmarkCtrl.dispose();
-    _cityCtrl.dispose();
-
     _stateCtrl.dispose();
     _companyCtrl.dispose();
     _companyIndustryCtrl.dispose();
@@ -447,40 +448,50 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('city') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: cityStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _cityCtrl,
-                              hint: 'Local Government Area',
-                              textInputType: TextInputType.text,
-                              textInputAction: TextInputAction.next,
-                              validationMessage: KCFormValidator.errorGeneric(
-                                snapshot.data,
-                                'Local Government Area is required',
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                     if (formFields?.contains('state') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
                           stream: stateStreamCtrl.stream,
                           builder: (context, snapshot) {
+                            final inputData =
+                                formMap!.where((e) => e.name == 'state').first;
                             return KCInputField(
                               controller: _stateCtrl,
-                              hint: 'State',
+                              hint: inputData.placeholder ?? 'State',
                               textInputType: TextInputType.text,
                               textInputAction: TextInputAction.next,
+                              readOnly: (inputData.readonly as bool?) == true,
                               validationMessage: KCFormValidator.errorGeneric(
                                 snapshot.data,
                                 'State is required',
                               ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('city') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Builder(
+                          builder: (context) {
+                            final inputData =
+                                formMap!.where((e) => e.name == 'city').first;
+                            return KCDropdownInput(
+                              label: inputData.label ?? "Please select",
+                              items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
+                                  .map((e) => e['value'].toString())
+                                  .toList(),
+                              value: _city?.label,
+                              onSelected: (value) {
+                                setState(() {
+                                  _city = value;
+                                });
+                              },
+                              minWidth: constraints.maxWidth - 52,
                             );
                           },
                         ),
@@ -880,7 +891,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                               residentialStatus: _residentialStatus?.value,
                               address: _addressCtrl.text.trim(),
                               landmark: _landmarkCtrl.text.trim(),
-                              city: _cityCtrl.text.trim(),
+                              city: _city?.value,
                               state: _stateCtrl.text.trim(),
                               dateMovedIn: _dateMovedIn,
                               employmentStatus: _employmentStatus?.value,

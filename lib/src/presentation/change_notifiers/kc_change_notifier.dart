@@ -827,6 +827,41 @@ class KCChangeNotifier extends ChangeNotifier {
     }
   }
 
+  Future<void> linkExistingMono(
+    BuildContext context, {
+    required String? monoAuthCode,
+    required String? token,
+  }) async {
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: verifyOTPStepData?.nextStep.method ?? '',
+        api: verifyOTPStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: {
+          'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+          'currency': _checkoutData!.currency ?? 'NGN',
+          'mono_auth_code': monoAuthCode ?? '',
+          'partner': _selectedBankFlow!.slug,
+          'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+          'is_live': initiateResponse?.isLive == true,
+          'is_accepted': true,
+          'token': token ?? '',
+        },
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _klumpUser = r.data as KlumpUser;
+        storeNextStepData(r);
+        nextPage();
+      },
+    );
+  }
+
   Future<void> bioData({
     required String? email,
     required String? firstname,
