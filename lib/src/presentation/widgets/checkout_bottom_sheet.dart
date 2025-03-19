@@ -122,9 +122,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'stanbic')
                           const PartnerTermsCondition(),
-                        if (checkoutNotifier
-                                .klumpUser?.requiresUserCredential ==
-                            true)
+                        if (checkoutNotifier.bioDataStepData != null)
                           const PartnerBioData(),
                         if (checkoutNotifier.selectedBankFlow?.slug ==
                             'renmoney')

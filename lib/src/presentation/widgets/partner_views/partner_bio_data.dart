@@ -34,10 +34,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.bioDataStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
-        ?.formFields
+    final checkoutNotifier = context.read<KCChangeNotifier>();
+    final formFields = checkoutNotifier.bioDataStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
     final lastNameError =
@@ -78,9 +76,9 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _dobCtrl = TextEditingController();
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    _emailCtrl.text = checkoutNotfier.email ?? '';
-    _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+    final checkoutNotifier = context.read<KCChangeNotifier>();
+    _emailCtrl.text = checkoutNotifier.email ?? '';
+    _phoneNoCtrl.text = checkoutNotifier.phoneNumber ?? '';
     validateInputs();
     lastNameStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
@@ -155,8 +153,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.bioDataStepData?.nextStep ??
-        checkoutNotifier.selectedBankFlow?.nextStep;
+    final stepData = checkoutNotifier.bioDataStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
