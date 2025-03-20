@@ -222,16 +222,103 @@ class _PartnerKYCState extends State<PartnerKYC> {
       nextOfkinPhoneStreamCtrl.sink.add(_nextOfkinPhoneCtrl.text.trim());
       validateInputs();
     });
+
+    Future.delayed(Duration.zero, () {
+      final savedState = getSavedValue('state');
+      if (savedState != null) {
+        _stateCtrl.text = savedState;
+      }
+      final savedNin = getSavedValue('nin');
+      if (savedNin != null) {
+        _ninCtrl.text = savedNin;
+      }
+      final savedMaritalStatus = getSavedValue('marital_status');
+      if (savedMaritalStatus != null) {
+        _maritalStatus = KCDropdownInputAns(
+            label: savedMaritalStatus, value: savedMaritalStatus);
+      }
+      final savedResStatus = getSavedValue('residential_status');
+      if (savedResStatus != null) {
+        _residentialStatus =
+            KCDropdownInputAns(label: savedResStatus, value: savedResStatus);
+      }
+      final savedAddress = getSavedValue('address');
+      if (savedAddress != null) {
+        _addressCtrl.text = savedAddress;
+      }
+      final savedLandmark = getSavedValue('landmark');
+      if (savedLandmark != null) {
+        _landmarkCtrl.text = savedLandmark;
+      }
+      final savedCity = getSavedValue('city');
+      if (savedCity != null) {
+        _city = KCDropdownInputAns(label: savedCity, value: savedCity);
+      }
+      final savedDateMovedIn = getSavedValue('date_moved_in');
+      if (savedDateMovedIn != null) {
+        _dateMovedIn = DateTime.tryParse(savedDateMovedIn.toString());
+        if (_dateMovedIn != null) {
+          _dateMovedInCtrl.text = KCStringUtil.formatDate(_dateMovedIn!);
+        }
+      }
+      final savedEmploymentStatus = getSavedValue('employment_status');
+      if (savedEmploymentStatus != null) {
+        _employmentStatus = KCDropdownInputAns(
+            label: savedEmploymentStatus, value: savedEmploymentStatus);
+      }
+      final savedCompany = getSavedValue('company_name');
+      if (savedCompany != null) {
+        _companyCtrl.text = savedCompany;
+      }
+      final savedIndustry = getSavedValue('company_industry');
+      if (savedIndustry != null) {
+        _companyIndustryCtrl.text = savedIndustry;
+      }
+      final savedCompAddress = getSavedValue('company_address');
+      if (savedCompAddress != null) {
+        _companyAddressCtrl.text = savedCompAddress;
+      }
+      final savedCompStartDate = getSavedValue('company_start_date');
+      if (savedCompStartDate != null) {
+        _companyStartDate = DateTime.tryParse(savedCompStartDate.toString());
+        if (_companyStartDate != null) {
+          _companyStartDateCtrl.text =
+              KCStringUtil.formatDate(_companyStartDate!);
+        }
+      }
+      final savedIncome = getSavedValue('monthly_income');
+      if (savedIncome != null) {
+        _monthlyIncomeCtrl.text =
+            '₦${KCStringUtil.formatAmount(double.tryParse(savedIncome.toString()) ?? 0)}';
+      }
+      final savedEducation = getSavedValue('education');
+      if (savedEducation != null) {
+        _educationStatus =
+            KCDropdownInputAns(label: savedEducation, value: savedEducation);
+      }
+      final savedNOKName = getSavedValue('next_of_kin_name');
+      if (savedNOKName != null) {
+        _nextOfkinNameCtrl.text = savedNOKName;
+      }
+      final savedNOKRelationship = getSavedValue('next_of_kin_relationship');
+      if (savedNOKRelationship != null) {
+        _nextOfkinRelationship = KCDropdownInputAns(
+            label: savedNOKRelationship, value: savedNOKRelationship);
+      }
+      final savedNOKPhone = getSavedValue('next_of_kin_phone');
+      if (savedNOKPhone != null) {
+        _nextOfkinPhoneCtrl.text = savedNOKPhone;
+      }
+      if (savedNOKRelationship != null ||
+          savedEducation != null ||
+          savedMaritalStatus != null ||
+          savedResStatus != null ||
+          savedCity != null) {
+        setState(() {});
+      }
+    });
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    final stepData = changeNotifier.userKYCStepData?.nextStep ??
-        changeNotifier.selectedBankFlow?.nextStep;
-    final formFields = stepData?.formFields?.map((e) => e.name).toList();
-    final formMap = stepData?.formFields;
-    if (formFields?.contains('state') == true) {
-      final inputData = formMap!.where((e) => e.name == 'state').first;
-      _stateCtrl.text = inputData.value.toString();
-    }
 
     MixPanelService.logEvent(
       '10 - KYC MODAL',
@@ -259,6 +346,21 @@ class _PartnerKYCState extends State<PartnerKYC> {
     _monthlyIncomeCtrl.dispose();
     _nextOfkinNameCtrl.dispose();
     _nextOfkinPhoneCtrl.dispose();
+  }
+
+  String? getSavedValue(String fieldName) {
+    String? value;
+    final checkoutNotfier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    final stepData = checkoutNotfier.userKYCStepData?.nextStep;
+    final formMap = stepData?.formFields;
+    final inputData = formMap?.where((e) => e.name == fieldName);
+    if (inputData?.isNotEmpty == true) {
+      if (inputData!.first.value != null) {
+        value = inputData.first.value.toString();
+      }
+    }
+    return value;
   }
 
   @override
