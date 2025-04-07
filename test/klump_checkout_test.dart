@@ -195,6 +195,9 @@ void main() {
     testWidgets('SelectBankFlow renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
       when(kcChangeNotifier.loanPartners).thenAnswer((_) => loanPartners);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
       when(
@@ -332,6 +335,8 @@ void main() {
     });
     testWidgets('PartnerConfirmation renders correctly', (tester) async {
       when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await tester.pumpKCWidget(
@@ -484,30 +489,8 @@ void main() {
     testWidgets('PartnerDecision renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
-      when(kcChangeNotifier.initiateResponse).thenAnswer(
-          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
-      await mockNetworkImagesFor(
-        () async => await tester.pumpKCWidget(
-          ChangeNotifierProvider<KCChangeNotifier>.value(
-            value: kcChangeNotifier,
-            builder: (context, kcChangeNotifier) {
-              return const PartnerDecision();
-            },
-          ),
-        ),
-      );
-      await tester.pump(Duration.zero);
-      expect(find.byType(YSpace), findsWidgets);
-      expect(find.byType(CircularPercentIndicator), findsOneWidget);
-      expect(find.byType(SvgPicture), findsOneWidget);
-      expect(find.byType(Expanded), findsWidgets);
-      expect(find.text('Hang on!'), findsOneWidget);
-      expect(find.byType(KCPrimaryButton), findsNothing);
-    });
+      when(kcChangeNotifier.webviewFailed).thenAnswer((_) => false);
 
-    testWidgets('PartnerDecision renders correctly', (tester) async {
-      when(kcChangeNotifier.selectedBankFlow)
-          .thenAnswer((_) => loanPartners.first);
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await mockNetworkImagesFor(
@@ -564,24 +547,5 @@ void main() {
       expect(find.text('Loan has been disbursed successfully'), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
-
-    // testWidgets('WemaIllustration renders correctly', (tester) async {
-    //   when(kcChangeNotifier.totalAmount).thenAnswer((_) => 50000);
-    //   when(kcChangeNotifier.email).thenAnswer((_) => 'sample@gmail.com');
-    //   when(kcChangeNotifier.phoneNumber).thenAnswer((_) => 'phoneNumber');
-
-    //   await mockNetworkImagesFor(
-    //     () async => await tester.pumpKCWidget(
-    //       ChangeNotifierProvider<KCChangeNotifier>.value(
-    //         value: kcChangeNotifier,
-    //         builder: (context, kcChangeNotifier) {
-    //           return const WemaIllustration();
-    //         },
-    //       ),
-    //     ),
-    //   );
-    //   expect(find.byType(Center), findsWidgets);
-    //   expect(find.byType(KCPageLoaderWidget), findsOneWidget);
-    // });
   });
 }
