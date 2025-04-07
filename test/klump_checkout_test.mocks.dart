@@ -560,6 +560,23 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<void> linkExistingMono(
+    _i4.BuildContext? context, {
+    required String? monoAuthCode,
+    required String? token,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #linkExistingMono,
+              [context],
+              {#monoAuthCode: monoAuthCode, #token: token},
+            ),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
   _i6.Future<void> bioData({
     required String? email,
     required String? firstname,
