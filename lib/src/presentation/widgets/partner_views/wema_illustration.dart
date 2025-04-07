@@ -15,22 +15,6 @@ class WemaIllustration extends StatefulWidget {
 class _WemaIllustrationState extends State<WemaIllustration> {
   late PageController _pageController;
 
-  final _illustrations = [
-    WemaIllusItem(text: 'Click on your profile', image: KCAssets.wemaIllus1),
-    WemaIllusItem(text: 'Click on Authenticator', image: KCAssets.wemaIllus2),
-    WemaIllusItem(
-        text: 'Click on Pending Authentications', image: KCAssets.wemaIllus3),
-    WemaIllusItem(
-        text: 'Click on the one labeled Buy Now Pay Later',
-        image: KCAssets.wemaIllus4),
-    WemaIllusItem(
-        text: 'Approve this request labeled Buy Now Pay Later',
-        image: KCAssets.wemaIllus5),
-    WemaIllusItem(
-        text: 'Come back on Klump and complete your payment',
-        image: KCAssets.wemaIllus6),
-  ];
-
   Timer? _timer;
   final ValueNotifier<int> _currentPage = ValueNotifier(0);
 
@@ -69,8 +53,11 @@ class _WemaIllustrationState extends State<WemaIllustration> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.verifyOTPStepData?.nextStep ??
+    final stepData = checkoutNotfier.redirectStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
+    final carousel = stepData?.displayData?.carousel
+        ?.map((e) => e as Map<String, dynamic>)
+        .toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -118,77 +105,89 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                         fontWeight: FontWeight.w700,
                       ),
                     const YSpace(22.15),
-                    KCHeadline3(
-                      stepData?.displayData?.title ?? '',
-                      fontSize: 24,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: KCHeadline3(
+                        stepData?.displayData?.title ?? '',
+                      ),
                     ),
                     if (stepData?.displayData?.subTitle != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child:
-                            KCHeadline5(stepData?.displayData?.subTitle ?? ''),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: KCHeadline5(
+                            stepData?.displayData?.subTitle ?? '',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
-                    const YSpace(24),
-                    SizedBox(
-                      height: 267,
-                      child: PageView(
-                        allowImplicitScrolling: true,
-                        scrollDirection: Axis.horizontal,
-                        controller: _pageController,
-                        onPageChanged: (page) {
-                          _currentPage.value = page;
-                        },
-                        children: _illustrations
-                            .map((e) => Image.asset(
-                                  e.image,
-                                  package: KC_PACKAGE_NAME,
-                                  fit: BoxFit.fitWidth,
-                                ))
-                            .toList(),
+                    const YSpace(16),
+                    if (carousel != null)
+                      SizedBox(
+                        height: 267,
+                        child: PageView(
+                          allowImplicitScrolling: true,
+                          scrollDirection: Axis.horizontal,
+                          controller: _pageController,
+                          onPageChanged: (page) {
+                            _currentPage.value = page;
+                          },
+                          children: carousel
+                              .map((e) => Image.network(
+                                    e['url'],
+                                    fit: BoxFit.fitWidth,
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
-                    const YSpace(24),
-                    ValueListenableBuilder<int>(
-                        valueListenable: _currentPage,
-                        builder: (_, currentPage, __) {
-                          return Column(
-                            children: [
-                              KCBodyText1(
-                                _illustrations[currentPage].text,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              const YSpace(12),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(_illustrations.length,
-                                    (index) {
-                                  return AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 2),
-                                    height: 8,
-                                    width: 8,
-                                    decoration: BoxDecoration(
-                                      color: index == currentPage
-                                          ? KCColors.primary
-                                          : KCColors.primary.withOpacity(0.20),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  );
-                                }),
-                              ),
-                            ],
-                          );
-                        }),
+                    const YSpace(16),
+                    if (carousel != null)
+                      ValueListenableBuilder<int>(
+                          valueListenable: _currentPage,
+                          builder: (_, currentPage, __) {
+                            return Column(
+                              children: [
+                                KCBodyText1(
+                                  carousel[currentPage]['title'].toString(),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                const YSpace(12),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children:
+                                      List.generate(carousel.length, (index) {
+                                    return AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 2),
+                                      height: 8,
+                                      width: 8,
+                                      decoration: BoxDecoration(
+                                        color: index == currentPage
+                                            ? KCColors.primary
+                                            : KCColors.primary
+                                                .withOpacity(0.20),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ],
+                            );
+                          }),
                     const Spacer(),
                     const YSpace(23),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: KCPrimaryButton(
-                        title: 'Continue',
+                        title: 'Complete payment',
                         disabled: checkoutNotfier.isBusy,
                         loading: checkoutNotfier.isBusy,
-                        onTap: () {},
+                        onTap: () {
+                          checkoutNotfier.wemaRedirect();
+                        },
                       ),
                     ),
                     const YSpace(59)

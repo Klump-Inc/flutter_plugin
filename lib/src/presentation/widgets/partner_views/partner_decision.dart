@@ -19,17 +19,28 @@ class _PartnerDecisionState extends State<PartnerDecision> {
   void _startStatusLookup() {
     var checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    timer = Timer.periodic(
-      const Duration(seconds: 10),
-      (Timer t) {
-        checkoutNotifier.getLoanStatus().then((response) {
-          if (response?.isCompleted == true) {
-            timer?.cancel();
-            checkoutNotifier.nextPage();
-          }
-        });
-      },
-    );
+    if (checkoutNotifier.webviewFailed) {
+      Future.delayed(
+        const Duration(seconds: 2),
+        () {
+          checkoutNotifier.skipLoanStatus();
+          timer?.cancel();
+          checkoutNotifier.nextPage();
+        },
+      );
+    } else {
+      timer = Timer.periodic(
+        const Duration(seconds: 10),
+        (Timer t) {
+          checkoutNotifier.getLoanStatus().then((response) {
+            if (response?.isCompleted == true) {
+              timer?.cancel();
+              checkoutNotifier.nextPage();
+            }
+          });
+        },
+      );
+    }
   }
 
   @override
@@ -40,7 +51,9 @@ class _PartnerDecisionState extends State<PartnerDecision> {
     MixPanelService.logEvent(
       '11 - NEW LOAN MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );

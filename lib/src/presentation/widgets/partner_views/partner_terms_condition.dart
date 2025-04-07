@@ -1,29 +1,27 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PartnerPaymentPreview extends StatefulWidget {
-  const PartnerPaymentPreview({super.key});
+class PartnerTermsCondition extends StatefulWidget {
+  const PartnerTermsCondition({super.key});
 
   @override
-  State<PartnerPaymentPreview> createState() => _PartnerPaymentPreviewState();
+  State<PartnerTermsCondition> createState() => _PartnerTermsConditionState();
 }
 
-class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
+class _PartnerTermsConditionState extends State<PartnerTermsCondition> {
   final ValueNotifier<bool> _accepted = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.repaymentDetailsStepData?.nextStep ??
-        checkoutNotifier.selectedBankFlow?.nextStep;
+    final stepData = checkoutNotifier.acceptTermsStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final checkBoxFields =
         stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
-    final repaymentDetails = stepData?.displayData?.list ?? [];
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -64,6 +62,7 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                   const YSpace(24),
                   KCHeadline3(
                     stepData?.displayData?.title ?? '',
+                    fontSize: 16,
                   ),
                   if (stepData?.displayData?.subTitle != null)
                     Padding(
@@ -73,39 +72,8 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                   const YSpace(24),
                   Expanded(
                     child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 6.04, bottom: 20.5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                repaymentDetails.length,
-                                (index) => KPPaymentItemTile(
-                                  title: repaymentDetails[index]['title']
-                                          ['text']
-                                      .toString(),
-                                  amount: repaymentDetails[index]['title']
-                                          ['value']
-                                      .toString(),
-                                  subtitle: repaymentDetails[index]['subtitle']
-                                          ['text']
-                                      .toString(),
-                                  note: repaymentDetails[index]['subtitle']
-                                          ['value']
-                                      .toString(),
-                                  colorValue: repaymentDetails[index]['color']
-                                      .toString(),
-                                  bodyLines: 2,
-                                  lastItem:
-                                      index == repaymentDetails.length - 1,
-                                ),
-                              ),
-                            ),
-                            const YSpace(18),
-                          ],
-                        ),
+                      child: Html(
+                        data: stepData?.displayData?.text ?? '',
                       ),
                     ),
                   ),
@@ -210,7 +178,7 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                               ?.where((e) => e.name == 'reference')
                               .toList();
 
-                          checkoutNotifier.acceptRepaymentTerms(
+                          checkoutNotifier.acceptTermsAndCondition(
                               reference:
                                   formFields?.contains('reference') == true &&
                                           referenceForm?.isNotEmpty == true
@@ -227,128 +195,6 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
           ),
         );
       },
-    );
-  }
-}
-
-class KPPaymentItemTile extends StatelessWidget {
-  const KPPaymentItemTile({
-    super.key,
-    required this.title,
-    required this.amount,
-    required this.subtitle,
-    required this.bodyLines,
-    required this.note,
-    required this.colorValue,
-    this.lastItem = false,
-  });
-
-  final String title, amount, subtitle, note;
-  final int bodyLines;
-  final bool lastItem;
-  final String colorValue;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = colorValue == 'green' ? KCColors.green : null;
-    return SizedBox(
-      height: 20.49 + 4.95 + (bodyLines * 19.12) + (lastItem ? 0 : 32),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 3),
-            child: Column(
-              children: [
-                Container(
-                  height: 11.34,
-                  width: 11.34,
-                  decoration: BoxDecoration(
-                    color: color ?? KCColors.grey6,
-                    borderRadius: BorderRadius.circular(30.2483),
-                  ),
-                ),
-                if (!lastItem)
-                  Expanded(
-                    child: Container(
-                      width: 1.5,
-                      color: KCColors.grey1,
-                    ),
-                  )
-              ],
-            ),
-          ),
-          const XSpace(8.66),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 20.49,
-                            child: KCAutoSizedText(
-                              title,
-                              color: color ?? KCColors.primary,
-                              fontWeight: FontWeight.w900,
-                              height: 1.366,
-                            ),
-                          ),
-                          const YSpace(4.95),
-                          SizedBox(
-                            height: bodyLines * 19.12,
-                            child: KCAutoSizedText(
-                              subtitle,
-                              fontSize: 14,
-                              color: KCColors.grey5,
-                              height: 1.3657,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const XSpace(30),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                            height: 20.49,
-                            child: KCAutoSizedText(
-                              amount,
-                              color: color ?? KCColors.primary,
-                              fontWeight: FontWeight.w900,
-                              height: 1.366,
-                            ),
-                          ),
-                          const YSpace(4.95),
-                          SizedBox(
-                            height: bodyLines * 19.12,
-                            child: KCAutoSizedText(
-                              note,
-                              fontSize: 14,
-                              color: KCColors.grey5,
-                              height: 1.3657,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                if (!lastItem) const YSpace(16),
-              ],
-            ),
-          )
-        ],
-      ),
     );
   }
 }

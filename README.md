@@ -13,7 +13,7 @@ This library would help you add Klump Checkout to your hybrid android/ios applic
 To use this plugin, add `klump_checkout` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 ```pub
 dependencies:
-  klump_checkout: ^1.0.26
+  klump_checkout: ^1.0.33
 ```
 
 ### Usage
@@ -58,7 +58,6 @@ To use [klump_checkout] SDK, you need to first initialize it by using the `Klump
 Payment transaction can be made with the `pay` method: 
 ## Parameters
 
-- `isLive` boolean - pass true for live enviroment and false for test environment
 - `context` BuildContext.
 - `data` the `KlumpCheckoutData` . 
 
@@ -66,7 +65,6 @@ Payment transaction can be made with the `pay` method:
 ```dart
 
 final res = await klumpCheckout.pay(
-      isLive: false,
       context: context,
       data: const KlumpCheckoutData(
         merchantPublicKey:

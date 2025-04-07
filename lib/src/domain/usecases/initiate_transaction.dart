@@ -20,7 +20,6 @@ class InitiateTransactionUsecase
         currency: params.currency,
         publicKey: params.publicKey,
         metaData: params.metaData,
-        isLive: params.isLive,
         email: params.email,
         phone: params.phone,
         items: params.items,
@@ -36,7 +35,6 @@ class InitiateTransactionUsecaseParams extends Equatable {
     required this.currency,
     required this.publicKey,
     required this.metaData,
-    required this.isLive,
     required this.email,
     required this.phone,
     required this.items,
@@ -49,7 +47,6 @@ class InitiateTransactionUsecaseParams extends Equatable {
   final String currency;
   final String publicKey;
   final Map<String, dynamic> metaData;
-  final bool isLive;
   final String email;
   final String phone;
   final List<KlumpCheckoutItem> items;
@@ -62,7 +59,6 @@ class InitiateTransactionUsecaseParams extends Equatable {
         currency,
         publicKey,
         metaData,
-        isLive,
         items,
         shippingData,
         merchantReference,

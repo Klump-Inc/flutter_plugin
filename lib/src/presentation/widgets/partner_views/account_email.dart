@@ -13,10 +13,8 @@ class AccountEmail extends StatefulWidget {
   const AccountEmail({
     super.key,
     required this.data,
-    required this.isLive,
   });
   final KlumpCheckoutData data;
-  final bool isLive;
 
   @override
   State<AccountEmail> createState() => _AccountEmailState();
@@ -148,8 +146,7 @@ class _AccountEmailState extends State<AccountEmail> {
                           loading: checkoutNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotifier.setTransactionData(
-                                widget.isLive, widget.data);
+                            checkoutNotifier.setTransactionData(widget.data);
                             checkoutNotifier
                                 .initiateTransaction(
                               email: _emailCtrl.text.trim(),

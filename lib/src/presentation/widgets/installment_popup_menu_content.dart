@@ -5,12 +5,10 @@ class KCInstallmentPopupMenuItemContent extends StatelessWidget {
   const KCInstallmentPopupMenuItemContent({
     super.key,
     required this.title,
-    required this.logo,
     this.withBG = false,
   });
 
   final String title;
-  final String logo;
   final bool withBG;
 
   @override

@@ -23,7 +23,19 @@
 ## [1.0.23] - Fixes
 ## [1.0.24] - Fixes
 ## [1.0.25] - Insurance partners update
-## [1.0.26] - Return Metadata after checkout
+## [1.0.26] - Return Metadata after 
+## [1.0.27] - Fixes
+## [1.0.28] - Add new financial partners
+## [1.0.29] - Add new financial partners
+## [1.0.30] - Add Shipping fee to amount when creating loan
+## [1.0.31] - Fixes
+## [1.0.32] - UI improvement
+## [1.0.33] - UI improvements
+
+
+
+
+
 
 
 

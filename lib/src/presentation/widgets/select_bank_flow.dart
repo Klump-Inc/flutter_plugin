@@ -9,10 +9,8 @@ class SelectBankFlow extends StatefulWidget {
   const SelectBankFlow({
     super.key,
     required this.data,
-    required this.isLive,
   });
   final KlumpCheckoutData data;
-  final bool isLive;
 
   @override
   State<SelectBankFlow> createState() => _SelectBankFlowState();
@@ -32,15 +30,9 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
   void _initiatTranx() {
     final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    MixPanelService.logEvent(
-      '3 - Select Payment institution Modal',
-      properties: {
-        'environment': widget.isLive ? 'production' : 'staging',
-      },
-    );
     Future.delayed(Duration.zero, () async {
       if (widget.data.email != null && widget.data.phone != null) {
-        checkoutNotifier.setTransactionData(widget.isLive, widget.data);
+        checkoutNotifier.setTransactionData(widget.data);
         await checkoutNotifier.initiateTransaction(
           email: widget.data.email!,
           phone: widget.data.phone!,
@@ -288,7 +280,9 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 '4 - Selected Payment institution',
                 properties: {
                   'environment':
-                      checkoutNotfier.isLive ? 'production' : 'staging',
+                      checkoutNotfier.initiateResponse?.isLive == true
+                          ? 'production'
+                          : 'staging',
                   'partner': checkoutNotfier.selectedBankFlow?.name,
                   'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
                 },

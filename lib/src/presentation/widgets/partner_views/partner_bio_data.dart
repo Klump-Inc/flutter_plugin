@@ -34,10 +34,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.bioDataStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
-        ?.formFields
+    final checkoutNotifier = context.read<KCChangeNotifier>();
+    final formFields = checkoutNotifier.bioDataStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
     final lastNameError =
@@ -78,9 +76,9 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _dobCtrl = TextEditingController();
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    _emailCtrl.text = checkoutNotfier.email ?? '';
-    _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+    final checkoutNotifier = context.read<KCChangeNotifier>();
+    _emailCtrl.text = checkoutNotifier.email ?? '';
+    _phoneNoCtrl.text = checkoutNotifier.phoneNumber ?? '';
     validateInputs();
     lastNameStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
@@ -133,7 +131,9 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     MixPanelService.logEvent(
       '10 - BIO DATA MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
@@ -153,8 +153,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.bioDataStepData?.nextStep ??
-        checkoutNotifier.selectedBankFlow?.nextStep;
+    final stepData = checkoutNotifier.bioDataStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -206,31 +205,6 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                             KCHeadline5(stepData?.displayData?.subTitle ?? ''),
                       ),
                     const YSpace(24),
-                    if (formFields?.contains('accountNumber') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: lastNameStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _lastNameCtrl,
-                              hint: 'Account Number',
-                              textInputType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(10),
-                              ],
-                              validationMessage:
-                                  KCFormValidator.errorAccountNumber(
-                                snapshot.data,
-                                'Accouunt number is required',
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                     if (formFields?.contains('phoneNumber') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
@@ -357,25 +331,15 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                                     },
                                   );
                                 } else {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return KCAndroidDatePickerContainer(
-                                        initialDate: _dob,
-                                        onDateSelected: (value) {
-                                          _dobCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _dob = value;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _dob,
+                                    onDateSelected: (value) {
+                                      _dobCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _dob = value;
+                                      });
                                     },
                                   );
                                 }

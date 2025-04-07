@@ -38,8 +38,6 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetLoanPartnersUsecase getLoanPartnersUsecase;
   late PartnersUsecase partnersUsecase;
 
-  bool _isLive = false;
-  bool get isLive => _isLive;
   bool _isBusy = false;
   bool get isBusy => _isBusy;
   var _currentPage = 0;
@@ -63,8 +61,8 @@ class KCChangeNotifier extends ChangeNotifier {
   String? get firstName => _firstName;
   String? get username => _username;
 
-  TermsAndCondition? _termsCondition;
-  TermsAndCondition? get termsCondition => _termsCondition;
+  // TermsAndCondition? _termsCondition;
+  // TermsAndCondition? get termsCondition => _termsCondition;
   KlumpUser? _klumpUser;
   KlumpUser? get klumpUser => _klumpUser;
   RepaymentDetails? _repaymentDetails;
@@ -77,8 +75,6 @@ class KCChangeNotifier extends ChangeNotifier {
   List<PartnerInsurer>? get partnerInsurers => _partnerInsurers;
   List<Partner>? _loanPartners;
   List<Partner>? get loanPartners => _loanPartners;
-  String? _loanId;
-  String? get loanId => _loanId;
 
   Map<String, dynamic>? _selectedBank;
   Map<String, dynamic>? get selectedBank => _selectedBank;
@@ -127,6 +123,13 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _redirectStepData;
   KCAPIResponse? get redirectStepData => _redirectStepData;
 
+  bool _webviewFailed = false;
+  bool get webviewFailed => _webviewFailed;
+
+  void setWebViewFailed() {
+    _webviewFailed = true;
+  }
+
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -160,8 +163,7 @@ class KCChangeNotifier extends ChangeNotifier {
   double? _downPayment;
   double? get downPayment => _downPayment;
 
-  void setTransactionData(bool isLive, KlumpCheckoutData data) {
-    _isLive = isLive;
+  void setTransactionData(KlumpCheckoutData data) {
     _checkoutData = data;
   }
 
@@ -228,6 +230,9 @@ class KCChangeNotifier extends ChangeNotifier {
       case 'REDIRECT':
         _redirectStepData = data;
         break;
+      case 'TERM_CONDITIONS':
+        _acceptTermsStepData = data;
+        break;
       default:
     }
   }
@@ -247,7 +252,6 @@ class KCChangeNotifier extends ChangeNotifier {
           currency: _checkoutData!.currency ?? 'NGN',
           publicKey: _checkoutData!.merchantPublicKey,
           metaData: _checkoutData!.metaData,
-          isLive: isLive,
           email: email,
           phone: phone,
           items: _checkoutData?.items ?? [],
@@ -263,6 +267,12 @@ class KCChangeNotifier extends ChangeNotifier {
         },
         (r) {
           _initiateResponse = r;
+          MixPanelService.logEvent(
+            '3 - Select Payment institution Modal',
+            properties: {
+              'environment': r.isLive ? 'production' : 'staging',
+            },
+          );
           return true;
         },
       );
@@ -309,7 +319,7 @@ class KCChangeNotifier extends ChangeNotifier {
             ?.map((e) => e.name)
             .toList();
     Map<String, dynamic> data = {
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'partner': _selectedBankFlow!.slug,
       'klump_public_key': _checkoutData?.merchantPublicKey,
     };
@@ -352,7 +362,8 @@ class KCChangeNotifier extends ChangeNotifier {
     MixPanelService.logEvent(
       '6 - ACCOUNT VERIFICATION MODAL',
       properties: {
-        'environment': isLive ? 'production' : 'staging',
+        'environment':
+            initiateResponse?.isLive == true ? 'production' : 'staging',
         'partner': selectedBankFlow!.slug,
         'payload': data,
       },
@@ -390,6 +401,7 @@ class KCChangeNotifier extends ChangeNotifier {
         partner: _selectedBankFlow!.slug,
         firstName: _firstName,
         bank: _selectedBank != null ? _selectedBank!['slug'] : null,
+        isLive: initiateResponse?.isLive == true,
       ),
     );
     _setBusy(false);
@@ -419,6 +431,7 @@ class KCChangeNotifier extends ChangeNotifier {
         partner: _selectedBankFlow!.slug,
         firstName: _firstName,
         bank: _selectedBank != null ? _selectedBank!['slug'] : null,
+        isLive: initiateResponse?.isLive == true,
       ),
     );
     response.fold(
@@ -436,28 +449,29 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(false);
   }
 
-  Future<void> fetchBankTC() async {
-    _setBusy(true);
-    final response = await getBankTCUsecase(GetBankTCUsecaseParams(
-      publicKey: _checkoutData?.merchantPublicKey ?? '',
-      partner: _selectedBankFlow!.slug,
-    ));
-    response.fold(
-      (l) => {},
-      (r) {
-        storeNextStepData(r);
-        _termsCondition = r.data;
-      },
-    );
-    _setBusy(false);
-  }
+  // Future<void> fetchBankTC() async {
+  //   _setBusy(true);
+  //   final response = await getBankTCUsecase(GetBankTCUsecaseParams(
+  //     publicKey: _checkoutData?.merchantPublicKey ?? '',
+  //     partner: _selectedBankFlow!.slug,
+  //     isLive: initiateResponse?.isLive == true,
+  //   ));
+  //   response.fold(
+  //     (l) => {},
+  //     (r) {
+  //       storeNextStepData(r);
+  //       _termsCondition = r.data;
+  //     },
+  //   );
+  //   _setBusy(false);
+  // }
 
   Future<void> createLoan() async {
     _setBusy(true);
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       "items": (_checkoutData?.items ?? []).map((e) => e.toMap()).toList(),
       "merchant_reference": _checkoutData!.merchantReference,
@@ -473,9 +487,10 @@ class KCChangeNotifier extends ChangeNotifier {
       });
     }
 
-    if (_termsCondition?.version != null) {
+    if (_acceptTermsStepData?.nextStep.displayData?.version != null) {
       data.addAll({
-        "termsAndConditionVersion": _termsCondition?.version,
+        "termsAndConditionVersion":
+            _acceptTermsStepData?.nextStep.displayData?.version.toString(),
       });
     }
     if (_repaymentDetails?.installment != null) {
@@ -511,7 +526,6 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) async {
         storeNextStepData(r);
-        _loanId = r.data;
         nextPage();
       },
     );
@@ -525,6 +539,7 @@ class KCChangeNotifier extends ChangeNotifier {
             redirectStepData?.nextStep.api ??
             '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
+        isLive: initiateResponse?.isLive == true,
       ),
     );
     return response.fold(
@@ -534,12 +549,24 @@ class KCChangeNotifier extends ChangeNotifier {
         MixPanelService.logEvent(
           '13 - SUCCESSFUL MODAL',
           properties: {
-            'environment': isLive ? 'production' : 'staging',
+            'environment':
+                initiateResponse?.isLive == true ? 'production' : 'staging',
             'partner': selectedBankFlow?.slug,
           },
         );
         return r;
       },
+    );
+  }
+
+  void skipLoanStatus() {
+    _disbursementStatusResponse = const DisbursementStatusResponse(
+      isCompleted: true,
+      isSuccessful: false,
+      message: 'Transaction Failed',
+      next_repayment_date: null,
+      responseMessage: null,
+      transaction: null,
     );
   }
 
@@ -551,6 +578,7 @@ class KCChangeNotifier extends ChangeNotifier {
           publicKey: _checkoutData?.merchantPublicKey ?? '',
           partner: _selectedBankFlow!.slug,
           amount: _checkoutData?.amount ?? 0,
+          isLive: initiateResponse?.isLive == true,
         ),
       );
       response.fold(
@@ -572,6 +600,7 @@ class KCChangeNotifier extends ChangeNotifier {
         email: email,
         password: password,
         partner: _selectedBankFlow!.slug,
+        isLive: initiateResponse?.isLive == true,
         dob: dob,
       ),
     );
@@ -579,7 +608,8 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
-        if (r.nextStep.name == 'NEW_LOAN') {
+        if (r.nextStep.name == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
@@ -588,30 +618,95 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
-  Future<void> acceptTerms() async {
+  Future<void> acceptRepaymentTerms({
+    String? reference,
+  }) async {
     _setBusy(true);
+    var data = {
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (reference != null) {
+      data['reference'] = reference;
+    }
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-          method: repaymentDetailsStepData?.nextStep.method ?? '',
-          api: repaymentDetailsStepData?.nextStep.api ?? '',
-          publicKey: _checkoutData?.merchantPublicKey ?? '',
-          partner: _selectedBankFlow!.slug,
-          data: {
-            'partner': _selectedBankFlow!.slug,
-            'is_live': isLive,
-            'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
-          }),
+        method: repaymentDetailsStepData?.nextStep.method ?? '',
+        api: repaymentDetailsStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
     );
     _setBusy(false);
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name == 'NEW_LOAN') {
+        if (r.nextStep.name == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
         }
+      },
+    );
+  }
+
+  Future<void> acceptTermsAndCondition({
+    String? reference,
+  }) async {
+    _setBusy(true);
+    var data = {
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (reference != null) {
+      data['reference'] = reference;
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: acceptTermsStepData?.nextStep.method ?? '',
+        api: acceptTermsStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> wemaRedirect() async {
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _redirectStepData?.nextStep.method ?? '',
+        api: _redirectStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: null,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        nextPage();
       },
     );
   }
@@ -649,7 +744,7 @@ class KCChangeNotifier extends ChangeNotifier {
           'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
           'currency': _checkoutData!.currency ?? 'NGN',
           'partner': _selectedBankFlow!.slug,
-          'is_live': isLive,
+          'is_live': initiateResponse?.isLive == true,
           'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
         },
       ),
@@ -675,25 +770,27 @@ class KCChangeNotifier extends ChangeNotifier {
           child: SizedBox(
             width: MediaQuery.of(context).size.height - 20,
             child: MonoWebView(
-              apiKey: isLive ? KC_MONO_KEY_LIVE : KC_MONO_KEY_TEST,
+              apiKey: initiateResponse?.isLive == true
+                  ? KC_MONO_KEY_LIVE
+                  : KC_MONO_KEY_TEST,
               scope: "auth", // NEWLY INTRODUCED
-              data:
-                  // NEWLY INTRODUCED
-                  {
-                "customer": {
-                  "name": "$firstName", // REQUIRED
-                  "email": email, // REQUIRED
-                  "identity": {
-                    "type": "phone",
-                    "number": phoneNumber,
-                  }
-                }
-              },
               onClosed: (data) {
                 monoCode = data ?? '';
               },
               onSuccess: (code) {
                 monoCode = code;
+              },
+              data:
+                  // NEWLY INTRODUCED
+                  {
+                'customer': {
+                  'name': '$firstName', // REQUIRED
+                  'email': '$email', // REQUIRED
+                  'identity': {
+                    'type': "phone",
+                    'number': "$phoneNumber",
+                  }
+                }
               },
             ),
           ),
@@ -714,6 +811,7 @@ class KCChangeNotifier extends ChangeNotifier {
             'mono_auth_code': monoCode,
             'partner': _selectedBankFlow!.slug,
             'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+            'is_live': initiateResponse?.isLive == true,
           },
         ),
       );
@@ -729,6 +827,41 @@ class KCChangeNotifier extends ChangeNotifier {
     }
   }
 
+  Future<void> linkExistingMono(
+    BuildContext context, {
+    required String? monoAuthCode,
+    required String? token,
+  }) async {
+    _setBusy(true);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: verifyOTPStepData?.nextStep.method ?? '',
+        api: verifyOTPStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: {
+          'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+          'currency': _checkoutData!.currency ?? 'NGN',
+          'mono_auth_code': monoAuthCode ?? '',
+          'partner': _selectedBankFlow!.slug,
+          'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+          'is_live': initiateResponse?.isLive == true,
+          'is_accepted': true,
+          'token': token ?? '',
+        },
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        _klumpUser = r.data as KlumpUser;
+        storeNextStepData(r);
+        nextPage();
+      },
+    );
+  }
+
   Future<void> bioData({
     required String? email,
     required String? firstname,
@@ -740,7 +873,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final data = <String, dynamic>{
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
     };
     if (email?.isNotEmpty == true) {
@@ -778,7 +911,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           nextPage();
@@ -810,7 +944,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final data = <String, dynamic>{
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
     };
     if (nin?.isNotEmpty == true) {
@@ -902,7 +1036,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
     };
     if (installments?.isNotEmpty == true) {
@@ -938,7 +1072,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN') {
+        if (r.nextStep.name?.toUpperCase() == 'NEW_LOAN' &&
+            _selectedBankFlow!.slug != 'stanbic') {
           createLoan();
         } else {
           _repaymentDetails = r.data;
@@ -958,7 +1093,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       'number': idNumber,
       'type': documentType,
@@ -992,7 +1127,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       'document_file': base64File,
     };
@@ -1024,7 +1159,7 @@ class KCChangeNotifier extends ChangeNotifier {
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
       'partner': _selectedBankFlow!.slug,
-      'is_live': isLive,
+      'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       'selfie_file': base64File,
     };
@@ -1054,6 +1189,22 @@ class KCChangeNotifier extends ChangeNotifier {
   double get totalAmount =>
       _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
 
+  String get tranxReference =>
+      redirectStepData?.data != null ? redirectStepData?.data['reference'] : '';
+
+  List<Map<String, dynamic>> get productDetails {
+    List<Map<String, dynamic>> items = [];
+    for (var i = 0; i < _checkoutData!.items.length; i++) {
+      final e = _checkoutData!.items[i];
+      items.add({
+        'productName': "'${e.name}'",
+        'productAmount': "'${e.unitPrice}'",
+        'productId': "'${i + 1}'",
+      });
+    }
+    return items;
+  }
+
   void selectBankSubmitted() {
     _verificationStepData = null;
     _verifyOTPStepData = null;
@@ -1068,6 +1219,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _newLoanStepData = null;
     _loanStatusStepData = null;
     _redirectStepData = null;
+    _webviewFailed = false;
     nextPage();
   }
 }

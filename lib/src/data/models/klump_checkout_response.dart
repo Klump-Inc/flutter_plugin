@@ -22,4 +22,5 @@ class KlumpCheckoutResponse extends Equatable {
 enum CheckoutStatus {
   success,
   error,
+  pending,
 }

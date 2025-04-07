@@ -124,7 +124,10 @@ class PartnerDisbursementStatus extends StatelessWidget {
                           checkoutNotfier.disbursementStatusResponse
                                       ?.isSuccessful ==
                                   true
-                              ? CheckoutStatus.success
+                              ? checkoutNotfier.selectedBankFlow?.slug ==
+                                      'renmoney'
+                                  ? CheckoutStatus.pending
+                                  : CheckoutStatus.success
                               : CheckoutStatus.error,
                           checkoutNotfier.disbursementStatusResponse?.message ??
                               '',

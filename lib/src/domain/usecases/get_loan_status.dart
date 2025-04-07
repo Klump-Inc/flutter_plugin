@@ -15,18 +15,27 @@ class GetLoanStatusUsecase
     GetLoanStatusUsecaseParams params,
   ) =>
       partnerRepository.getLoanStatus(
-          url: params.url, publicKey: params.publicKey);
+        url: params.url,
+        publicKey: params.publicKey,
+        isLive: params.isLive,
+      );
 }
 
 class GetLoanStatusUsecaseParams extends Equatable {
   const GetLoanStatusUsecaseParams({
     required this.url,
     required this.publicKey,
+    required this.isLive,
   });
 
   final String url;
   final String publicKey;
+  final bool isLive;
 
   @override
-  List<Object?> get props => [url, publicKey];
+  List<Object?> get props => [
+        url,
+        publicKey,
+        isLive,
+      ];
 }

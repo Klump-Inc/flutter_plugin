@@ -12,7 +12,7 @@ class KlumpUserModel extends KlumpUser {
 
   factory KlumpUserModel.fromJson(Map<String, dynamic> json) => KlumpUserModel(
         firstname: json['user']?['firstname'],
-        lastname: json['user']?['firstname'],
+        lastname: json['user']?['lastname'],
         email: json['user']?['email'],
         dob: json['user']?['date_of_birth'],
         maxLoanLimit: double.tryParse(json['loanLimit']?.toString() ?? ''),

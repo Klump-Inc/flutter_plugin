@@ -35,12 +35,14 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
       ..addJavaScriptChannel(
         'FlutterOnClose',
         onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.setWebViewFailed();
           checkoutNotfier.nextPage();
         },
       )
       ..addJavaScriptChannel(
         'FlutterOnError',
         onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.setWebViewFailed();
           checkoutNotfier.nextPage();
         },
       )

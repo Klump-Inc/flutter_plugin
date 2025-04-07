@@ -8,6 +8,9 @@ class DisplayDataModel extends DisplayData {
     super.list,
     super.createPartnerAccountText,
     super.createPartnerAccountUrl,
+    super.text,
+    super.version,
+    super.carousel,
   });
   factory DisplayDataModel.fromJson(Map<String, dynamic> json) =>
       DisplayDataModel(
@@ -17,5 +20,8 @@ class DisplayDataModel extends DisplayData {
         list: json['list'],
         createPartnerAccountText: json['create_partner_account_text'],
         createPartnerAccountUrl: json['create_partner_account_url'],
+        text: json['text'],
+        version: json['version'],
+        carousel: json['carousel'],
       );
 }

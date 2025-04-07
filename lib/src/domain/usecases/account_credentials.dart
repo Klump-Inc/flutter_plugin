@@ -19,6 +19,7 @@ class AccountCredentialsUsecase
         password: params.password,
         publicKey: params.publicKey,
         partner: params.partner,
+        isLive: params.isLive,
         dob: params.dob,
       );
 }
@@ -29,6 +30,7 @@ class AccountCredentialsUsecaseParams extends Equatable {
     required this.password,
     required this.publicKey,
     required this.partner,
+    required this.isLive,
     this.dob,
   });
 
@@ -37,6 +39,7 @@ class AccountCredentialsUsecaseParams extends Equatable {
   final String publicKey;
   final String partner;
   final DateTime? dob;
+  final bool isLive;
 
   @override
   List<Object?> get props => [
@@ -44,6 +47,7 @@ class AccountCredentialsUsecaseParams extends Equatable {
         password,
         publicKey,
         partner,
+        isLive,
         dob,
       ];
 }

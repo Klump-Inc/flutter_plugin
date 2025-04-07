@@ -35,12 +35,14 @@ class _CDLWebviewState extends State<CDLWebview> {
       ..addJavaScriptChannel(
         'FlutterOnClose',
         onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.setWebViewFailed();
           checkoutNotfier.nextPage();
         },
       )
       ..addJavaScriptChannel(
         'FlutterOnError',
         onMessageReceived: (JavaScriptMessage message) {
+          checkoutNotfier.setWebViewFailed();
           checkoutNotfier.nextPage();
         },
       )
@@ -78,12 +80,14 @@ class _CDLWebviewState extends State<CDLWebview> {
           "totalAmount": ${checkoutNotfier.totalAmount},
           "customerEmail": "${checkoutNotfier.email}",
           "customerPhone": "${checkoutNotfier.phoneNumber}",
-          sessionId
+          sessionId,
+          products: ${checkoutNotfier.productDetails},
+          metaData: "${checkoutNotfier.tranxReference}"
         }
         let config = {
           publicKey: "$CDL_PUBLIC_KEY",
           transaction: transaction,
-          isLive: false,
+          isLive: ${checkoutNotfier.initiateResponse?.isLive == true},
           onSuccess: function (response) {
             console.log(JSON.stringify(response));
             FlutterOnSuccess.postMessage(JSON.stringify(data));

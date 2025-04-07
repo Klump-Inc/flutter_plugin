@@ -19,6 +19,8 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   late StreamController<String> passwordStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
+  final ValueNotifier<bool> _accepted = ValueNotifier(false);
+
   Timer? _timer;
   final ValueNotifier<int> _timeLeft =
       ValueNotifier(kC_OTP_RESEND_WAIT_TIME_IN_SECONDS);
@@ -80,7 +82,9 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
     MixPanelService.logEvent(
       '7 - VERIFY OTP MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
@@ -102,6 +106,9 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
     final stepData = checkoutNotfier.verifyOTPStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final checkBoxFields =
+        stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
+    final formMap = stepData?.formFields;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -131,7 +138,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     ),
                     if (checkoutNotfier.initiateResponse?.merchant != null)
                       Padding(
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: const EdgeInsets.only(top: 5),
                         child: Align(
                           child: KCHeadline4(
                             checkoutNotfier.initiateResponse!.merchant
@@ -140,7 +147,8 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                           ),
                         ),
                       ),
-                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO')
+                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
+                        checkBoxFields?.isEmpty == true)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 10),
@@ -154,7 +162,11 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                       ),
                     const YSpace(22),
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment:
+                          stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
+                                  checkBoxFields?.isEmpty == true
+                              ? Alignment.center
+                              : Alignment.centerLeft,
                       child: KCHeadline3(stepData?.displayData?.title ??
                           (formFields?.contains('otp') == true
                               ? 'Enter the code'
@@ -162,7 +174,11 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     ),
                     const YSpace(8),
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment:
+                          stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
+                                  checkBoxFields?.isEmpty == true
+                              ? Alignment.center
+                              : Alignment.centerLeft,
                       child: KCHeadline5(stepData?.displayData?.subTitle ??
                           (formFields?.contains('otp') == true
                               ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
@@ -261,30 +277,100 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                           );
                         },
                       ),
+                    if (checkBoxFields?.isNotEmpty == true)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8, bottom: 5),
+                              child: SizedBox(
+                                height: 16,
+                                width: 16,
+                                child: ValueListenableBuilder<bool>(
+                                  valueListenable: _accepted,
+                                  builder: (_, accepted, __) {
+                                    return Checkbox(
+                                      value: accepted,
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.padded,
+                                      onChanged: (value) {
+                                        _accepted.value = value ?? false;
+                                      },
+                                      activeColor: KCColors.primary,
+                                      side: const BorderSide(
+                                          color: KCColors.primary, width: 2),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            const XSpace(10.5),
+                            Expanded(
+                              child: KCBodyText1(
+                                  checkBoxFields?.first.label ?? ''),
+                            ),
+                          ],
+                        ),
+                      ),
                     const YSpace(25),
                     const Spacer(),
                     ValueListenableBuilder<bool>(
                       valueListenable: _enabled,
                       builder: (_, enabled, __) {
-                        return KCPrimaryButton(
-                          title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
-                          onTap: () {
-                            if (stepData?.name?.toUpperCase() ==
-                                'CONNECT_MONO') {
-                              checkoutNotfier.linkWithMono(context);
-                            } else {
-                              FocusScope.of(context).unfocus();
-                              checkoutNotfier.verifyOTP(
-                                _otpCtrl.text.trim(),
-                                _passwordCtrl.text.trim(),
-                              );
-                            }
+                        return ValueListenableBuilder<bool>(
+                          valueListenable: _accepted,
+                          builder: (_, accepted, __) {
+                            return KCPrimaryButton(
+                              title: 'Continue',
+                              disabled: !enabled ||
+                                  checkoutNotfier.isBusy ||
+                                  (!accepted &&
+                                      checkBoxFields?.isNotEmpty == true),
+                              loading: checkoutNotfier.isBusy,
+                              onTap: () {
+                                if (stepData?.name?.toUpperCase() ==
+                                        'CONNECT_MONO' &&
+                                    accepted) {
+                                  final authCodeList = formMap!
+                                      .where((e) => e.name == 'mono_auth_code');
+                                  final tokenList =
+                                      formMap.where((e) => e.name == 'token');
+                                  checkoutNotfier.linkExistingMono(
+                                    context,
+                                    monoAuthCode: authCodeList.isNotEmpty
+                                        ? authCodeList.first.value.toString()
+                                        : null,
+                                    token: tokenList.isNotEmpty
+                                        ? tokenList.first.value.toString()
+                                        : null,
+                                  );
+                                } else if (stepData?.name?.toUpperCase() ==
+                                    'CONNECT_MONO') {
+                                  checkoutNotfier.linkWithMono(context);
+                                } else {
+                                  FocusScope.of(context).unfocus();
+                                  checkoutNotfier.verifyOTP(
+                                    _otpCtrl.text.trim(),
+                                    _passwordCtrl.text.trim(),
+                                  );
+                                }
+                              },
+                            );
                           },
                         );
                       },
                     ),
+                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
+                        checkBoxFields?.isNotEmpty == true)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: KCSecondaryButton(
+                          title: 'No, I want to select a new bank',
+                          onTap: () => checkoutNotfier.linkWithMono(context),
+                        ),
+                      ),
                     const YSpace(59)
                   ],
                 ),

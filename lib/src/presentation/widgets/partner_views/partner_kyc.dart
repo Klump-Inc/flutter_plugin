@@ -21,7 +21,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
   late TextEditingController _ninCtrl;
   late TextEditingController _addressCtrl;
   late TextEditingController _landmarkCtrl;
-  late TextEditingController _cityCtrl;
   late TextEditingController _stateCtrl;
   late TextEditingController _companyCtrl;
   late TextEditingController _companyIndustryCtrl;
@@ -32,13 +31,14 @@ class _PartnerKYCState extends State<PartnerKYC> {
   late TextEditingController _nextOfkinNameCtrl;
   late TextEditingController _nextOfkinPhoneCtrl;
 
-  String? _maritalStatus;
-  String? _residentialStatus;
+  KCDropdownInputAns? _maritalStatus;
+  KCDropdownInputAns? _residentialStatus;
   DateTime? _dateMovedIn;
-  String? _employmentStatus;
+  KCDropdownInputAns? _employmentStatus;
+  KCDropdownInputAns? _city;
   DateTime? _companyStartDate;
-  String? _educationStatus;
-  String? _nextOfkinRelationship;
+  KCDropdownInputAns? _educationStatus;
+  KCDropdownInputAns? _nextOfkinRelationship;
 
   bool _validateDateMovedIn = false;
   bool _validateCompanyStartdate = false;
@@ -79,8 +79,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
         KCFormValidator.errorGeneric(_addressCtrl.text.trim(), 'Required');
     final landmarkError =
         KCFormValidator.errorGeneric(_landmarkCtrl.text.trim(), 'Required');
-    final cityError =
-        KCFormValidator.errorGeneric(_cityCtrl.text.trim(), 'Required');
+
     final stateError =
         KCFormValidator.errorGeneric(_stateCtrl.text.trim(), 'Required');
     final dateMovedInError =
@@ -113,7 +112,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
             formFields?.contains('address') != true) &&
         (landmarkError?.isEmpty == true ||
             formFields?.contains('landmark') != true) &&
-        (cityError?.isEmpty == true || formFields?.contains('city') != true) &&
+        (_city != null || formFields?.contains('city') != true) &&
         (stateError?.isEmpty == true ||
             formFields?.contains('state') != true) &&
         (dateMovedInError?.isEmpty == true ||
@@ -150,7 +149,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
     _ninCtrl = TextEditingController();
     _addressCtrl = TextEditingController();
     _landmarkCtrl = TextEditingController();
-    _cityCtrl = TextEditingController();
     _stateCtrl = TextEditingController();
     _companyCtrl = TextEditingController();
     _companyIndustryCtrl = TextEditingController();
@@ -182,10 +180,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
     });
     _addressCtrl.addListener(() {
       addressStreamCtrl.sink.add(_addressCtrl.text.trim());
-      validateInputs();
-    });
-    _cityCtrl.addListener(() {
-      cityStreamCtrl.sink.add(_cityCtrl.text.trim());
       validateInputs();
     });
     _landmarkCtrl.addListener(() {
@@ -228,12 +222,110 @@ class _PartnerKYCState extends State<PartnerKYC> {
       nextOfkinPhoneStreamCtrl.sink.add(_nextOfkinPhoneCtrl.text.trim());
       validateInputs();
     });
+
+    Future.delayed(Duration.zero, () {
+      final savedState = getSavedValue('state');
+      if (savedState != null) {
+        _stateCtrl.text = savedState;
+      }
+      final savedNin = getSavedValue('nin');
+      if (savedNin != null) {
+        _ninCtrl.text = savedNin;
+      }
+      final savedMaritalStatus = getSavedValue('marital_status');
+      if (savedMaritalStatus != null) {
+        _maritalStatus = KCDropdownInputAns(
+            label: savedMaritalStatus, value: savedMaritalStatus);
+      }
+      final savedResStatus = getSavedValue('residential_status');
+      if (savedResStatus != null) {
+        _residentialStatus =
+            KCDropdownInputAns(label: savedResStatus, value: savedResStatus);
+      }
+      final savedAddress = getSavedValue('address');
+      if (savedAddress != null) {
+        _addressCtrl.text = savedAddress;
+      }
+      final savedLandmark = getSavedValue('landmark');
+      if (savedLandmark != null) {
+        _landmarkCtrl.text = savedLandmark;
+      }
+      final savedCity = getSavedValue('city');
+      if (savedCity != null) {
+        _city = KCDropdownInputAns(label: savedCity, value: savedCity);
+      }
+      final savedDateMovedIn = getSavedValue('date_moved_in');
+      if (savedDateMovedIn != null) {
+        _dateMovedIn = DateTime.tryParse(savedDateMovedIn.toString());
+        if (_dateMovedIn != null) {
+          _dateMovedInCtrl.text = KCStringUtil.formatDate(_dateMovedIn!);
+        }
+      }
+      final savedEmploymentStatus = getSavedValue('employment_status');
+      if (savedEmploymentStatus != null) {
+        _employmentStatus = KCDropdownInputAns(
+            label: savedEmploymentStatus, value: savedEmploymentStatus);
+      }
+      final savedCompany = getSavedValue('company_name');
+      if (savedCompany != null) {
+        _companyCtrl.text = savedCompany;
+      }
+      final savedIndustry = getSavedValue('company_industry');
+      if (savedIndustry != null) {
+        _companyIndustryCtrl.text = savedIndustry;
+      }
+      final savedCompAddress = getSavedValue('company_address');
+      if (savedCompAddress != null) {
+        _companyAddressCtrl.text = savedCompAddress;
+      }
+      final savedCompStartDate = getSavedValue('company_start_date');
+      if (savedCompStartDate != null) {
+        _companyStartDate = DateTime.tryParse(savedCompStartDate.toString());
+        if (_companyStartDate != null) {
+          _companyStartDateCtrl.text =
+              KCStringUtil.formatDate(_companyStartDate!);
+        }
+      }
+      final savedIncome = getSavedValue('monthly_income');
+      if (savedIncome != null) {
+        _monthlyIncomeCtrl.text =
+            '₦${KCStringUtil.formatAmount(double.tryParse(savedIncome.toString()) ?? 0)}';
+      }
+      final savedEducation = getSavedValue('education');
+      if (savedEducation != null) {
+        _educationStatus =
+            KCDropdownInputAns(label: savedEducation, value: savedEducation);
+      }
+      final savedNOKName = getSavedValue('next_of_kin_name');
+      if (savedNOKName != null) {
+        _nextOfkinNameCtrl.text = savedNOKName;
+      }
+      final savedNOKRelationship = getSavedValue('next_of_kin_relationship');
+      if (savedNOKRelationship != null) {
+        _nextOfkinRelationship = KCDropdownInputAns(
+            label: savedNOKRelationship, value: savedNOKRelationship);
+      }
+      final savedNOKPhone = getSavedValue('next_of_kin_phone');
+      if (savedNOKPhone != null) {
+        _nextOfkinPhoneCtrl.text = savedNOKPhone;
+      }
+      if (savedNOKRelationship != null ||
+          savedEducation != null ||
+          savedMaritalStatus != null ||
+          savedResStatus != null ||
+          savedCity != null) {
+        setState(() {});
+      }
+    });
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
+
     MixPanelService.logEvent(
       '10 - KYC MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
@@ -245,8 +337,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
     _ninCtrl.dispose();
     _addressCtrl.dispose();
     _landmarkCtrl.dispose();
-    _cityCtrl.dispose();
-
     _stateCtrl.dispose();
     _companyCtrl.dispose();
     _companyIndustryCtrl.dispose();
@@ -256,6 +346,21 @@ class _PartnerKYCState extends State<PartnerKYC> {
     _monthlyIncomeCtrl.dispose();
     _nextOfkinNameCtrl.dispose();
     _nextOfkinPhoneCtrl.dispose();
+  }
+
+  String? getSavedValue(String fieldName) {
+    String? value;
+    final checkoutNotfier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    final stepData = checkoutNotfier.userKYCStepData?.nextStep;
+    final formMap = stepData?.formFields;
+    final inputData = formMap?.where((e) => e.name == fieldName);
+    if (inputData?.isNotEmpty == true) {
+      if (inputData!.first.value != null) {
+        value = inputData.first.value.toString();
+      }
+    }
+    return value;
   }
 
   @override
@@ -362,9 +467,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _maritalStatus,
+                              value: _maritalStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _maritalStatus = value;
@@ -387,9 +495,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _residentialStatus,
+                              value: _residentialStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _residentialStatus = value;
@@ -439,40 +550,50 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('city') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: cityStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _cityCtrl,
-                              hint: 'Local Government Area',
-                              textInputType: TextInputType.text,
-                              textInputAction: TextInputAction.next,
-                              validationMessage: KCFormValidator.errorGeneric(
-                                snapshot.data,
-                                'Local Government Area is required',
-                              ),
-                            );
-                          },
-                        ),
-                      ),
                     if (formFields?.contains('state') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
                           stream: stateStreamCtrl.stream,
                           builder: (context, snapshot) {
+                            final inputData =
+                                formMap!.where((e) => e.name == 'state').first;
                             return KCInputField(
                               controller: _stateCtrl,
-                              hint: 'State',
+                              hint: inputData.placeholder ?? 'State',
                               textInputType: TextInputType.text,
                               textInputAction: TextInputAction.next,
+                              readOnly: (inputData.readonly as bool?) == true,
                               validationMessage: KCFormValidator.errorGeneric(
                                 snapshot.data,
                                 'State is required',
                               ),
+                            );
+                          },
+                        ),
+                      ),
+                    if (formFields?.contains('city') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Builder(
+                          builder: (context) {
+                            final inputData =
+                                formMap!.where((e) => e.name == 'city').first;
+                            return KCDropdownInput(
+                              label: inputData.label ?? "Please select",
+                              items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
+                                  .map((e) => e['value'].toString())
+                                  .toList(),
+                              value: _city?.label,
+                              onSelected: (value) {
+                                setState(() {
+                                  _city = value;
+                                });
+                              },
+                              minWidth: constraints.maxWidth - 52,
                             );
                           },
                         ),
@@ -522,26 +643,16 @@ class _PartnerKYCState extends State<PartnerKYC> {
                                     },
                                   );
                                 } else {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return KCAndroidDatePickerContainer(
-                                        initialDate: _dateMovedIn,
-                                        onDateSelected: (value) {
-                                          _dateMovedInCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _dateMovedIn = value;
-                                          });
-                                          validateInputs();
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _dateMovedIn,
+                                    onDateSelected: (value) {
+                                      _dateMovedInCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _dateMovedIn = value;
+                                      });
+                                      validateInputs();
                                     },
                                   );
                                 }
@@ -562,9 +673,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _employmentStatus,
+                              value: _employmentStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _employmentStatus = value;
@@ -583,7 +697,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           builder: (context, snapshot) {
                             return KCInputField(
                               controller: _companyCtrl,
-                              hint: _employmentStatus == 'employed'
+                              hint: _employmentStatus?.value == 'employed'
                                   ? 'What is the name of the company you work for?'
                                   : 'What is the name of your company?',
                               textInputType: TextInputType.text,
@@ -679,26 +793,16 @@ class _PartnerKYCState extends State<PartnerKYC> {
                                     },
                                   );
                                 } else {
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return KCAndroidDatePickerContainer(
-                                        initialDate: _companyStartDate,
-                                        onDateSelected: (value) {
-                                          _companyStartDateCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _companyStartDate = value;
-                                          });
-                                          validateInputs();
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _companyStartDate,
+                                    onDateSelected: (value) {
+                                      _companyStartDateCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _companyStartDate = value;
+                                      });
+                                      validateInputs();
                                     },
                                   );
                                 }
@@ -772,9 +876,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _educationStatus,
+                              value: _educationStatus?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _educationStatus = value;
@@ -818,9 +925,12 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _nextOfkinRelationship,
+                              value: _nextOfkinRelationship?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _nextOfkinRelationship = value;
@@ -879,22 +989,23 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             FocusScope.of(context).unfocus();
                             checkoutNotfier.partnerKYC(
                               nin: _ninCtrl.text.trim(),
-                              maritalStatus: _maritalStatus,
-                              residentialStatus: _residentialStatus,
+                              maritalStatus: _maritalStatus?.value,
+                              residentialStatus: _residentialStatus?.value,
                               address: _addressCtrl.text.trim(),
                               landmark: _landmarkCtrl.text.trim(),
-                              city: _cityCtrl.text.trim(),
+                              city: _city?.value,
                               state: _stateCtrl.text.trim(),
                               dateMovedIn: _dateMovedIn,
-                              employmentStatus: _employmentStatus,
+                              employmentStatus: _employmentStatus?.value,
                               companyName: _companyCtrl.text.trim(),
                               companyIndustry: _companyIndustryCtrl.text.trim(),
                               companyAddress: _companyAddressCtrl.text.trim(),
                               companyStartDate: _companyStartDate,
                               monthlyIncome: _monthlyIncomeCtrl.text.trim(),
-                              education: _educationStatus,
+                              education: _educationStatus?.value,
                               nextOfKinName: _nextOfkinNameCtrl.text.trim(),
-                              nextOfKinRetionship: _nextOfkinRelationship,
+                              nextOfKinRetionship:
+                                  _nextOfkinRelationship?.value,
                               nextOfKinPhone: _nextOfkinPhoneCtrl.text.trim(),
                             );
                           },

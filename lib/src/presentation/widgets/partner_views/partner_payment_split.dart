@@ -16,7 +16,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   late TextEditingController _amountCtrl;
   late StreamController<String> amountStreamCtrl;
 
-  String? _installmentSplit;
+  KCDropdownInputAns? _installmentSplit;
   int? _repaymentDay;
   PartnerInsurer? _insurer;
 
@@ -65,7 +65,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
     MixPanelService.logEvent(
       '8 - LOAN OPTIONS MODAL',
       properties: {
-        'environment': changeNotifier.isLive ? 'production' : 'staging',
+        'environment': changeNotifier.initiateResponse?.isLive == true
+            ? 'production'
+            : 'staging',
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
@@ -175,7 +177,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: KCBodyText1(
-                                      inputData.smalltext,
+                                      inputData.smalltext
+                                          .toString()
+                                          .replaceAll('<br>', '\n'),
                                       fontSize: 12,
                                       fontWeight: FontWeight.w800,
                                       color: KCColors.primary,
@@ -197,9 +201,12 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                             return KCDropdownInput(
                               label: inputData.label ?? "Please select",
                               items: inputData.options!
+                                  .map((e) => e['label'].toString())
+                                  .toList(),
+                              itemsValue: inputData.options!
                                   .map((e) => e['value'].toString())
                                   .toList(),
-                              value: _installmentSplit,
+                              value: _installmentSplit?.label,
                               onSelected: (value) {
                                 setState(() {
                                   _installmentSplit = value;
@@ -273,7 +280,6 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                   child: KCInstallmentPopupMenuItemContent(
                                     withBG: (index + 1) % 2 != 0,
                                     title: '${index + 1}',
-                                    logo: KCAssets.stanbicLogo,
                                   ),
                                   onTap: () {
                                     setState(() {
@@ -382,7 +388,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                                         true
                                     ? double.parse(_amountCtrl.text.trim())
                                     : null,
-                            installments: _installmentSplit,
+                            installments: _installmentSplit?.value,
                             repaymentDay: _repaymentDay,
                             insurer: _insurer,
                           ),

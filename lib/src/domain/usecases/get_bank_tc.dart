@@ -17,18 +17,22 @@ class GetBankTCUsecase
       partnerRepository.getBankTC(
         publicKey: params.publicKey,
         partner: params.partner,
+        isLive: params.isLive,
       );
 }
 
 class GetBankTCUsecaseParams extends Equatable {
   final String publicKey;
   final String partner;
+  final bool isLive;
 
-  const GetBankTCUsecaseParams({
-    required this.publicKey,
-    required this.partner,
-  });
+  const GetBankTCUsecaseParams(
+      {required this.publicKey, required this.partner, required this.isLive});
 
   @override
-  List<Object?> get props => [publicKey, partner];
+  List<Object?> get props => [
+        publicKey,
+        partner,
+        isLive,
+      ];
 }

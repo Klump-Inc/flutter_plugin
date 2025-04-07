@@ -20,9 +20,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        datePickerTheme: const DatePickerThemeData(
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.white,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
-      home: FirstScreen(),
+      home: const FirstScreen(),
     );
   }
 }
@@ -42,12 +48,11 @@ class FirstScreen extends StatelessWidget {
           onPressed: () async {
             final klumpCheckout = KlumpCheckout();
             final res = await klumpCheckout.pay(
-              isLive: false,
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    // 'klp_pk_test_9d7e5259a162417ead4f7743f516a71c7d05e0c7af2c4756907425c47f52767d',
                     'klp_pk_9ab98d0ddf0e447c9e0a615f4e546604a39a8233a88c4b93860f119c8cd9a332',
+                // 'klp_pk_test_9d7e5259a162417ead4f7743f516a71c7d05e0c7af2c4756907425c47f52767d',
                 amount: 300000,
                 shippingFee: 10000,
                 merchantReference: "what-ever-you-want-this-to-be",

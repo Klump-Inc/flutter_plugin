@@ -16,3 +16,4 @@ export 'check_box.dart';
 export 'dropdown_input.dart';
 export 'draggable_bar.dart';
 export 'logo_header_widget.dart';
+export 'page_loader.dart';
