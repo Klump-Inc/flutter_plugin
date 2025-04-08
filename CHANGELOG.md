@@ -31,6 +31,8 @@
 ## [1.0.31] - Fixes
 ## [1.0.32] - UI improvement
 ## [1.0.33] - UI improvements
+## [1.0.34] - Analytics
+
 
 
 
