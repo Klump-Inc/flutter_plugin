@@ -25,6 +25,7 @@ class InitiateTransactionUsecase
         items: params.items,
         shippingData: params.shippingData,
         merchantReference: params.merchantReference,
+        sourceAnalytics: params.sourceAnalytics,
       );
 }
 
@@ -40,6 +41,7 @@ class InitiateTransactionUsecaseParams extends Equatable {
     required this.items,
     required this.shippingData,
     required this.merchantReference,
+    required this.sourceAnalytics,
   });
 
   final double amount;
@@ -52,6 +54,7 @@ class InitiateTransactionUsecaseParams extends Equatable {
   final List<KlumpCheckoutItem> items;
   final Map<String, dynamic>? shippingData;
   final String merchantReference;
+  final Map<String, dynamic> sourceAnalytics;
 
   @override
   List<Object?> get props => [
@@ -62,5 +65,6 @@ class InitiateTransactionUsecaseParams extends Equatable {
         items,
         shippingData,
         merchantReference,
+        sourceAnalytics,
       ];
 }
