@@ -77,9 +77,12 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             ),
           ),
           const YSpace(24.22),
-          KCHeadline3('Choose your bank'),
+          KCHeadline3('Select a lender'),
           const YSpace(8),
-          KCHeadline5('Select a bank to Buy Now and Pay Later.'),
+          KCHeadline5(
+            'Get a loan approval in minutes',
+            fontSize: 16,
+          ),
           const YSpace(16),
           LayoutBuilder(
             builder: (context, costraint) {
@@ -194,6 +197,44 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 },
               );
             },
+          ),
+          const YSpace(8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: SvgPicture.asset(
+                  KCAssets.info,
+                  package: 'klump_checkout',
+                ),
+              ),
+              const XSpace(8),
+              const Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: 'Can’t find your bank? Use '),
+                      TextSpan(
+                        text: 'Renmoney ',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                      TextSpan(text: 'or '),
+                      TextSpan(
+                        text: 'CDL ',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                      TextSpan(text: 'to checkout'),
+                    ],
+                  ),
+                  style: TextStyle(
+                    fontFamily: KCFonts.avenir,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ],
           ),
           if (banks.isNotEmpty)
             Padding(
