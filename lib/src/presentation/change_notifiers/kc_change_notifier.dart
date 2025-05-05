@@ -245,6 +245,13 @@ class KCChangeNotifier extends ChangeNotifier {
     _email = email;
     _phoneNumber = phone;
     if (initiateResponse == null) {
+      var sourceAnalytics = <String, dynamic>{
+        'plugin_source': 'Flutter',
+        'plugin_version': KC_PLUGIN_VERSION,
+      };
+      if (_checkoutData?.appVersion != null) {
+        sourceAnalytics['app_version'] = _checkoutData!.appVersion!;
+      }
       final response = await initiateTransactionUsecase(
         InitiateTransactionUsecaseParams(
           amount: _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
@@ -257,6 +264,7 @@ class KCChangeNotifier extends ChangeNotifier {
           items: _checkoutData?.items ?? [],
           shippingData: _checkoutData!.shippingData,
           merchantReference: _checkoutData!.merchantReference,
+          sourceAnalytics: sourceAnalytics,
         ),
       );
       _setBusy(false);

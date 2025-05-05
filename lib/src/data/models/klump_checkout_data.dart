@@ -13,6 +13,7 @@ class KlumpCheckoutData extends Equatable {
   final Map<String, dynamic>? shippingData;
   final String? email;
   final String? phone;
+  final String? appVersion;
 
   const KlumpCheckoutData({
     required this.amount,
@@ -25,6 +26,7 @@ class KlumpCheckoutData extends Equatable {
     this.shippingData,
     this.email,
     this.phone,
+    this.appVersion,
   });
 
   Map<String, dynamic> toMap() => {
@@ -37,7 +39,8 @@ class KlumpCheckoutData extends Equatable {
         'items': items.map((e) => e.toMap()).toList(),
         'shipping_data': shippingData,
         'email': email,
-        'phone': phone
+        'phone': phone,
+        'app_version': appVersion,
       };
 
   @override
@@ -53,5 +56,6 @@ class KlumpCheckoutData extends Equatable {
         shippingData,
         email,
         phone,
+        appVersion,
       ];
 }
