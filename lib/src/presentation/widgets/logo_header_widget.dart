@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:klump_checkout/src/core/core.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class LogoHeaderWidget extends StatelessWidget {
   const LogoHeaderWidget({
@@ -28,7 +28,10 @@ class LogoHeaderWidget extends StatelessWidget {
           ),
         ),
         if (logo != null) logo!,
-        const SizedBox(width: 25)
+        const SizedBox(
+          width: 25,
+          child: CloseViewButton(),
+        ),
       ],
     );
   }

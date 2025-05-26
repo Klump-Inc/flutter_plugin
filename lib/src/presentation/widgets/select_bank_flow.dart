@@ -66,15 +66,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: SvgPicture.asset(
-                    KCAssets.arrowBack,
-                    package: 'klump_checkout',
-                  ),
-                ),
+              const SizedBox(
+                width: 30,
               ),
               Column(
                 mainAxisSize: MainAxisSize.min,
@@ -97,7 +90,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                     const YSpace(26),
                 ],
               ),
-              const XSpace(30),
+              const SizedBox(
+                width: 30,
+                child: CloseViewButton(),
+              ),
             ],
           ),
           const YSpace(30.22),

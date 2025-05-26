@@ -21,3 +21,4 @@ export 'cdl_webview.dart';
 export 'wema_illustration.dart';
 export 'firstbank_webview.dart';
 export 'partner_terms_condition.dart';
+export 'feedback_view.dart';
