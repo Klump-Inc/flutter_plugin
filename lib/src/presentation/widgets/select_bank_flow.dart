@@ -63,24 +63,48 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
         children: [
           const DraggableBar(),
           const YSpace(30.82),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: SvgPicture.asset(
-                  KCAssets.arrowBack,
-                  package: 'klump_checkout',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: SvgPicture.asset(
+                    KCAssets.arrowBack,
+                    package: 'klump_checkout',
+                  ),
                 ),
               ),
-            ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    KCAssets.klumpLogo,
+                    package: 'klump_checkout',
+                  ),
+                  if (checkoutNotfier.initiateResponse?.merchant != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Align(
+                        child: KCHeadline4(
+                          checkoutNotfier.initiateResponse!.merchant.toString(),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )
+                  else
+                    const YSpace(26),
+                ],
+              ),
+              const XSpace(30),
+            ],
           ),
-          const YSpace(24.22),
-          KCHeadline3('Select a lender'),
+          const YSpace(30.22),
+          KCHeadline3('Select a Partner'),
           const YSpace(8),
           KCHeadline5(
-            'Get a loan approval in minutes',
+            'Credit approval in minutes',
             fontSize: 16,
           ),
           const YSpace(16),
@@ -198,7 +222,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               );
             },
           ),
-          const YSpace(8),
+          const YSpace(12),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -229,7 +253,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                   ),
                   style: TextStyle(
                     fontFamily: KCFonts.avenir,
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
