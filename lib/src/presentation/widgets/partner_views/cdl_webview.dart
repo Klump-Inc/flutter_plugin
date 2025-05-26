@@ -35,15 +35,13 @@ class _CDLWebviewState extends State<CDLWebview> {
       ..addJavaScriptChannel(
         'FlutterOnClose',
         onMessageReceived: (JavaScriptMessage message) {
-          checkoutNotfier.setWebViewFailed();
-          checkoutNotfier.nextPage();
+          showFeedbackModal();
         },
       )
       ..addJavaScriptChannel(
         'FlutterOnError',
         onMessageReceived: (JavaScriptMessage message) {
-          checkoutNotfier.setWebViewFailed();
-          checkoutNotfier.nextPage();
+          showFeedbackModal();
         },
       )
       ..addJavaScriptChannel(
@@ -144,6 +142,33 @@ class _CDLWebviewState extends State<CDLWebview> {
 </html>''';
     _webViewController
         .loadRequest(Uri.dataFromString(html, mimeType: 'text/html'));
+  }
+
+  void showFeedbackModal() {
+    final checkoutNotifier = context.read<KCChangeNotifier>();
+    showModalBottomSheet<void>(
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      context: context,
+      backgroundColor: KCColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(9.92367),
+          topRight: Radius.circular(9.92367),
+        ),
+      ),
+      builder: (context) => FeedbackView(
+        params: FeedbackViewArgument(
+          email: checkoutNotifier.email ?? '',
+          phoneNumber: checkoutNotifier.phoneNumber ?? '',
+          publicKey: checkoutNotifier.checkoutData!.merchantPublicKey,
+          merchant: checkoutNotifier.initiateResponse?.merchant,
+          isLive: checkoutNotifier.initiateResponse?.isLive == true,
+          backButtonClose: true,
+        ),
+      ),
+    );
   }
 
   @override

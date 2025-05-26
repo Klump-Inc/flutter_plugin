@@ -489,8 +489,6 @@ void main() {
     testWidgets('PartnerDecision renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
-      when(kcChangeNotifier.webviewFailed).thenAnswer((_) => false);
-
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await mockNetworkImagesFor(

@@ -70,7 +70,19 @@ class _FeedbackViewState extends State<FeedbackView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          if (widget.params.backButtonClose) {
+                            const checkoutResponse = KlumpCheckoutResponse(
+                              CheckoutStatus.error,
+                              'Transaction unsuccessful',
+                              null,
+                            );
+                            Navigator.pop(context);
+                            Navigator.pop(context, checkoutResponse);
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -172,6 +184,7 @@ class FeedbackViewArgument {
   final String publicKey;
   final String? merchant;
   final bool isLive;
+  final bool backButtonClose;
 
   FeedbackViewArgument({
     required this.email,
@@ -179,5 +192,6 @@ class FeedbackViewArgument {
     required this.publicKey,
     required this.merchant,
     required this.isLive,
+    this.backButtonClose = false,
   });
 }
