@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class KCFormValidator {
-  static Color getBorderColor(String? message) {
+  static Color getBorderColor(String? message, [Color? validColor]) {
     if (message == null) {
       return KCColors.grey1;
     } else if (message.isEmpty) {
-      return Colors.green.withOpacity(0.50);
+      return validColor ?? Colors.green.withOpacity(0.50);
     } else {
       return Colors.red.withOpacity(0.50);
     }
