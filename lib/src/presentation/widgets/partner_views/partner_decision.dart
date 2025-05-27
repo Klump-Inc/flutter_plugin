@@ -19,28 +19,17 @@ class _PartnerDecisionState extends State<PartnerDecision> {
   void _startStatusLookup() {
     var checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    if (checkoutNotifier.webviewFailed) {
-      Future.delayed(
-        const Duration(seconds: 2),
-        () {
-          checkoutNotifier.skipLoanStatus();
-          timer?.cancel();
-          checkoutNotifier.nextPage();
-        },
-      );
-    } else {
-      timer = Timer.periodic(
-        const Duration(seconds: 10),
-        (Timer t) {
-          checkoutNotifier.getLoanStatus().then((response) {
-            if (response?.isCompleted == true) {
-              timer?.cancel();
-              checkoutNotifier.nextPage();
-            }
-          });
-        },
-      );
-    }
+    timer = Timer.periodic(
+      const Duration(seconds: 10),
+      (Timer t) {
+        checkoutNotifier.getLoanStatus().then((response) {
+          if (response?.isCompleted == true) {
+            timer?.cancel();
+            checkoutNotifier.nextPage();
+          }
+        });
+      },
+    );
   }
 
   @override

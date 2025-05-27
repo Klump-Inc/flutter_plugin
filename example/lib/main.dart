@@ -52,13 +52,12 @@ class FirstScreen extends StatelessWidget {
               data: const KlumpCheckoutData(
                 merchantPublicKey:
                     'klp_pk_9ab98d0ddf0e447c9e0a615f4e546604a39a8233a88c4b93860f119c8cd9a332',
-                // 'klp_pk_test_9d7e5259a162417ead4f7743f516a71c7d05e0c7af2c4756907425c47f52767d',
                 amount: 300000,
                 shippingFee: 10000,
                 merchantReference: "what-ever-you-want-this-to-be",
                 metaData: {
                   'customer': "Elon Musk",
-                  'email': "sample@gmail.com",
+                  'email': "test@useklump.com",
                 },
                 items: [
                   KlumpCheckoutItem(
@@ -71,7 +70,7 @@ class FirstScreen extends StatelessWidget {
                   )
                 ],
                 shippingData: null,
-                email: 'sample@gmail.com',
+                email: 'test@useklump.com',
                 phone: '08012345678',
               ),
             );

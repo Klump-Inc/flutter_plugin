@@ -17,3 +17,5 @@ export 'dropdown_input.dart';
 export 'draggable_bar.dart';
 export 'logo_header_widget.dart';
 export 'page_loader.dart';
+export 'close_view_button.dart';
+export 'text_area.dart';

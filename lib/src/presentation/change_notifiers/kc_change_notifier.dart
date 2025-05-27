@@ -123,13 +123,6 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _redirectStepData;
   KCAPIResponse? get redirectStepData => _redirectStepData;
 
-  bool _webviewFailed = false;
-  bool get webviewFailed => _webviewFailed;
-
-  void setWebViewFailed() {
-    _webviewFailed = true;
-  }
-
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -1227,7 +1220,6 @@ class KCChangeNotifier extends ChangeNotifier {
     _newLoanStepData = null;
     _loanStatusStepData = null;
     _redirectStepData = null;
-    _webviewFailed = false;
     nextPage();
   }
 }
