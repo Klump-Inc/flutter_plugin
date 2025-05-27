@@ -16,6 +16,9 @@ class KCTextArea extends StatelessWidget {
       controller: controller,
       minLines: 6,
       maxLines: 8,
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w500,

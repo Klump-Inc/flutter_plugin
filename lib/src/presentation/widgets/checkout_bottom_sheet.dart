@@ -61,129 +61,116 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-      child: SizedBox(
-        height: screenHeight(context) - 67.48,
-        child: ChangeNotifierProvider<KCChangeNotifier>(
-          create: (_) => KCChangeNotifier(),
-          child: OKToast(
-            animationDuration: const Duration(milliseconds: 300),
-            animationCurve: Curves.easeIn,
-            backgroundColor: Colors.black87,
-            textPadding: const EdgeInsets.symmetric(
-              horizontal: 30,
-              vertical: 15,
-            ),
-            textStyle: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: Colors.white),
-            radius: 30,
-            duration: const Duration(seconds: 3),
-            position: ToastPosition.center,
-            textAlign: TextAlign.center,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Consumer<KCChangeNotifier>(
-                    builder: (_, checkoutNotifier, __) {
-                      var views = <Widget>[
-                        if (widget.data.email == null ||
-                            widget.data.phone == null)
-                          AccountEmail(
-                            data: widget.data,
-                          ),
-                        SelectBankFlow(
+    return SizedBox(
+      height: screenHeight(context) - 67.48,
+      child: ChangeNotifierProvider<KCChangeNotifier>(
+        create: (_) => KCChangeNotifier(),
+        child: OKToast(
+          animationDuration: const Duration(milliseconds: 300),
+          animationCurve: Curves.easeIn,
+          backgroundColor: Colors.black87,
+          textPadding: const EdgeInsets.symmetric(
+            horizontal: 30,
+            vertical: 15,
+          ),
+          textStyle: Theme.of(context)
+              .textTheme
+              .bodyMedium!
+              .copyWith(color: Colors.white),
+          radius: 30,
+          duration: const Duration(seconds: 3),
+          position: ToastPosition.center,
+          textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              Expanded(
+                child: Consumer<KCChangeNotifier>(
+                  builder: (_, checkoutNotifier, __) {
+                    var views = <Widget>[
+                      if (widget.data.email == null ||
+                          widget.data.phone == null)
+                        AccountEmail(
                           data: widget.data,
                         ),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                                'polaris' ||
-                            checkoutNotifier.selectedBankFlow?.slug == 'specta')
-                          const PartnerMobileExperience(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                                'polaris' ||
-                            checkoutNotifier.selectedBankFlow?.slug ==
-                                'first_bank' ||
-                            checkoutNotifier.selectedBankFlow?.slug ==
-                                'renmoney' ||
-                            checkoutNotifier.selectedBankFlow?.slug ==
-                                'fidelity' ||
-                            checkoutNotifier.selectedBankFlow?.slug ==
-                                'fcmb_credit_direct' ||
-                            checkoutNotifier.selectedBankFlow?.slug == 'wema')
-                          const PartnerRequirements(),
-                        if (checkoutNotifier.selectedBankFlow?.slug !=
-                                'fcmb_credit_direct' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'first_bank')
-                          const PartnerLogin(),
-                        const PartnerLoginOTP(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'stanbic')
-                          const PartnerTermsCondition(),
-                        if (checkoutNotifier.bioDataStepData != null)
-                          const PartnerBioData(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'renmoney')
-                          const PartnerKYC(),
-                        if (checkoutNotifier.selectedBankFlow?.slug !=
-                                'specta' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'fcmb_credit_direct' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'first_bank')
-                          const PartnerPaymentSplit(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'first_bank')
-                          const FirstbankWebview(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'fcmb_credit_direct')
-                          const CDLWebview(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'renmoney')
-                          const PartnerDocumentType(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'renmoney')
-                          const PartnerDocumentUpload(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'renmoney')
-                          const PartnerAddressVerify(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'renmoney')
-                          const PartnerSelfieUpload(),
-                        if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
-                          const WemaIllustration(),
-                        if (checkoutNotifier.selectedBankFlow?.slug !=
-                                'specta' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'renmoney' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'fcmb_credit_direct' &&
-                            checkoutNotifier.selectedBankFlow?.slug !=
-                                'first_bank')
-                          const PartnerPaymentPreview(),
-                        if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
-                          const PartnerTermsCondition(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'polaris')
-                          const PartnerInvoice(),
-                        if (checkoutNotifier.selectedBankFlow?.slug ==
-                            'stanbic')
-                          const PartnerConfirmation(),
-                        const PartnerDecision(),
-                        const PartnerDisbursementStatus(),
-                      ];
-                      return PageView(
-                        controller: checkoutNotifier.pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: views,
-                      );
-                    },
-                  ),
+                      SelectBankFlow(
+                        data: widget.data,
+                      ),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'polaris' ||
+                          checkoutNotifier.selectedBankFlow?.slug == 'specta')
+                        const PartnerMobileExperience(),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'polaris' ||
+                          checkoutNotifier.selectedBankFlow?.slug ==
+                              'first_bank' ||
+                          checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' ||
+                          checkoutNotifier.selectedBankFlow?.slug ==
+                              'fidelity' ||
+                          checkoutNotifier.selectedBankFlow?.slug ==
+                              'fcmb_credit_direct' ||
+                          checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                        const PartnerRequirements(),
+                      if (checkoutNotifier.selectedBankFlow?.slug !=
+                              'fcmb_credit_direct' &&
+                          checkoutNotifier.selectedBankFlow?.slug !=
+                              'first_bank')
+                        const PartnerLogin(),
+                      const PartnerLoginOTP(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const PartnerTermsCondition(),
+                      if (checkoutNotifier.bioDataStepData != null)
+                        const PartnerBioData(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                        const PartnerKYC(),
+                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta' &&
+                          checkoutNotifier.selectedBankFlow?.slug !=
+                              'fcmb_credit_direct' &&
+                          checkoutNotifier.selectedBankFlow?.slug !=
+                              'first_bank')
+                        const PartnerPaymentSplit(),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                          'first_bank')
+                        const FirstbankWebview(),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                          'fcmb_credit_direct')
+                        const CDLWebview(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                        const PartnerDocumentType(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                        const PartnerDocumentUpload(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                        const PartnerAddressVerify(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                        const PartnerSelfieUpload(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                        const WemaIllustration(),
+                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta' &&
+                          checkoutNotifier.selectedBankFlow?.slug !=
+                              'renmoney' &&
+                          checkoutNotifier.selectedBankFlow?.slug !=
+                              'fcmb_credit_direct' &&
+                          checkoutNotifier.selectedBankFlow?.slug !=
+                              'first_bank')
+                        const PartnerPaymentPreview(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                        const PartnerTermsCondition(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                        const PartnerInvoice(),
+                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                        const PartnerConfirmation(),
+                      const PartnerDecision(),
+                      const PartnerDisbursementStatus(),
+                    ];
+                    return PageView(
+                      controller: checkoutNotifier.pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: views,
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

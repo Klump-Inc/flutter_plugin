@@ -90,6 +90,9 @@ class _KCInputFieldState extends State<KCInputField> {
                   obscureText: hidePasword,
                   textAlign: TextAlign.left,
                   onChanged: widget.onChanged,
+                  onTapOutside: (event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                   decoration: InputDecoration(
                     hintText: widget.hint,
                     hintStyle: const TextStyle(
