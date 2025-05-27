@@ -7,7 +7,7 @@ class KCTextArea extends StatelessWidget {
     required this.controller,
     this.validationMessage,
   });
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? validationMessage;
 
   @override

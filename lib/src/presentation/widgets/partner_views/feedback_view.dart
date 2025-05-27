@@ -135,8 +135,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                       );
                     },
                   ),
-                  const YSpace(12),
-                  const YSpace(32),
+                  const YSpace(24),
                   const Spacer(),
                   ValueListenableBuilder(
                     valueListenable: _canSubmit,
