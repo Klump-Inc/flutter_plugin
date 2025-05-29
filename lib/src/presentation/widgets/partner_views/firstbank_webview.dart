@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -50,7 +51,6 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
           checkoutNotfier.nextPage();
         },
       );
-
     _webViewController.loadRequest(Uri.parse(
         checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? ''));
   }
@@ -84,6 +84,10 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
 
   @override
   Widget build(BuildContext context) {
+    final checkoutNotfier = context.read<KCChangeNotifier>();
+
+    Logger()
+        .d(checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? '');
     return _loading
         ? const Center(
             child: KCPageLoaderWidget(),
