@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerDocumentUpload extends StatefulWidget {

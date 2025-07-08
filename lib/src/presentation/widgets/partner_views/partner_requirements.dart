@@ -110,7 +110,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                                     showDialog(
                                       context: context,
                                       builder: (context) {
-                                        return AccountNameMismatchDialog(
+                                        return LoanCitiesDialog(
                                           imageUrl: imageUrl,
                                         );
                                       },
@@ -288,8 +288,8 @@ class PartnerItemTile extends StatelessWidget {
   }
 }
 
-class AccountNameMismatchDialog extends StatelessWidget {
-  const AccountNameMismatchDialog({
+class LoanCitiesDialog extends StatelessWidget {
+  const LoanCitiesDialog({
     super.key,
     required this.imageUrl,
   });
