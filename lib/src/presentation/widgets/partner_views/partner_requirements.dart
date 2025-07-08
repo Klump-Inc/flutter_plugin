@@ -335,7 +335,22 @@ class LoanCitiesDialog extends StatelessWidget {
                 ),
               ),
               const YSpace(12),
-              Image.network(imageUrl),
+              SizedBox(
+                height: 300,
+                child: Image.network(
+                  imageUrl,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: KCColors.primary,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.error),
+                ),
+              ),
             ],
           ),
         ),
