@@ -833,6 +833,40 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as _i6.Future<void>);
 
   @override
+  _i6.Future<void> createPhoneNumber({required String? phoneNumber}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createPhoneNumber,
+          [],
+          {#phoneNumber: phoneNumber},
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> verifyPhoneOTP({required String? otp}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #verifyPhoneOTP,
+          [],
+          {#otp: otp},
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> resendPhoneOTP() => (super.noSuchMethod(
+        Invocation.method(
+          #resendPhoneOTP,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
   void selectBankSubmitted() => super.noSuchMethod(
         Invocation.method(
           #selectBankSubmitted,

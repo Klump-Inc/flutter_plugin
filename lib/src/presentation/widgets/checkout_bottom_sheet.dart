@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:klump_checkout/src/presentation/widgets/partner_views/partner_account_number.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -116,10 +117,27 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                           checkoutNotifier.selectedBankFlow?.slug !=
                               'first_bank')
                         const PartnerLogin(),
-                      const PartnerLoginOTP(),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.phoneNumerOTPStepData != null)
+                        const PartnerPhoneNumber(),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.verifyPhoneOTPStepData != null)
+                        const PartnerPhoneOTP(),
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.bioDataStepData != null)
+                        const PartnerBioData(),
+                      if (checkoutNotifier.accountNumberStepData != null)
+                        const PartnerAccountNumber(),
+                      if (checkoutNotifier.verifyOTPStepData != null)
+                        const PartnerLoginOTP(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const PartnerTermsCondition(),
-                      if (checkoutNotifier.bioDataStepData != null)
+                      if (checkoutNotifier.selectedBankFlow?.slug !=
+                              'renmoney' &&
+                          checkoutNotifier.bioDataStepData != null)
                         const PartnerBioData(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
                         const PartnerKYC(),
@@ -135,13 +153,21 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                       if (checkoutNotifier.selectedBankFlow?.slug ==
                           'fcmb_credit_direct')
                         const CDLWebview(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.documentVerificationStepData != null)
                         const PartnerDocumentType(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.documentVerificationStepData != null)
                         const PartnerDocumentUpload(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.proofAddressStepData != null)
                         const PartnerAddressVerify(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                      if (checkoutNotifier.selectedBankFlow?.slug ==
+                              'renmoney' &&
+                          checkoutNotifier.selfieStepData != null)
                         const PartnerSelfieUpload(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
                         const WemaIllustration(),

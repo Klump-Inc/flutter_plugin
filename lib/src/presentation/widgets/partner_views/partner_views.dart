@@ -22,3 +22,5 @@ export 'wema_illustration.dart';
 export 'firstbank_webview.dart';
 export 'partner_terms_condition.dart';
 export 'feedback_view.dart';
+export 'partner_phone_number.dart';
+export 'partner_phone_otp.dart';

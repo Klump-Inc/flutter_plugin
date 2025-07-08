@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerRequirements extends StatefulWidget {
@@ -33,6 +36,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     final nextStep = checkoutNotifier.selectedBankFlow?.nextStep;
     final formFields = nextStep?.formFields?.map((e) => e.name).toList();
+    Logger().d(nextStep?.displayData?.list);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -89,13 +93,30 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                           (index) => PartnerItemTile(
                             title: nextStep?.displayData?.list![index]
                                     ?['text'] ??
-                                '',
+                                nextStep?.displayData?.list![index]?['tooltip']
+                                    ?['text'],
                             subTitle: nextStep?.displayData?.list![index]
                                 ?['smalltext'],
                             lastItem: index + 1 ==
                                 (checkoutNotifier.selectedBankFlow?.nextStep
                                         ?.displayData?.list!.length ??
                                     0),
+                            onTap: nextStep?.displayData?.list![index]
+                                        ?['tooltip'] !=
+                                    null
+                                ? () {
+                                    final imageUrl = nextStep?.displayData
+                                        ?.list![index]?['tooltip']['image_url'];
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AccountNameMismatchDialog(
+                                          imageUrl: imageUrl,
+                                        );
+                                      },
+                                    );
+                                  }
+                                : null,
                           ),
                         ),
                       ),
@@ -188,11 +209,13 @@ class PartnerItemTile extends StatelessWidget {
     required this.title,
     this.lastItem = false,
     this.subTitle,
+    this.onTap,
   });
 
   final String title;
   final bool lastItem;
   final String? subTitle;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -227,36 +250,95 @@ class PartnerItemTile extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 41,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      KCHeadline4(
-                        title,
-                        fontSize: 15,
-                        height: 1,
-                        maxLines: 2,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      if (subTitle != null)
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: KCHeadline4(
-                              subTitle!,
-                              fontSize: 12,
-                              height: 1,
-                              maxLines: 2,
-                              fontWeight: FontWeight.w500,
+                  child: GestureDetector(
+                    onTap: onTap,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        KCHeadline4(
+                          title,
+                          fontSize: 15,
+                          height: 1,
+                          maxLines: 2,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        if (subTitle != null)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: KCHeadline4(
+                                subTitle!,
+                                fontSize: 12,
+                                height: 1,
+                                maxLines: 2,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class AccountNameMismatchDialog extends StatelessWidget {
+  const AccountNameMismatchDialog({
+    super.key,
+    required this.imageUrl,
+  });
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+      filter: ImageFilter.blur(
+        sigmaX: 0.5,
+        sigmaY: 0.5,
+      ),
+      child: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          constraints: const BoxConstraints(maxWidth: 400),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const YSpace(12),
+              Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                  ),
+                ),
+              ),
+              const YSpace(12),
+              Image.network(imageUrl),
+            ],
+          ),
+        ),
       ),
     );
   }
