@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:logger/logger.dart';
@@ -255,12 +256,33 @@ class PartnerItemTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        KCHeadline4(
-                          title,
-                          fontSize: 15,
-                          height: 1,
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '$title ',
+                              ),
+                              if (onTap != null)
+                                TextSpan(
+                                  text: 'view',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = onTap,
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                    decorationColor: Colors.blue,
+                                  ),
+                                )
+                            ],
+                          ),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            height: 1,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: KCFonts.avenir,
+                            color: KCColors.black1,
+                          ),
                           maxLines: 2,
-                          fontWeight: FontWeight.w800,
                         ),
                         if (subTitle != null)
                           Expanded(
