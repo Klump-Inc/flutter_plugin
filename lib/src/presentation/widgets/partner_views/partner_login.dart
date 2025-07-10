@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -148,7 +149,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final stepData = checkoutNotfier.verificationStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
-    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final formMap = stepData?.formFields;
+    final formFields = formMap?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -280,24 +282,48 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         ),
                       ),
                     if (formFields?.contains('password') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: passwordStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _passwordCtrl,
-                              hint: 'Password',
-                              textInputType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
-                              validationMessage: KCFormValidator.errorPassword(
-                                snapshot.data,
-                                'Password is required',
+                      Builder(builder: (context) {
+                        final form = formMap!
+                            .where((e) => e.name == 'password')
+                            .toList()
+                            .first;
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: StreamBuilder<String>(
+                                stream: passwordStreamCtrl.stream,
+                                builder: (context, snapshot) {
+                                  return KCInputField(
+                                    controller: _passwordCtrl,
+                                    hint: 'Password',
+                                    textInputType: TextInputType.text,
+                                    textInputAction: TextInputAction.done,
+                                    validationMessage:
+                                        KCFormValidator.errorPassword(
+                                      snapshot.data,
+                                      'Password is required',
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                            ),
+                            if (form.smalltext != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0),
+                                child: Html(
+                                  data: form.smalltext,
+                                  style: {
+                                    "*": Style(
+                                      fontSize:
+                                          FontSize(12), // Global font size
+                                    ),
+                                  },
+                                ),
+                              ),
+                          ],
+                        );
+                      }),
                     if (formFields?.contains('username') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),

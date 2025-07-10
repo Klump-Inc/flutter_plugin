@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerPhoneOTP extends StatefulWidget {
@@ -93,11 +94,12 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.verifyPhoneOTPStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
-    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final stepData = checkoutNotfier.verifyPhoneOTPStepData?.nextStep;
+    final formMap = stepData?.formFields;
+    final formFields = formMap?.map((e) => e.name).toList();
     final checkBoxFields =
         stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
+    Logger().d(formFields);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -148,31 +150,40 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
                         child:
                             KCHeadline5(stepData?.displayData?.subTitle ?? ''),
                       ),
+                    const YSpace(24),
                     if (formFields?.contains('otp') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: otpStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _otpCtrl,
-                              hint: 'Enter the 5-digit code here',
-                              validationMessage: KCFormValidator.errorOTP(
-                                snapshot.data,
-                                'OTP is required',
-                                5,
-                              ),
-                              textInputType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(6),
-                              ],
-                              textInputAction: TextInputAction.done,
-                            );
-                          },
-                        ),
-                      ),
+                      Builder(builder: (context) {
+                        final form = formMap!
+                            .where((e) => e.name == 'otp')
+                            .toList()
+                            .first;
+                        Logger().d(form);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: StreamBuilder<String>(
+                            stream: otpStreamCtrl.stream,
+                            builder: (context, snapshot) {
+                              return KCInputField(
+                                controller: _otpCtrl,
+                                hint: form.placeholder ??
+                                    'Enter the 5-digit code here',
+                                validationMessage: KCFormValidator.errorOTP(
+                                  snapshot.data,
+                                  '${form.name ?? 'OTP'}  is required',
+                                  5,
+                                ),
+                                textInputType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
+                                textInputAction: TextInputAction.done,
+                              );
+                            },
+                          ),
+                        );
+                      }),
                     if (formFields?.contains('otp') == true)
                       ValueListenableBuilder<int>(
                         valueListenable: _timeLeft,

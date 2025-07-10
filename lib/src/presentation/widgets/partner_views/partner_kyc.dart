@@ -579,22 +579,33 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           builder: (context) {
                             final inputData =
                                 formMap!.where((e) => e.name == 'city').first;
-                            return KCDropdownInput(
-                              label: inputData.label ?? "Please select",
-                              items: inputData.options!
-                                  .map((e) => e['label'].toString())
-                                  .toList(),
-                              itemsValue: inputData.options!
-                                  .map((e) => e['value'].toString())
-                                  .toList(),
-                              value: _city?.label,
-                              onSelected: (value) {
-                                setState(() {
-                                  _city = value;
-                                });
-                              },
-                              minWidth: constraints.maxWidth - 52,
-                            );
+                            return inputData.type == 'text'
+                                ? KCInputField(
+                                    controller: TextEditingController(
+                                        text: inputData.value.toString()),
+                                    hint: inputData.placeholder ?? 'City',
+                                    textInputType: TextInputType.text,
+                                    textInputAction: TextInputAction.next,
+                                    readOnly:
+                                        (inputData.readonly as bool?) == true,
+                                    validationMessage: '',
+                                  )
+                                : KCDropdownInput(
+                                    label: inputData.label ?? "Please select",
+                                    items: inputData.options!
+                                        .map((e) => e['label'].toString())
+                                        .toList(),
+                                    itemsValue: inputData.options!
+                                        .map((e) => e['value'].toString())
+                                        .toList(),
+                                    value: _city?.label,
+                                    onSelected: (value) {
+                                      setState(() {
+                                        _city = value;
+                                      });
+                                    },
+                                    minWidth: constraints.maxWidth - 52,
+                                  );
                           },
                         ),
                       ),

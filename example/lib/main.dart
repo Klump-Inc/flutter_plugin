@@ -59,7 +59,7 @@ class FirstScreen extends StatelessWidget {
                 merchantReference: "what-ever-you-want-this-to-be",
                 metaData: {
                   'customer': "Elon Musk",
-                  'email': "test@useklump.com",
+                  'email': "test55@useklump.com",
                 },
                 items: [
                   KlumpCheckoutItem(
@@ -72,7 +72,7 @@ class FirstScreen extends StatelessWidget {
                   )
                 ],
                 shippingData: null,
-                email: 'test@useklump.com',
+                email: 'test55@useklump.com',
                 phone: '08012345678',
               ),
             );

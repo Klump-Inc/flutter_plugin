@@ -24,7 +24,7 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
     final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     final formFields = checkoutNotifier
-        .phoneNumerOTPStepData!.nextStep.formFields!
+        .createPhoneNumberStepData!.nextStep.formFields!
         .map((e) => e.name);
 
     final phoneNoError =
@@ -70,7 +70,7 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.phoneNumerOTPStepData?.nextStep;
+    final stepData = checkoutNotfier.createPhoneNumberStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     Logger().d(stepData);
     return LayoutBuilder(

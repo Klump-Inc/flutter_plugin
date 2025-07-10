@@ -416,7 +416,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                           return Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
+                                padding: const EdgeInsets.only(bottom: 8),
                                 child: StreamBuilder<String>(
                                   stream: passwordStreamCtrl.stream,
                                   builder: (context, snapshot) {

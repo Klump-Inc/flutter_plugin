@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/presentation/widgets/partner_views/partner_account_number.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -119,7 +118,7 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PartnerLogin(),
                       if (checkoutNotifier.selectedBankFlow?.slug ==
                               'renmoney' &&
-                          checkoutNotifier.phoneNumerOTPStepData != null)
+                          checkoutNotifier.createPhoneNumberStepData != null)
                         const PartnerPhoneNumber(),
                       if (checkoutNotifier.selectedBankFlow?.slug ==
                               'renmoney' &&
@@ -131,6 +130,12 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                         const PartnerBioData(),
                       if (checkoutNotifier.accountNumberStepData != null)
                         const PartnerAccountNumber(),
+                      if (checkoutNotifier.enterBVNStepData != null)
+                        const PartnerBVN(),
+                      if (checkoutNotifier.sendBVNOTPStepData != null)
+                        const PartnerSendBVNOTP(),
+                      if (checkoutNotifier.verifyBVNStepData != null)
+                        const PartnerVerifyBVN(),
                       if (checkoutNotifier.verifyOTPStepData != null)
                         const PartnerLoginOTP(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')

@@ -126,7 +126,19 @@ class KCFormValidator {
     } else if (text.isEmpty) {
       return message;
     } else if (text.length != 10) {
-      return 'Incomplte account number';
+      return 'Incomplete account number';
+    } else {
+      return '';
+    }
+  }
+
+  static String? errorBVN(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (text.length != 11) {
+      return 'Invalid BVN';
     } else {
       return '';
     }

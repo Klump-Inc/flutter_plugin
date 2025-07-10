@@ -500,7 +500,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final headers = {
         'klump-public-key': publicKey,
       };
-      Logger().d(data);
 
       late Response<dynamic> response;
       if (method == 'POST') {
@@ -517,15 +516,15 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           token: prefs.getString(KC_CHECKOUT_TOKEN),
         );
       }
-      Logger().d(data);
-      final token = ((response.data as Map<String, dynamic>)['data']
-          as Map<String, dynamic>?)?['token'];
-      if (token != null) {
-        Logger().d(token);
-        await prefs.setString(KC_CHECKOUT_TOKEN,
-            (response.data as Map<String, dynamic>)['data']['token']);
+      final rData = (response.data as Map<String, dynamic>)['data'];
+      if (rData.runtimeType != int) {
+        final token = (rData as Map<String, dynamic>?)?['token'];
+        if (token != null) {
+          await prefs.setString(KC_CHECKOUT_TOKEN,
+              (response.data as Map<String, dynamic>)['data']['token']);
+        }
       }
-      // Logger().d(response.data);
+      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'
