@@ -43,6 +43,14 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
+    Future.delayed(Duration.zero, () {
+      if (changeNotifier.bvnContact != null) {
+        setState(() {
+          _selectedContact = changeNotifier.bvnContact;
+        });
+        validateInputs();
+      }
+    });
   }
 
   @override
@@ -114,7 +122,6 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
                                 .where((e) => e.name == 'bvn')
                                 .toList()
                                 .first;
-                            Logger().d(form.readonly);
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16),
                               child: KCInputField(

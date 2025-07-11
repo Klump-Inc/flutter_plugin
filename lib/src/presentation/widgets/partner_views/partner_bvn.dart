@@ -53,6 +53,10 @@ class _PartnerBVNState extends State<PartnerBVN> {
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
+    Future.delayed(Duration.zero, () {
+      _bvnCtrl.text = changeNotifier.bvn ?? '';
+      validateInputs();
+    });
   }
 
   @override

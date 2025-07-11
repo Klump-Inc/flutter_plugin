@@ -51,15 +51,16 @@ class FirstScreen extends StatelessWidget {
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    // 'klp_pk_58f87474152b4d93babf9682e90724287d05e0c7af2c4756907425c47f52767d',
-                    // 'klp_pk_test_9d7e5259a162417ead4f7743f516a71c7d05e0c7af2c4756907425c47f52767d',
-                    'klp_pk_9ab98d0ddf0e447c9e0a615f4e546604a39a8233a88c4b93860f119c8cd9a332',
+                    'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
+                // 'klp_pk_58f87474152b4d93babf9682e90724287d05e0c7af2c4756907425c47f52767d',
+                // 'klp_pk_test_9d7e5259a162417ead4f7743f516a71c7d05e0c7af2c4756907425c47f52767d',
+                // 'klp_pk_9ab98d0ddf0e447c9e0a615f4e546604a39a8233a88c4b93860f119c8cd9a332',
                 amount: 300000,
                 shippingFee: 10000,
                 merchantReference: "what-ever-you-want-this-to-be",
                 metaData: {
                   'customer': "Elon Musk",
-                  'email': "test55@useklump.com",
+                  'email': "test51@useklump.com",
                 },
                 items: [
                   KlumpCheckoutItem(
@@ -72,7 +73,7 @@ class FirstScreen extends StatelessWidget {
                   )
                 ],
                 shippingData: null,
-                email: 'test55@useklump.com',
+                email: 'test51@useklump.com',
                 phone: '08012345678',
               ),
             );

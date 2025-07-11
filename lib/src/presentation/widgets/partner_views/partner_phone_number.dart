@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerPhoneNumber extends StatefulWidget {
@@ -48,9 +47,8 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
       validateInputs();
     });
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
     MixPanelService.logEvent(
-      '7 - VERIFY OTP MODAL',
+      '7 - CREATE_PHONE_OTP MODAL',
       properties: {
         'environment': checkoutNotfier.initiateResponse?.isLive == true
             ? 'production'
@@ -58,6 +56,10 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
         'partner': checkoutNotfier.selectedBankFlow?.slug,
       },
     );
+    Future.delayed(Duration.zero, () {
+      _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+      validateInputs();
+    });
   }
 
   @override
@@ -72,7 +74,6 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final stepData = checkoutNotfier.createPhoneNumberStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
-    Logger().d(stepData);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
