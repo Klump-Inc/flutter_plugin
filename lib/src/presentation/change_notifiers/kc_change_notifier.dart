@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/domain/usecases/account_credentials.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -76,9 +77,6 @@ class KCChangeNotifier extends ChangeNotifier {
   List<Partner>? _loanPartners;
   List<Partner>? get loanPartners => _loanPartners;
 
-  Map<String, dynamic>? _selectedBank;
-  Map<String, dynamic>? get selectedBank => _selectedBank;
-
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
 
@@ -88,6 +86,24 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KCAPIResponse? _verifyOTPStepData;
   KCAPIResponse? get verifyOTPStepData => _verifyOTPStepData;
+
+  KCAPIResponse? _createPhoneNumberStepData;
+  KCAPIResponse? get createPhoneNumberStepData => _createPhoneNumberStepData;
+
+  KCAPIResponse? _verifyPhoneOTPStepData;
+  KCAPIResponse? get verifyPhoneOTPStepData => _verifyPhoneOTPStepData;
+
+  KCAPIResponse? _accountNumberStepData;
+  KCAPIResponse? get accountNumberStepData => _accountNumberStepData;
+
+  KCAPIResponse? _enterBVNStepData;
+  KCAPIResponse? get enterBVNStepData => _enterBVNStepData;
+
+  KCAPIResponse? _sendBVNOTPStepData;
+  KCAPIResponse? get sendBVNOTPStepData => _sendBVNOTPStepData;
+
+  KCAPIResponse? _verifyBVNStepData;
+  KCAPIResponse? get verifyBVNStepData => _verifyBVNStepData;
 
   KCAPIResponse? _acceptTermsStepData;
   KCAPIResponse? get acceptTermsStepData => _acceptTermsStepData;
@@ -122,13 +138,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   KCAPIResponse? _redirectStepData;
   KCAPIResponse? get redirectStepData => _redirectStepData;
-
-  bool _webviewFailed = false;
-  bool get webviewFailed => _webviewFailed;
-
-  void setWebViewFailed() {
-    _webviewFailed = true;
-  }
 
   void nextPage() {
     _currentPage++;
@@ -190,15 +199,26 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void storeNextStepData(KCAPIResponse data) {
     final stepName = data.nextStep.name?.toUpperCase();
+    Logger().d(stepName);
     switch (stepName) {
       case 'LOGIN':
       case 'LOGIN_OR_CONNECT_MONO':
+      case 'LOGIN_OR_CREATE_ACCOUNT':
       case 'ACCOUNT_VERIFICATION':
         _verificationStepData = data;
         break;
       case 'CONNECT_MONO':
       case 'VERIFY_OTP':
         _verifyOTPStepData = data;
+        break;
+      case 'CREATE_PHONE_OTP':
+        _createPhoneNumberStepData = data;
+        break;
+      case 'VERIFY_PHONE_OTP':
+        _verifyPhoneOTPStepData = data;
+        break;
+      case 'VERIFY_ACCOUNT_NUMBER':
+        _accountNumberStepData = data;
         break;
       case 'BIO_DATA':
         _bioDataStepData = data;
@@ -232,6 +252,15 @@ class KCChangeNotifier extends ChangeNotifier {
         break;
       case 'TERM_CONDITIONS':
         _acceptTermsStepData = data;
+        break;
+      case 'FETCH_BVN_VERIFICATION_METHODS':
+        _enterBVNStepData = data;
+        break;
+      case 'SEND_BVN_OTP':
+        _sendBVNOTPStepData = data;
+        break;
+      case 'VERIFY_BVN':
+        _verifyBVNStepData = data;
         break;
       default:
     }
@@ -742,19 +771,23 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> newAccount() async {
     _setBusy(true);
+    final data = {
+      'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
+      'currency': _checkoutData!.currency ?? 'NGN',
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      'email': email,
+    };
+    Logger().d(data);
+    Logger().d(verificationStepData?.nextStep.api);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: verificationStepData?.nextStep.method ?? '',
         api: verificationStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow!.slug,
-        data: {
-          'amount': _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0),
-          'currency': _checkoutData!.currency ?? 'NGN',
-          'partner': _selectedBankFlow!.slug,
-          'is_live': initiateResponse?.isLive == true,
-          'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
-        },
+        data: data,
       ),
     );
     _setBusy(false);
@@ -1194,6 +1227,264 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
+  Map<String, dynamic>? _selectedBank;
+  Map<String, dynamic>? get selectedBank => _selectedBank;
+
+  Future<void> verifyAccountNumber({
+    required String accountNumber,
+    required Map<String, dynamic> bank,
+  }) async {
+    _setBusy(true);
+    _accountNumber = accountNumber;
+    _selectedBank = bank;
+    final token =
+        (createPhoneNumberStepData?.data as Map<String, dynamic>?)?['token'] ??
+            (_bioDataStepData?.data as Map<String, dynamic>?)?['token'];
+    final data = <String, dynamic>{
+      "accountNumber": accountNumber,
+      "bank_code": bank['value'],
+      "bank_name": bank['label'],
+      "amount": _checkoutData?.amount ?? 0,
+      "token": token,
+      "currency": 'NGN',
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: accountNumberStepData?.nextStep.method ?? '',
+        api: accountNumberStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  String? _bvn;
+  String? get bvn => _bvn;
+  Future<void> enterBVN({
+    required String bvn,
+  }) async {
+    _setBusy(true);
+    _bvn = bvn;
+    final data = <String, dynamic>{
+      "bvn": bvn,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: enterBVNStepData?.nextStep.method ?? '',
+        api: enterBVNStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Map<String, dynamic>? _bvnContact;
+  Map<String, dynamic>? get bvnContact => _bvnContact;
+  Future<void> sendBVNOTP({
+    required String? bvn,
+    required Map<String, dynamic> contact,
+  }) async {
+    _setBusy(true);
+    _bvnContact = contact;
+    final data = <String, dynamic>{
+      "contact": contact['value'],
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    if (bvn != null) {
+      data['bvn'] = bvn;
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: sendBVNOTPStepData?.nextStep.method ?? '',
+        api: sendBVNOTPStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> verifyBVN({
+    required String otp,
+  }) async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      "bvn": bvn,
+      "contact": bvnContact!['value'],
+      "bvn_otp": otp,
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: verifyBVNStepData?.nextStep.method ?? '',
+        api: verifyBVNStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> createPhoneNumber({required String phoneNumber}) async {
+    _setBusy(true);
+    _phoneNumber = phoneNumber;
+    final data = <String, dynamic>{
+      "phone": phoneNumber,
+      "token":
+          (createPhoneNumberStepData?.data as Map<String, dynamic>?)?['token'],
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    Logger().d(data);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: createPhoneNumberStepData?.nextStep.method ?? '',
+        api: createPhoneNumberStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> verifyPhoneOTP({required String otp}) async {
+    _setBusy(true);
+    Logger().d(
+        (createPhoneNumberStepData?.data as Map<String, dynamic>?)?['token']);
+    final data = <String, dynamic>{
+      "otp": otp,
+      "phone": phoneNumber,
+      "token":
+          (createPhoneNumberStepData?.data as Map<String, dynamic>?)?['token'],
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    Logger().d(data);
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: verifyPhoneOTPStepData?.nextStep.method ?? '',
+        api: verifyPhoneOTPStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> resendPhoneOTP() async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      "phone": phoneNumber,
+      "token":
+          (createPhoneNumberStepData?.data as Map<String, dynamic>?)?['token'],
+      'partner': _selectedBankFlow!.slug,
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: createPhoneNumberStepData?.nextStep.method ?? '',
+        api: createPhoneNumberStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow!.slug,
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+      },
+    );
+  }
+
   double get totalAmount =>
       _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
 
@@ -1227,7 +1518,16 @@ class KCChangeNotifier extends ChangeNotifier {
     _newLoanStepData = null;
     _loanStatusStepData = null;
     _redirectStepData = null;
-    _webviewFailed = false;
+    _enterBVNStepData = null;
+    _sendBVNOTPStepData = null;
+    _verifyBVNStepData = null;
+    _disbursementStatusResponse = null;
+    _createPhoneNumberStepData = null;
+    _verifyPhoneOTPStepData = null;
+    _accountNumberStepData = null;
+    _repaymentDetails = null;
+    _disbursementStatusResponse = null;
+    _bvn = null;
     nextPage();
   }
 }

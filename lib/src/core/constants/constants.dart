@@ -6,14 +6,14 @@ export 'kc_fonts.dart';
 const String KC_PACKAGE_NAME = 'klump_checkout';
 const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
-const String KC_PLUGIN_VERSION = '1.0.35';
+const String KC_PLUGIN_VERSION = '1.0.36';
 
-const bool dev = false;
+const bool dev = true;
 
 const String KC_BASE_URL = 'https://api.useklump.com';
 
 const String KC_STAGING_BASE_URL = 'https://staging-api.useklump.com';
-//  'https://eminently-elegant-gator.ngrok-free.app';
+// 'https://eminently-elegant-gator.ngrok-free.app';
 
 const int KC_CONNECT_TIMEOUT = 30;
 const int KC_RECEIVE_TIMEOUT = 60;

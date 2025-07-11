@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerDocumentUpload extends StatefulWidget {
@@ -86,10 +85,7 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.documentVerificationStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
-    final formFields = stepData?.formFields?.map((e) => e.name).toList();
-    Logger().d(formFields);
+    final stepData = checkoutNotfier.documentVerificationStepData?.nextStep;
     var cardSample = '';
     switch (checkoutNotfier.documentType) {
       case INTERNATIONAL_PASSPORT:

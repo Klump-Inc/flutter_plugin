@@ -98,6 +98,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final formMap = stepData?.formFields;
     return LayoutBuilder(
+      key: const Key('split_payment_layout'),
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
           child: ConstrainedBox(

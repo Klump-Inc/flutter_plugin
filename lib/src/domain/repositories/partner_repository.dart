@@ -255,4 +255,27 @@ class PartnerRepository {
       );
     }
   }
+
+  Future<Either<KCException, dynamic>> feedback({
+    required String phoneNumber,
+    required String email,
+    required String publicKey,
+    required String feedback,
+    required bool isLive,
+  }) async {
+    try {
+      final response = await stanbicRmoteDatasource.feedback(
+        email: email,
+        phoneNumber: phoneNumber,
+        isLive: isLive,
+        feedback: feedback,
+        publicKey: publicKey,
+      );
+      return Right(response);
+    } catch (e) {
+      return Left(
+        KCExceptionHandler.networkError(e),
+      );
+    }
+  }
 }

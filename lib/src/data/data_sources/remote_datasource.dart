@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -82,6 +83,14 @@ abstract class RemoteDatasource {
     required String publicKey,
     required String partner,
     required Map<String, dynamic>? data,
+  });
+
+  Future<dynamic> feedback({
+    required String phoneNumber,
+    required String email,
+    required String publicKey,
+    required String feedback,
+    required bool isLive,
   });
 }
 
@@ -206,6 +215,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
+      Logger().d(response.data);
+
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['message'],
@@ -280,6 +291,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
+      Logger().d(response.data);
+
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['data']['token']);
       return KCAPIResponseModel(
@@ -421,6 +434,8 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
+      Logger().d(response.data);
+
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
       );
@@ -485,6 +500,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final headers = {
         'klump-public-key': publicKey,
       };
+
       late Response<dynamic> response;
       if (method == 'POST') {
         response = await kcHttpRequester.post(
@@ -500,20 +516,55 @@ class RemoteDataSourceImpl implements RemoteDatasource {
           token: prefs.getString(KC_CHECKOUT_TOKEN),
         );
       }
-      if (api == '/loans/account/verify-otp') {
-        await prefs.setString(KC_CHECKOUT_TOKEN,
-            (response.data as Map<String, dynamic>)['data']['token']);
+      final rData = (response.data as Map<String, dynamic>)['data'];
+      if (rData.runtimeType != int) {
+        final token = (rData as Map<String, dynamic>?)?['token'];
+        if (token != null) {
+          await prefs.setString(KC_CHECKOUT_TOKEN,
+              (response.data as Map<String, dynamic>)['data']['token']);
+        }
       }
+      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'
             ? KlumpUserModel.fromJson(response.data['data'])
             : api == '/loans/account/repayments-detail'
                 ? RepaymentDetailsModel.fromJson(response.data['data'])
-                : api == '/loans/account/new-loan'
-                    ? response.data['data']
-                    : response.data['message'],
+                : response.data['data'],
+        message: response.data['message'],
       );
+    } else {
+      throw NoInternetKCException();
+    }
+  }
+
+  @override
+  Future<dynamic> feedback({
+    required String phoneNumber,
+    required String email,
+    required String publicKey,
+    required String feedback,
+    required bool isLive,
+  }) async {
+    if (await kcInternetInfo.isConnected) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final headers = {
+        'klump-public-key': publicKey,
+      };
+      final body = {
+        'email': email,
+        'phone': phoneNumber,
+        'feedback': feedback,
+        'is_live': isLive,
+      };
+      final response = await kcHttpRequester.post(
+        endpoint: '/v1/loans/feedback',
+        headers: headers,
+        body: body,
+        token: prefs.getString(KC_CHECKOUT_TOKEN),
+      );
+      return (response.data as Map<String, dynamic>)['message'];
     } else {
       throw NoInternetKCException();
     }

@@ -6,18 +6,16 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-class PartnerLoginOTP extends StatefulWidget {
-  const PartnerLoginOTP({super.key});
+class PartnerPhoneOTP extends StatefulWidget {
+  const PartnerPhoneOTP({super.key});
 
   @override
-  State<PartnerLoginOTP> createState() => _PartnerLoginOTPState();
+  State<PartnerPhoneOTP> createState() => _PartnerPhoneOTPState();
 }
 
-class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
+class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
   late TextEditingController _otpCtrl;
-  late TextEditingController _passwordCtrl;
   late StreamController<String> otpStreamCtrl;
-  late StreamController<String> passwordStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   final ValueNotifier<bool> _accepted = ValueNotifier(false);
@@ -42,19 +40,18 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   void validateInputs() {
     final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    final formFields = checkoutNotifier.verifyOTPStepData!.nextStep.formFields!
+    final formFields = checkoutNotifier
+        .verifyPhoneOTPStepData!.nextStep.formFields!
         .map((e) => e.name);
     final otpLength = checkoutNotifier.selectedBankFlow?.slug == 'stanbic'
         ? 6
         : checkoutNotifier.selectedBankFlow?.slug == 'polaris'
             ? 4
             : 5;
-    final passwordError =
-        KCFormValidator.errorPassword2(_passwordCtrl.text.trim(), 'Required');
+
     final otpError =
         KCFormValidator.errorOTP(_otpCtrl.text.trim(), 'Required', otpLength);
-    if ((otpError?.isEmpty != true && formFields.contains('otp')) ||
-        (passwordError?.isEmpty != true && formFields.contains('password'))) {
+    if ((otpError?.isEmpty != true && formFields.contains('otp'))) {
       _enabled.value = false;
     } else {
       _enabled.value = true;
@@ -65,23 +62,18 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   void initState() {
     super.initState();
     _otpCtrl = TextEditingController();
-    _passwordCtrl = TextEditingController();
     otpStreamCtrl = StreamController<String>.broadcast();
-    passwordStreamCtrl = StreamController<String>.broadcast();
     validateInputs();
     _otpCtrl.addListener(() {
       otpStreamCtrl.sink.add(_otpCtrl.text.trim());
       validateInputs();
     });
-    _passwordCtrl.addListener(() {
-      passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
-      validateInputs();
-    });
+
     _startCounter();
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
-      '7 - VERIFY OTP MODAL',
+      '7 - VERIFY PHONE NUMBER OTP MODAL',
       properties: {
         'environment': changeNotifier.initiateResponse?.isLive == true
             ? 'production'
@@ -94,22 +86,19 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   @override
   void dispose() {
     _otpCtrl.dispose();
-    _passwordCtrl.dispose();
     _timer?.cancel();
     otpStreamCtrl.close();
-    passwordStreamCtrl.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.verifyOTPStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
-    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final stepData = checkoutNotfier.verifyPhoneOTPStepData?.nextStep;
+    final formMap = stepData?.formFields;
+    final formFields = formMap?.map((e) => e.name).toList();
     final checkBoxFields =
         stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
-    final formMap = stepData?.formFields;
     Logger().d(formFields);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -149,103 +138,52 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                           ),
                         ),
                       ),
-                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
-                        checkBoxFields?.isEmpty == true)
-                      Align(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 30, bottom: 10),
-                          child: Image.asset(
-                            KCAssets.safe,
-                            height: 109,
-                            width: 106,
-                            package: KC_PACKAGE_NAME,
-                          ),
-                        ),
-                      ),
                     const YSpace(22),
-                    Align(
-                      alignment:
-                          stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
-                                  checkBoxFields?.isEmpty == true
-                              ? Alignment.center
-                              : Alignment.centerLeft,
-                      child: KCHeadline3(stepData?.displayData?.title ??
-                          (formFields?.contains('otp') == true
-                              ? 'Enter the code'
-                              : 'Enter password')),
-                    ),
-                    const YSpace(8),
-                    Align(
-                      alignment:
-                          stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
-                                  checkBoxFields?.isEmpty == true
-                              ? Alignment.center
-                              : Alignment.centerLeft,
-                      child: KCHeadline5(stepData?.displayData?.subTitle ??
-                          (formFields?.contains('otp') == true
-                              ? 'A code has been sent to your email address and ${checkoutNotfier.phoneNumber}'
-                              : checkoutNotfier.verifyOTPStepData?.data
-                                      .toString() ??
-                                  '')),
-                    ),
-                    const YSpace(28),
+                    if (stepData?.displayData?.title != null)
+                      KCHeadline3(
+                        stepData?.displayData?.title ?? '',
+                        fontSize: 20,
+                      ),
+                    if (stepData?.displayData?.subTitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child:
+                            KCHeadline5(stepData?.displayData?.subTitle ?? ''),
+                      ),
+                    const YSpace(24),
                     if (formFields?.contains('otp') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: otpStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _otpCtrl,
-                              hint: checkoutNotfier.selectedBankFlow?.slug ==
-                                      'stanbic'
-                                  ? 'Enter the 6-digit code here'
-                                  : checkoutNotfier.selectedBankFlow?.slug ==
-                                          'polaris'
-                                      ? 'Enter the 4-digit code here'
-                                      : 'Enter the 5-digit code here',
-                              validationMessage: KCFormValidator.errorOTP(
-                                snapshot.data,
-                                'OTP is required',
-                                checkoutNotfier.selectedBankFlow?.slug ==
-                                        'stanbic'
-                                    ? 6
-                                    : checkoutNotfier.selectedBankFlow?.slug ==
-                                            'polaris'
-                                        ? 4
-                                        : 5,
-                              ),
-                              textInputType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(6),
-                              ],
-                              textInputAction: TextInputAction.done,
-                            );
-                          },
-                        ),
-                      ),
-                    if (formFields?.contains('password') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: passwordStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _passwordCtrl,
-                              hint: 'Password',
-                              password: true,
-                              textInputType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
-                              validationMessage: KCFormValidator.errorPassword2(
-                                snapshot.data,
-                                'Password is required',
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      Builder(builder: (context) {
+                        final form = formMap!
+                            .where((e) => e.name == 'otp')
+                            .toList()
+                            .first;
+                        Logger().d(form);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: StreamBuilder<String>(
+                            stream: otpStreamCtrl.stream,
+                            builder: (context, snapshot) {
+                              return KCInputField(
+                                controller: _otpCtrl,
+                                hint: form.placeholder ??
+                                    'Enter the 5-digit code here',
+                                validationMessage: KCFormValidator.errorOTP(
+                                  snapshot.data,
+                                  '${form.name ?? 'OTP'}  is required',
+                                  5,
+                                ),
+                                textInputType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                  LengthLimitingTextInputFormatter(6),
+                                ],
+                                textInputAction: TextInputAction.done,
+                              );
+                            },
+                          ),
+                        );
+                      }),
                     if (formFields?.contains('otp') == true)
                       ValueListenableBuilder<int>(
                         valueListenable: _timeLeft,
@@ -257,7 +195,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                                     ? null
                                     : () {
                                         checkoutNotfier
-                                            .resendAccountOTP()
+                                            .resendPhoneOTP()
                                             .then((value) {
                                           _startCounter();
                                         });
@@ -333,46 +271,15 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                               loading: checkoutNotfier.isBusy,
                               onTap: () {
                                 FocusScope.of(context).unfocus();
-                                if (stepData?.name?.toUpperCase() ==
-                                        'CONNECT_MONO' &&
-                                    accepted) {
-                                  final authCodeList = formMap!
-                                      .where((e) => e.name == 'mono_auth_code');
-                                  final tokenList =
-                                      formMap.where((e) => e.name == 'token');
-                                  checkoutNotfier.linkExistingMono(
-                                    context,
-                                    monoAuthCode: authCodeList.isNotEmpty
-                                        ? authCodeList.first.value.toString()
-                                        : null,
-                                    token: tokenList.isNotEmpty
-                                        ? tokenList.first.value.toString()
-                                        : null,
-                                  );
-                                } else if (stepData?.name?.toUpperCase() ==
-                                    'CONNECT_MONO') {
-                                  checkoutNotfier.linkWithMono(context);
-                                } else {
-                                  checkoutNotfier.verifyOTP(
-                                    _otpCtrl.text.trim(),
-                                    _passwordCtrl.text.trim(),
-                                  );
-                                }
+                                checkoutNotfier.verifyPhoneOTP(
+                                  otp: _otpCtrl.text.trim(),
+                                );
                               },
                             );
                           },
                         );
                       },
                     ),
-                    if (stepData?.name?.toUpperCase() == 'CONNECT_MONO' &&
-                        checkBoxFields?.isNotEmpty == true)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: KCSecondaryButton(
-                          title: 'No, I want to select a new bank',
-                          onTap: () => checkoutNotfier.linkWithMono(context),
-                        ),
-                      ),
                     const YSpace(59)
                   ],
                 ),

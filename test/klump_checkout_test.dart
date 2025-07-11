@@ -164,6 +164,21 @@ void main() {
       expect(find.byType(Expanded), findsWidgets);
       expect(find.byType(PageView), findsOneWidget);
     });
+
+    testWidgets('KCTextArea renders properly', (tester) async {
+      await tester.pumpKCWidget(
+        const KCTextArea(
+          controller: null,
+          validationMessage: 'Required',
+        ),
+      );
+      final inputfieldFinder = find.byType(TextField);
+      final labelTextFinder = find.text('Enter feedback here');
+      expect(inputfieldFinder, findsOneWidget);
+      expect(labelTextFinder, findsOneWidget);
+      expect(find.byType(GestureDetector), findsNothing);
+      expect(find.byType(Icon), findsNothing);
+    });
   });
 
   group('Partner Views:', () {
@@ -219,9 +234,8 @@ void main() {
       await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
-      expect(find.text('Choose your bank'), findsOneWidget);
-      expect(
-          find.text('Select a bank to Buy Now and Pay Later.'), findsOneWidget);
+      expect(find.text('Select a Partner'), findsOneWidget);
+      expect(find.text('Credit approval in minutes'), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });
@@ -390,7 +404,8 @@ void main() {
       await tester.tap(find.byType(PopupMenuButton<int>).first);
       await tester.pump();
       expect(find.byType(KCInstallmentPopupMenuItemContent), findsWidgets);
-      await tester.tap(find.byType(LayoutBuilder), warnIfMissed: false);
+      await tester.tap(find.byKey(const Key('split_payment_layout')),
+          warnIfMissed: false);
       await tester.pumpAndSettle();
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.byType(Spacer), findsOneWidget);
@@ -489,8 +504,6 @@ void main() {
     testWidgets('PartnerDecision renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
-      when(kcChangeNotifier.webviewFailed).thenAnswer((_) => false);
-
       when(kcChangeNotifier.initiateResponse).thenAnswer(
           (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
       await mockNetworkImagesFor(
@@ -545,6 +558,37 @@ void main() {
       expect(find.byType(Expanded), findsWidgets);
       expect(find.text('Successful'), findsOneWidget);
       expect(find.text('Loan has been disbursed successfully'), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+    });
+
+    testWidgets('FeedbackView  renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      final params = FeedbackViewArgument(
+          email: 'sample@gmail.com',
+          phoneNumber: '08012345678',
+          publicKey: 'test_public_key',
+          merchant: 'klump_test',
+          isLive: false);
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          FeedbackView(params: params),
+        ),
+      );
+      await tester.pump(Duration.zero);
+      expect(find.text('Sad to see you go 😞'), findsOneWidget);
+      expect(
+          find.text('Please tell us why you aren\'t completing this purchase'),
+          findsOneWidget);
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(XSpace), findsWidgets);
+      expect(find.byType(KCTextArea), findsOneWidget);
+      expect(find.byType(SvgPicture), findsWidgets);
+      expect(find.byType(Expanded), findsWidgets);
+      expect(find.byType(Spacer), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
       expect(find.byType(KCPrimaryButton), findsOneWidget);
     });
   });

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    final dobError = KCFormValidator.errorDate(_dob, 'Required', _validateDate);
+    final dobError = KCFormValidator.errorDate(_dob, 'Required', true);
     if ((lastNameError?.isEmpty == true ||
             formFields?.contains('lastname') != true) &&
         (phoneNoError?.isEmpty == true ||
@@ -76,10 +77,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _dobCtrl = TextEditingController();
-    final checkoutNotifier = context.read<KCChangeNotifier>();
-    _emailCtrl.text = checkoutNotifier.email ?? '';
-    _phoneNoCtrl.text = checkoutNotifier.phoneNumber ?? '';
-    validateInputs();
+
     lastNameStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
     firstNameStreamCtrl = StreamController<String>.broadcast();
@@ -110,24 +108,6 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     });
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    final klumpUser = changeNotifier.klumpUser;
-    if (changeNotifier.email != null) {
-      _emailCtrl.text = changeNotifier.email!;
-    }
-    if (klumpUser?.firstname != null) {
-      _firstNameCtrl.text = klumpUser!.firstname!;
-    }
-    if (klumpUser?.lastname != null) {
-      _lastNameCtrl.text = klumpUser!.lastname!;
-    }
-    if (klumpUser?.dob != null) {
-      setState(() {
-        _dob = DateTime.tryParse(klumpUser?.dob);
-      });
-      if (_dob != null) {
-        _dobCtrl.text = KCStringUtil.formatDate(_dob!);
-      }
-    }
     MixPanelService.logEvent(
       '10 - BIO DATA MODAL',
       properties: {
@@ -137,6 +117,73 @@ class _PartnerBioDataState extends State<PartnerBioData> {
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
+    Future.delayed(Duration.zero, () {
+      final klumpUser = changeNotifier.klumpUser;
+      if (changeNotifier.email != null) {
+        _emailCtrl.text = changeNotifier.email!;
+      }
+      if (klumpUser?.firstname != null) {
+        _firstNameCtrl.text = klumpUser!.firstname!;
+      }
+      if (klumpUser?.lastname != null) {
+        _lastNameCtrl.text = klumpUser!.lastname!;
+      }
+      if (klumpUser?.dob != null) {
+        setState(() {
+          _dob = DateTime.tryParse(klumpUser?.dob);
+        });
+        if (_dob != null) {
+          _dobCtrl.text = KCStringUtil.formatDate(_dob!);
+        }
+      }
+      _emailCtrl.text = changeNotifier.email ?? '';
+      _phoneNoCtrl.text = changeNotifier.phoneNumber ?? '';
+      final formMap = changeNotifier.bioDataStepData?.nextStep.formFields;
+      final formFields = formMap?.map((e) => e.name).toList();
+      if (formFields?.contains('phoneNumber') == true) {
+        final phoneValue =
+            formMap!.where((e) => e.name == 'phoneNumber').toList().first.value;
+        if (phoneValue != null) {
+          _phoneNoCtrl.text = phoneValue.toString();
+        }
+      }
+      if (formFields?.contains('firstname') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'firstname').toList().first.value;
+        if (value != null) {
+          _firstNameCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('lastname') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'lastname').toList().first.value;
+        if (value != null) {
+          _lastNameCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('password') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'password').toList().first.value;
+        if (value != null) {
+          _passwordCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('date_of_birth') == true) {
+        final value = formMap!
+            .where((e) => e.name == 'date_of_birth')
+            .toList()
+            .first
+            .value;
+
+        if (value != null) {
+          setState(() {
+            _dob = DateTime.tryParse(value);
+          });
+          _dobCtrl.text = KCStringUtil.formatDate(_dob!);
+        }
+      }
+      validateInputs();
+    });
   }
 
   @override
@@ -154,7 +201,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     final stepData = checkoutNotifier.bioDataStepData?.nextStep;
-    final formFields = stepData?.formFields?.map((e) => e.name).toList();
+    final formMap = stepData?.formFields;
+    final formFields = formMap?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -364,36 +412,50 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                         ),
                       ),
                     if (formFields?.contains('password') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: passwordStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _passwordCtrl,
-                              hint: 'Password',
-                              // focusNode: _passwordNode,
-                              password: true,
-                              textInputType: TextInputType.text,
-                              textInputAction: TextInputAction.done,
-                              validationMessage: KCFormValidator.errorPassword(
-                                snapshot.data,
-                                'Password is required',
+                      Builder(
+                        builder: (context) {
+                          final form = formMap!
+                              .where((e) => e.name == 'password')
+                              .toList()
+                              .first;
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: StreamBuilder<String>(
+                                  stream: passwordStreamCtrl.stream,
+                                  builder: (context, snapshot) {
+                                    return KCInputField(
+                                      controller: _passwordCtrl,
+                                      hint: 'Password',
+                                      password: true,
+                                      textInputType: TextInputType.text,
+                                      textInputAction: TextInputAction.done,
+                                      validationMessage:
+                                          KCFormValidator.errorPassword(
+                                        snapshot.data,
+                                        'Password is required',
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                    if (stepData?.displayData?.smallText != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0),
-                        child: KCBodyText1(
-                          (stepData?.displayData?.smallText ?? '')
-                              .replaceAll('<strong>', '')
-                              .replaceAll('</strong>', ''),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
+                              if (form.smalltext != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 0),
+                                  child: Html(
+                                    data: form.smalltext,
+                                    style: {
+                                      "*": Style(
+                                        fontSize:
+                                            FontSize(12), // Global font size
+                                      ),
+                                    },
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
                     const YSpace(25),
                     const Spacer(),

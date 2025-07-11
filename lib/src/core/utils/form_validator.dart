@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class KCFormValidator {
-  static Color getBorderColor(String? message) {
+  static Color getBorderColor(String? message, [Color? validColor]) {
     if (message == null) {
       return KCColors.grey1;
     } else if (message.isEmpty) {
-      return Colors.green.withOpacity(0.50);
+      return validColor ?? Colors.green.withOpacity(0.50);
     } else {
       return Colors.red.withOpacity(0.50);
     }
@@ -126,7 +126,19 @@ class KCFormValidator {
     } else if (text.isEmpty) {
       return message;
     } else if (text.length != 10) {
-      return 'Incomplte account number';
+      return 'Incomplete account number';
+    } else {
+      return '';
+    }
+  }
+
+  static String? errorBVN(String? text, String message) {
+    if (text == null) {
+      return null;
+    } else if (text.isEmpty) {
+      return message;
+    } else if (text.length != 11) {
+      return 'Invalid BVN';
     } else {
       return '';
     }

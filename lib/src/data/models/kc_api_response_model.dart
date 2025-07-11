@@ -4,5 +4,6 @@ class KCAPIResponseModel extends KCAPIResponse {
   const KCAPIResponseModel({
     required super.nextStep,
     super.data,
+    super.message,
   });
 }
