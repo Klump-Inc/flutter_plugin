@@ -86,13 +86,6 @@ class _PartnerLoginState extends State<PartnerLogin> {
     _usernameCtrl = TextEditingController();
     _pinCtrl = TextEditingController();
 
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    _emailCtrl.text = checkoutNotfier.email ?? '';
-    _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
-    _accountNoCtrl.text = checkoutNotfier.accountNumber ?? '';
-    _firstNameCtrl.text = checkoutNotfier.firstName ?? '';
-    _usernameCtrl.text = checkoutNotfier.username ?? '';
-
     validateInputs();
     accountNoStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
@@ -128,6 +121,16 @@ class _PartnerLoginState extends State<PartnerLogin> {
     });
     _pinCtrl.addListener(() {
       pinStreamCtrl.sink.add(_pinCtrl.text.trim());
+      validateInputs();
+    });
+
+    final checkoutNotfier = context.read<KCChangeNotifier>();
+    Future.delayed(Duration.zero, () {
+      _emailCtrl.text = checkoutNotfier.email ?? '';
+      _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+      _accountNoCtrl.text = checkoutNotfier.accountNumber ?? '';
+      _firstNameCtrl.text = checkoutNotfier.firstName ?? '';
+      _usernameCtrl.text = checkoutNotfier.username ?? '';
       validateInputs();
     });
   }

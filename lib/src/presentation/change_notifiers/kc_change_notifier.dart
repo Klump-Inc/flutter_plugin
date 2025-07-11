@@ -77,9 +77,6 @@ class KCChangeNotifier extends ChangeNotifier {
   List<Partner>? _loanPartners;
   List<Partner>? get loanPartners => _loanPartners;
 
-  Map<String, dynamic>? _selectedBank;
-  Map<String, dynamic>? get selectedBank => _selectedBank;
-
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
 
@@ -1230,19 +1227,23 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
+  Map<String, dynamic>? _selectedBank;
+  Map<String, dynamic>? get selectedBank => _selectedBank;
+
   Future<void> verifyAccountNumber({
     required String accountNumber,
-    required String bankCode,
-    required String bankName,
+    required Map<String, dynamic> bank,
   }) async {
     _setBusy(true);
+    _accountNumber = accountNumber;
+    _selectedBank = bank;
     final token =
         (createPhoneNumberStepData?.data as Map<String, dynamic>?)?['token'] ??
             (_bioDataStepData?.data as Map<String, dynamic>?)?['token'];
     final data = <String, dynamic>{
       "accountNumber": accountNumber,
-      "bank_code": bankCode,
-      "bank_name": bankName,
+      "bank_code": bank['value'],
+      "bank_name": bank['label'],
       "amount": _checkoutData?.amount ?? 0,
       "token": token,
       "currency": 'NGN',
@@ -1517,6 +1518,16 @@ class KCChangeNotifier extends ChangeNotifier {
     _newLoanStepData = null;
     _loanStatusStepData = null;
     _redirectStepData = null;
+    _enterBVNStepData = null;
+    _sendBVNOTPStepData = null;
+    _verifyBVNStepData = null;
+    _disbursementStatusResponse = null;
+    _createPhoneNumberStepData = null;
+    _verifyPhoneOTPStepData = null;
+    _accountNumberStepData = null;
+    _repaymentDetails = null;
+    _disbursementStatusResponse = null;
+    _bvn = null;
     nextPage();
   }
 }

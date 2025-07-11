@@ -49,7 +49,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
         KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    final dobError = KCFormValidator.errorDate(_dob, 'Required', _validateDate);
+    final dobError = KCFormValidator.errorDate(_dob, 'Required', true);
     if ((lastNameError?.isEmpty == true ||
             formFields?.contains('lastname') != true) &&
         (phoneNoError?.isEmpty == true ||
@@ -108,68 +108,6 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     });
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    final klumpUser = changeNotifier.klumpUser;
-    if (changeNotifier.email != null) {
-      _emailCtrl.text = changeNotifier.email!;
-    }
-    if (klumpUser?.firstname != null) {
-      _firstNameCtrl.text = klumpUser!.firstname!;
-    }
-    if (klumpUser?.lastname != null) {
-      _lastNameCtrl.text = klumpUser!.lastname!;
-    }
-    if (klumpUser?.dob != null) {
-      setState(() {
-        _dob = DateTime.tryParse(klumpUser?.dob);
-      });
-      if (_dob != null) {
-        _dobCtrl.text = KCStringUtil.formatDate(_dob!);
-      }
-    }
-    _emailCtrl.text = changeNotifier.email ?? '';
-    _phoneNoCtrl.text = changeNotifier.phoneNumber ?? '';
-    final formMap = changeNotifier.bioDataStepData?.nextStep.formFields;
-    final formFields = formMap?.map((e) => e.name).toList();
-    if (formFields?.contains('phoneNumber') == true) {
-      final phoneValue =
-          formMap!.where((e) => e.name == 'phoneNumber').toList().first.value;
-      if (phoneValue != null) {
-        _phoneNoCtrl.text = phoneValue.toString();
-      }
-    }
-    if (formFields?.contains('firstname') == true) {
-      final value =
-          formMap!.where((e) => e.name == 'firstname').toList().first.value;
-      if (value != null) {
-        _firstNameCtrl.text = value.toString();
-      }
-    }
-    if (formFields?.contains('lastname') == true) {
-      final value =
-          formMap!.where((e) => e.name == 'lastname').toList().first.value;
-      if (value != null) {
-        _lastNameCtrl.text = value.toString();
-      }
-    }
-    if (formFields?.contains('password') == true) {
-      final value =
-          formMap!.where((e) => e.name == 'password').toList().first.value;
-      if (value != null) {
-        _passwordCtrl.text = value.toString();
-      }
-    }
-    if (formFields?.contains('date_of_birth') == true) {
-      final value =
-          formMap!.where((e) => e.name == 'date_of_birth').toList().first.value;
-
-      if (value != null) {
-        setState(() {
-          _dob = DateTime.tryParse(value);
-        });
-        _dobCtrl.text = KCStringUtil.formatDate(_dob!);
-      }
-    }
-    validateInputs();
     MixPanelService.logEvent(
       '10 - BIO DATA MODAL',
       properties: {
@@ -179,6 +117,73 @@ class _PartnerBioDataState extends State<PartnerBioData> {
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
+    Future.delayed(Duration.zero, () {
+      final klumpUser = changeNotifier.klumpUser;
+      if (changeNotifier.email != null) {
+        _emailCtrl.text = changeNotifier.email!;
+      }
+      if (klumpUser?.firstname != null) {
+        _firstNameCtrl.text = klumpUser!.firstname!;
+      }
+      if (klumpUser?.lastname != null) {
+        _lastNameCtrl.text = klumpUser!.lastname!;
+      }
+      if (klumpUser?.dob != null) {
+        setState(() {
+          _dob = DateTime.tryParse(klumpUser?.dob);
+        });
+        if (_dob != null) {
+          _dobCtrl.text = KCStringUtil.formatDate(_dob!);
+        }
+      }
+      _emailCtrl.text = changeNotifier.email ?? '';
+      _phoneNoCtrl.text = changeNotifier.phoneNumber ?? '';
+      final formMap = changeNotifier.bioDataStepData?.nextStep.formFields;
+      final formFields = formMap?.map((e) => e.name).toList();
+      if (formFields?.contains('phoneNumber') == true) {
+        final phoneValue =
+            formMap!.where((e) => e.name == 'phoneNumber').toList().first.value;
+        if (phoneValue != null) {
+          _phoneNoCtrl.text = phoneValue.toString();
+        }
+      }
+      if (formFields?.contains('firstname') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'firstname').toList().first.value;
+        if (value != null) {
+          _firstNameCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('lastname') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'lastname').toList().first.value;
+        if (value != null) {
+          _lastNameCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('password') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'password').toList().first.value;
+        if (value != null) {
+          _passwordCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('date_of_birth') == true) {
+        final value = formMap!
+            .where((e) => e.name == 'date_of_birth')
+            .toList()
+            .first
+            .value;
+
+        if (value != null) {
+          setState(() {
+            _dob = DateTime.tryParse(value);
+          });
+          _dobCtrl.text = KCStringUtil.formatDate(_dob!);
+        }
+      }
+      validateInputs();
+    });
   }
 
   @override

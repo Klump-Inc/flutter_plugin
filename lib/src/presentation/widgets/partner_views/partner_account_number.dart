@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class PartnerAccountNumber extends StatefulWidget {
@@ -48,7 +47,6 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
       accountNumberStreamCtrl.sink.add(_accountNumberCtrl.text.trim());
       validateInputs();
     });
-
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
@@ -60,6 +58,17 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
         'partner': changeNotifier.selectedBankFlow?.slug,
       },
     );
+    Future.delayed(Duration.zero, () {
+      if (changeNotifier.accountNumber != null) {
+        _accountNumberCtrl.text = changeNotifier.accountNumber!;
+      }
+      if (changeNotifier.selectedBank != null) {
+        setState(() {
+          _selectedBank = changeNotifier.selectedBank;
+        });
+      }
+      validateInputs();
+    });
   }
 
   @override
@@ -74,7 +83,6 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
     final stepData = checkoutNotifier.accountNumberStepData?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
-    Logger().d(formFields);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: LayoutBuilder(
@@ -256,8 +264,7 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
                               FocusScope.of(context).unfocus();
                               checkoutNotifier.verifyAccountNumber(
                                 accountNumber: _accountNumberCtrl.text.trim(),
-                                bankName: _selectedBank!['label'],
-                                bankCode: _selectedBank!['value'],
+                                bank: _selectedBank!,
                               );
                             },
                           );
