@@ -196,7 +196,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(Duration.zero);
+      await tester.pump();
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.text('Please enter your email and phone number to check out'),
@@ -283,6 +283,7 @@ void main() {
           ),
         ),
       );
+      await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.byType(Image), findsWidgets);
@@ -468,6 +469,7 @@ void main() {
           ),
         ),
       );
+      await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsOneWidget);
       expect(find.byType(Expanded), findsWidgets);
