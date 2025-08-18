@@ -196,7 +196,7 @@ void main() {
           ),
         ),
       );
-      await tester.pump(Duration.zero);
+      await tester.pump();
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.text('Please enter your email and phone number to check out'),
@@ -283,6 +283,7 @@ void main() {
           ),
         ),
       );
+      await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
       expect(find.byType(Image), findsWidgets);
@@ -318,6 +319,85 @@ void main() {
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Enter the code'), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
+    });
+    testWidgets(
+        'PartnerLoginOTP Continue calls verifyOTP only when OTP is valid',
+        (tester) async {
+      when(kcChangeNotifier.phoneNumber).thenAnswer((_) => phoneNumber);
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first); // polaris => 4-digit OTP
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.verifyOTPStepData).thenAnswer((_) => KCAPIResponse(
+          nextStep: NextStepModel.fromJson(
+              accountValidationJson['next_step'] as Map<String, dynamic>)));
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.verifyOTP(any, any)).thenAnswer((_) async {});
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerLoginOTP();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Enter invalid OTP (3 digits) -> should not call verify
+      await tester.enterText(find.byType(TextField).first, '123');
+      await tester.pump();
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+      verifyNever(kcChangeNotifier.verifyOTP(any, any));
+
+      // Enter valid OTP (4 digits for polaris)
+      await tester.enterText(find.byType(TextField).first, '1234');
+      await tester.pump();
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+      verify(kcChangeNotifier.verifyOTP('1234', '')).called(1);
+    });
+
+    testWidgets('PartnerLoginOTP resend code is enabled only after countdown',
+        (tester) async {
+      when(kcChangeNotifier.phoneNumber).thenAnswer((_) => phoneNumber);
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.verifyOTPStepData).thenAnswer((_) => KCAPIResponse(
+          nextStep: NextStepModel.fromJson(
+              accountValidationJson['next_step'] as Map<String, dynamic>)));
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.resendAccountOTP()).thenAnswer((_) async => true);
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerLoginOTP();
+            },
+          ),
+        ),
+      );
+      await tester.pump();
+
+      // Before countdown ends, tapping should not trigger resend
+      expect(find.textContaining('Resend code in'), findsOneWidget);
+      await tester.tap(find.textContaining('Resend code in'));
+      await tester.pump();
+      verifyNever(kcChangeNotifier.resendAccountOTP());
+
+      // Fast-forward timer beyond 60s
+      await tester.pump(const Duration(seconds: 61));
+      expect(find.text('Resend code'), findsOneWidget);
+      await tester.tap(find.text('Resend code'));
+      await tester.pump();
+      verify(kcChangeNotifier.resendAccountOTP()).called(1);
     });
     testWidgets('PartnerTerms renders correctly', (tester) async {
       when(kcChangeNotifier.acceptTermsStepData)
@@ -440,6 +520,230 @@ void main() {
       expect(find.text('Continue'), findsOneWidget);
     });
 
+    testWidgets('PartnerBVN renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.bvn).thenAnswer((_) => null);
+      // Provide BVN step data
+      final bvnNextStep = {
+        "name": "ENTER_BVN",
+        "display_data": {"title": "Enter your BVN"},
+        "form_fields": [
+          {"type": "text", "name": "bvn", "label": "BVN", "placeholder": "BVN"}
+        ],
+        "method": "POST",
+        "api": "/loans/account/enter-bvn"
+      };
+      when(kcChangeNotifier.enterBVNStepData).thenAnswer(
+          (_) => KCAPIResponse(nextStep: NextStepModel.fromJson(bvnNextStep)));
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerBVN();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(Image), findsOneWidget);
+      expect(find.byType(KCInputField), findsOneWidget);
+      expect(find.byType(Spacer), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+    });
+
+    testWidgets('PartnerBVN prepopulates BVN from notifier', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.bvn).thenAnswer((_) => '12345678901');
+      final bvnNextStep = {
+        "name": "ENTER_BVN",
+        "form_fields": [
+          {"type": "text", "name": "bvn", "label": "BVN", "placeholder": "BVN"}
+        ],
+        "method": "POST",
+        "api": "/loans/account/enter-bvn"
+      };
+      when(kcChangeNotifier.enterBVNStepData).thenAnswer(
+          (_) => KCAPIResponse(nextStep: NextStepModel.fromJson(bvnNextStep)));
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerBVN();
+            },
+          ),
+        ),
+      );
+      // Allow the delayed prefill to run
+      await tester.pumpAndSettle();
+      expect(find.text('12345678901'), findsOneWidget);
+    });
+
+    testWidgets('PartnerSendBVNOTP renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.bvnContact).thenAnswer((_) => null);
+      final sendStep = {
+        "name": "SEND_BVN_OTP",
+        "display_data": {"title": "Verify your BVN"},
+        "form_fields": [
+          {
+            "type": "text",
+            "name": "bvn",
+            "label": "BVN",
+            "placeholder": "BVN",
+            "readonly": true,
+            "value": "12345678901"
+          },
+          {
+            "type": "select",
+            "name": "contact",
+            "label": "Contact",
+            "placeholder": "Select Contact",
+            "options": [
+              {"label": "+2348012345678", "value": "+2348012345678"},
+              {"label": "musk@spacex.com", "value": "musk@spacex.com"}
+            ]
+          }
+        ],
+        "method": "POST",
+        "api": "/loans/account/send-bvn-otp"
+      };
+      when(kcChangeNotifier.sendBVNOTPStepData).thenAnswer(
+          (_) => KCAPIResponse(nextStep: NextStepModel.fromJson(sendStep)));
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerSendBVNOTP();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(SvgPicture), findsWidgets);
+      expect(find.byType(KCInputField), findsOneWidget);
+      expect(
+          find.byType(PopupMenuButton<Map<String, dynamic>>), findsOneWidget);
+      expect(find.byType(Spacer), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+    });
+
+    testWidgets('PartnerSendBVNOTP preselects contact from notifier',
+        (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      when(kcChangeNotifier.bvnContact).thenAnswer(
+          (_) => {"label": "+2348012345678", "value": "+2348012345678"});
+      final sendStep = {
+        "name": "SEND_BVN_OTP",
+        "display_data": {"title": "Verify your BVN"},
+        "form_fields": [
+          {
+            "type": "text",
+            "name": "bvn",
+            "label": "BVN",
+            "placeholder": "BVN",
+            "readonly": true,
+            "value": "12345678901"
+          },
+          {
+            "type": "select",
+            "name": "contact",
+            "label": "Contact",
+            "placeholder": "Select Contact",
+            "options": [
+              {"label": "+2348012345678", "value": "+2348012345678"},
+              {"label": "musk@spacex.com", "value": "musk@spacex.com"}
+            ]
+          }
+        ],
+        "method": "POST",
+        "api": "/loans/account/send-bvn-otp"
+      };
+      when(kcChangeNotifier.sendBVNOTPStepData).thenAnswer(
+          (_) => KCAPIResponse(nextStep: NextStepModel.fromJson(sendStep)));
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerSendBVNOTP();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      // Selected label should be shown in the popup button child
+      expect(find.text('+2348012345678'), findsWidgets);
+    });
+
+    testWidgets('PartnerVerifyBVN renders correctly', (tester) async {
+      when(kcChangeNotifier.selectedBankFlow)
+          .thenAnswer((_) => loanPartners.first);
+      when(kcChangeNotifier.initiateResponse).thenAnswer(
+          (_) => InitiateResponseModel.fromJson(initiateLoanResponse));
+      when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+      final verifyStep = {
+        "name": "VERIFY_BVN",
+        "display_data": {"title": "Enter the code"},
+        "form_fields": [
+          {
+            "type": "text",
+            "name": "bvn_otp",
+            "label": "OTP",
+            "placeholder": "Enter the 6-digit code here"
+          }
+        ],
+        "method": "POST",
+        "api": "/loans/account/verify-bvn"
+      };
+      when(kcChangeNotifier.verifyBVNStepData).thenAnswer(
+          (_) => KCAPIResponse(nextStep: NextStepModel.fromJson(verifyStep)));
+
+      await mockNetworkImagesFor(
+        () async => await tester.pumpKCWidget(
+          ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, kcChangeNotifier) {
+              return const PartnerVerifyBVN();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(YSpace), findsWidgets);
+      expect(find.byType(KCInputField), findsOneWidget);
+      expect(find.byType(Spacer), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsOneWidget);
+      expect(find.text('Enter the code'), findsOneWidget);
+      expect(find.text('Continue'), findsOneWidget);
+    });
+
     testWidgets('PartnerAccountCredentials renders correctly', (tester) async {
       when(kcChangeNotifier.selectedBankFlow)
           .thenAnswer((_) => loanPartners.first);
@@ -468,6 +772,7 @@ void main() {
           ),
         ),
       );
+      await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsOneWidget);
       expect(find.byType(Expanded), findsWidgets);
