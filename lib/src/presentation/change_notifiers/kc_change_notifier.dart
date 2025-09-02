@@ -910,6 +910,10 @@ class KCChangeNotifier extends ChangeNotifier {
     required DateTime? dob,
     required String? password,
     required double? amount,
+    required String? apartment,
+    required String? address,
+    required String? city,
+    required String? state,
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
@@ -938,6 +942,19 @@ class KCChangeNotifier extends ChangeNotifier {
     if (amount != null) {
       data.addAll({'amount': amount});
     }
+    if (apartment?.isNotEmpty == true) {
+      data.addAll({'apartment': apartment});
+    }
+    if (address?.isNotEmpty == true) {
+      data.addAll({'address': address});
+    }
+    if (city?.isNotEmpty == true) {
+      data.addAll({'city': city});
+    }
+    if (state?.isNotEmpty == true) {
+      data.addAll({'state': state});
+    }
+    Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: bioDataStepData?.nextStep.method ?? '',
