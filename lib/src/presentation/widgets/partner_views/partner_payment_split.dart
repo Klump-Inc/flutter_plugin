@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
@@ -24,8 +25,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
 
   void validateInputs() {
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    final stepData = checkoutNotfier.loanOptionStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
+    final stepData = checkoutNotfier.loanOptionStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final downPaymentFormList =
         stepData?.formFields?.where((e) => e.name == 'downpayment_amount');
@@ -93,8 +93,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.loanOptionStepData?.nextStep ??
-        checkoutNotifier.selectedBankFlow?.nextStep;
+    final stepData = checkoutNotifier.loanOptionStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final formMap = stepData?.formFields;
     return LayoutBuilder(
@@ -373,6 +372,36 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                             },
                           ),
                         ],
+                      ),
+                    if (stepData?.displayData?.createPartnerAccountText != null)
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: stepData
+                                  ?.displayData?.createPartnerAccountText,
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                                decorationColor: Colors.blue,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  launchUrlExternal(stepData?.displayData
+                                          ?.createPartnerAccountUrl ??
+                                      '');
+                                },
+                            ),
+                          ],
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1,
+                          fontWeight: FontWeight.w500,
+                          color: KCColors.black1,
+                          fontFamily: KCFonts.avenir,
+                        ),
+                        maxLines: 3,
                       ),
                     const YSpace(24),
                     const Spacer(),

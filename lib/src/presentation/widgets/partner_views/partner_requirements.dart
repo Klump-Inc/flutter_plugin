@@ -221,7 +221,7 @@ class PartnerItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 41 + (!lastItem ? 40 : 10),
+      height: 53 + (!lastItem ? 40 : 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -250,7 +250,7 @@ class PartnerItemTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 41,
+                  height: 53,
                   child: GestureDetector(
                     onTap: onTap,
                     child: Column(
@@ -288,13 +288,7 @@ class PartnerItemTile extends StatelessWidget {
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8),
-                              child: KCHeadline4(
-                                subTitle!,
-                                fontSize: 12,
-                                height: 1,
-                                maxLines: 2,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              child: RequirementSubText(text: subTitle!),
                             ),
                           ),
                       ],
@@ -306,6 +300,66 @@ class PartnerItemTile extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class RequirementSubText extends StatelessWidget {
+  const RequirementSubText({
+    super.key,
+    required this.text,
+  });
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    // Regex to find <a href="...">...</a>
+    final regex = RegExp(r'<a href="([^"]+)">(.+?)<\/a>');
+    final match = regex.firstMatch(text);
+
+    if (match == null) {
+      // no link, return normal text
+      return KCHeadline4(
+        text,
+        fontSize: 12,
+        height: 1,
+        maxLines: 3,
+        fontWeight: FontWeight.w500,
+      );
+    }
+
+    final url = match.group(1)!; // link inside href
+    final linkText = match.group(2)!; // visible link text
+    final beforeLink = text.substring(0, match.start);
+    final afterLink = text.substring(match.end);
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: beforeLink),
+          TextSpan(
+            text: linkText,
+            style: const TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrlExternal(url);
+              },
+          ),
+          TextSpan(text: afterLink),
+        ],
+      ),
+      style: const TextStyle(
+        fontSize: 12,
+        height: 1.3,
+        fontWeight: FontWeight.w500,
+        color: KCColors.black1,
+        fontFamily: KCFonts.avenir,
+      ),
+      maxLines: 3,
     );
   }
 }

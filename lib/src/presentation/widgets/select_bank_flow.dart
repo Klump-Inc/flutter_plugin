@@ -348,7 +348,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                   'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
                 },
               );
-              if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney') {
+              if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney' ||
+                  checkoutNotfier.selectedBankFlow?.slug == 'klump') {
                 _getCameras();
               }
               checkoutNotfier.selectBankSubmitted();
