@@ -63,6 +63,9 @@ class _PartnerPaymemtLinkState extends State<PartnerPaymemtLink> {
         ),
       )
       ..loadRequest(Uri.parse(redirectUrl ?? ''));
+    if (!Platform.isMacOS) {
+      _webViewController.setBackgroundColor(Colors.white);
+    }
   }
 
   @override
