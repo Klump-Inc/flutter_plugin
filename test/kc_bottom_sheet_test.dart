@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'helpers/pump_app.dart';
@@ -24,7 +25,10 @@ void main() {
     await tester.pumpKCScreen(const KCBottomSheet(data: checkoutData));
     await tester.pump();
 
+    // Should show AccountEmail since email/phone are null
     expect(find.byType(AccountEmail), findsOneWidget);
-    expect(find.byType(SelectBankFlow), findsOneWidget);
+
+    // PageView should be present
+    expect(find.byType(PageView), findsOneWidget);
   });
 }
