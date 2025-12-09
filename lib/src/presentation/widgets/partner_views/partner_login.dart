@@ -177,8 +177,8 @@ class _PartnerLoginState extends State<PartnerLogin> {
                       onTap: checkoutNotfier.prevPage,
                     ),
                     const YSpace(24),
-                    Image.network(
-                      checkoutNotfier.selectedBankFlow?.logo ?? '',
+                    KcNetworkImage(
+                      url: checkoutNotfier.selectedBankFlow?.logo,
                       height: 55,
                       width: 55,
                     ),

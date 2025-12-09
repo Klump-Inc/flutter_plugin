@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -43,8 +44,8 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                   const YSpace(24),
                   LogoHeaderWidget(
                     onTap: checkoutNotifier.prevPage,
-                    logo: Image.network(
-                      checkoutNotifier.selectedBankFlow!.logo ?? '',
+                    logo: KcNetworkImage(
+                      url: checkoutNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),
@@ -205,6 +206,9 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                         disabled: !accepted || checkoutNotifier.isBusy,
                         loading: checkoutNotifier.isBusy,
                         onTap: () {
+                          Logger().d(stepData?.formFields
+                              ?.where((e) => e.name == 'reference')
+                              .toList());
                           final referenceForm = stepData?.formFields
                               ?.where((e) => e.name == 'reference')
                               .toList();

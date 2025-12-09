@@ -54,7 +54,7 @@ class FirstScreen extends StatelessWidget {
                     'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
                 amount: 300000,
                 shippingFee: 10000,
-                merchantReference: "what-ever-you-want-this-to-be",
+                merchantReference: "what-ever-you-want-this-to-be_ejerkjrj33ee",
                 metaData: {
                   'customer': "Elon Musk",
                   'email': "test51@useklump.com",

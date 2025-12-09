@@ -104,8 +104,8 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
                       const YSpace(24),
                       LogoHeaderWidget(
                         onTap: checkoutNotifier.prevPage,
-                        logo: Image.network(
-                          checkoutNotifier.selectedBankFlow!.logo ?? '',
+                        logo: KcNetworkImage(
+                          url: checkoutNotifier.selectedBankFlow!.logo,
                           height: 55,
                           width: 120,
                         ),

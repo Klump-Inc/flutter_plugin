@@ -25,8 +25,8 @@ class KCPartnerPopupMenuItemContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Image.network(
-            logo ?? '',
+          KcNetworkImage(
+            url: logo,
             height: 20,
             width: 17.09,
           ),

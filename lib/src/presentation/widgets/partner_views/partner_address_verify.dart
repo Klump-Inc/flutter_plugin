@@ -70,8 +70,8 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                       ),
                     ),
                     Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      child: KcNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),

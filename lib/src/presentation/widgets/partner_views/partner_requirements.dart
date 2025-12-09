@@ -55,8 +55,8 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                     const DraggableBar(),
                     const YSpace(24),
                     Align(
-                      child: Image.network(
-                        checkoutNotifier.selectedBankFlow?.logo ?? '',
+                      child: KcNetworkImage(
+                        url: checkoutNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),

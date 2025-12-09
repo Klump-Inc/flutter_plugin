@@ -28,8 +28,8 @@ class _PartnerConfirmationState extends State<PartnerConfirmation> {
                   children: [
                     const DraggableBar(),
                     const YSpace(24),
-                    Image.network(
-                      checkoutNotifier.selectedBankFlow?.logo ?? '',
+                    KcNetworkImage(
+                      url: checkoutNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),

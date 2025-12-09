@@ -134,8 +134,8 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
                       ),
                     ),
                     Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      child: KcNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),

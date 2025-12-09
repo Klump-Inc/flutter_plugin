@@ -27,8 +27,8 @@ class PartnerDisbursementStatus extends StatelessWidget {
                     const DraggableBar(),
                     const YSpace(24),
                     Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      child: KcNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
