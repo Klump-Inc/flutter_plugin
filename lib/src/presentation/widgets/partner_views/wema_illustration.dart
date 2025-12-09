@@ -90,7 +90,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                               ),
                             ),
                           ),
-                          KcNetworkImage(
+                          KCNetworkImage(
                             url: checkoutNotfier.selectedBankFlow!.logo,
                             height: 55,
                             width: 120,
@@ -134,7 +134,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                             _currentPage.value = page;
                           },
                           children: carousel
-                              .map((e) => KcNetworkImage(
+                              .map((e) => KCNetworkImage(
                                     url: e['url'],
                                     fit: BoxFit.fitWidth,
                                     height: null,

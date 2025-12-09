@@ -303,7 +303,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                     const YSpace(24),
                     LogoHeaderWidget(
                       onTap: checkoutNotifier.prevPage,
-                      logo: KcNetworkImage(
+                      logo: KCNetworkImage(
                         url: checkoutNotifier.selectedBankFlow!.logo,
                         height: 55,
                         width: 120,

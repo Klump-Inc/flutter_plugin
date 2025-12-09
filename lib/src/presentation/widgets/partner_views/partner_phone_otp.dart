@@ -121,7 +121,7 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
                     const YSpace(24),
                     LogoHeaderWidget(
                       onTap: checkoutNotfier.prevPage,
-                      logo: KcNetworkImage(
+                      logo: KCNetworkImage(
                         url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,

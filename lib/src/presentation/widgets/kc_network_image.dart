@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/core/core.dart';
 
-class KcNetworkImage extends StatelessWidget {
-  const KcNetworkImage(
+class KCNetworkImage extends StatelessWidget {
+  const KCNetworkImage(
       {super.key, this.url, this.height = 55, this.width = 55, this.fit});
   final String? url;
   final double? height;

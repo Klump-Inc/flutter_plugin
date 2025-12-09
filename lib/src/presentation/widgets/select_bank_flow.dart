@@ -140,7 +140,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                         Expanded(
                           child: Row(
                             children: [
-                              KcNetworkImage(
+                              KCNetworkImage(
                                 url: checkoutNotfier.selectedBankFlow?.logo,
                                 height: 20,
                                 width: 17.09,

@@ -93,7 +93,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                       ),
                     ),
                     Align(
-                      child: KcNetworkImage(
+                      child: KCNetworkImage(
                         url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,

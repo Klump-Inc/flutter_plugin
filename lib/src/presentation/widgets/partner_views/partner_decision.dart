@@ -74,7 +74,7 @@ class _PartnerDecisionState extends State<PartnerDecision> {
                   const DraggableBar(),
                   const YSpace(24),
                   Align(
-                    child: KcNetworkImage(
+                    child: KCNetworkImage(
                       url: checkoutNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
