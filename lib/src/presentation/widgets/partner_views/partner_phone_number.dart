@@ -95,8 +95,8 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
                     const YSpace(24),
                     LogoHeaderWidget(
                       onTap: checkoutNotfier.prevPage,
-                      logo: Image.network(
-                        checkoutNotfier.selectedBankFlow!.logo ?? '',
+                      logo: KCNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),

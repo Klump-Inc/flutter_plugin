@@ -700,6 +700,10 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
     required DateTime? dob,
     required String? password,
     required double? amount,
+    required String? apartment,
+    required String? address,
+    required String? city,
+    required String? state,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -712,6 +716,10 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
             #dob: dob,
             #password: password,
             #amount: amount,
+            #apartment: apartment,
+            #address: address,
+            #city: city,
+            #state: state,
           },
         ),
         returnValue: _i6.Future<void>.value(),
@@ -827,6 +835,64 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
           #validateSelfie,
           [],
           {#filePath: filePath},
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> verifyAccountNumber({
+    required String? accountNumber,
+    required Map<String, dynamic>? bank,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #verifyAccountNumber,
+          [],
+          {
+            #accountNumber: accountNumber,
+            #bank: bank,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> enterBVN({required String? bvn}) => (super.noSuchMethod(
+        Invocation.method(
+          #enterBVN,
+          [],
+          {#bvn: bvn},
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> sendBVNOTP({
+    required String? bvn,
+    required Map<String, dynamic>? contact,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sendBVNOTP,
+          [],
+          {
+            #bvn: bvn,
+            #contact: contact,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> verifyBVN({required String? otp}) => (super.noSuchMethod(
+        Invocation.method(
+          #verifyBVN,
+          [],
+          {#otp: otp},
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),

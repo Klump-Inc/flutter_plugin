@@ -25,8 +25,8 @@ class KCPartnerPopupMenuItemContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          Image.network(
-            logo ?? '',
+          KCNetworkImage(
+            url: logo,
             height: 20,
             width: 17.09,
           ),
@@ -39,6 +39,8 @@ class KCPartnerPopupMenuItemContent extends StatelessWidget {
                   title,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (message != null)
                   Padding(
@@ -46,6 +48,8 @@ class KCPartnerPopupMenuItemContent extends StatelessWidget {
                     child: KCBodyText1(
                       message!,
                       fontSize: 12,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
               ],

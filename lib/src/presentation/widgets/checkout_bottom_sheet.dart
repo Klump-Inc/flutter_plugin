@@ -109,7 +109,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                               'fidelity' ||
                           checkoutNotifier.selectedBankFlow?.slug ==
                               'fcmb_credit_direct' ||
-                          checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                          checkoutNotifier.selectedBankFlow?.slug == 'wema' ||
+                          checkoutNotifier.selectedBankFlow?.slug == 'klump')
                         const PartnerRequirements(),
                       if (checkoutNotifier.selectedBankFlow?.slug !=
                               'fcmb_credit_direct' &&
@@ -170,26 +171,20 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
                               'renmoney' &&
                           checkoutNotifier.proofAddressStepData != null)
                         const PartnerAddressVerify(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.selfieStepData != null)
-                        const PartnerSelfieUpload(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
                         const WemaIllustration(),
-                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta' &&
-                          checkoutNotifier.selectedBankFlow?.slug !=
-                              'renmoney' &&
-                          checkoutNotifier.selectedBankFlow?.slug !=
-                              'fcmb_credit_direct' &&
-                          checkoutNotifier.selectedBankFlow?.slug !=
-                              'first_bank')
+                      if (checkoutNotifier.repaymentDetailsStepData != null)
                         const PartnerPaymentPreview(),
+                      if (checkoutNotifier.selfieStepData != null)
+                        const PartnerSelfieUpload(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
                         const PartnerTermsCondition(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
                         const PartnerInvoice(),
                       if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
                         const PartnerConfirmation(),
+                      if (checkoutNotifier.paymentLinkData != null)
+                        const PartnerPaymemtLink(),
                       const PartnerDecision(),
                       const PartnerDisbursementStatus(),
                     ];

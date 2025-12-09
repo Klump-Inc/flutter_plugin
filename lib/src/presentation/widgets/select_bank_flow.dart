@@ -140,8 +140,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                         Expanded(
                           child: Row(
                             children: [
-                              Image.network(
-                                checkoutNotfier.selectedBankFlow!.logo ?? '',
+                              KCNetworkImage(
+                                url: checkoutNotfier.selectedBankFlow?.logo,
                                 height: 20,
                                 width: 17.09,
                               ),
@@ -348,7 +348,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                   'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
                 },
               );
-              if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney') {
+              if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney' ||
+                  checkoutNotfier.selectedBankFlow?.slug == 'klump') {
                 _getCameras();
               }
               checkoutNotfier.selectBankSubmitted();

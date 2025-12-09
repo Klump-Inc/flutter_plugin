@@ -417,8 +417,8 @@ class _PartnerKYCState extends State<PartnerKYC> {
                       ),
                     ),
                     Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      child: KCNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),

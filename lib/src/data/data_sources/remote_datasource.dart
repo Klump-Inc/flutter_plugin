@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -215,8 +214,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
-      Logger().d(response.data);
-
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['message'],
@@ -291,8 +288,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
-      Logger().d(response.data);
-
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['data']['token']);
       return KCAPIResponseModel(
@@ -434,8 +429,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
-      Logger().d(response.data);
-
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
       );
@@ -500,7 +493,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       final headers = {
         'klump-public-key': publicKey,
       };
-
       late Response<dynamic> response;
       if (method == 'POST') {
         response = await kcHttpRequester.post(
@@ -524,7 +516,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
               (response.data as Map<String, dynamic>)['data']['token']);
         }
       }
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'

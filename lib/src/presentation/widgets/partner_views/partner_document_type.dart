@@ -48,8 +48,8 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                       ),
                     ),
                     Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      child: KCNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),

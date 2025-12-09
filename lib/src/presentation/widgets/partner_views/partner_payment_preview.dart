@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -17,13 +18,12 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.repaymentDetailsStepData?.nextStep ??
-        checkoutNotifier.selectedBankFlow?.nextStep;
+    final stepData = checkoutNotifier.repaymentDetailsStepData?.nextStep;
+
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final checkBoxFields =
         stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
     final repaymentDetails = stepData?.displayData?.list ?? [];
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -44,8 +44,8 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                   const YSpace(24),
                   LogoHeaderWidget(
                     onTap: checkoutNotifier.prevPage,
-                    logo: Image.network(
-                      checkoutNotifier.selectedBankFlow!.logo ?? '',
+                    logo: KCNetworkImage(
+                      url: checkoutNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),
@@ -164,9 +164,9 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                                       }
                                     },
                                 ),
-                                const TextSpan(text: ' and'),
+                                const TextSpan(text: ' and '),
                                 TextSpan(
-                                  text: ' Terms and Conditions',
+                                  text: 'Terms and Conditions',
                                   style: const TextStyle(
                                     color: KCColors.black3,
                                     fontWeight: FontWeight.w800,
@@ -206,10 +206,12 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                         disabled: !accepted || checkoutNotifier.isBusy,
                         loading: checkoutNotifier.isBusy,
                         onTap: () {
+                          Logger().d(stepData?.formFields
+                              ?.where((e) => e.name == 'reference')
+                              .toList());
                           final referenceForm = stepData?.formFields
                               ?.where((e) => e.name == 'reference')
                               .toList();
-
                           checkoutNotifier.acceptRepaymentTerms(
                               reference:
                                   formFields?.contains('reference') == true &&

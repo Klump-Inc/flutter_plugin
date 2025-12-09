@@ -39,8 +39,8 @@ class PartnerMobileExperience extends StatelessWidget {
                     ),
                     const YSpace(14.7),
                     Align(
-                      child: Image.network(
-                        checkoutNotifier.selectedBankFlow!.logo ?? '',
+                      child: KCNetworkImage(
+                        url: checkoutNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 47,
                       ),

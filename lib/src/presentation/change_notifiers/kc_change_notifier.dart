@@ -139,6 +139,9 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _redirectStepData;
   KCAPIResponse? get redirectStepData => _redirectStepData;
 
+  KCAPIResponse? _paymentLinkData;
+  KCAPIResponse? get paymentLinkData => _paymentLinkData;
+
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -239,6 +242,7 @@ class KCChangeNotifier extends ChangeNotifier {
         _selfieStepData = data;
         break;
       case 'NEW_LOAN':
+      case 'NEW_USER_LOAN':
         _newLoanStepData = data;
         break;
       case 'LOAN_STATUS':
@@ -261,6 +265,9 @@ class KCChangeNotifier extends ChangeNotifier {
         break;
       case 'VERIFY_BVN':
         _verifyBVNStepData = data;
+        break;
+      case 'PAYMENT_LINK':
+        _paymentLinkData = data;
         break;
       default:
     }
@@ -562,6 +569,7 @@ class KCChangeNotifier extends ChangeNotifier {
     response.fold(
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) async {
+        Logger().d("New loan data: $r");
         storeNextStepData(r);
         nextPage();
       },
@@ -570,10 +578,14 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<DisbursementStatusResponse?> getLoanStatus() async {
+    Logger().d(
+      loanStatusStepData?.nextStep.api ?? redirectStepData?.nextStep.api ?? '',
+    );
     final response = await getLoanStatusUsecase(
       GetLoanStatusUsecaseParams(
         url: loanStatusStepData?.nextStep.api ??
             redirectStepData?.nextStep.api ??
+            paymentLinkData?.nextStep.api ??
             '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         isLive: initiateResponse?.isLive == true,
@@ -663,10 +675,12 @@ class KCChangeNotifier extends ChangeNotifier {
       'partner': _selectedBankFlow!.slug,
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      'is_accepted': true
     };
     if (reference != null) {
       data['reference'] = reference;
     }
+    Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: repaymentDetailsStepData?.nextStep.method ?? '',
@@ -910,6 +924,10 @@ class KCChangeNotifier extends ChangeNotifier {
     required DateTime? dob,
     required String? password,
     required double? amount,
+    required String? apartment,
+    required String? address,
+    required String? city,
+    required String? state,
   }) async {
     _setBusy(true);
     final data = <String, dynamic>{
@@ -938,6 +956,19 @@ class KCChangeNotifier extends ChangeNotifier {
     if (amount != null) {
       data.addAll({'amount': amount});
     }
+    if (apartment?.isNotEmpty == true) {
+      data.addAll({'apartment': apartment});
+    }
+    if (address?.isNotEmpty == true) {
+      data.addAll({'address': address});
+    }
+    if (city?.isNotEmpty == true) {
+      data.addAll({'city': city});
+    }
+    if (state?.isNotEmpty == true) {
+      data.addAll({'state': state});
+    }
+    Logger().d(data);
     final response = await partnersUsecase(
       PartnersUsecaseParams(
         method: bioDataStepData?.nextStep.method ?? '',
@@ -1218,7 +1249,8 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
-        if (r.nextStep.name == 'NEW_LOAN') {
+        if (r.nextStep.name == 'NEW_LOAN' ||
+            r.nextStep.name == 'NEW_USER_LOAN') {
           createLoan();
         } else {
           nextPage();
@@ -1527,6 +1559,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _accountNumberStepData = null;
     _repaymentDetails = null;
     _disbursementStatusResponse = null;
+    _paymentLinkData = null;
     _bvn = null;
     nextPage();
   }

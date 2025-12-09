@@ -23,6 +23,11 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   late TextEditingController _emailCtrl;
   late TextEditingController _passwordCtrl;
   late TextEditingController _dobCtrl;
+  late TextEditingController _apartmentCtrl;
+  late TextEditingController _addressCtrl;
+  late TextEditingController _cityCtrl;
+  late TextEditingController _stateCtrl;
+
   DateTime? _dob;
   bool _validateDate = false;
 
@@ -31,6 +36,10 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   late StreamController<String> firstNameStreamCtrl;
   late StreamController<String> emailStreamCtrl;
   late StreamController<String> passwordStreamCtrl;
+  late StreamController<String> apartmentStreamCtrl;
+  late StreamController<String> addressStreamCtrl;
+  late StreamController<String> cityStreamCtrl;
+  late StreamController<String> stateStreamCtrl;
 
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
@@ -50,6 +59,12 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     final passwordError =
         KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
     final dobError = KCFormValidator.errorDate(_dob, 'Required', true);
+    final addressError =
+        KCFormValidator.errorGeneric(_addressCtrl.text.trim(), 'Required');
+    final cityError =
+        KCFormValidator.errorGeneric(_cityCtrl.text.trim(), 'Required');
+    final stateError =
+        KCFormValidator.errorGeneric(_stateCtrl.text.trim(), 'Required');
     if ((lastNameError?.isEmpty == true ||
             formFields?.contains('lastname') != true) &&
         (phoneNoError?.isEmpty == true ||
@@ -61,7 +76,12 @@ class _PartnerBioDataState extends State<PartnerBioData> {
         (passwordError?.isEmpty == true ||
             formFields?.contains('password') != true) &&
         (dobError?.isEmpty == true ||
-            formFields?.contains('date_of_birth') != true)) {
+            formFields?.contains('date_of_birth') != true) &&
+        (addressError?.isEmpty == true ||
+            formFields?.contains('address') != true) &&
+        (cityError?.isEmpty == true || formFields?.contains('city') != true) &&
+        (stateError?.isEmpty == true ||
+            formFields?.contains('state') != true)) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -77,12 +97,21 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     _emailCtrl = TextEditingController();
     _passwordCtrl = TextEditingController();
     _dobCtrl = TextEditingController();
+    _apartmentCtrl = TextEditingController();
+    _addressCtrl = TextEditingController();
+    _cityCtrl = TextEditingController();
+    _stateCtrl = TextEditingController();
 
     lastNameStreamCtrl = StreamController<String>.broadcast();
     phoneNoStreamCtrl = StreamController<String>.broadcast();
     firstNameStreamCtrl = StreamController<String>.broadcast();
     emailStreamCtrl = StreamController<String>.broadcast();
     passwordStreamCtrl = StreamController<String>.broadcast();
+    apartmentStreamCtrl = StreamController<String>.broadcast();
+    addressStreamCtrl = StreamController<String>.broadcast();
+    cityStreamCtrl = StreamController<String>.broadcast();
+    stateStreamCtrl = StreamController<String>.broadcast();
+
     _lastNameCtrl.addListener(() {
       lastNameStreamCtrl.sink.add(_lastNameCtrl.text.trim());
       validateInputs();
@@ -106,6 +135,23 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     _dobCtrl.addListener(() {
       validateInputs();
     });
+    _apartmentCtrl.addListener(() {
+      apartmentStreamCtrl.sink.add(_apartmentCtrl.text.trim());
+      validateInputs();
+    });
+    _addressCtrl.addListener(() {
+      addressStreamCtrl.sink.add(_addressCtrl.text.trim());
+      validateInputs();
+    });
+    _cityCtrl.addListener(() {
+      cityStreamCtrl.sink.add(_cityCtrl.text.trim());
+      validateInputs();
+    });
+    _stateCtrl.addListener(() {
+      stateStreamCtrl.sink.add(_stateCtrl.text.trim());
+      validateInputs();
+    });
+
     final changeNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     MixPanelService.logEvent(
@@ -182,6 +228,35 @@ class _PartnerBioDataState extends State<PartnerBioData> {
           _dobCtrl.text = KCStringUtil.formatDate(_dob!);
         }
       }
+      if (formFields?.contains('apartment') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'apartment').toList().first.value;
+        if (value != null) {
+          _apartmentCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('address') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'address').toList().first.value;
+        if (value != null) {
+          _addressCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('city') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'city').toList().first.value;
+        if (value != null) {
+          _cityCtrl.text = value.toString();
+        }
+      }
+      if (formFields?.contains('state') == true) {
+        final value =
+            formMap!.where((e) => e.name == 'state').toList().first.value;
+        if (value != null) {
+          _stateCtrl.text = value.toString();
+        }
+      }
+
       validateInputs();
     });
   }
@@ -195,6 +270,10 @@ class _PartnerBioDataState extends State<PartnerBioData> {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     _dobCtrl.dispose();
+    _apartmentCtrl.dispose();
+    _addressCtrl.dispose();
+    _cityCtrl.dispose();
+    _stateCtrl.dispose();
   }
 
   @override
@@ -224,8 +303,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                     const YSpace(24),
                     LogoHeaderWidget(
                       onTap: checkoutNotifier.prevPage,
-                      logo: Image.network(
-                        checkoutNotifier.selectedBankFlow!.logo ?? '',
+                      logo: KCNetworkImage(
+                        url: checkoutNotifier.selectedBankFlow!.logo,
                         height: 55,
                         width: 120,
                       ),
@@ -457,6 +536,114 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                           );
                         },
                       ),
+                    if (formFields?.contains('apartment') == true)
+                      Builder(
+                        builder: (context) {
+                          final form = formMap!
+                              .where((e) => e.name == 'apartment')
+                              .toList()
+                              .first;
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: StreamBuilder<String>(
+                              stream: apartmentStreamCtrl.stream,
+                              builder: (context, snapshot) {
+                                return KCInputField(
+                                  controller: _apartmentCtrl,
+                                  hint: form.placeholder ?? form.label ?? '',
+                                  textInputType: TextInputType.text,
+                                  textInputAction: TextInputAction.done,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    if (formFields?.contains('address') == true)
+                      Builder(
+                        builder: (context) {
+                          final form = formMap!
+                              .where((e) => e.name == 'address')
+                              .toList()
+                              .first;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: StreamBuilder<String>(
+                              stream: addressStreamCtrl.stream,
+                              builder: (context, snapshot) {
+                                return KCInputField(
+                                  controller: _addressCtrl,
+                                  hint: form.placeholder ?? form.label ?? '',
+                                  textInputType: TextInputType.text,
+                                  textInputAction: TextInputAction.done,
+                                  validationMessage:
+                                      KCFormValidator.errorGeneric(
+                                    snapshot.data,
+                                    'Address is required',
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    if (formFields?.contains('city') == true)
+                      Builder(
+                        builder: (context) {
+                          final form = formMap!
+                              .where((e) => e.name == 'city')
+                              .toList()
+                              .first;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: StreamBuilder<String>(
+                              stream: cityStreamCtrl.stream,
+                              builder: (context, snapshot) {
+                                return KCInputField(
+                                  controller: _cityCtrl,
+                                  hint: form.placeholder ?? form.label ?? '',
+                                  textInputType: TextInputType.text,
+                                  textInputAction: TextInputAction.done,
+                                  validationMessage:
+                                      KCFormValidator.errorGeneric(
+                                    snapshot.data,
+                                    'City is required',
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    if (formFields?.contains('state') == true)
+                      Builder(
+                        builder: (context) {
+                          final form = formMap!
+                              .where((e) => e.name == 'state')
+                              .toList()
+                              .first;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: StreamBuilder<String>(
+                              stream: stateStreamCtrl.stream,
+                              builder: (context, snapshot) {
+                                return KCInputField(
+                                  controller: _stateCtrl,
+                                  hint: form.placeholder ?? form.label ?? '',
+                                  textInputType: TextInputType.text,
+                                  textInputAction: TextInputAction.done,
+                                  validationMessage:
+                                      KCFormValidator.errorGeneric(
+                                    snapshot.data,
+                                    'State is required',
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     const YSpace(25),
                     const Spacer(),
                     ValueListenableBuilder<bool>(
@@ -469,28 +656,39 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                           onTap: () {
                             FocusScope.of(context).unfocus();
                             checkoutNotifier.bioData(
-                                email: formFields?.contains('email') == true
-                                    ? _emailCtrl.text.trim()
-                                    : null,
-                                firstname:
-                                    formFields?.contains('firstname') == true
-                                        ? _firstNameCtrl.text.trim()
-                                        : null,
-                                lastname:
-                                    formFields?.contains('lastname') == true
-                                        ? _lastNameCtrl.text.trim()
-                                        : null,
-                                dob: formFields?.contains('date_of_birth') ==
-                                        true
-                                    ? _dob
-                                    : null,
-                                password:
-                                    formFields?.contains('password') == true
-                                        ? _passwordCtrl.text.trim()
-                                        : null,
-                                amount: formFields?.contains('amount') == true
-                                    ? checkoutNotifier.totalAmount
-                                    : null);
+                              email: formFields?.contains('email') == true
+                                  ? _emailCtrl.text.trim()
+                                  : null,
+                              firstname:
+                                  formFields?.contains('firstname') == true
+                                      ? _firstNameCtrl.text.trim()
+                                      : null,
+                              lastname: formFields?.contains('lastname') == true
+                                  ? _lastNameCtrl.text.trim()
+                                  : null,
+                              dob: formFields?.contains('date_of_birth') == true
+                                  ? _dob
+                                  : null,
+                              password: formFields?.contains('password') == true
+                                  ? _passwordCtrl.text.trim()
+                                  : null,
+                              amount: formFields?.contains('amount') == true
+                                  ? checkoutNotifier.totalAmount
+                                  : null,
+                              apartment:
+                                  formFields?.contains('apartment') == true
+                                      ? _apartmentCtrl.text.trim()
+                                      : null,
+                              address: formFields?.contains('address') == true
+                                  ? _addressCtrl.text.trim()
+                                  : null,
+                              city: formFields?.contains('city') == true
+                                  ? _cityCtrl.text.trim()
+                                  : null,
+                              state: formFields?.contains('state') == true
+                                  ? _stateCtrl.text.trim()
+                                  : null,
+                            );
                           },
                         );
                       },

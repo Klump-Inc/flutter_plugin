@@ -28,3 +28,4 @@ export 'partner_bvn.dart';
 export 'partner_send_bvn_otp.dart';
 export 'partner_account_number.dart';
 export 'partner_verify_bvn.dart';
+export 'partner_payment_link.dart';

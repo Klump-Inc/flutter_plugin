@@ -60,9 +60,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.selfieStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
-
+    final stepData = checkoutNotfier.selfieStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -95,8 +93,8 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                       ),
                     ),
                     Align(
-                      child: Image.network(
-                        checkoutNotfier.selectedBankFlow?.logo ?? '',
+                      child: KCNetworkImage(
+                        url: checkoutNotfier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),
