@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 import 'package:mockito/annotations.dart';
@@ -125,6 +125,28 @@ void main() {
       expect(labelTextFinder, findsOneWidget);
       expect(find.byType(GestureDetector), findsOneWidget);
       expect(find.byType(Icon), findsOneWidget);
+    });
+
+    testWidgets('KCNetworkImage renders network image with provided properties',
+        (tester) async {
+      const widget = KCNetworkImage(
+        url: 'https://example.com/image.png',
+        height: 24,
+        width: 32,
+        fit: BoxFit.cover,
+      );
+
+      await mockNetworkImagesFor(() async {
+        await tester.pumpKCWidget(widget);
+        await tester.pump();
+      });
+
+      final image = tester.widget<Image>(find.byType(Image));
+      expect(
+          (image.image as NetworkImage).url, 'https://example.com/image.png');
+      expect(image.height, 24);
+      expect(image.width, 32);
+      expect(image.fit, BoxFit.cover);
     });
 
     testWidgets('KCInstallmentPopupMenuItemContent renders correctly',
