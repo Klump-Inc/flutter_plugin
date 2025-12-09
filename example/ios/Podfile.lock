@@ -6,12 +6,12 @@ PODS:
     - Flutter
   - klump_checkout (0.0.1):
     - Flutter
-  - Mixpanel-swift (5.0.0):
-    - Mixpanel-swift/Complete (= 5.0.0)
-  - Mixpanel-swift/Complete (5.0.0)
-  - mixpanel_flutter (2.4.1):
+  - Mixpanel-swift (5.1.0):
+    - Mixpanel-swift/Complete (= 5.1.0)
+  - Mixpanel-swift/Complete (5.1.0)
+  - mixpanel_flutter (2.4.4):
     - Flutter
-    - Mixpanel-swift (= 5.0.0)
+    - Mixpanel-swift (= 5.1.0)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -54,12 +54,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: adb0207d868b2d873e895371d88448399ab78d87
+  camera_avfoundation: 281867ff09f1da66f031a184ecfbc6f2e625c9f5
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   klump_checkout: 06c49320d3294d719ad2261a55d9afd69ca33979
-  Mixpanel-swift: e9bef28a9648faff384d5ba6f48ecc2787eb24c0
-  mixpanel_flutter: 56a3d296d12ec2b7902792cb3266bdec15d434e8
+  Mixpanel-swift: 7b26468fc0e2e521104e51d65c4bbf7cab8162f8
+  mixpanel_flutter: c2bb8345c90bef15512a1b812ec800b52f8614b6
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
   webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
