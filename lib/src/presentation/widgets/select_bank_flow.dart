@@ -330,12 +330,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const Spacer(),
           KCPrimaryButton(
             disabled: checkoutNotfier.isBusy ||
-                checkoutNotfier.initiateResponse == null,
-            // disabled: checkoutNotfier.isBusy ||
-            //     checkoutNotfier.initiateResponse == null ||
-            //     checkoutNotfier.selectedBankFlow?.isActive != true ||
-            //     checkoutNotfier.selectedBankFlow?.isActiveForMobile != true ||
-            //     (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
+                checkoutNotfier.initiateResponse == null ||
+                checkoutNotfier.selectedBankFlow?.isActive != true ||
+                checkoutNotfier.selectedBankFlow?.isActiveForMobile != true ||
+                (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
             loading: checkoutNotfier.isBusy,
             title: 'Continue',
             onTap: () {
