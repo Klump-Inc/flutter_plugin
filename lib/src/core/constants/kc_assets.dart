@@ -7,6 +7,8 @@ class KCAssets {
   static String secureCredit = 'assets/icons/secure_credit.svg';
   static String klumpLogo = 'assets/icons/klump_logo.svg';
   static String copy = 'assets/icons/copy.svg';
+  static String copy2 = 'assets/icons/copy_2.svg';
+
   static String computer = 'assets/icons/computer.svg';
   static String selfie = 'assets/icons/selfie.svg';
   static String upload = 'assets/icons/upload.svg';

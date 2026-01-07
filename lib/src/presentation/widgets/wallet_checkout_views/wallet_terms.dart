@@ -249,6 +249,7 @@ class _WalletTermsState extends State<WalletTerms> {
                       loading: walletNotifier.isBusy,
                       onTap: () {
                         FocusScope.of(context).unfocus();
+                        walletNotifier.nextPage();
                       },
                     ),
                   ],

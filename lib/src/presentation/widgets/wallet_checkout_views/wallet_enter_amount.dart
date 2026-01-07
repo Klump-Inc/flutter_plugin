@@ -1,34 +1,29 @@
 import 'dart:async';
 
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/presentation/change_notifiers/kc_wallet_notifier.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
-class WalletLogin extends StatefulWidget {
-  const WalletLogin({super.key, required this.initiateResponse});
+class WalletEnterAmount extends StatefulWidget {
+  const WalletEnterAmount({super.key, required this.initiateResponse});
   final InitiateResponseModel initiateResponse;
 
   @override
-  State<WalletLogin> createState() => _WalletLoginState();
+  State<WalletEnterAmount> createState() => _WalletEnterAmountState();
 }
 
-class _WalletLoginState extends State<WalletLogin> {
-  late TextEditingController _emailCtrl;
-  late TextEditingController _passwordCtrl;
-
-  late StreamController<String> emailStreamCtrl;
-  late StreamController<String> passwordStreamCtrl;
-
+class _WalletEnterAmountState extends State<WalletEnterAmount> {
+  late TextEditingController _amountCtrl;
+  late StreamController<String> amountStreamCtrl;
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final emailError =
-        KCFormValidator.errorEmail(_emailCtrl.text.trim(), 'Required');
-    final passwordError =
-        KCFormValidator.errorPassword(_passwordCtrl.text.trim(), 'Required');
-    if ((emailError?.isEmpty == true) && (passwordError?.isEmpty == true)) {
+    final amount = _amountCtrl.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    if (amount.isNotEmpty && double.tryParse(amount) != null) {
       _enabled.value = true;
     } else {
       _enabled.value = false;
@@ -38,28 +33,15 @@ class _WalletLoginState extends State<WalletLogin> {
   @override
   void initState() {
     super.initState();
+    _amountCtrl = TextEditingController();
+    amountStreamCtrl = StreamController<String>.broadcast();
 
-    _emailCtrl = TextEditingController();
-    _passwordCtrl = TextEditingController();
+    // Set initial value to NGN 100,000.00
+    _amountCtrl.text = 'NGN 100,000.00';
+    _enabled.value = true;
 
-    validateInputs();
-
-    emailStreamCtrl = StreamController<String>.broadcast();
-    passwordStreamCtrl = StreamController<String>.broadcast();
-
-    _emailCtrl.addListener(() {
-      emailStreamCtrl.sink.add(_emailCtrl.text.trim());
-      validateInputs();
-    });
-    _passwordCtrl.addListener(() {
-      passwordStreamCtrl.sink.add(_passwordCtrl.text.trim());
-      validateInputs();
-    });
-
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    Future.delayed(Duration.zero, () {
-      _emailCtrl.text = checkoutNotfier.email ?? '';
-
+    _amountCtrl.addListener(() {
+      amountStreamCtrl.sink.add(_amountCtrl.text.trim());
       validateInputs();
     });
   }
@@ -67,8 +49,8 @@ class _WalletLoginState extends State<WalletLogin> {
   @override
   void dispose() {
     super.dispose();
-    _emailCtrl.dispose();
-    _passwordCtrl.dispose();
+    _amountCtrl.dispose();
+    amountStreamCtrl.close();
   }
 
   @override
@@ -99,7 +81,7 @@ class _WalletLoginState extends State<WalletLogin> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () => walletNotifier.prevPage(),
+                          onTap: () => Navigator.pop(context),
                           child: Padding(
                             padding: const EdgeInsets.all(4),
                             child: SvgPicture.asset(
@@ -146,47 +128,58 @@ class _WalletLoginState extends State<WalletLogin> {
                     ),
                     const YSpace(24),
                     KCHeadline3(
-                      'Login to your Klump account',
+                      'Enter an amount',
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: KCHeadline5(
-                          'We’ll only ask you for this information once and you can choose to easily update it in the Klump app later.'),
-                    ),
-                    const YSpace(24),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: StreamBuilder<String>(
-                        stream: emailStreamCtrl.stream,
-                        builder: (context, snapshot) {
-                          return KCInputField(
-                            controller: _emailCtrl,
-                            hint: 'Email',
-                            textInputType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            validationMessage: KCFormValidator.errorEmail(
-                              snapshot.data,
-                              'Email is required',
-                            ),
-                          );
-                        },
+                        'How much do you want to add to the wallet?',
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                    const YSpace(24),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.42),
+                        color: KCColors.white,
+                        border: Border.all(color: KCColors.grey1, width: 0.88),
+                      ),
                       child: StreamBuilder<String>(
-                        stream: passwordStreamCtrl.stream,
+                        stream: amountStreamCtrl.stream,
                         builder: (context, snapshot) {
-                          return KCInputField(
-                            controller: _passwordCtrl,
-                            hint: 'Password',
-                            textInputType: TextInputType.text,
+                          return TextField(
+                            controller: _amountCtrl,
+                            keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.done,
-                            validationMessage: KCFormValidator.errorPassword(
-                              snapshot.data,
-                              'Password is required',
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.,]')),
+                              CurrencyTextInputFormatter.currency(
+                                locale: 'en_NG',
+                                decimalDigits: 2,
+                                symbol: 'NGN ',
+                              ),
+                            ],
+                            style: const TextStyle(
+                              color: KCColors.black3,
+                              fontSize: 15,
+                              fontFamily: KCFonts.avenir,
+                              fontWeight: FontWeight.w500,
                             ),
-                            password: true,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'NGN 0.00',
+                              hintStyle: TextStyle(
+                                color: KCColors.grey2,
+                                fontSize: 15,
+                                fontFamily: KCFonts.avenir,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            onTapOutside: (event) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
                           );
                         },
                       ),
@@ -197,9 +190,9 @@ class _WalletLoginState extends State<WalletLogin> {
                       valueListenable: _enabled,
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
-                          title: 'Login',
-                          // disabled: !enabled || walletNotifier.isBusy,
-                          // loading: walletNotifier.isBusy,
+                          title: 'Continue',
+                          disabled: !enabled || walletNotifier.isBusy,
+                          loading: walletNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
                             walletNotifier.nextPage();
