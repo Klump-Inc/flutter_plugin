@@ -10,10 +10,11 @@ class CloseViewButton extends StatelessWidget {
   final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
     return GestureDetector(
       onTap: onTap ??
           () {
+            final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+
             showModalBottomSheet<void>(
               isScrollControlled: true,
               isDismissible: false,

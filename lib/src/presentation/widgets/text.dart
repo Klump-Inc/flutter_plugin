@@ -44,12 +44,16 @@ class KCBodyText1 extends KCTextBase {
     super.overflow,
     super.maxLines,
     double? height,
+    TextDecoration? decoration,
+    Color? decorationColor,
   }) : super(
           style: TextStyle(
             fontSize: fontSize,
             color: color,
             fontWeight: fontWeight,
             height: height,
+            decoration: decoration,
+            decorationColor: decorationColor,
           ).merge(style),
         );
 }
