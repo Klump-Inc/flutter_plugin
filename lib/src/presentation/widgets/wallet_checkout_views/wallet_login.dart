@@ -55,10 +55,8 @@ class _WalletLoginState extends State<WalletLogin> {
       validateInputs();
     });
 
-    final checkoutNotfier = context.read<KCChangeNotifier>();
     Future.delayed(Duration.zero, () {
-      _emailCtrl.text = checkoutNotfier.email ?? '';
-
+      //prepolute saved data
       validateInputs();
     });
   }
@@ -197,8 +195,8 @@ class _WalletLoginState extends State<WalletLogin> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Login',
-                          // disabled: !enabled || walletNotifier.isBusy,
-                          // loading: walletNotifier.isBusy,
+                          disabled: !enabled || walletNotifier.isBusy,
+                          loading: walletNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
                             walletNotifier.nextPage();

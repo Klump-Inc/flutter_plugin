@@ -38,44 +38,41 @@ class _WalletCheckoutContainerState extends State<WalletCheckoutContainer> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: screenHeight(context) - 67.48,
-      child: ChangeNotifierProvider<KCChangeNotifier>.value(
-        value: KCChangeNotifier(),
-        child: ChangeNotifierProvider<KCWalletNotifier>(
-          create: (_) => KCWalletNotifier(),
-          child: SafeArea(
-            child: OKToast(
-              animationDuration: const Duration(milliseconds: 300),
-              animationCurve: Curves.easeIn,
-              backgroundColor: Colors.black87,
-              textPadding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 15,
-              ),
-              textStyle: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: Colors.white),
-              radius: 30,
-              duration: const Duration(seconds: 3),
-              position: ToastPosition.center,
-              textAlign: TextAlign.center,
-              child: Consumer<KCWalletNotifier>(
-                builder: (_, walletNotifier, __) {
-                  var views = <Widget>[
-                    WalletLogin(initiateResponse: widget.initiateResponse),
-                    WalletBalance(initiateResponse: widget.initiateResponse),
-                    WalletTerms(initiateResponse: widget.initiateResponse),
-                    WalletLoading(initiateResponse: widget.initiateResponse),
-                    WalletCheckoutSuccess(
-                        initiateResponse: widget.initiateResponse),
-                  ];
-                  return PageView(
-                    controller: walletNotifier.pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: views,
-                  );
-                },
-              ),
+      child: ChangeNotifierProvider<KCWalletNotifier>(
+        create: (_) => KCWalletNotifier(),
+        child: SafeArea(
+          child: OKToast(
+            animationDuration: const Duration(milliseconds: 300),
+            animationCurve: Curves.easeIn,
+            backgroundColor: Colors.black87,
+            textPadding: const EdgeInsets.symmetric(
+              horizontal: 30,
+              vertical: 15,
+            ),
+            textStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white),
+            radius: 30,
+            duration: const Duration(seconds: 3),
+            position: ToastPosition.center,
+            textAlign: TextAlign.center,
+            child: Consumer<KCWalletNotifier>(
+              builder: (_, walletNotifier, __) {
+                var views = <Widget>[
+                  WalletLogin(initiateResponse: widget.initiateResponse),
+                  WalletBalance(initiateResponse: widget.initiateResponse),
+                  WalletTerms(initiateResponse: widget.initiateResponse),
+                  WalletLoading(initiateResponse: widget.initiateResponse),
+                  WalletCheckoutSuccess(
+                      initiateResponse: widget.initiateResponse),
+                ];
+                return PageView(
+                  controller: walletNotifier.pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: views,
+                );
+              },
             ),
           ),
         ),

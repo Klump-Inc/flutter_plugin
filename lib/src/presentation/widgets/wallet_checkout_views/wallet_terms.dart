@@ -242,13 +242,18 @@ class _WalletTermsState extends State<WalletTerms> {
                       ],
                     ),
                     const YSpace(16),
-                    KCPrimaryButton(
-                      title: 'Yes, Pay NGN 176,807.5',
-                      disabled: walletNotifier.isBusy,
-                      loading: walletNotifier.isBusy,
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        walletNotifier.nextPage();
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _accepted,
+                      builder: (context, isChecked, child) {
+                        return KCPrimaryButton(
+                          title: 'Yes, Pay NGN 176,807.5',
+                          disabled: !isChecked || walletNotifier.isBusy,
+                          loading: walletNotifier.isBusy,
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            walletNotifier.nextPage();
+                          },
+                        );
                       },
                     ),
                   ],
