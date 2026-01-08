@@ -18,8 +18,8 @@ class _LendersCheckoutContainerState extends State<LendersCheckoutContainer> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: screenHeight(context) - 67.48,
-      child: ChangeNotifierProvider<KCPartnersNotifier>(
-        create: (_) => KCPartnersNotifier(),
+      child: ChangeNotifierProvider<KCLendersNotifier>(
+        create: (_) => KCLendersNotifier(),
         child: OKToast(
           animationDuration: const Duration(milliseconds: 300),
           animationCurve: Curves.easeIn,
@@ -60,9 +60,9 @@ class _PartnersPageviewContainerState extends State<PartnersPageviewContainer> {
   }
 
   Future<void> _getPartners() async {
-    final partnersNotifier =
-        Provider.of<KCPartnersNotifier>(context, listen: false);
-    partnersNotifier.getLoanPartners();
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
+    lendersNotifier.getLoanPartners();
   }
 
   @override
@@ -70,8 +70,8 @@ class _PartnersPageviewContainerState extends State<PartnersPageviewContainer> {
     return Column(
       children: [
         Expanded(
-          child: Consumer<KCPartnersNotifier>(
-            builder: (_, partnersNotifier, __) {
+          child: Consumer<KCLendersNotifier>(
+            builder: (_, lendersNotifier, __) {
               var views = <Widget>[
                 // if (widget.params.data.email == null ||
                 //     widget.params.data.phone == null)
@@ -81,86 +81,86 @@ class _PartnersPageviewContainerState extends State<PartnersPageviewContainer> {
                 SelectBankFlow(
                   data: widget.params.data,
                 ),
-                if (partnersNotifier.selectedBankFlow?.slug == 'polaris' ||
-                    partnersNotifier.selectedBankFlow?.slug == 'specta')
+                if (lendersNotifier.selectedBankFlow?.slug == 'polaris' ||
+                    lendersNotifier.selectedBankFlow?.slug == 'specta')
                   const PartnerMobileExperience(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'polaris' ||
-                    partnersNotifier.selectedBankFlow?.slug == 'first_bank' ||
-                    partnersNotifier.selectedBankFlow?.slug == 'renmoney' ||
-                    partnersNotifier.selectedBankFlow?.slug == 'fidelity' ||
-                    partnersNotifier.selectedBankFlow?.slug ==
+                if (lendersNotifier.selectedBankFlow?.slug == 'polaris' ||
+                    lendersNotifier.selectedBankFlow?.slug == 'first_bank' ||
+                    lendersNotifier.selectedBankFlow?.slug == 'renmoney' ||
+                    lendersNotifier.selectedBankFlow?.slug == 'fidelity' ||
+                    lendersNotifier.selectedBankFlow?.slug ==
                         'fcmb_credit_direct' ||
-                    partnersNotifier.selectedBankFlow?.slug == 'wema' ||
-                    partnersNotifier.selectedBankFlow?.slug == 'klump')
+                    lendersNotifier.selectedBankFlow?.slug == 'wema' ||
+                    lendersNotifier.selectedBankFlow?.slug == 'klump')
                   const PartnerRequirements(),
-                if (partnersNotifier.selectedBankFlow?.slug !=
+                if (lendersNotifier.selectedBankFlow?.slug !=
                         'fcmb_credit_direct' &&
-                    partnersNotifier.selectedBankFlow?.slug != 'first_bank')
+                    lendersNotifier.selectedBankFlow?.slug != 'first_bank')
                   const PartnerLogin(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney' &&
-                    partnersNotifier.createPhoneNumberStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    lendersNotifier.createPhoneNumberStepData != null)
                   const PartnerPhoneNumber(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney' &&
-                    partnersNotifier.verifyPhoneOTPStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    lendersNotifier.verifyPhoneOTPStepData != null)
                   const PartnerPhoneOTP(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney' &&
-                    partnersNotifier.bioDataStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    lendersNotifier.bioDataStepData != null)
                   const PartnerBioData(),
-                if (partnersNotifier.accountNumberStepData != null)
+                if (lendersNotifier.accountNumberStepData != null)
                   const PartnerAccountNumber(),
-                if (partnersNotifier.enterBVNStepData != null)
+                if (lendersNotifier.enterBVNStepData != null)
                   const PartnerBVN(),
-                if (partnersNotifier.sendBVNOTPStepData != null)
+                if (lendersNotifier.sendBVNOTPStepData != null)
                   const PartnerSendBVNOTP(),
-                if (partnersNotifier.verifyBVNStepData != null)
+                if (lendersNotifier.verifyBVNStepData != null)
                   const PartnerVerifyBVN(),
-                if (partnersNotifier.verifyOTPStepData != null)
+                if (lendersNotifier.verifyOTPStepData != null)
                   const PartnerLoginOTP(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'stanbic')
+                if (lendersNotifier.selectedBankFlow?.slug == 'stanbic')
                   const PartnerTermsCondition(),
-                if (partnersNotifier.selectedBankFlow?.slug != 'renmoney' &&
-                    partnersNotifier.bioDataStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug != 'renmoney' &&
+                    lendersNotifier.bioDataStepData != null)
                   const PartnerBioData(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney')
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney')
                   const PartnerKYC(),
-                if (partnersNotifier.selectedBankFlow?.slug != 'specta' &&
-                    partnersNotifier.selectedBankFlow?.slug !=
+                if (lendersNotifier.selectedBankFlow?.slug != 'specta' &&
+                    lendersNotifier.selectedBankFlow?.slug !=
                         'fcmb_credit_direct' &&
-                    partnersNotifier.selectedBankFlow?.slug != 'first_bank')
+                    lendersNotifier.selectedBankFlow?.slug != 'first_bank')
                   const PartnerPaymentSplit(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'first_bank')
+                if (lendersNotifier.selectedBankFlow?.slug == 'first_bank')
                   const FirstbankWebview(),
-                if (partnersNotifier.selectedBankFlow?.slug ==
+                if (lendersNotifier.selectedBankFlow?.slug ==
                     'fcmb_credit_direct')
                   const CDLWebview(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney' &&
-                    partnersNotifier.documentVerificationStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    lendersNotifier.documentVerificationStepData != null)
                   const PartnerDocumentType(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney' &&
-                    partnersNotifier.documentVerificationStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    lendersNotifier.documentVerificationStepData != null)
                   const PartnerDocumentUpload(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'renmoney' &&
-                    partnersNotifier.proofAddressStepData != null)
+                if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    lendersNotifier.proofAddressStepData != null)
                   const PartnerAddressVerify(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'wema')
+                if (lendersNotifier.selectedBankFlow?.slug == 'wema')
                   const WemaIllustration(),
-                if (partnersNotifier.repaymentDetailsStepData != null)
+                if (lendersNotifier.repaymentDetailsStepData != null)
                   const PartnerPaymentPreview(),
-                if (partnersNotifier.selfieStepData != null)
+                if (lendersNotifier.selfieStepData != null)
                   const PartnerSelfieUpload(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'wema')
+                if (lendersNotifier.selectedBankFlow?.slug == 'wema')
                   const PartnerTermsCondition(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'polaris')
+                if (lendersNotifier.selectedBankFlow?.slug == 'polaris')
                   const PartnerInvoice(),
-                if (partnersNotifier.selectedBankFlow?.slug == 'stanbic')
+                if (lendersNotifier.selectedBankFlow?.slug == 'stanbic')
                   const PartnerConfirmation(),
-                if (partnersNotifier.paymentLinkData != null)
+                if (lendersNotifier.paymentLinkData != null)
                   const PartnerPaymemtLink(),
                 const PartnerDecision(),
                 const PartnerDisbursementStatus(),
               ];
               return PageView(
-                controller: partnersNotifier.pageController,
+                controller: lendersNotifier.pageController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: views,
               );

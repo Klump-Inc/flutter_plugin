@@ -8,8 +8,8 @@ import 'package:logger/logger.dart';
 import 'package:mono_flutter/mono_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 
-class KCPartnersNotifier extends ChangeNotifier {
-  KCPartnersNotifier() {
+class KCLendersNotifier extends ChangeNotifier {
+  KCLendersNotifier() {
     initiateTransactionUsecase =
         InitiateTransactionUsecase(partnerRepository: PartnerRepository());
     accountValidationUsecase =
