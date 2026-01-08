@@ -1,2 +1,2 @@
-export 'change_notifiers/kc_change_notifier.dart';
+export 'change_notifiers/change_notifiers.dart';
 export 'widgets/widgets.dart';

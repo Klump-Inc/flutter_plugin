@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:klump_checkout/src/presentation/change_notifiers/kc_wallet_notifier.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -144,7 +143,7 @@ class _WalletTermsState extends State<WalletTerms> {
                                   ),
                                 ],
                               ),
-                              YSpace(4),
+                              const YSpace(4),
                               KCBodyText1(
                                 'Paid in full',
                                 color: KCColors.grey5,

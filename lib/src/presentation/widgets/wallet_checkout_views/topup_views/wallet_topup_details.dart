@@ -1,7 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:klump_checkout/src/presentation/change_notifiers/kc_wallet_notifier.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +22,7 @@ class _WalletTopupDetailsState extends State<WalletTopupDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final walletNotifier = Provider.of<KCWalletNotifier>(context);
+    final topupNotifier = Provider.of<KCTopupNotifier>(context);
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -141,12 +140,12 @@ class _WalletTopupDetailsState extends State<WalletTopupDetails> {
                     const Spacer(),
                     KCPrimaryButton(
                       title: 'I have completed the transfer',
-                      disabled: walletNotifier.isBusy,
-                      loading: walletNotifier.isBusy,
+                      disabled: topupNotifier.isBusy,
+                      loading: topupNotifier.isBusy,
                       onTap: () {
                         FocusScope.of(context).unfocus();
 
-                        walletNotifier.nextPage();
+                        topupNotifier.nextPage();
                         // Handle transfer completion
                       },
                     ),

@@ -20,3 +20,4 @@ export 'page_loader.dart';
 export 'close_view_button.dart';
 export 'text_area.dart';
 export 'kc_network_image.dart';
+export 'wallet_checkout_views/wallet_checkout_views.dart';

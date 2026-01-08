@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:klump_checkout/src/presentation/change_notifiers/kc_wallet_notifier.dart';
-import 'package:klump_checkout/src/presentation/widgets/wallet_checkout_views/wallet_checkout_views.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';

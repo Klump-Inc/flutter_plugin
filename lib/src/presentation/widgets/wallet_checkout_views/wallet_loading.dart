@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:klump_checkout/src/presentation/change_notifiers/kc_wallet_notifier.dart';
 import 'package:klump_checkout/src/src.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -109,7 +108,8 @@ class _WalletLoadingState extends State<WalletLoading> {
                               width: 86.57,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: KCColors.blue.withOpacity(0.10),
+                                color: KCColors.blue
+                                    .withAlpha((0.10 * 255).round()),
                               ),
                               child: Center(
                                 child: SvgPicture.asset(

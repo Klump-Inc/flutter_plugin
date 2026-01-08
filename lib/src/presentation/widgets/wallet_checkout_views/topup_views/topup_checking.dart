@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
-class WalletCheckoutSuccess extends StatefulWidget {
-  const WalletCheckoutSuccess({super.key, required this.initiateResponse});
+class TopupChecking extends StatefulWidget {
+  const TopupChecking({super.key, required this.initiateResponse});
   final InitiateResponseModel initiateResponse;
 
   @override
-  State<WalletCheckoutSuccess> createState() => _WalletCheckoutSuccessState();
+  State<TopupChecking> createState() => _TopupCheckingState();
 }
 
-class _WalletCheckoutSuccessState extends State<WalletCheckoutSuccess> {
+class _TopupCheckingState extends State<TopupChecking> {
+  @override
+  void initState() {
+    super.initState();
+    final walletNotifier = Provider.of<KCTopupNotifier>(context, listen: false);
+    Future.delayed(const Duration(seconds: 5), () {
+      walletNotifier.nextPage();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final walletNotifier = Provider.of<KCWalletNotifier>(context);
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -78,39 +86,45 @@ class _WalletCheckoutSuccessState extends State<WalletCheckoutSuccess> {
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
-                          KCAssets.successIllus,
-                          package: KC_PACKAGE_NAME,
+                        SizedBox(
+                          height: 116,
+                          width: 116,
+                          child: CircularPercentIndicator(
+                            radius: 58,
+                            lineWidth: 7.5,
+                            animation: true,
+                            restartAnimation: true,
+                            percent: 1,
+                            startAngle: 180,
+                            animationDuration: 60 * 30,
+                            circularStrokeCap: CircularStrokeCap.round,
+                            backgroundColor: Colors.transparent,
+                            progressColor: KCColors.blue,
+                            center: Container(
+                              height: 86.57,
+                              width: 86.57,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: KCColors.blue
+                                    .withAlpha((0.10 * 255).round()),
+                              ),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  KCAssets.secureCredit,
+                                  package: KC_PACKAGE_NAME,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                         const YSpace(24),
-                        KCHeadline3(
-                          'Successful',
-                          fontSize: 27,
-                          textAlign: TextAlign.center,
-                          height: 1.4318,
-                        ),
-                        const YSpace(8),
-                        KCBodyText1(
-                          'Your payment is successful',
-                          fontSize: 16,
-                          textAlign: TextAlign.center,
-                          height: 1.36625,
-                        ),
+                        KCHeadline2('Hang on!'),
                       ],
                     ),
                   ),
                   const YSpace(50),
-                  KCPrimaryButton(
-                    title: 'Back to merchant',
-                    disabled: walletNotifier.isBusy,
-                    loading: walletNotifier.isBusy,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const YSpace(16),
                 ],
               ),
             ),
