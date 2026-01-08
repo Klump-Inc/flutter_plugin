@@ -50,7 +50,7 @@ class _WalletBalanceState extends State<WalletBalance> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () => walletNotifier.prevPage(),
                           child: Padding(
                             padding: const EdgeInsets.all(4),
                             child: SvgPicture.asset(

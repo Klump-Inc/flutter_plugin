@@ -6,8 +6,8 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class WalletLogin extends StatefulWidget {
-  const WalletLogin({super.key, required this.initiateResponse});
-  final InitiateResponseModel initiateResponse;
+  const WalletLogin({super.key, required this.params});
+  final WalletLoginParams params;
 
   @override
   State<WalletLogin> createState() => _WalletLoginState();
@@ -57,6 +57,10 @@ class _WalletLoginState extends State<WalletLogin> {
 
     Future.delayed(Duration.zero, () {
       //prepolute saved data
+      if (widget.params.email != null) {
+        _emailCtrl.text = widget.params.email!;
+        emailStreamCtrl.sink.add(_emailCtrl.text.trim());
+      }
       validateInputs();
     });
   }
@@ -96,7 +100,7 @@ class _WalletLoginState extends State<WalletLogin> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () => walletNotifier.prevPage(),
+                          onTap: () => Navigator.pop(context),
                           child: Padding(
                             padding: const EdgeInsets.all(4),
                             child: SvgPicture.asset(
@@ -112,14 +116,15 @@ class _WalletLoginState extends State<WalletLogin> {
                               KCAssets.klumpLogo,
                               package: 'klump_checkout',
                             ),
-                            if (widget.initiateResponse.merchant != null)
+                            if (widget.params.initiateResponse.merchant != null)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text.rich(
                                   TextSpan(children: [
                                     const TextSpan(text: 'Proud partner of '),
                                     TextSpan(
-                                        text: widget.initiateResponse.merchant
+                                        text: widget
+                                            .params.initiateResponse.merchant
                                             .toString(),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w700)),
@@ -214,4 +219,14 @@ class _WalletLoginState extends State<WalletLogin> {
       },
     );
   }
+}
+
+class WalletLoginParams {
+  final InitiateResponseModel initiateResponse;
+  final String? email;
+
+  WalletLoginParams({
+    required this.initiateResponse,
+    required this.email,
+  });
 }

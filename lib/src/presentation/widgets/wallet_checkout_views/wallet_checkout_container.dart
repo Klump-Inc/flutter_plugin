@@ -5,12 +5,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class WalletCheckoutContainer extends StatefulWidget {
-  const WalletCheckoutContainer({super.key, required this.initiateResponse});
+  const WalletCheckoutContainer({super.key, required this.params});
 
-  final InitiateResponseModel initiateResponse;
+  final KCPaymentContainerParams params;
 
-  static dynamic route(
-      BuildContext context, InitiateResponseModel initiateResponse) {
+  static dynamic route(BuildContext context, KCPaymentContainerParams params) {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       isDismissible: false,
@@ -23,8 +22,7 @@ class WalletCheckoutContainer extends StatefulWidget {
           topRight: Radius.circular(9.92367),
         ),
       ),
-      builder: (context) =>
-          WalletCheckoutContainer(initiateResponse: initiateResponse),
+      builder: (context) => WalletCheckoutContainer(params: params),
     );
   }
 
@@ -60,12 +58,18 @@ class _WalletCheckoutContainerState extends State<WalletCheckoutContainer> {
             child: Consumer<KCWalletNotifier>(
               builder: (_, walletNotifier, __) {
                 var views = <Widget>[
-                  WalletLogin(initiateResponse: widget.initiateResponse),
-                  WalletBalance(initiateResponse: widget.initiateResponse),
-                  WalletTerms(initiateResponse: widget.initiateResponse),
-                  WalletLoading(initiateResponse: widget.initiateResponse),
+                  WalletLogin(
+                      params: WalletLoginParams(
+                    initiateResponse: widget.params.initiateResponse,
+                    email: widget.params.data.email,
+                  )),
+                  WalletBalance(
+                      initiateResponse: widget.params.initiateResponse),
+                  WalletTerms(initiateResponse: widget.params.initiateResponse),
+                  WalletLoading(
+                      initiateResponse: widget.params.initiateResponse),
                   WalletCheckoutSuccess(
-                      initiateResponse: widget.initiateResponse),
+                      initiateResponse: widget.params.initiateResponse),
                 ];
                 return PageView(
                   controller: walletNotifier.pageController,

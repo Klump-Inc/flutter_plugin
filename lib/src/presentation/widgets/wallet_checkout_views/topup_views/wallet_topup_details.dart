@@ -48,7 +48,7 @@ class _WalletTopupDetailsState extends State<WalletTopupDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () => topupNotifier.prevPage(),
                           child: Padding(
                             padding: const EdgeInsets.all(4),
                             child: SvgPicture.asset(

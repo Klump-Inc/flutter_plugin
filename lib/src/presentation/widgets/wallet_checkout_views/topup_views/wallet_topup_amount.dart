@@ -35,13 +35,19 @@ class _WalletTopupAmountState extends State<WalletTopupAmount> {
     _amountCtrl = TextEditingController();
     amountStreamCtrl = StreamController<String>.broadcast();
 
-    // Set initial value to NGN 100,000.00
-    _amountCtrl.text = 'NGN 100,000.00';
-    _enabled.value = true;
-
     _amountCtrl.addListener(() {
       amountStreamCtrl.sink.add(_amountCtrl.text.trim());
       validateInputs();
+    });
+    Future.delayed(Duration.zero, () {
+      if (widget.initiateResponse.totalAmountToBePaid != null) {
+        final totalAmount = double.tryParse(
+            widget.initiateResponse.totalAmountToBePaid!.toString());
+        if (totalAmount != null) {
+          _amountCtrl.text = 'NGN ${KCStringUtil.formatAmount(totalAmount)}';
+          amountStreamCtrl.sink.add(_amountCtrl.text.trim());
+        }
+      }
     });
   }
 

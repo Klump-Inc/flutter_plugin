@@ -109,7 +109,12 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
                 title: 'Pay through Wallet',
                 onTap: () {
                   WalletCheckoutContainer.route(
-                      context, checkoutNotifier.initiateResponse!);
+                    context,
+                    KCPaymentContainerParams(
+                      initiateResponse: checkoutNotifier.initiateResponse!,
+                      data: widget.data,
+                    ),
+                  );
                 },
               ),
               const YSpace(16),
@@ -122,4 +127,14 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
       ),
     );
   }
+}
+
+class KCPaymentContainerParams {
+  final InitiateResponseModel initiateResponse;
+  final KlumpCheckoutData data;
+
+  KCPaymentContainerParams({
+    required this.initiateResponse,
+    required this.data,
+  });
 }
