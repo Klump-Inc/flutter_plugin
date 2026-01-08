@@ -29,4 +29,4 @@ export 'partner_send_bvn_otp.dart';
 export 'partner_account_number.dart';
 export 'partner_verify_bvn.dart';
 export 'partner_payment_link.dart';
-export 'partner_views_container.dart';
+export 'lenders_checkout_container.dart';

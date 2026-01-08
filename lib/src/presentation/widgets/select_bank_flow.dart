@@ -17,30 +17,30 @@ class SelectBankFlow extends StatefulWidget {
 }
 
 class _SelectBankFlowState extends State<SelectBankFlow> {
-  @override
-  void initState() {
-    Future.delayed(Duration.zero, _initiatTranx);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   Future.delayed(Duration.zero, _initiatTranx);
+  //   super.initState();
+  // }
 
   void _getCameras() async {
     cameras = await availableCameras();
   }
 
-  void _initiatTranx() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    Future.delayed(Duration.zero, () async {
-      if (widget.data.email != null && widget.data.phone != null) {
-        checkoutNotifier.setTransactionData(widget.data);
-        await checkoutNotifier.initiateTransaction(
-          email: widget.data.email!,
-          phone: widget.data.phone!,
-        );
-      }
-      checkoutNotifier.getLoanPartners();
-    });
-  }
+  // void _initiatTranx() {
+  //   final checkoutNotifier =
+  //       Provider.of<KCChangeNotifier>(context, listen: false);
+  //   Future.delayed(Duration.zero, () async {
+  //     if (widget.data.email != null && widget.data.phone != null) {
+  //       checkoutNotifier.setTransactionData(widget.data);
+  //       await checkoutNotifier.initiateTransaction(
+  //         email: widget.data.email!,
+  //         phone: widget.data.phone!,
+  //       );
+  //     }
+  //     checkoutNotifier.getLoanPartners();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {

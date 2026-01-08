@@ -28,7 +28,6 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
         phone: widget.data.phone!,
       );
     }
-    checkoutNotifier.getLoanPartners();
   }
 
   @override
