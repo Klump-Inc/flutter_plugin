@@ -1,25 +1,57 @@
-import 'package:clipboard/clipboard.dart';
+import 'dart:async';
+
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/presentation/change_notifiers/kc_wallet_notifier.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-class WalletRefundPayment extends StatefulWidget {
-  const WalletRefundPayment({super.key, required this.initiateResponse});
+class WalletTopupAmount extends StatefulWidget {
+  const WalletTopupAmount({super.key, required this.initiateResponse});
   final InitiateResponseModel initiateResponse;
 
   @override
-  State<WalletRefundPayment> createState() => _WalletRefundPaymentState();
+  State<WalletTopupAmount> createState() => _WalletTopupAmountState();
 }
 
-class _WalletRefundPaymentState extends State<WalletRefundPayment> {
-  // These values should ideally come from the API/state management
-  String get amount => 'NGN 100,000';
-  String get accountNumber => '0123456789';
-  String get bankName => 'VFD Microfinance Bank';
-  String get accountName => 'Klump Wallet';
+class _WalletTopupAmountState extends State<WalletTopupAmount> {
+  late TextEditingController _amountCtrl;
+  late StreamController<String> amountStreamCtrl;
+  final ValueNotifier<bool> _enabled = ValueNotifier(false);
+
+  void validateInputs() {
+    final amount = _amountCtrl.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    if (amount.isNotEmpty && double.tryParse(amount) != null) {
+      _enabled.value = true;
+    } else {
+      _enabled.value = false;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _amountCtrl = TextEditingController();
+    amountStreamCtrl = StreamController<String>.broadcast();
+
+    // Set initial value to NGN 100,000.00
+    _amountCtrl.text = 'NGN 100,000.00';
+    _enabled.value = true;
+
+    _amountCtrl.addListener(() {
+      amountStreamCtrl.sink.add(_amountCtrl.text.trim());
+      validateInputs();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _amountCtrl.dispose();
+    amountStreamCtrl.close();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,60 +128,79 @@ class _WalletRefundPaymentState extends State<WalletRefundPayment> {
                     ),
                     const YSpace(24),
                     KCHeadline3(
-                      'Pay through refund wallet',
+                      'Enter an amount',
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: KCHeadline5(
-                        'You can complete this purchase with the money in your Klump refund wallet.',
+                        'How much do you want to add to the wallet?',
                       ),
                     ),
                     const YSpace(24),
-                    // Amount field
-                    KCPaymentItemTile(label: 'Amount', value: amount),
-                    const YSpace(12),
-                    // Account Number field with copy icon
-                    KCPaymentItemTile(
-                      label: 'Account Number',
-                      value: accountNumber,
-                      trailing: InkWell(
-                        onTap: () {
-                          FlutterClipboard.copy(accountNumber).then(
-                            (value) => showToast(
-                              'Copied to clipboard',
-                              position: ToastPosition.center,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.42),
+                        color: KCColors.white,
+                        border: Border.all(color: KCColors.grey1, width: 0.88),
+                      ),
+                      child: StreamBuilder<String>(
+                        stream: amountStreamCtrl.stream,
+                        builder: (context, snapshot) {
+                          return TextField(
+                            controller: _amountCtrl,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9.,]')),
+                              CurrencyTextInputFormatter.currency(
+                                locale: 'en_NG',
+                                decimalDigits: 2,
+                                symbol: 'NGN ',
+                              ),
+                            ],
+                            style: const TextStyle(
+                              color: KCColors.black3,
+                              fontSize: 15,
+                              fontFamily: KCFonts.avenir,
+                              fontWeight: FontWeight.w500,
                             ),
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'NGN 0.00',
+                              hintStyle: TextStyle(
+                                color: KCColors.grey2,
+                                fontSize: 15,
+                                fontFamily: KCFonts.avenir,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            onTapOutside: (event) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
                           );
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: SvgPicture.asset(
-                            KCAssets.copy2,
-                            package: 'klump_checkout',
-                          ),
-                        ),
                       ),
                     ),
-                    const YSpace(12),
-                    // Bank Name field
-                    KCPaymentItemTile(label: 'Bank Name', value: bankName),
-                    const YSpace(12),
-                    // Account Name field
-                    KCPaymentItemTile(
-                        label: 'Account Name', value: accountName),
                     const YSpace(25),
                     const Spacer(),
-                    KCPrimaryButton(
-                      title: 'I have completed the transfer',
-                      disabled: walletNotifier.isBusy,
-                      loading: walletNotifier.isBusy,
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-
-                        walletNotifier.nextPage();
-                        // Handle transfer completion
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _enabled,
+                      builder: (_, enabled, __) {
+                        return KCPrimaryButton(
+                          title: 'Continue',
+                          disabled: !enabled || walletNotifier.isBusy,
+                          loading: walletNotifier.isBusy,
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            walletNotifier.nextPage();
+                          },
+                        );
                       },
                     ),
+                    const YSpace(10),
                   ],
                 ),
               ),
@@ -157,60 +208,6 @@ class _WalletRefundPaymentState extends State<WalletRefundPayment> {
           ),
         );
       },
-    );
-  }
-}
-
-class KCPaymentItemTile extends StatelessWidget {
-  const KCPaymentItemTile({
-    super.key,
-    required this.label,
-    required this.value,
-    this.trailing,
-  });
-
-  final String label;
-  final String value;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4.42),
-        color: KCColors.white,
-        border: Border.all(color: KCColors.grey1, width: 0.88),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          KCHeadline5(
-            label,
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-            color: KCColors.black4,
-          ),
-          if (trailing != null)
-            Row(
-              children: [
-                KCBodyText1(
-                  value,
-                  fontSize: 15,
-                  color: KCColors.black4,
-                ),
-                const XSpace(8),
-                trailing!
-              ],
-            )
-          else
-            KCBodyText1(
-              value,
-              fontSize: 15,
-              color: KCColors.black4,
-            ),
-        ],
-      ),
     );
   }
 }

@@ -67,13 +67,7 @@ class _WalletCheckoutContainerState extends State<WalletCheckoutContainer> {
                     WalletLogin(initiateResponse: widget.initiateResponse),
                     WalletBalance(initiateResponse: widget.initiateResponse),
                     WalletTerms(initiateResponse: widget.initiateResponse),
-                    WalletEnterAmount(
-                        initiateResponse: widget.initiateResponse),
-                    WalletRefundPayment(
-                        initiateResponse: widget.initiateResponse),
                     WalletLoading(initiateResponse: widget.initiateResponse),
-                    WalletTopupSuccess(
-                        initiateResponse: widget.initiateResponse),
                     WalletCheckoutSuccess(
                         initiateResponse: widget.initiateResponse),
                   ];
