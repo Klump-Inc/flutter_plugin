@@ -71,6 +71,11 @@ class _WalletCheckoutContainerState extends State<WalletCheckoutContainer> {
                         initiateResponse: widget.initiateResponse),
                     WalletRefundPayment(
                         initiateResponse: widget.initiateResponse),
+                    WalletLoading(initiateResponse: widget.initiateResponse),
+                    WalletTopupSuccess(
+                        initiateResponse: widget.initiateResponse),
+                    WalletCheckoutSuccess(
+                        initiateResponse: widget.initiateResponse),
                   ];
                   return PageView(
                     controller: walletNotifier.pageController,

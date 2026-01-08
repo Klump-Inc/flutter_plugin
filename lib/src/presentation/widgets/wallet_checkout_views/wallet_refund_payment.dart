@@ -145,6 +145,8 @@ class _WalletRefundPaymentState extends State<WalletRefundPayment> {
                       loading: walletNotifier.isBusy,
                       onTap: () {
                         FocusScope.of(context).unfocus();
+
+                        walletNotifier.nextPage();
                         // Handle transfer completion
                       },
                     ),
