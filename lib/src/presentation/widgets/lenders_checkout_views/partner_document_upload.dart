@@ -26,8 +26,8 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
   File? _documentFile;
 
   void validateInputs() {
-    final documentType =
-        Provider.of<KCChangeNotifier>(context, listen: false).documentType;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final documentType = lendersNotifier.documentType;
     final addressError = KCFormValidator.errorMessageIdNumber(
       _idNumberCtrl.text.trim(),
       'Required',
@@ -84,10 +84,10 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.documentVerificationStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.documentVerificationStepData?.nextStep;
     var cardSample = '';
-    switch (checkoutNotfier.documentType) {
+    switch (lendersNotifier.documentType) {
       case INTERNATIONAL_PASSPORT:
         cardSample = KCAssets.intlPassport;
         break;
@@ -123,7 +123,7 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -135,17 +135,17 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
                     ),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -179,7 +179,7 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
                               KCFormValidator.errorMessageIdNumber(
                             snapshot.data,
                             'Enter the ID Number',
-                            checkoutNotfier.documentType!,
+                            lendersNotifier.documentType!,
                           ),
                         );
                       },
@@ -293,11 +293,11 @@ class _PartnerDocumentUploadState extends State<PartnerDocumentUpload> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
+                          disabled: !enabled || lendersNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotfier.uploadDocument(
+                            lendersNotifier.uploadDocument(
                               idNumber: _idNumberCtrl.text.trim(),
                               file: _documentFile!,
                             );

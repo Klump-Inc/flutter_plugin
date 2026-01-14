@@ -20,9 +20,9 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    final formFields = checkoutNotifier
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
+    final formFields = lendersNotifier
         .createPhoneNumberStepData!.nextStep.formFields!
         .map((e) => e.name);
 
@@ -46,18 +46,18 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
       phoneNoStreamCtrl.sink.add(_phoneNoCtrl.text.trim());
       validateInputs();
     });
-    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
     MixPanelService.logEvent(
       '7 - CREATE_PHONE_OTP MODAL',
       properties: {
-        'environment': checkoutNotfier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': checkoutNotfier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     Future.delayed(Duration.zero, () {
-      _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
+      _phoneNoCtrl.text = lendersNotifier.phoneNumber ?? '';
       validateInputs();
     });
   }
@@ -71,8 +71,8 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.createPhoneNumberStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.createPhoneNumberStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -94,19 +94,19 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
                     const DraggableBar(),
                     const YSpace(24),
                     LogoHeaderWidget(
-                      onTap: checkoutNotfier.prevPage,
+                      onTap: lendersNotifier.prevPage,
                       logo: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: Align(
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -157,11 +157,11 @@ class _PartnerPhoneNumberState extends State<PartnerPhoneNumber> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
+                          disabled: !enabled || lendersNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotfier.createPhoneNumber(
+                            lendersNotifier.createPhoneNumber(
                               phoneNumber: _phoneNoCtrl.text.trim(),
                             );
                           },

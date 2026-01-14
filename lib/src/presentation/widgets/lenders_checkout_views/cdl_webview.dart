@@ -16,7 +16,7 @@ class _CDLWebviewState extends State<CDLWebview> {
   @override
   void initState() {
     super.initState();
-    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -47,7 +47,7 @@ class _CDLWebviewState extends State<CDLWebview> {
       ..addJavaScriptChannel(
         'FlutterOnSuccess',
         onMessageReceived: (JavaScriptMessage message) {
-          checkoutNotfier.nextPage();
+          lendersNotifier.nextPage();
         },
       );
 
@@ -75,17 +75,17 @@ class _CDLWebviewState extends State<CDLWebview> {
         const chr = 15;
         const sessionId = generateUniqueSessionId(chr);
         const transaction = {
-          "totalAmount": ${checkoutNotfier.totalAmount},
-          "customerEmail": "${checkoutNotfier.email}",
-          "customerPhone": "${checkoutNotfier.phoneNumber}",
+          "totalAmount": ${lendersNotifier.totalAmount},
+          "customerEmail": "${lendersNotifier.email}",
+          "customerPhone": "${lendersNotifier.phoneNumber}",
           sessionId,
-          products: ${checkoutNotfier.productDetails},
-          metaData: "${checkoutNotfier.tranxReference}"
+          products: ${lendersNotifier.productDetails},
+          metaData: "${lendersNotifier.tranxReference}"
         }
         let config = {
           publicKey: "$CDL_PUBLIC_KEY",
           transaction: transaction,
-          isLive: ${checkoutNotfier.initiateResponse?.isLive == true},
+          isLive: ${lendersNotifier.initiateResponse?.isLive == true},
           onSuccess: function (response) {
             console.log(JSON.stringify(response));
             FlutterOnSuccess.postMessage(JSON.stringify(data));
@@ -145,7 +145,7 @@ class _CDLWebviewState extends State<CDLWebview> {
   }
 
   void showFeedbackModal() {
-    final checkoutNotifier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
     showModalBottomSheet<void>(
       isScrollControlled: true,
       isDismissible: false,
@@ -160,11 +160,11 @@ class _CDLWebviewState extends State<CDLWebview> {
       ),
       builder: (context) => FeedbackView(
         params: FeedbackViewArgument(
-          email: checkoutNotifier.email ?? '',
-          phoneNumber: checkoutNotifier.phoneNumber ?? '',
-          publicKey: checkoutNotifier.checkoutData!.merchantPublicKey,
-          merchant: checkoutNotifier.initiateResponse?.merchant,
-          isLive: checkoutNotifier.initiateResponse?.isLive == true,
+          email: lendersNotifier.email ?? '',
+          phoneNumber: lendersNotifier.phoneNumber ?? '',
+          publicKey: lendersNotifier.checkoutData!.merchantPublicKey,
+          merchant: lendersNotifier.initiateResponse?.merchant,
+          isLive: lendersNotifier.initiateResponse?.isLive == true,
           backButtonClose: true,
         ),
       ),

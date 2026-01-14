@@ -24,8 +24,8 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    final stepData = checkoutNotfier.loanOptionStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.loanOptionStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final downPaymentFormList =
         stepData?.formFields?.where((e) => e.name == 'downpayment_amount');
@@ -60,15 +60,15 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, _loanInsurer);
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '8 - LOAN OPTIONS MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     _amountCtrl = TextEditingController();
@@ -87,13 +87,13 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
   }
 
   void _loanInsurer() {
-    Provider.of<KCChangeNotifier>(context, listen: false).getPartnerInsurer();
+    Provider.of<KCLendersNotifier>(context, listen: false).getPartnerInsurer();
   }
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.loanOptionStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.loanOptionStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final formMap = stepData?.formFields;
     return LayoutBuilder(
@@ -114,19 +114,19 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                     const DraggableBar(),
                     const YSpace(24),
                     LogoHeaderWidget(
-                      onTap: checkoutNotifier.prevPage,
+                      onTap: lendersNotifier.prevPage,
                       logo: KCNetworkImage(
-                        url: checkoutNotifier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotifier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Align(
                           child: KCHeadline4(
-                            checkoutNotifier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -294,7 +294,7 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                         ],
                       ),
                     if (formFields?.contains('insurerId') == true &&
-                        checkoutNotifier.partnerInsurers?.isNotEmpty == true)
+                        lendersNotifier.partnerInsurers?.isNotEmpty == true)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -351,18 +351,18 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                             ),
                             itemBuilder: (context) {
                               return List.generate(
-                                checkoutNotifier.partnerInsurers!.length,
+                                lendersNotifier.partnerInsurers!.length,
                                 (index) => PopupMenuItem<PartnerInsurer>(
                                   height: 0,
                                   padding: EdgeInsets.zero,
                                   child: KCInsurerPopupMenuItemContent(
                                     withBG: index % 2 != 0,
-                                    title: checkoutNotifier
+                                    title: lendersNotifier
                                         .partnerInsurers![index].insurance,
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      _insurer = checkoutNotifier
+                                      _insurer = lendersNotifier
                                           .partnerInsurers![index];
                                     });
                                     validateInputs();
@@ -410,9 +410,9 @@ class _PartnerPaymentSplitState extends State<PartnerPaymentSplit> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotifier.isBusy,
-                          loading: checkoutNotifier.isBusy,
-                          onTap: () => checkoutNotifier.getRepaymentDetails(
+                          disabled: !enabled || lendersNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
+                          onTap: () => lendersNotifier.getRepaymentDetails(
                             downpaymentAmount:
                                 formFields?.contains('downpayment_amount') ==
                                         true

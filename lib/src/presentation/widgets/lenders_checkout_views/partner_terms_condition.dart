@@ -17,8 +17,8 @@ class _PartnerTermsConditionState extends State<PartnerTermsCondition> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.acceptTermsStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.acceptTermsStepData?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final checkBoxFields =
         stepData?.formFields?.where((e) => e.type == 'checkbox').toList();
@@ -41,20 +41,19 @@ class _PartnerTermsConditionState extends State<PartnerTermsCondition> {
                   const DraggableBar(),
                   const YSpace(24),
                   LogoHeaderWidget(
-                    onTap: checkoutNotifier.prevPage,
+                    onTap: lendersNotifier.prevPage,
                     logo: KCNetworkImage(
-                      url: checkoutNotifier.selectedBankFlow?.logo,
+                      url: lendersNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),
                   ),
-                  if (checkoutNotifier.initiateResponse?.merchant != null)
+                  if (lendersNotifier.initiateResponse?.merchant != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Align(
                         child: KCHeadline4(
-                          checkoutNotifier.initiateResponse!.merchant
-                              .toString(),
+                          lendersNotifier.initiateResponse!.merchant.toString(),
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -171,14 +170,14 @@ class _PartnerTermsConditionState extends State<PartnerTermsCondition> {
                     builder: (_, accepted, __) {
                       return KCPrimaryButton(
                         title: 'Continue',
-                        disabled: !accepted || checkoutNotifier.isBusy,
-                        loading: checkoutNotifier.isBusy,
+                        disabled: !accepted || lendersNotifier.isBusy,
+                        loading: lendersNotifier.isBusy,
                         onTap: () {
                           final referenceForm = stepData?.formFields
                               ?.where((e) => e.name == 'reference')
                               .toList();
 
-                          checkoutNotifier.acceptTermsAndCondition(
+                          lendersNotifier.acceptTermsAndCondition(
                               reference:
                                   formFields?.contains('reference') == true &&
                                           referenceForm?.isNotEmpty == true

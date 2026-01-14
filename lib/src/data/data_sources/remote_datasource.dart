@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/klump_checkout.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -146,6 +147,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         headers: headers,
       );
+      Logger().d(response.data);
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
       return InitiateResponseModel.fromJson(response.data);

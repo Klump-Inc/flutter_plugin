@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,8 +37,8 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.proofAddressStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.redirectStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -59,7 +60,7 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -71,17 +72,17 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                     ),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -193,11 +194,11 @@ class _PartnerAddressVerifyState extends State<PartnerAddressVerify> {
                     const Spacer(),
                     KCPrimaryButton(
                       title: 'Continue',
-                      disabled: _documentFile == null || checkoutNotfier.isBusy,
-                      loading: checkoutNotfier.isBusy,
+                      disabled: _documentFile == null || lendersNotifier.isBusy,
+                      loading: lendersNotifier.isBusy,
                       onTap: () {
                         FocusScope.of(context).unfocus();
-                        checkoutNotfier.addressVerify(file: _documentFile!);
+                        lendersNotifier.addressVerify(file: _documentFile!);
                       },
                     ),
                     const YSpace(59)

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:klump_checkout/src/core/core.dart';
@@ -19,8 +20,8 @@ class _PartnerBVNState extends State<PartnerBVN> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotifier = context.read<KCChangeNotifier>();
-    final formFields = checkoutNotifier.enterBVNStepData?.nextStep.formFields
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = lendersNotifier.redirectStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
     final bvnError = KCFormValidator.errorBVN(_bvnCtrl.text.trim(), 'Required');
@@ -42,19 +43,19 @@ class _PartnerBVNState extends State<PartnerBVN> {
       validateInputs();
     });
 
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '10 - FETCH_BVN_VERIFICATION_METHODS_MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     Future.delayed(Duration.zero, () {
-      _bvnCtrl.text = changeNotifier.bvn ?? '';
+      _bvnCtrl.text = lendersNotifier.bvn ?? '';
       validateInputs();
     });
   }
@@ -67,8 +68,8 @@ class _PartnerBVNState extends State<PartnerBVN> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.enterBVNStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.redirectStepData?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
     return Padding(
@@ -91,19 +92,19 @@ class _PartnerBVNState extends State<PartnerBVN> {
                       const DraggableBar(),
                       const YSpace(24),
                       LogoHeaderWidget(
-                        onTap: checkoutNotifier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         logo: KCNetworkImage(
-                          url: checkoutNotifier.selectedBankFlow!.logo,
+                          url: lendersNotifier.selectedBankFlow!.logo,
                           height: 55,
                           width: 120,
                         ),
                       ),
-                      if (checkoutNotifier.initiateResponse?.merchant != null)
+                      if (lendersNotifier.initiateResponse?.merchant != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: Align(
                             child: KCHeadline4(
-                              checkoutNotifier.initiateResponse!.merchant
+                              lendersNotifier.initiateResponse!.merchant
                                   .toString(),
                               fontWeight: FontWeight.w700,
                             ),
@@ -160,11 +161,11 @@ class _PartnerBVNState extends State<PartnerBVN> {
                         builder: (_, enabled, __) {
                           return KCPrimaryButton(
                             title: 'Continue',
-                            disabled: !enabled || checkoutNotifier.isBusy,
-                            loading: checkoutNotifier.isBusy,
+                            disabled: !enabled || lendersNotifier.isBusy,
+                            loading: lendersNotifier.isBusy,
                             onTap: () {
                               FocusScope.of(context).unfocus();
-                              checkoutNotifier.enterBVN(
+                              lendersNotifier.enterBVN(
                                 bvn: _bvnCtrl.text.trim(),
                               );
                             },

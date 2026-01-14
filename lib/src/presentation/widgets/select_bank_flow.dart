@@ -44,15 +44,15 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final activeLoanPartners = checkoutNotfier.loanPartners == null
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final activeLoanPartners = lendersNotifier.loanPartners == null
         ? <Partner>[]
-        : checkoutNotfier.loanPartners!;
-    final banks = ((checkoutNotfier.selectedBankFlow?.config
+        : lendersNotifier.loanPartners!;
+    final banks = ((lendersNotifier.selectedBankFlow?.config
                     as Map<String, dynamic>?)?['extra_form_fields'] as List?)
                 ?.isNotEmpty ==
             true
-        ? ((checkoutNotfier.selectedBankFlow?.config
+        ? ((lendersNotifier.selectedBankFlow?.config
                 as Map<String, dynamic>?)?['extra_form_fields'] as List)
             .first['options'] as List
         : [];
@@ -76,12 +76,12 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                     KCAssets.klumpLogo,
                     package: 'klump_checkout',
                   ),
-                  if (checkoutNotfier.initiateResponse?.merchant != null)
+                  if (lendersNotifier.initiateResponse?.merchant != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Align(
                         child: KCHeadline4(
-                          checkoutNotfier.initiateResponse!.merchant.toString(),
+                          lendersNotifier.initiateResponse!.merchant.toString(),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -130,7 +130,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (checkoutNotfier.selectedBankFlow == null)
+                      if (lendersNotifier.selectedBankFlow == null)
                         KCBodyText1(
                           'Select Bank',
                           color: KCColors.grey2,
@@ -141,14 +141,14 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                           child: Row(
                             children: [
                               KCNetworkImage(
-                                url: checkoutNotfier.selectedBankFlow?.logo,
+                                url: lendersNotifier.selectedBankFlow?.logo,
                                 height: 20,
                                 width: 17.09,
                               ),
                               const XSpace(14),
                               Expanded(
                                 child: KCBodyText1(
-                                  checkoutNotfier.selectedBankFlow!.name,
+                                  lendersNotifier.selectedBankFlow!.name,
                                   fontSize: 15,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -187,7 +187,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                                     .metadata?['dropdown_message'],
                               ),
                               onTap: () {
-                                checkoutNotfier
+                                lendersNotifier
                                     .setBankFlow(activeLoanPartners[index]);
                               },
                             )
@@ -283,7 +283,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (checkoutNotfier.selectedBank == null)
+                          if (lendersNotifier.selectedBank == null)
                             KCBodyText1(
                               'Select Bank',
                               color: KCColors.grey2,
@@ -291,7 +291,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                             )
                           else
                             KCBodyText1(
-                              checkoutNotfier.selectedBank!['name'],
+                              lendersNotifier.selectedBank!['name'],
                               fontSize: 15,
                             ),
                           Padding(
@@ -316,7 +316,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                               withBG: index % 2 == 0,
                             ),
                             onTap: () {
-                              checkoutNotfier.selectBank(banks[index]);
+                              lendersNotifier.selectBank(banks[index]);
                             },
                           );
                         },
@@ -329,30 +329,30 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(32),
           const Spacer(),
           KCPrimaryButton(
-            disabled: checkoutNotfier.isBusy ||
-                checkoutNotfier.initiateResponse == null ||
-                checkoutNotfier.selectedBankFlow?.isActive != true ||
-                checkoutNotfier.selectedBankFlow?.isActiveForMobile != true ||
-                (banks.isNotEmpty && checkoutNotfier.selectedBank == null),
-            loading: checkoutNotfier.isBusy,
+            disabled: lendersNotifier.isBusy ||
+                lendersNotifier.initiateResponse == null ||
+                lendersNotifier.selectedBankFlow?.isActive != true ||
+                lendersNotifier.selectedBankFlow?.isActiveForMobile != true ||
+                (banks.isNotEmpty && lendersNotifier.selectedBank == null),
+            loading: lendersNotifier.isBusy,
             title: 'Continue',
             onTap: () {
               MixPanelService.logEvent(
                 '4 - Selected Payment institution',
                 properties: {
                   'environment':
-                      checkoutNotfier.initiateResponse?.isLive == true
+                      lendersNotifier.initiateResponse?.isLive == true
                           ? 'production'
                           : 'staging',
-                  'partner': checkoutNotfier.selectedBankFlow?.name,
-                  'payload': {'bank': checkoutNotfier.selectedBankFlow?.slug},
+                  'partner': lendersNotifier.selectedBankFlow?.name,
+                  'payload': {'bank': lendersNotifier.selectedBankFlow?.slug},
                 },
               );
-              if (checkoutNotfier.selectedBankFlow?.slug == 'renmoney' ||
-                  checkoutNotfier.selectedBankFlow?.slug == 'klump') {
+              if (lendersNotifier.selectedBankFlow?.slug == 'renmoney' ||
+                  lendersNotifier.selectedBankFlow?.slug == 'klump') {
                 _getCameras();
               }
-              checkoutNotfier.selectBankSubmitted();
+              lendersNotifier.selectBankSubmitted();
             },
           ),
           const YSpace(59)

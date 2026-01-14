@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:klump_checkout/src/core/core.dart';
-import 'package:klump_checkout/src/data/models/models.dart';
-import 'package:klump_checkout/src/presentation/change_notifiers/kc_change_notifier.dart';
-import 'package:klump_checkout/src/presentation/widgets/widgets.dart';
+import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class AccountEmail extends StatefulWidget {
@@ -66,7 +63,7 @@ class _AccountEmailState extends State<AccountEmail> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final rootNotifier = Provider.of<KCRootNotifier>(context);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -142,20 +139,18 @@ class _AccountEmailState extends State<AccountEmail> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotifier.isBusy,
-                          loading: checkoutNotifier.isBusy,
+                          disabled: !enabled || rootNotifier.isBusy,
+                          loading: rootNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotifier.setTransactionData(widget.data);
-                            checkoutNotifier
+                            rootNotifier.setTransactionData(widget.data);
+                            rootNotifier
                                 .initiateTransaction(
                               email: _emailCtrl.text.trim(),
                               phone: _phoneCtrl.text.trim(),
                             )
                                 .then((value) {
-                              if (value) {
-                                checkoutNotifier.nextPage();
-                              }
+                              if (value) {}
                             });
                           },
                         );

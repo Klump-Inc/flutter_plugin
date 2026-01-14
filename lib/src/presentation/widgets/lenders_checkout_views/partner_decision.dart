@@ -17,15 +17,15 @@ class _PartnerDecisionState extends State<PartnerDecision> {
   Timer? timer;
 
   void _startStatusLookup() {
-    var checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    var lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     timer = Timer.periodic(
       const Duration(seconds: 10),
       (Timer t) {
-        checkoutNotifier.getLoanStatus().then((response) {
+        lendersNotifier.getLoanStatus().then((response) {
           if (response?.isCompleted == true) {
             timer?.cancel();
-            checkoutNotifier.nextPage();
+            lendersNotifier.nextPage();
           }
         });
       },
@@ -35,15 +35,15 @@ class _PartnerDecisionState extends State<PartnerDecision> {
   @override
   void initState() {
     Future.delayed(Duration.zero, _startStatusLookup);
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '11 - NEW LOAN MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     super.initState();
@@ -57,8 +57,8 @@ class _PartnerDecisionState extends State<PartnerDecision> {
 
   @override
   Widget build(BuildContext context) {
-    var checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    var lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -75,18 +75,17 @@ class _PartnerDecisionState extends State<PartnerDecision> {
                   const YSpace(24),
                   Align(
                     child: KCNetworkImage(
-                      url: checkoutNotifier.selectedBankFlow?.logo,
+                      url: lendersNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),
                   ),
-                  if (checkoutNotifier.initiateResponse?.merchant != null)
+                  if (lendersNotifier.initiateResponse?.merchant != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Align(
                         child: KCHeadline4(
-                          checkoutNotifier.initiateResponse!.merchant
-                              .toString(),
+                          lendersNotifier.initiateResponse!.merchant.toString(),
                           fontWeight: FontWeight.w700,
                         ),
                       ),

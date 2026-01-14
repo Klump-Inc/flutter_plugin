@@ -59,8 +59,8 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.selfieStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.selfieStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -82,7 +82,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -94,17 +94,17 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                     ),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -214,8 +214,8 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                     const YSpace(25),
                     const Spacer(),
                     KCPrimaryButton(
-                      disabled: checkoutNotfier.isBusy,
-                      loading: checkoutNotfier.isBusy,
+                      disabled: lendersNotifier.isBusy,
+                      loading: lendersNotifier.isBusy,
                       title: _step == VerificationStep.start
                           ? 'Get Started'
                           : _step == VerificationStep.capture
@@ -235,7 +235,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                           });
                         } else if (_step == VerificationStep.preview &&
                             _filePath != null) {
-                          checkoutNotfier.validateSelfie(
+                          lendersNotifier.validateSelfie(
                             filePath: _filePath!,
                           );
                         }
@@ -245,7 +245,7 @@ class _PartnerSelfieUploadState extends State<PartnerSelfieUpload> {
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: KCSecondaryButton(
-                          disabled: checkoutNotfier.isBusy,
+                          disabled: lendersNotifier.isBusy,
                           title: 'Change Image',
                           onTap: () {
                             setState(

@@ -19,23 +19,22 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
   @override
   void initState() {
     super.initState();
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier = context.read<KCLendersNotifier>();
     MixPanelService.logEvent(
       '5 - PARTNER REQUIREMENTS MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'payload': {'bank': changeNotifier.selectedBankFlow?.slug},
+        'payload': {'bank': lendersNotifier.selectedBankFlow?.slug},
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final nextStep = checkoutNotifier.selectedBankFlow?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final nextStep = lendersNotifier.selectedBankFlow?.nextStep;
     final formFields = nextStep?.formFields?.map((e) => e.name).toList();
     Logger().d(nextStep?.displayData?.list);
     return LayoutBuilder(
@@ -56,17 +55,17 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                     const YSpace(24),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotifier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotifier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Align(
                           child: KCHeadline4(
-                            checkoutNotifier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -99,7 +98,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                             subTitle: nextStep?.displayData?.list![index]
                                 ?['smalltext'],
                             lastItem: index + 1 ==
-                                (checkoutNotifier.selectedBankFlow?.nextStep
+                                (lendersNotifier.selectedBankFlow?.nextStep
                                         ?.displayData?.list!.length ??
                                     0),
                             onTap: nextStep?.displayData?.list![index]
@@ -166,22 +165,22 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                       valueListenable: _accepted,
                       builder: (_, accepted, __) {
                         return KCPrimaryButton(
-                          loading: checkoutNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
                           disabled: (!accepted &&
                                   formFields?.contains('is_accepted') ==
                                       true) ||
-                              checkoutNotifier.isBusy,
+                              lendersNotifier.isBusy,
                           title: 'Continue',
                           onTap: () {
                             if (nextStep?.api ==
                                 '/loans/account/verification') {
-                              checkoutNotifier.validateAccount();
+                              lendersNotifier.validateAccount();
                             } else if (nextStep?.api
                                     ?.contains('/requirements') ==
                                 true) {
-                              checkoutNotifier.acceptRequirement();
+                              lendersNotifier.acceptRequirement();
                             } else {
-                              checkoutNotifier.nextPage();
+                              lendersNotifier.nextPage();
                             }
                           },
                         );
@@ -190,7 +189,7 @@ class _PartnerRequirementsState extends State<PartnerRequirements> {
                     const YSpace(16),
                     KCSecondaryButton(
                       title: 'Back',
-                      onTap: () => checkoutNotifier.prevPage(),
+                      onTap: () => lendersNotifier.prevPage(),
                     ),
                     const YSpace(59)
                   ],

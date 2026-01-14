@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,9 +22,8 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotifier = context.read<KCChangeNotifier>();
-    final formFields = checkoutNotifier
-        .accountNumberStepData?.nextStep.formFields
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = lendersNotifier.redirectStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
     final accountNumberError = KCFormValidator.errorAccountNumber(
@@ -47,24 +47,24 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
       accountNumberStreamCtrl.sink.add(_accountNumberCtrl.text.trim());
       validateInputs();
     });
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '10 - VERIFY_ACCOUNT_NUMBER MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     Future.delayed(Duration.zero, () {
-      if (changeNotifier.accountNumber != null) {
-        _accountNumberCtrl.text = changeNotifier.accountNumber!;
+      if (lendersNotifier.accountNumber != null) {
+        _accountNumberCtrl.text = lendersNotifier.accountNumber!;
       }
-      if (changeNotifier.selectedBank != null) {
+      if (lendersNotifier.selectedBank != null) {
         setState(() {
-          _selectedBank = changeNotifier.selectedBank;
+          _selectedBank = lendersNotifier.selectedBank;
         });
       }
       validateInputs();
@@ -79,8 +79,8 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.accountNumberStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.redirectStepData?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
     return Padding(
@@ -103,19 +103,19 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
                       const DraggableBar(),
                       const YSpace(24),
                       LogoHeaderWidget(
-                        onTap: checkoutNotifier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         logo: KCNetworkImage(
-                          url: checkoutNotifier.selectedBankFlow!.logo,
+                          url: lendersNotifier.selectedBankFlow!.logo,
                           height: 55,
                           width: 120,
                         ),
                       ),
-                      if (checkoutNotifier.initiateResponse?.merchant != null)
+                      if (lendersNotifier.initiateResponse?.merchant != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: Align(
                             child: KCHeadline4(
-                              checkoutNotifier.initiateResponse!.merchant
+                              lendersNotifier.initiateResponse!.merchant
                                   .toString(),
                               fontWeight: FontWeight.w700,
                             ),
@@ -258,11 +258,11 @@ class _PartnerAccountNumberState extends State<PartnerAccountNumber> {
                         builder: (_, enabled, __) {
                           return KCPrimaryButton(
                             title: 'Continue',
-                            disabled: !enabled || checkoutNotifier.isBusy,
-                            loading: checkoutNotifier.isBusy,
+                            disabled: !enabled || lendersNotifier.isBusy,
+                            loading: lendersNotifier.isBusy,
                             onTap: () {
                               FocusScope.of(context).unfocus();
-                              checkoutNotifier.verifyAccountNumber(
+                              lendersNotifier.verifyAccountNumber(
                                 accountNumber: _accountNumberCtrl.text.trim(),
                                 bank: _selectedBank!,
                               );

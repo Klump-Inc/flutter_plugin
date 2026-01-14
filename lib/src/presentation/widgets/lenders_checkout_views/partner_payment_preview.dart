@@ -17,8 +17,8 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.repaymentDetailsStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.repaymentDetailsStepData?.nextStep;
 
     final formFields = stepData?.formFields?.map((e) => e.name).toList();
     final checkBoxFields =
@@ -43,20 +43,19 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                   const DraggableBar(),
                   const YSpace(24),
                   LogoHeaderWidget(
-                    onTap: checkoutNotifier.prevPage,
+                    onTap: lendersNotifier.prevPage,
                     logo: KCNetworkImage(
-                      url: checkoutNotifier.selectedBankFlow?.logo,
+                      url: lendersNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),
                   ),
-                  if (checkoutNotifier.initiateResponse?.merchant != null)
+                  if (lendersNotifier.initiateResponse?.merchant != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Align(
                         child: KCHeadline4(
-                          checkoutNotifier.initiateResponse!.merchant
-                              .toString(),
+                          lendersNotifier.initiateResponse!.merchant.toString(),
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -203,8 +202,8 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                     builder: (_, accepted, __) {
                       return KCPrimaryButton(
                         title: 'Continue',
-                        disabled: !accepted || checkoutNotifier.isBusy,
-                        loading: checkoutNotifier.isBusy,
+                        disabled: !accepted || lendersNotifier.isBusy,
+                        loading: lendersNotifier.isBusy,
                         onTap: () {
                           Logger().d(stepData?.formFields
                               ?.where((e) => e.name == 'reference')
@@ -212,7 +211,7 @@ class _PartnerPaymentPreviewState extends State<PartnerPaymentPreview> {
                           final referenceForm = stepData?.formFields
                               ?.where((e) => e.name == 'reference')
                               .toList();
-                          checkoutNotifier.acceptRepaymentTerms(
+                          lendersNotifier.acceptRepaymentTerms(
                               reference:
                                   formFields?.contains('reference') == true &&
                                           referenceForm?.isNotEmpty == true

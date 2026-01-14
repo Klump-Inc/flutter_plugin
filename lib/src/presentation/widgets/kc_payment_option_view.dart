@@ -19,11 +19,10 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
   }
 
   Future<void> _initiateTranx() async {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final rootNotifier = Provider.of<KCRootNotifier>(context, listen: false);
     if (widget.data.email != null && widget.data.phone != null) {
-      checkoutNotifier.setTransactionData(widget.data);
-      await checkoutNotifier.initiateTransaction(
+      rootNotifier.setTransactionData(widget.data);
+      await rootNotifier.initiateTransaction(
         email: widget.data.email!,
         phone: widget.data.phone!,
       );
@@ -34,8 +33,8 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),
-      child: Consumer<KCChangeNotifier>(
-        builder: (context, checkoutNotifier, child) {
+      child: Consumer<KCRootNotifier>(
+        builder: (context, rootNotifier, child) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -62,15 +61,14 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
                         KCAssets.klumpLogo,
                         package: 'klump_checkout',
                       ),
-                      if (checkoutNotifier.initiateResponse?.merchant != null)
+                      if (rootNotifier.initiateResponse?.merchant != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Text.rich(
                             TextSpan(children: [
                               const TextSpan(text: 'Proud partner of '),
                               TextSpan(
-                                  text: checkoutNotifier
-                                      .initiateResponse!.merchant
+                                  text: rootNotifier.initiateResponse!.merchant
                                       .toString(),
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w700)),
@@ -110,7 +108,7 @@ class _KCPaymentOptionViewState extends State<KCPaymentOptionView> {
                   WalletCheckoutContainer.route(
                     context,
                     KCPaymentContainerParams(
-                      initiateResponse: checkoutNotifier.initiateResponse!,
+                      initiateResponse: rootNotifier.initiateResponse!,
                       data: widget.data,
                     ),
                   );

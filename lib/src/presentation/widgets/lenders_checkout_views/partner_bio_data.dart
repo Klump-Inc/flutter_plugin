@@ -44,8 +44,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotifier = context.read<KCChangeNotifier>();
-    final formFields = checkoutNotifier.bioDataStepData?.nextStep.formFields
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = lendersNotifier.redirectStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
     final lastNameError =
@@ -152,24 +152,24 @@ class _PartnerBioDataState extends State<PartnerBioData> {
       validateInputs();
     });
 
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '10 - BIO DATA MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     Future.delayed(Duration.zero, () {
-      final klumpUser = changeNotifier.klumpUser;
-      if (changeNotifier.email != null) {
-        _emailCtrl.text = changeNotifier.email!;
+      final klumpUser = lendersNotifier.klumpUser;
+      if (lendersNotifier.email != null) {
+        _emailCtrl.text = lendersNotifier.email!;
       }
       if (klumpUser?.firstname != null) {
-        _firstNameCtrl.text = klumpUser!.firstname!;
+        _firstNameCtrl.text = lendersNotifier.klumpUser!.firstname!;
       }
       if (klumpUser?.lastname != null) {
         _lastNameCtrl.text = klumpUser!.lastname!;
@@ -182,9 +182,9 @@ class _PartnerBioDataState extends State<PartnerBioData> {
           _dobCtrl.text = KCStringUtil.formatDate(_dob!);
         }
       }
-      _emailCtrl.text = changeNotifier.email ?? '';
-      _phoneNoCtrl.text = changeNotifier.phoneNumber ?? '';
-      final formMap = changeNotifier.bioDataStepData?.nextStep.formFields;
+      _emailCtrl.text = lendersNotifier.email ?? '';
+      _phoneNoCtrl.text = lendersNotifier.phoneNumber ?? '';
+      final formMap = lendersNotifier.redirectStepData?.nextStep.formFields;
       final formFields = formMap?.map((e) => e.name).toList();
       if (formFields?.contains('phoneNumber') == true) {
         final phoneValue =
@@ -278,8 +278,8 @@ class _PartnerBioDataState extends State<PartnerBioData> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.bioDataStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.redirectStepData?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
     return LayoutBuilder(
@@ -302,19 +302,19 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                     const DraggableBar(),
                     const YSpace(24),
                     LogoHeaderWidget(
-                      onTap: checkoutNotifier.prevPage,
+                      onTap: lendersNotifier.prevPage,
                       logo: KCNetworkImage(
-                        url: checkoutNotifier.selectedBankFlow!.logo,
+                        url: lendersNotifier.selectedBankFlow!.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotifier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Align(
                           child: KCHeadline4(
-                            checkoutNotifier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -651,11 +651,11 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotifier.isBusy,
-                          loading: checkoutNotifier.isBusy,
+                          disabled: !enabled || lendersNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotifier.bioData(
+                            lendersNotifier.bioData(
                               email: formFields?.contains('email') == true
                                   ? _emailCtrl.text.trim()
                                   : null,
@@ -673,7 +673,7 @@ class _PartnerBioDataState extends State<PartnerBioData> {
                                   ? _passwordCtrl.text.trim()
                                   : null,
                               amount: formFields?.contains('amount') == true
-                                  ? checkoutNotifier.totalAmount
+                                  ? lendersNotifier.totalAmount
                                   : null,
                               apartment:
                                   formFields?.contains('apartment') == true

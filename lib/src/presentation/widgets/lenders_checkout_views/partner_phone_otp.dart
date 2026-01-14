@@ -38,14 +38,13 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
   }
 
   void validateInputs() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    final formFields = checkoutNotifier
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = lendersNotifier
         .verifyPhoneOTPStepData!.nextStep.formFields!
         .map((e) => e.name);
-    final otpLength = checkoutNotifier.selectedBankFlow?.slug == 'stanbic'
+    final otpLength = lendersNotifier.selectedBankFlow?.slug == 'stanbic'
         ? 6
-        : checkoutNotifier.selectedBankFlow?.slug == 'polaris'
+        : lendersNotifier.selectedBankFlow?.slug == 'polaris'
             ? 4
             : 5;
 
@@ -70,15 +69,14 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
     });
 
     _startCounter();
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier = context.read<KCLendersNotifier>();
     MixPanelService.logEvent(
       '7 - VERIFY PHONE NUMBER OTP MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
   }
@@ -93,8 +91,8 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.verifyPhoneOTPStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.verifyPhoneOTPStepData?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
     final checkBoxFields =
@@ -120,19 +118,19 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
                     const DraggableBar(),
                     const YSpace(24),
                     LogoHeaderWidget(
-                      onTap: checkoutNotfier.prevPage,
+                      onTap: lendersNotifier.prevPage,
                       logo: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
                         child: Align(
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -191,10 +189,10 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
                           return Row(
                             children: [
                               InkWell(
-                                onTap: timeLeft != 0 || checkoutNotfier.isBusy
+                                onTap: timeLeft != 0 || lendersNotifier.isBusy
                                     ? null
                                     : () {
-                                        checkoutNotfier
+                                        lendersNotifier
                                             .resendPhoneOTP()
                                             .then((value) {
                                           _startCounter();
@@ -265,13 +263,13 @@ class _PartnerPhoneOTPState extends State<PartnerPhoneOTP> {
                             return KCPrimaryButton(
                               title: 'Continue',
                               disabled: !enabled ||
-                                  checkoutNotfier.isBusy ||
+                                  lendersNotifier.isBusy ||
                                   (!accepted &&
                                       checkBoxFields?.isNotEmpty == true),
-                              loading: checkoutNotfier.isBusy,
+                              loading: lendersNotifier.isBusy,
                               onTap: () {
                                 FocusScope.of(context).unfocus();
-                                checkoutNotfier.verifyPhoneOTP(
+                                lendersNotifier.verifyPhoneOTP(
                                   otp: _otpCtrl.text.trim(),
                                 );
                               },

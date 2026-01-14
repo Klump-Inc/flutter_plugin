@@ -63,8 +63,8 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: screenHeight(context) - 67.48,
-      child: ChangeNotifierProvider<KCChangeNotifier>(
-        create: (_) => KCChangeNotifier(),
+      child: ChangeNotifierProvider<KCRootNotifier>(
+        create: (_) => KCRootNotifier(),
         child: SafeArea(
           child: OKToast(
             animationDuration: const Duration(milliseconds: 300),

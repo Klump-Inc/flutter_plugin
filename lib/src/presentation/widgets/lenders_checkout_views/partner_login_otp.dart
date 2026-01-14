@@ -40,13 +40,12 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
   }
 
   void validateInputs() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    final formFields = checkoutNotifier.verifyOTPStepData!.nextStep.formFields!
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = lendersNotifier.verifyOTPStepData!.nextStep.formFields!
         .map((e) => e.name);
-    final otpLength = checkoutNotifier.selectedBankFlow?.slug == 'stanbic'
+    final otpLength = lendersNotifier.selectedBankFlow?.slug == 'stanbic'
         ? 6
-        : checkoutNotifier.selectedBankFlow?.slug == 'polaris'
+        : lendersNotifier.selectedBankFlow?.slug == 'polaris'
             ? 4
             : 5;
     final passwordError =
@@ -78,15 +77,14 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
       validateInputs();
     });
     _startCounter();
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier = context.read<KCLendersNotifier>();
     MixPanelService.logEvent(
       '7 - VERIFY OTP MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
   }
@@ -103,7 +101,7 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
+    final checkoutNotfier = Provider.of<KCLendersNotifier>(context);
     final stepData = checkoutNotfier.verifyOTPStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formFields = stepData?.formFields?.map((e) => e.name).toList();

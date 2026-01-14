@@ -17,15 +17,15 @@ class PartnerInvoice extends StatefulWidget {
 class _PartnerInvoiceState extends State<PartnerInvoice> {
   @override
   void initState() {
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
     MixPanelService.logEvent(
       '12 - REDIRECT MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     super.initState();
@@ -33,8 +33,8 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.loanStatusStepData?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.loanStatusStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -55,7 +55,7 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: InkWell(
-                              onTap: () => checkoutNotifier.prevPage(),
+                              onTap: () => lendersNotifier.prevPage(),
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: SvgPicture.asset(
@@ -104,14 +104,14 @@ class _PartnerInvoiceState extends State<PartnerInvoice> {
                                 )) {
                                   showToast('Could not open link!');
                                 } else {
-                                  checkoutNotifier.nextPage();
+                                  lendersNotifier.nextPage();
                                 }
                               } else {
                                 showToast('Error occured. Try again later!');
                               }
                             },
-                            disabled: checkoutNotifier.isBusy,
-                            loading: checkoutNotifier.isBusy,
+                            disabled: lendersNotifier.isBusy,
+                            loading: lendersNotifier.isBusy,
                           ),
                           const YSpace(59)
                         ],

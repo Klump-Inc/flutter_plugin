@@ -13,7 +13,7 @@ class CloseViewButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ??
           () {
-            final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+            final lendersNotifier = Provider.of<KCLendersNotifier>(context);
 
             showModalBottomSheet<void>(
               isScrollControlled: true,
@@ -29,11 +29,11 @@ class CloseViewButton extends StatelessWidget {
               ),
               builder: (context) => FeedbackView(
                 params: FeedbackViewArgument(
-                  email: checkoutNotifier.email ?? '',
-                  phoneNumber: checkoutNotifier.phoneNumber ?? '',
-                  publicKey: checkoutNotifier.checkoutData!.merchantPublicKey,
-                  merchant: checkoutNotifier.initiateResponse?.merchant,
-                  isLive: checkoutNotifier.initiateResponse?.isLive == true,
+                  email: lendersNotifier.email ?? '',
+                  phoneNumber: lendersNotifier.phoneNumber ?? '',
+                  publicKey: lendersNotifier.checkoutData!.merchantPublicKey,
+                  merchant: lendersNotifier.initiateResponse?.merchant,
+                  isLive: lendersNotifier.initiateResponse?.isLive == true,
                 ),
               ),
             );

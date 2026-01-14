@@ -12,7 +12,7 @@ class PartnerConfirmation extends StatefulWidget {
 class _PartnerConfirmationState extends State<PartnerConfirmation> {
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -29,7 +29,7 @@ class _PartnerConfirmationState extends State<PartnerConfirmation> {
                     const DraggableBar(),
                     const YSpace(24),
                     KCNetworkImage(
-                      url: checkoutNotifier.selectedBankFlow?.logo,
+                      url: lendersNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 120,
                     ),
@@ -63,17 +63,17 @@ class _PartnerConfirmationState extends State<PartnerConfirmation> {
                     const YSpace(24),
                     KCPrimaryButton(
                       title: 'Continue',
-                      disabled: checkoutNotifier.isBusy,
-                      loading: checkoutNotifier.isBusy,
+                      disabled: lendersNotifier.isBusy,
+                      loading: lendersNotifier.isBusy,
                       onTap: () =>
-                          Provider.of<KCChangeNotifier>(context, listen: false)
+                          Provider.of<KCLendersNotifier>(context, listen: false)
                               .createLoan(),
                     ),
                     const YSpace(16),
                     KCSecondaryButton(
                       title: 'Go back',
-                      disabled: checkoutNotifier.isBusy,
-                      onTap: () => checkoutNotifier.createLoan(),
+                      disabled: lendersNotifier.isBusy,
+                      onTap: () => lendersNotifier.createLoan(),
                     ),
                     const YSpace(59)
                   ],

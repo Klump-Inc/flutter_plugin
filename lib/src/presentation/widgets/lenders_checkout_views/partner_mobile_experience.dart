@@ -8,7 +8,7 @@ class PartnerMobileExperience extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -27,7 +27,7 @@ class PartnerMobileExperience extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotifier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -40,7 +40,7 @@ class PartnerMobileExperience extends StatelessWidget {
                     const YSpace(14.7),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotifier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 47,
                       ),
@@ -68,7 +68,7 @@ class PartnerMobileExperience extends StatelessWidget {
                     KCPrimaryButton(
                       title: 'Continue anyway',
                       onTap: () =>
-                          Provider.of<KCChangeNotifier>(context, listen: false)
+                          Provider.of<KCLendersNotifier>(context, listen: false)
                               .nextPage(),
                     ),
                     const YSpace(59)

@@ -9,8 +9,8 @@ class PartnerDisbursementStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.loanStatusStepData?.nextStep;
+    final lendersNotfier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotfier.loanStatusStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -28,17 +28,17 @@ class PartnerDisbursementStatus extends StatelessWidget {
                     const YSpace(24),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotfier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotfier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotfier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -50,20 +50,20 @@ class PartnerDisbursementStatus extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            height: checkoutNotfier.disbursementStatusResponse
+                            height: lendersNotfier.disbursementStatusResponse
                                         ?.isSuccessful ==
                                     true
                                 ? 187.1
                                 : 130,
                             width: 187.1,
-                            child: checkoutNotfier.selectedBankFlow?.slug ==
+                            child: lendersNotfier.selectedBankFlow?.slug ==
                                     'renmoney'
                                 ? Image.asset(
                                     KCAssets.loading,
                                     package: KC_PACKAGE_NAME,
                                   )
                                 : SvgPicture.asset(
-                                    checkoutNotfier.disbursementStatusResponse
+                                    lendersNotfier.disbursementStatusResponse
                                                 ?.isSuccessful ==
                                             true
                                         ? KCAssets.successIllus
@@ -73,12 +73,12 @@ class PartnerDisbursementStatus extends StatelessWidget {
                           ),
                           const YSpace(22),
                           KCHeadline3(
-                            checkoutNotfier.selectedBankFlow?.slug ==
+                            lendersNotfier.selectedBankFlow?.slug ==
                                         'renmoney' &&
                                     stepData?.displayData?.title?.isNotEmpty ==
                                         true
                                 ? stepData!.displayData!.title!
-                                : checkoutNotfier.disbursementStatusResponse
+                                : lendersNotfier.disbursementStatusResponse
                                             ?.isSuccessful ==
                                         true
                                     ? 'Successful'
@@ -89,17 +89,17 @@ class PartnerDisbursementStatus extends StatelessWidget {
                           ),
                           const YSpace(8),
                           KCBodyText1(
-                            checkoutNotfier.selectedBankFlow?.slug ==
+                            lendersNotfier.selectedBankFlow?.slug ==
                                         'renmoney' &&
                                     stepData?.displayData?.subTitle
                                             ?.isNotEmpty ==
                                         true
                                 ? stepData!.displayData!.subTitle!
-                                : checkoutNotfier.disbursementStatusResponse
+                                : lendersNotfier.disbursementStatusResponse
                                             ?.isSuccessful ==
                                         true
-                                    ? '${checkoutNotfier.disbursementStatusResponse?.message}${checkoutNotfier.disbursementStatusResponse?.next_repayment_date != null ? ' \nYour next pay date is ${checkoutNotfier.disbursementStatusResponse?.next_repayment_date}' : ''}'
-                                    : checkoutNotfier.disbursementStatusResponse
+                                    ? '${lendersNotfier.disbursementStatusResponse?.message}${lendersNotfier.disbursementStatusResponse?.next_repayment_date != null ? ' \nYour next pay date is ${lendersNotfier.disbursementStatusResponse?.next_repayment_date}' : ''}'
+                                    : lendersNotfier.disbursementStatusResponse
                                             ?.message ??
                                         '',
                             fontSize: 16,
@@ -111,27 +111,26 @@ class PartnerDisbursementStatus extends StatelessWidget {
                     ),
                     const YSpace(24),
                     KCPrimaryButton(
-                      title:
-                          checkoutNotfier.selectedBankFlow?.slug == 'renmoney'
-                              ? 'Finish'
-                              : checkoutNotfier.disbursementStatusResponse
-                                          ?.isSuccessful ==
-                                      true
-                                  ? 'Continue'
-                                  : 'Go back',
-                      onTap: () {
-                        final checkoutResponse = KlumpCheckoutResponse(
-                          checkoutNotfier.disbursementStatusResponse
+                      title: lendersNotfier.selectedBankFlow?.slug == 'renmoney'
+                          ? 'Finish'
+                          : lendersNotfier.disbursementStatusResponse
                                       ?.isSuccessful ==
                                   true
-                              ? checkoutNotfier.selectedBankFlow?.slug ==
+                              ? 'Continue'
+                              : 'Go back',
+                      onTap: () {
+                        final checkoutResponse = KlumpCheckoutResponse(
+                          lendersNotfier.disbursementStatusResponse
+                                      ?.isSuccessful ==
+                                  true
+                              ? lendersNotfier.selectedBankFlow?.slug ==
                                       'renmoney'
                                   ? CheckoutStatus.pending
                                   : CheckoutStatus.success
                               : CheckoutStatus.error,
-                          checkoutNotfier.disbursementStatusResponse?.message ??
+                          lendersNotfier.disbursementStatusResponse?.message ??
                               '',
-                          checkoutNotfier
+                          lendersNotfier
                               .disbursementStatusResponse?.transaction,
                         );
                         Navigator.pop(context, checkoutResponse);

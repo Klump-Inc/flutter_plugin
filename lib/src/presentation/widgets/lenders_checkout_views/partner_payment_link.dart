@@ -24,9 +24,9 @@ class _PartnerPaymemtLinkState extends State<PartnerPaymemtLink> {
   @override
   void initState() {
     super.initState();
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    final stepData = checkoutNotifier.paymentLinkData?.nextStep;
+    final lendersNotifier =
+        Provider.of<KCLendersNotifier>(context, listen: false);
+    final stepData = lendersNotifier.paymentLinkData?.nextStep;
     final redirectUrl = stepData?.redirectUrl;
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -55,7 +55,7 @@ class _PartnerPaymemtLinkState extends State<PartnerPaymemtLink> {
             if (request.url.contains('status=successful') &&
                 request.url.contains('processor=paystack') &&
                 request.url.contains('trxref')) {
-              checkoutNotifier.nextPage();
+              lendersNotifier.nextPage();
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;

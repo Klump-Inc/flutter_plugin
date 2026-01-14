@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:provider/provider.dart';
+
 import 'helpers/pump_app.dart';
 import 'klump_checkout_test.mocks.dart';
 
 void main() {
-  late MockKCChangeNotifier kcChangeNotifier;
+  late MockKCLendersNotifier kcLendersNotifier;
   setUp(() {
-    kcChangeNotifier = MockKCChangeNotifier();
+    kcLendersNotifier = MockKCLendersNotifier();
   });
 
   const checkoutData = KlumpCheckoutData(
@@ -30,14 +31,14 @@ void main() {
   );
 
   testWidgets('SelectBankFlow disables popup when no partners', (tester) async {
-    when(kcChangeNotifier.loanPartners).thenAnswer((_) => []);
-    when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
-    when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+    when(kcLendersNotifier.loanPartners).thenAnswer((_) => []);
+    when(kcLendersNotifier.selectedBankFlow).thenAnswer((_) => null);
+    when(kcLendersNotifier.isBusy).thenAnswer((_) => false);
 
     await mockNetworkImagesFor(() async {
       await tester.pumpKCWidget(
-        ChangeNotifierProvider<KCChangeNotifier>.value(
-          value: kcChangeNotifier,
+        ChangeNotifierProvider<KCLendersNotifier>.value(
+          value: kcLendersNotifier,
           builder: (context, _) => const SelectBankFlow(data: checkoutData),
         ),
       );
@@ -66,15 +67,17 @@ void main() {
         isActiveForMobile: true,
       ),
     ];
-    when(kcChangeNotifier.loanPartners).thenAnswer((_) => partners);
-    when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
-    when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-    when(kcChangeNotifier.setBankFlow(any)).thenAnswer((_) async {});
+    when(kcLendersNotifier.loanPartners).thenAnswer((_) => partners);
+    when(kcLendersNotifier.selectedBankFlow).thenAnswer((_) => null);
+    when(kcLendersNotifier.isBusy).thenAnswer((_) => false);
+    when(kcLendersNotifier.setBankFlow(any)).thenAnswer((_) async {
+      return null;
+    });
 
     await mockNetworkImagesFor(() async {
       await tester.pumpKCWidget(
-        ChangeNotifierProvider<KCChangeNotifier>.value(
-          value: kcChangeNotifier,
+        ChangeNotifierProvider<KCLendersNotifier>.value(
+          value: kcLendersNotifier,
           builder: (context, _) => const SelectBankFlow(data: checkoutData),
         ),
       );
@@ -87,6 +90,6 @@ void main() {
     // The first item should be tappable and call setBankFlow
     await tester.tap(find.byType(KCPartnerPopupMenuItemContent).first);
     await tester.pump();
-    verify(kcChangeNotifier.setBankFlow(partners.first)).called(1);
+    verify(kcLendersNotifier.setBankFlow(partners.first)).called(1);
   });
 }

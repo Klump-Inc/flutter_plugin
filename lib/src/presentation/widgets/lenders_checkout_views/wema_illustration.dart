@@ -52,9 +52,9 @@ class _WemaIllustrationState extends State<WemaIllustration> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.redirectStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.redirectStepData?.nextStep ??
+        lendersNotifier.selectedBankFlow?.nextStep;
     final carousel = stepData?.displayData?.carousel
         ?.map((e) => e as Map<String, dynamic>)
         .toList();
@@ -81,7 +81,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: checkoutNotfier.prevPage,
+                            onTap: lendersNotifier.prevPage,
                             child: Padding(
                               padding: const EdgeInsets.all(4),
                               child: SvgPicture.asset(
@@ -91,7 +91,7 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                             ),
                           ),
                           KCNetworkImage(
-                            url: checkoutNotfier.selectedBankFlow!.logo,
+                            url: lendersNotifier.selectedBankFlow!.logo,
                             height: 55,
                             width: 120,
                           ),
@@ -99,9 +99,9 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                         ],
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       KCHeadline4(
-                        checkoutNotfier.initiateResponse!.merchant.toString(),
+                        lendersNotifier.initiateResponse!.merchant.toString(),
                         fontWeight: FontWeight.w700,
                       ),
                     const YSpace(22.15),
@@ -185,10 +185,10 @@ class _WemaIllustrationState extends State<WemaIllustration> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: KCPrimaryButton(
                         title: 'Complete payment',
-                        disabled: checkoutNotfier.isBusy,
-                        loading: checkoutNotfier.isBusy,
+                        disabled: lendersNotifier.isBusy,
+                        loading: lendersNotifier.isBusy,
                         onTap: () {
-                          checkoutNotfier.wemaRedirect();
+                          lendersNotifier.wemaRedirect();
                         },
                       ),
                     ),

@@ -14,8 +14,8 @@ class PartnerDocumentType extends StatefulWidget {
 class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.documentVerificationStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.documentVerificationStepData?.nextStep;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -37,7 +37,7 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -49,17 +49,17 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                     ),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 40,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -82,7 +82,7 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                       image: KCAssets.intlPassport,
                       title: 'Passport',
                       onTap: () {
-                        checkoutNotfier.selectDocumentType(
+                        lendersNotifier.selectDocumentType(
                           INTERNATIONAL_PASSPORT,
                         );
                       },
@@ -91,7 +91,7 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                       image: KCAssets.ninCard,
                       title: 'National Identity Card',
                       onTap: () {
-                        checkoutNotfier.selectDocumentType(
+                        lendersNotifier.selectDocumentType(
                           NATIONAL_ID_CARD,
                         );
                       },
@@ -100,7 +100,7 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                       image: KCAssets.votersCard,
                       title: 'Voter’s Card',
                       onTap: () {
-                        checkoutNotfier.selectDocumentType(
+                        lendersNotifier.selectDocumentType(
                           VOTERS_CARD,
                         );
                       },
@@ -109,7 +109,7 @@ class _PartnerDocumentTypeState extends State<PartnerDocumentType> {
                       image: KCAssets.driversLicense,
                       title: 'Driver’s License',
                       onTap: () {
-                        checkoutNotfier.selectDocumentType(
+                        lendersNotifier.selectDocumentType(
                           DRIVER_LICENSE,
                         );
                       },

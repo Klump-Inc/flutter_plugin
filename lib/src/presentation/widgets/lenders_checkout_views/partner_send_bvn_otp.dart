@@ -18,8 +18,8 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
   Map<String, dynamic>? _selectedContact;
 
   void validateInputs() {
-    final checkoutNotifier = context.read<KCChangeNotifier>();
-    final formFields = checkoutNotifier.sendBVNOTPStepData?.nextStep.formFields
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = lendersNotifier.sendBVNOTPStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
     if (_selectedContact != null || formFields?.contains('contact') != true) {
@@ -32,21 +32,20 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
   @override
   void initState() {
     super.initState();
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier = context.read<KCLendersNotifier>();
     MixPanelService.logEvent(
       '10 - SEND_BVN_OTP_MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
     Future.delayed(Duration.zero, () {
-      if (changeNotifier.bvnContact != null) {
+      if (lendersNotifier.bvnContact != null) {
         setState(() {
-          _selectedContact = changeNotifier.bvnContact;
+          _selectedContact = lendersNotifier.bvnContact;
         });
         validateInputs();
       }
@@ -60,8 +59,8 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotifier.sendBVNOTPStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.sendBVNOTPStepData?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
 
@@ -85,19 +84,19 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
                       const DraggableBar(),
                       const YSpace(24),
                       LogoHeaderWidget(
-                        onTap: checkoutNotifier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         logo: KCNetworkImage(
-                          url: checkoutNotifier.selectedBankFlow!.logo,
+                          url: lendersNotifier.selectedBankFlow!.logo,
                           height: 55,
                           width: 120,
                         ),
                       ),
-                      if (checkoutNotifier.initiateResponse?.merchant != null)
+                      if (lendersNotifier.initiateResponse?.merchant != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: Align(
                             child: KCHeadline4(
-                              checkoutNotifier.initiateResponse!.merchant
+                              lendersNotifier.initiateResponse!.merchant
                                   .toString(),
                               fontWeight: FontWeight.w700,
                             ),
@@ -237,11 +236,11 @@ class _PartnerSendBVNOTPState extends State<PartnerSendBVNOTP> {
                         builder: (_, enabled, __) {
                           return KCPrimaryButton(
                             title: 'Continue',
-                            disabled: !enabled || checkoutNotifier.isBusy,
-                            loading: checkoutNotifier.isBusy,
+                            disabled: !enabled || lendersNotifier.isBusy,
+                            loading: lendersNotifier.isBusy,
                             onTap: () {
                               FocusScope.of(context).unfocus();
-                              checkoutNotifier.sendBVNOTP(
+                              lendersNotifier.sendBVNOTP(
                                 bvn: formFields?.contains('bvn') == true
                                     ? formMap!
                                         .where((e) => e.name == 'bvn')

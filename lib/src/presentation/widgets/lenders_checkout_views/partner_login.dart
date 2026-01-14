@@ -35,9 +35,9 @@ class _PartnerLoginState extends State<PartnerLogin> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.verificationStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = (lendersNotifier.verificationStepData?.nextStep ??
+            lendersNotifier.selectedBankFlow?.nextStep)
         ?.formFields
         ?.map((e) => e.name)
         .toList();
@@ -124,13 +124,13 @@ class _PartnerLoginState extends State<PartnerLogin> {
       validateInputs();
     });
 
-    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
     Future.delayed(Duration.zero, () {
-      _emailCtrl.text = checkoutNotfier.email ?? '';
-      _phoneNoCtrl.text = checkoutNotfier.phoneNumber ?? '';
-      _accountNoCtrl.text = checkoutNotfier.accountNumber ?? '';
-      _firstNameCtrl.text = checkoutNotfier.firstName ?? '';
-      _usernameCtrl.text = checkoutNotfier.username ?? '';
+      _emailCtrl.text = lendersNotifier.email ?? '';
+      _phoneNoCtrl.text = lendersNotifier.phoneNumber ?? '';
+      _accountNoCtrl.text = lendersNotifier.accountNumber ?? '';
+      _firstNameCtrl.text = lendersNotifier.firstName ?? '';
+      _usernameCtrl.text = lendersNotifier.username ?? '';
       validateInputs();
     });
   }
@@ -149,9 +149,9 @@ class _PartnerLoginState extends State<PartnerLogin> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.verificationStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.verificationStepData?.nextStep ??
+        lendersNotifier.selectedBankFlow?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
     return LayoutBuilder(
@@ -174,18 +174,18 @@ class _PartnerLoginState extends State<PartnerLogin> {
                     const DraggableBar(),
                     const YSpace(30.82),
                     LogoHeaderWidget(
-                      onTap: checkoutNotfier.prevPage,
+                      onTap: lendersNotifier.prevPage,
                     ),
                     const YSpace(24),
                     KCNetworkImage(
-                      url: checkoutNotfier.selectedBankFlow?.logo,
+                      url: lendersNotifier.selectedBankFlow?.logo,
                       height: 55,
                       width: 55,
                     ),
                     const YSpace(16),
                     KCHeadline3(
                       stepData?.displayData?.title ??
-                          'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.',
+                          'Login to your ${lendersNotifier.selectedBankFlow?.name} account.',
                       fontSize: 24,
                     ),
                     if (stepData?.displayData?.subTitle != null)
@@ -402,13 +402,11 @@ class _PartnerLoginState extends State<PartnerLogin> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
+                          disabled: !enabled || lendersNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            Provider.of<KCChangeNotifier>(context,
-                                    listen: false)
-                                .validateAccount(
+                            lendersNotifier.validateAccount(
                               accountNumber: _accountNoCtrl.text.trim(),
                               phoneNumber: _phoneNoCtrl.text.trim(),
                               firstName: _firstNameCtrl.text.trim(),
@@ -421,14 +419,14 @@ class _PartnerLoginState extends State<PartnerLogin> {
                         );
                       },
                     ),
-                    if (checkoutNotfier.selectedBankFlow?.slug.toLowerCase() ==
+                    if (lendersNotifier.selectedBankFlow?.slug.toLowerCase() ==
                         'renmoney')
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: KCSecondaryButton(
-                          disabled: checkoutNotfier.isBusy,
+                          disabled: lendersNotifier.isBusy,
                           onTap: () {
-                            checkoutNotfier.newAccount();
+                            lendersNotifier.newAccount();
                           },
                           title: "Don't have a Klump account? Click here",
                         ),

@@ -27,6 +27,7 @@ import 'package:mockito/src/dummies.dart' as _i5;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeInitiateTransactionUsecase_0 extends _i1.SmartFake
     implements _i2.InitiateTransactionUsecase {
@@ -149,11 +150,11 @@ class _FakePageController_10 extends _i1.SmartFake
         );
 }
 
-/// A class which mocks [KCChangeNotifier].
+/// A class which mocks [KCLendersNotifier].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
-  MockKCChangeNotifier() {
+class MockKCLendersNotifier extends _i1.Mock implements _i2.KCLendersNotifier {
+  MockKCLendersNotifier() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -295,107 +296,98 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as List<Map<String, dynamic>>);
 
   @override
-  set initiateTransactionUsecase(
-          _i2.InitiateTransactionUsecase? _initiateTransactionUsecase) =>
+  set initiateTransactionUsecase(_i2.InitiateTransactionUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #initiateTransactionUsecase,
-          _initiateTransactionUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set accountValidationUsecase(
-          _i2.AccountValidationUsecase? _accountValidationUsecase) =>
+  set accountValidationUsecase(_i2.AccountValidationUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #accountValidationUsecase,
-          _accountValidationUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set verifyOTPUsecase(_i2.VerifyOTPUsecase? _verifyOTPUsecase) =>
-      super.noSuchMethod(
+  set verifyOTPUsecase(_i2.VerifyOTPUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #verifyOTPUsecase,
-          _verifyOTPUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getBankTCUsecase(_i2.GetBankTCUsecase? _getBankTCUsecase) =>
-      super.noSuchMethod(
+  set getBankTCUsecase(_i2.GetBankTCUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #getBankTCUsecase,
-          _getBankTCUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getRepaymentDetailsUsecase(
-          _i2.GetRepaymentDetailsUsecase? _getRepaymentDetailsUsecase) =>
+  set getRepaymentDetailsUsecase(_i2.GetRepaymentDetailsUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getRepaymentDetailsUsecase,
-          _getRepaymentDetailsUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getLoanStatusUsecase(_i2.GetLoanStatusUsecase? _getLoanStatusUsecase) =>
+  set getLoanStatusUsecase(_i2.GetLoanStatusUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getLoanStatusUsecase,
-          _getLoanStatusUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getPartnerInsurersUsecase(
-          _i2.GetPartnerInsurersUsecase? _getPartnerInsurersUsecase) =>
+  set getPartnerInsurersUsecase(_i2.GetPartnerInsurersUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getPartnerInsurersUsecase,
-          _getPartnerInsurersUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set accountCredentialsUsecase(
-          _i3.AccountCredentialsUsecase? _accountCredentialsUsecase) =>
+  set accountCredentialsUsecase(_i3.AccountCredentialsUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #accountCredentialsUsecase,
-          _accountCredentialsUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getLoanPartnersUsecase(
-          _i2.GetLoanPartnersUsecase? _getLoanPartnersUsecase) =>
+  set getLoanPartnersUsecase(_i2.GetLoanPartnersUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getLoanPartnersUsecase,
-          _getLoanPartnersUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set partnersUsecase(_i2.PartnersUsecase? _partnersUsecase) =>
-      super.noSuchMethod(
+  set partnersUsecase(_i2.PartnersUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #partnersUsecase,
-          _partnersUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );

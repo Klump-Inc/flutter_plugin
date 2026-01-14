@@ -17,7 +17,7 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
   @override
   void initState() {
     super.initState();
-    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -48,15 +48,15 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
       ..addJavaScriptChannel(
         'FlutterOnSuccess',
         onMessageReceived: (JavaScriptMessage message) {
-          checkoutNotfier.nextPage();
+          lendersNotifier.nextPage();
         },
       );
     _webViewController.loadRequest(Uri.parse(
-        checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? ''));
+        lendersNotifier.redirectStepData?.nextStep.mobileCheckoutUrl ?? ''));
   }
 
   void showFeedbackModal() {
-    final checkoutNotifier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
     showModalBottomSheet<void>(
       isScrollControlled: true,
       isDismissible: false,
@@ -71,11 +71,11 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
       ),
       builder: (context) => FeedbackView(
         params: FeedbackViewArgument(
-          email: checkoutNotifier.email ?? '',
-          phoneNumber: checkoutNotifier.phoneNumber ?? '',
-          publicKey: checkoutNotifier.checkoutData!.merchantPublicKey,
-          merchant: checkoutNotifier.initiateResponse?.merchant,
-          isLive: checkoutNotifier.initiateResponse?.isLive == true,
+          email: lendersNotifier.email ?? '',
+          phoneNumber: lendersNotifier.phoneNumber ?? '',
+          publicKey: lendersNotifier.checkoutData!.merchantPublicKey,
+          merchant: lendersNotifier.initiateResponse?.merchant,
+          isLive: lendersNotifier.initiateResponse?.isLive == true,
           backButtonClose: true,
         ),
       ),
@@ -84,10 +84,10 @@ class _FirstbankWebviewState extends State<FirstbankWebview> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = context.read<KCChangeNotifier>();
+    final lendersNotifier = context.read<KCLendersNotifier>();
 
     Logger()
-        .d(checkoutNotfier.redirectStepData?.nextStep.mobileCheckoutUrl ?? '');
+        .d(lendersNotifier.redirectStepData?.nextStep.mobileCheckoutUrl ?? '');
     return _loading
         ? const Center(
             child: KCPageLoaderWidget(),

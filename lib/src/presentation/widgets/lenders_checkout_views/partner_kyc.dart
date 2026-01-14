@@ -62,14 +62,14 @@ class _PartnerKYCState extends State<PartnerKYC> {
   final ValueNotifier<bool> _enabled = ValueNotifier(false);
 
   void validateInputs() {
-    final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.userKYCStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final formFields = (lendersNotifier.userKYCStepData?.nextStep ??
+            lendersNotifier.selectedBankFlow?.nextStep)
         ?.formFields
         ?.map((e) => e.name)
         .toList();
-    final monthlyIncomeFormList = (checkoutNotfier.userKYCStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
+    final monthlyIncomeFormList = (lendersNotifier.userKYCStepData?.nextStep ??
+            lendersNotifier.selectedBankFlow?.nextStep)
         ?.formFields
         ?.where((e) => e.name == 'monthly_income');
     final monthlyIncomeInputData = monthlyIncomeFormList?.isNotEmpty == true
@@ -331,16 +331,15 @@ class _PartnerKYCState extends State<PartnerKYC> {
         setState(() {});
       }
     });
-    final changeNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
+    final lendersNotifier = context.read<KCLendersNotifier>();
 
     MixPanelService.logEvent(
       '10 - KYC MODAL',
       properties: {
-        'environment': changeNotifier.initiateResponse?.isLive == true
+        'environment': lendersNotifier.initiateResponse?.isLive == true
             ? 'production'
             : 'staging',
-        'partner': changeNotifier.selectedBankFlow?.slug,
+        'partner': lendersNotifier.selectedBankFlow?.slug,
       },
     );
   }
@@ -365,9 +364,8 @@ class _PartnerKYCState extends State<PartnerKYC> {
 
   String? getSavedValue(String fieldName) {
     String? value;
-    final checkoutNotfier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    final stepData = checkoutNotfier.userKYCStepData?.nextStep;
+    final lendersNotifier = context.read<KCLendersNotifier>();
+    final stepData = lendersNotifier.userKYCStepData?.nextStep;
     final formMap = stepData?.formFields;
     final inputData = formMap?.where((e) => e.name == fieldName);
     if (inputData?.isNotEmpty == true) {
@@ -380,9 +378,9 @@ class _PartnerKYCState extends State<PartnerKYC> {
 
   @override
   Widget build(BuildContext context) {
-    final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.userKYCStepData?.nextStep ??
-        checkoutNotfier.selectedBankFlow?.nextStep;
+    final lendersNotifier = Provider.of<KCLendersNotifier>(context);
+    final stepData = lendersNotifier.userKYCStepData?.nextStep ??
+        lendersNotifier.selectedBankFlow?.nextStep;
     final formMap = stepData?.formFields;
     final formFields = formMap?.map((e) => e.name).toList();
     return LayoutBuilder(
@@ -406,7 +404,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: checkoutNotfier.prevPage,
+                        onTap: lendersNotifier.prevPage,
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: SvgPicture.asset(
@@ -418,17 +416,17 @@ class _PartnerKYCState extends State<PartnerKYC> {
                     ),
                     Align(
                       child: KCNetworkImage(
-                        url: checkoutNotfier.selectedBankFlow?.logo,
+                        url: lendersNotifier.selectedBankFlow?.logo,
                         height: 55,
                         width: 120,
                       ),
                     ),
-                    if (checkoutNotfier.initiateResponse?.merchant != null)
+                    if (lendersNotifier.initiateResponse?.merchant != null)
                       Align(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child: KCHeadline4(
-                            checkoutNotfier.initiateResponse!.merchant
+                            lendersNotifier.initiateResponse!.merchant
                                 .toString(),
                             fontWeight: FontWeight.w700,
                           ),
@@ -1040,11 +1038,11 @@ class _PartnerKYCState extends State<PartnerKYC> {
                       builder: (_, enabled, __) {
                         return KCPrimaryButton(
                           title: 'Continue',
-                          disabled: !enabled || checkoutNotfier.isBusy,
-                          loading: checkoutNotfier.isBusy,
+                          disabled: !enabled || lendersNotifier.isBusy,
+                          loading: lendersNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotfier.partnerKYC(
+                            lendersNotifier.partnerKYC(
                               nin: _ninCtrl.text.trim(),
                               maritalStatus: _maritalStatus?.value,
                               residentialStatus: _residentialStatus?.value,
