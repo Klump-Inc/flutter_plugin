@@ -81,125 +81,150 @@ class _KCBottomSheetState extends State<KCBottomSheet> {
           duration: const Duration(seconds: 3),
           position: ToastPosition.center,
           textAlign: TextAlign.center,
-          child: Column(
-            children: [
-              Expanded(
-                child: Consumer<KCChangeNotifier>(
-                  builder: (_, checkoutNotifier, __) {
-                    var views = <Widget>[
-                      if (widget.data.email == null ||
-                          widget.data.phone == null)
-                        AccountEmail(
-                          data: widget.data,
-                        ),
-                      SelectBankFlow(
-                        data: widget.data,
-                      ),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'polaris' ||
-                          checkoutNotifier.selectedBankFlow?.slug == 'specta')
-                        const PartnerMobileExperience(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'polaris' ||
-                          checkoutNotifier.selectedBankFlow?.slug ==
-                              'first_bank' ||
-                          checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' ||
-                          checkoutNotifier.selectedBankFlow?.slug ==
-                              'fidelity' ||
-                          checkoutNotifier.selectedBankFlow?.slug ==
-                              'fcmb_credit_direct' ||
-                          checkoutNotifier.selectedBankFlow?.slug == 'wema' ||
-                          checkoutNotifier.selectedBankFlow?.slug == 'klump')
-                        const PartnerRequirements(),
-                      if (checkoutNotifier.selectedBankFlow?.slug !=
-                              'fcmb_credit_direct' &&
-                          checkoutNotifier.selectedBankFlow?.slug !=
-                              'first_bank')
-                        const PartnerLogin(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.createPhoneNumberStepData != null)
-                        const PartnerPhoneNumber(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.verifyPhoneOTPStepData != null)
-                        const PartnerPhoneOTP(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.bioDataStepData != null)
-                        const PartnerBioData(),
-                      if (checkoutNotifier.accountNumberStepData != null)
-                        const PartnerAccountNumber(),
-                      if (checkoutNotifier.enterBVNStepData != null)
-                        const PartnerBVN(),
-                      if (checkoutNotifier.sendBVNOTPStepData != null)
-                        const PartnerSendBVNOTP(),
-                      if (checkoutNotifier.verifyBVNStepData != null)
-                        const PartnerVerifyBVN(),
-                      if (checkoutNotifier.verifyOTPStepData != null)
-                        const PartnerLoginOTP(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const PartnerTermsCondition(),
-                      if (checkoutNotifier.selectedBankFlow?.slug !=
-                              'renmoney' &&
-                          checkoutNotifier.bioDataStepData != null)
-                        const PartnerBioData(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
-                        const PartnerKYC(),
-                      if (checkoutNotifier.selectedBankFlow?.slug != 'specta' &&
-                          checkoutNotifier.selectedBankFlow?.slug !=
-                              'fcmb_credit_direct' &&
-                          checkoutNotifier.selectedBankFlow?.slug !=
-                              'first_bank')
-                        const PartnerPaymentSplit(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                          'first_bank')
-                        const FirstbankWebview(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                          'fcmb_credit_direct')
-                        const CDLWebview(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.documentVerificationStepData != null)
-                        const PartnerDocumentType(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.documentVerificationStepData != null)
-                        const PartnerDocumentUpload(),
-                      if (checkoutNotifier.selectedBankFlow?.slug ==
-                              'renmoney' &&
-                          checkoutNotifier.proofAddressStepData != null)
-                        const PartnerAddressVerify(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
-                        const WemaIllustration(),
-                      if (checkoutNotifier.repaymentDetailsStepData != null)
-                        const PartnerPaymentPreview(),
-                      if (checkoutNotifier.selfieStepData != null)
-                        const PartnerSelfieUpload(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
-                        const PartnerTermsCondition(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
-                        const PartnerInvoice(),
-                      if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
-                        const PartnerConfirmation(),
-                      if (checkoutNotifier.paymentLinkData != null)
-                        const PartnerPaymemtLink(),
-                      const PartnerDecision(),
-                      const PartnerDisbursementStatus(),
-                    ];
-                    return PageView(
-                      controller: checkoutNotifier.pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: views,
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+          child: KCMainViewContainer(data: widget.data),
         ),
       ),
+    );
+  }
+}
+
+class KCMainViewContainer extends StatefulWidget {
+  const KCMainViewContainer({
+    super.key,
+    required this.data,
+  });
+
+  final KlumpCheckoutData data;
+
+  @override
+  State<KCMainViewContainer> createState() => _KCMainViewContainerState();
+}
+
+class _KCMainViewContainerState extends State<KCMainViewContainer> {
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, _initiatTranx);
+    super.initState();
+  }
+
+  void _initiatTranx() {
+    final checkoutNotifier =
+        Provider.of<KCChangeNotifier>(context, listen: false);
+    Future.delayed(Duration.zero, () async {
+      if (widget.data.email != null && widget.data.phone != null) {
+        checkoutNotifier.setTransactionData(
+          widget.data,
+          email: widget.data.email!,
+          phone: widget.data.phone!,
+        );
+        await checkoutNotifier.initiateTransaction();
+      }
+      checkoutNotifier.getLoanPartners();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: Consumer<KCChangeNotifier>(
+            builder: (_, checkoutNotifier, __) {
+              var views = <Widget>[
+                if (widget.data.email == null || widget.data.phone == null)
+                  //User has not provided email and phone, show account email step
+                  AccountEmail(data: widget.data),
+                Container(),
+                SelectBankFlow(
+                  data: widget.data,
+                ),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'polaris' ||
+                    checkoutNotifier.selectedBankFlow?.slug == 'specta')
+                  const PartnerMobileExperience(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'polaris' ||
+                    checkoutNotifier.selectedBankFlow?.slug == 'first_bank' ||
+                    checkoutNotifier.selectedBankFlow?.slug == 'renmoney' ||
+                    checkoutNotifier.selectedBankFlow?.slug == 'fidelity' ||
+                    checkoutNotifier.selectedBankFlow?.slug ==
+                        'fcmb_credit_direct' ||
+                    checkoutNotifier.selectedBankFlow?.slug == 'wema' ||
+                    checkoutNotifier.selectedBankFlow?.slug == 'klump')
+                  const PartnerRequirements(),
+                if (checkoutNotifier.selectedBankFlow?.slug !=
+                        'fcmb_credit_direct' &&
+                    checkoutNotifier.selectedBankFlow?.slug != 'first_bank')
+                  const PartnerLogin(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    checkoutNotifier.createPhoneNumberStepData != null)
+                  const PartnerPhoneNumber(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    checkoutNotifier.verifyPhoneOTPStepData != null)
+                  const PartnerPhoneOTP(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    checkoutNotifier.bioDataStepData != null)
+                  const PartnerBioData(),
+                if (checkoutNotifier.accountNumberStepData != null)
+                  const PartnerAccountNumber(),
+                if (checkoutNotifier.enterBVNStepData != null)
+                  const PartnerBVN(),
+                if (checkoutNotifier.sendBVNOTPStepData != null)
+                  const PartnerSendBVNOTP(),
+                if (checkoutNotifier.verifyBVNStepData != null)
+                  const PartnerVerifyBVN(),
+                if (checkoutNotifier.verifyOTPStepData != null)
+                  const PartnerLoginOTP(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                  const PartnerTermsCondition(),
+                if (checkoutNotifier.selectedBankFlow?.slug != 'renmoney' &&
+                    checkoutNotifier.bioDataStepData != null)
+                  const PartnerBioData(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney')
+                  const PartnerKYC(),
+                if (checkoutNotifier.selectedBankFlow?.slug != 'specta' &&
+                    checkoutNotifier.selectedBankFlow?.slug !=
+                        'fcmb_credit_direct' &&
+                    checkoutNotifier.selectedBankFlow?.slug != 'first_bank')
+                  const PartnerPaymentSplit(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'first_bank')
+                  const FirstbankWebview(),
+                if (checkoutNotifier.selectedBankFlow?.slug ==
+                    'fcmb_credit_direct')
+                  const CDLWebview(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    checkoutNotifier.documentVerificationStepData != null)
+                  const PartnerDocumentType(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    checkoutNotifier.documentVerificationStepData != null)
+                  const PartnerDocumentUpload(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'renmoney' &&
+                    checkoutNotifier.proofAddressStepData != null)
+                  const PartnerAddressVerify(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                  const WemaIllustration(),
+                if (checkoutNotifier.repaymentDetailsStepData != null)
+                  const PartnerPaymentPreview(),
+                if (checkoutNotifier.selfieStepData != null)
+                  const PartnerSelfieUpload(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'wema')
+                  const PartnerTermsCondition(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'polaris')
+                  const PartnerInvoice(),
+                if (checkoutNotifier.selectedBankFlow?.slug == 'stanbic')
+                  const PartnerConfirmation(),
+                if (checkoutNotifier.paymentLinkData != null)
+                  const PartnerPaymemtLink(),
+                const PartnerDecision(),
+                const PartnerDisbursementStatus(),
+              ];
+              return PageView(
+                controller: checkoutNotifier.pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: views,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:klump_checkout/klump_checkout.dart';
 
 class InitiateResponseModel extends Equatable {
   final dynamic message;
@@ -7,6 +8,8 @@ class InitiateResponseModel extends Equatable {
   final dynamic merchant;
   final bool isLive;
   final dynamic interest;
+  final dynamic refundWallet;
+  final NextStepModel? nextStep;
 
   const InitiateResponseModel({
     required this.message,
@@ -15,6 +18,8 @@ class InitiateResponseModel extends Equatable {
     required this.merchant,
     required this.isLive,
     required this.interest,
+    required this.refundWallet,
+    required this.nextStep,
   });
 
   factory InitiateResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -25,6 +30,10 @@ class InitiateResponseModel extends Equatable {
         merchant: json["merchant"],
         isLive: json["is_live"],
         interest: json["interest"],
+        refundWallet: json["refund_wallet"],
+        nextStep: json["next_step"] != null
+            ? NextStepModel.fromJson(json["next_step"])
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +43,8 @@ class InitiateResponseModel extends Equatable {
         "merchant": merchant,
         "is_live": isLive,
         "interest": interest,
+        "refund_wallet": refundWallet,
+        "next_step": null,
       };
 
   @override
@@ -43,5 +54,6 @@ class InitiateResponseModel extends Equatable {
         merchant,
         isLive,
         interest,
+        refundWallet,
       ];
 }

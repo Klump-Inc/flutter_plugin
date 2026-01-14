@@ -175,8 +175,18 @@ class KCChangeNotifier extends ChangeNotifier {
   double? _downPayment;
   double? get downPayment => _downPayment;
 
-  void setTransactionData(KlumpCheckoutData data) {
+  void setTransactionData(
+    KlumpCheckoutData data, {
+    String? email,
+    String? phone,
+  }) {
     _checkoutData = data;
+    if (email != null) {
+      _email = email;
+    }
+    if (phone != null) {
+      _phoneNumber = phone;
+    }
   }
 
   void _setBusy(bool value) {
@@ -273,13 +283,8 @@ class KCChangeNotifier extends ChangeNotifier {
     }
   }
 
-  Future<bool> initiateTransaction({
-    required String email,
-    required String phone,
-  }) async {
+  Future<bool?> initiateTransaction() async {
     _setBusy(true);
-    _email = email;
-    _phoneNumber = phone;
     if (initiateResponse == null) {
       var sourceAnalytics = <String, dynamic>{
         'plugin_source': 'Flutter',
@@ -295,8 +300,8 @@ class KCChangeNotifier extends ChangeNotifier {
           currency: _checkoutData!.currency ?? 'NGN',
           publicKey: _checkoutData!.merchantPublicKey,
           metaData: _checkoutData!.metaData,
-          email: email,
-          phone: phone,
+          email: email!,
+          phone: phoneNumber!,
           items: _checkoutData?.items ?? [],
           shippingData: _checkoutData!.shippingData,
           merchantReference: _checkoutData!.merchantReference,

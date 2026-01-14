@@ -146,17 +146,12 @@ class _AccountEmailState extends State<AccountEmail> {
                           loading: checkoutNotifier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotifier.setTransactionData(widget.data);
-                            checkoutNotifier
-                                .initiateTransaction(
+                            checkoutNotifier.setTransactionData(
+                              widget.data,
                               email: _emailCtrl.text.trim(),
                               phone: _phoneCtrl.text.trim(),
-                            )
-                                .then((value) {
-                              if (value) {
-                                checkoutNotifier.nextPage();
-                              }
-                            });
+                            );
+                            checkoutNotifier.nextPage();
                           },
                         );
                       },
