@@ -17,6 +17,24 @@ class SelectBankFlow extends StatefulWidget {
 }
 
 class _SelectBankFlowState extends State<SelectBankFlow> {
+  @override
+  initState() {
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        final checkoutNotifier = context.read<KCChangeNotifier>();
+        MixPanelService.logEvent(
+          '3 - Select Payment institution Modal',
+          properties: {
+            'environment': checkoutNotifier.initiateResponse?.isLive == true
+                ? 'production'
+                : 'staging',
+          },
+        );
+      }
+    });
+    super.initState();
+  }
+
   void _getCameras() async {
     cameras = await availableCameras();
   }

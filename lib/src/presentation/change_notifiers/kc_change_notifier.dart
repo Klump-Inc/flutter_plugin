@@ -39,6 +39,14 @@ class KCChangeNotifier extends ChangeNotifier {
   late GetLoanPartnersUsecase getLoanPartnersUsecase;
   late PartnersUsecase partnersUsecase;
 
+  PaymentOption _paymentOption = PaymentOption.lenders;
+  PaymentOption get paymentOption => _paymentOption;
+
+  void setPaymentOption(PaymentOption option) {
+    _paymentOption = option;
+    nextPage();
+  }
+
   bool _isBusy = false;
   bool get isBusy => _isBusy;
   var _currentPage = 0;
@@ -316,13 +324,14 @@ class KCChangeNotifier extends ChangeNotifier {
         },
         (r) {
           _initiateResponse = r;
-          MixPanelService.logEvent(
-            '3 - Select Payment institution Modal',
-            properties: {
-              'environment': r.isLive ? 'production' : 'staging',
-            },
-          );
-          return true;
+          if (r.nextStep != null) {
+            storeNextStepData(
+              KCAPIResponse(
+                nextStep: r.nextStep!,
+              ),
+            );
+          }
+          return r.refundWallet != null;
         },
       );
     } else {
@@ -1568,4 +1577,10 @@ class KCChangeNotifier extends ChangeNotifier {
     _bvn = null;
     nextPage();
   }
+}
+
+///Payment option for the transaction, refund wallet or lenders
+enum PaymentOption {
+  refundWallet,
+  lenders,
 }

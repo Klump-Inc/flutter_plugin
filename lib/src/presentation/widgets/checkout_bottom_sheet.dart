@@ -102,28 +102,6 @@ class KCMainViewContainer extends StatefulWidget {
 
 class _KCMainViewContainerState extends State<KCMainViewContainer> {
   @override
-  void initState() {
-    Future.delayed(Duration.zero, _initiatTranx);
-    super.initState();
-  }
-
-  void _initiatTranx() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    Future.delayed(Duration.zero, () async {
-      if (widget.data.email != null && widget.data.phone != null) {
-        checkoutNotifier.setTransactionData(
-          widget.data,
-          email: widget.data.email!,
-          phone: widget.data.phone!,
-        );
-        await checkoutNotifier.initiateTransaction();
-      }
-      checkoutNotifier.getLoanPartners();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -134,10 +112,16 @@ class _KCMainViewContainerState extends State<KCMainViewContainer> {
                 if (widget.data.email == null || widget.data.phone == null)
                   //User has not provided email and phone, show account email step
                   AccountEmail(data: widget.data),
-                Container(),
-                SelectBankFlow(
+                PaymentOptionView(
                   data: widget.data,
                 ),
+                if (checkoutNotifier.paymentOption ==
+                    PaymentOption.refundWallet)
+                  ...{},
+                if (checkoutNotifier.paymentOption == PaymentOption.lenders)
+                  SelectBankFlow(
+                    data: widget.data,
+                  ),
                 if (checkoutNotifier.selectedBankFlow?.slug == 'polaris' ||
                     checkoutNotifier.selectedBankFlow?.slug == 'specta')
                   const PartnerMobileExperience(),
