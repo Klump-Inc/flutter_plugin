@@ -27,6 +27,7 @@ import 'package:mockito/src/dummies.dart' as _i5;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeInitiateTransactionUsecase_0 extends _i1.SmartFake
     implements _i2.InitiateTransactionUsecase {
@@ -253,6 +254,12 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as _i2.PartnersUsecase);
 
   @override
+  _i2.PaymentOption get paymentOption => (super.noSuchMethod(
+        Invocation.getter(#paymentOption),
+        returnValue: _i2.PaymentOption.refundWallet,
+      ) as _i2.PaymentOption);
+
+  @override
   bool get isBusy => (super.noSuchMethod(
         Invocation.getter(#isBusy),
         returnValue: false,
@@ -295,107 +302,98 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       ) as List<Map<String, dynamic>>);
 
   @override
-  set initiateTransactionUsecase(
-          _i2.InitiateTransactionUsecase? _initiateTransactionUsecase) =>
+  set initiateTransactionUsecase(_i2.InitiateTransactionUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #initiateTransactionUsecase,
-          _initiateTransactionUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set accountValidationUsecase(
-          _i2.AccountValidationUsecase? _accountValidationUsecase) =>
+  set accountValidationUsecase(_i2.AccountValidationUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #accountValidationUsecase,
-          _accountValidationUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set verifyOTPUsecase(_i2.VerifyOTPUsecase? _verifyOTPUsecase) =>
-      super.noSuchMethod(
+  set verifyOTPUsecase(_i2.VerifyOTPUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #verifyOTPUsecase,
-          _verifyOTPUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getBankTCUsecase(_i2.GetBankTCUsecase? _getBankTCUsecase) =>
-      super.noSuchMethod(
+  set getBankTCUsecase(_i2.GetBankTCUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #getBankTCUsecase,
-          _getBankTCUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getRepaymentDetailsUsecase(
-          _i2.GetRepaymentDetailsUsecase? _getRepaymentDetailsUsecase) =>
+  set getRepaymentDetailsUsecase(_i2.GetRepaymentDetailsUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getRepaymentDetailsUsecase,
-          _getRepaymentDetailsUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getLoanStatusUsecase(_i2.GetLoanStatusUsecase? _getLoanStatusUsecase) =>
+  set getLoanStatusUsecase(_i2.GetLoanStatusUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getLoanStatusUsecase,
-          _getLoanStatusUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getPartnerInsurersUsecase(
-          _i2.GetPartnerInsurersUsecase? _getPartnerInsurersUsecase) =>
+  set getPartnerInsurersUsecase(_i2.GetPartnerInsurersUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getPartnerInsurersUsecase,
-          _getPartnerInsurersUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set accountCredentialsUsecase(
-          _i3.AccountCredentialsUsecase? _accountCredentialsUsecase) =>
+  set accountCredentialsUsecase(_i3.AccountCredentialsUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #accountCredentialsUsecase,
-          _accountCredentialsUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set getLoanPartnersUsecase(
-          _i2.GetLoanPartnersUsecase? _getLoanPartnersUsecase) =>
+  set getLoanPartnersUsecase(_i2.GetLoanPartnersUsecase? value) =>
       super.noSuchMethod(
         Invocation.setter(
           #getLoanPartnersUsecase,
-          _getLoanPartnersUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  set partnersUsecase(_i2.PartnersUsecase? _partnersUsecase) =>
-      super.noSuchMethod(
+  set partnersUsecase(_i2.PartnersUsecase? value) => super.noSuchMethod(
         Invocation.setter(
           #partnersUsecase,
-          _partnersUsecase,
+          value,
         ),
         returnValueForMissingStub: null,
       );
@@ -405,6 +403,15 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
         Invocation.getter(#hasListeners),
         returnValue: false,
       ) as bool);
+
+  @override
+  void setPaymentOption(_i2.PaymentOption? option) => super.noSuchMethod(
+        Invocation.method(
+          #setPaymentOption,
+          [option],
+        ),
+        returnValueForMissingStub: null,
+      );
 
   @override
   void nextPage() => super.noSuchMethod(
@@ -425,10 +432,28 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  void setTransactionData(_i2.KlumpCheckoutData? data) => super.noSuchMethod(
+  void pageTo(int? page) => super.noSuchMethod(
+        Invocation.method(
+          #pageTo,
+          [page],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setTransactionData(
+    _i2.KlumpCheckoutData? data, {
+    String? email,
+    String? phone,
+  }) =>
+      super.noSuchMethod(
         Invocation.method(
           #setTransactionData,
           [data],
+          {
+            #email: email,
+            #phone: phone,
+          },
         ),
         returnValueForMissingStub: null,
       );
@@ -470,21 +495,13 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
       );
 
   @override
-  _i6.Future<bool> initiateTransaction({
-    required String? email,
-    required String? phone,
-  }) =>
-      (super.noSuchMethod(
+  _i6.Future<bool?> initiateTransaction() => (super.noSuchMethod(
         Invocation.method(
           #initiateTransaction,
           [],
-          {
-            #email: email,
-            #phone: phone,
-          },
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i6.Future<bool?>.value(),
+      ) as _i6.Future<bool?>);
 
   @override
   _i6.Future<void> getLoanPartners() => (super.noSuchMethod(

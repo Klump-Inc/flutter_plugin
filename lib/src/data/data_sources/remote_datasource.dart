@@ -518,6 +518,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
               (response.data as Map<String, dynamic>)['data']['token']);
         }
       }
+      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'

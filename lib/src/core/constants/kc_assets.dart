@@ -12,6 +12,7 @@ class KCAssets {
   static String upload = 'assets/icons/upload.svg';
   static String repeat = 'assets/icons/repeat.svg';
   static String info = 'assets/icons/info.svg';
+  static String copy2 = 'assets/icons/copy_2.svg';
 
   //images
   static String safe = 'assets/images/safe.png';

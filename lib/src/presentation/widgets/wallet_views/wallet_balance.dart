@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class WalletBalance extends StatefulWidget {
-  const WalletBalance({super.key, required this.initiateResponse});
-  final InitiateResponseModel initiateResponse;
+  const WalletBalance({super.key});
 
   @override
   State<WalletBalance> createState() => _WalletBalanceState();
@@ -25,6 +25,8 @@ class _WalletBalanceState extends State<WalletBalance> {
   @override
   Widget build(BuildContext context) {
     final changeNotifier = Provider.of<KCChangeNotifier>(context);
+    final stepData = changeNotifier.balancePageWithTopupData?.nextStep;
+    Logger().d(stepData);
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
@@ -66,14 +68,16 @@ class _WalletBalanceState extends State<WalletBalance> {
                               KCAssets.klumpLogo,
                               package: 'klump_checkout',
                             ),
-                            if (widget.initiateResponse.merchant != null)
+                            if (changeNotifier.initiateResponse?.merchant !=
+                                null)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text.rich(
                                   TextSpan(children: [
                                     const TextSpan(text: 'Proud partner of '),
                                     TextSpan(
-                                        text: widget.initiateResponse.merchant
+                                        text: changeNotifier
+                                            .initiateResponse?.merchant
                                             .toString(),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w700)),
@@ -97,64 +101,76 @@ class _WalletBalanceState extends State<WalletBalance> {
                     ),
                     const YSpace(24),
                     KCHeadline3(
-                      'Pay through refund wallet',
+                      stepData?.displayData?.title ??
+                          'Pay through refund wallet',
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: KCHeadline5(
-                        'You can complete this purchase with the money in your Klump refund wallet.',
+                        stepData?.displayData?.subTitle ??
+                            'You can complete this purchase with the money in your Klump refund wallet.',
                       ),
                     ),
                     const YSpace(24),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.42),
-                        color: KCColors.white,
-                        border: Border.all(color: KCColors.grey1, width: 0.88),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: KCBodyText1(
-                              'Refund Wallet (NGN 100,000)',
-                              fontWeight: FontWeight.w500,
+                    if (stepData?.displayData?.smallText != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.42),
+                          color: KCColors.white,
+                          border:
+                              Border.all(color: KCColors.grey1, width: 0.88),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: KCBodyText1(
+                                stepData?.displayData?.smallText ?? '',
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          const XSpace(20),
-                          Container(
-                            width: 16.67,
-                            height: 16.67,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: KCColors.primary),
-                            ),
-                            child: Center(
-                              child: Container(
-                                width: 8.33,
-                                height: 8.33,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: KCColors.primary,
+                            const XSpace(20),
+                            Container(
+                              width: 16.67,
+                              height: 16.67,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: KCColors.primary),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  width: 8.33,
+                                  height: 8.33,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: KCColors.primary,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                     const YSpace(12),
-                    KCBodyText1(
-                      'Change your mind? Pay through Klump Lenders',
-                      decoration: TextDecoration.underline,
-                      color: KCColors.lightBlue,
-                      decorationColor: KCColors.lightBlue,
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        changeNotifier.setPaymentOption(PaymentOption.lenders);
+                        changeNotifier.pageTo(0);
+                      },
+                      child: KCBodyText1(
+                        'Change your mind? Pay through Klump Lenders',
+                        decoration: TextDecoration.underline,
+                        color: KCColors.lightBlue,
+                        decorationColor: KCColors.lightBlue,
+                      ),
                     ),
                     const YSpace(25),
                     const Spacer(),
                     KCPrimaryButton(
-                      title: 'Yes, Pay NGN 176,807.5',
+                      title:
+                          'Yes, Pay NGN ${KCStringUtil.formatAmount(changeNotifier.totalAmount)}',
                       disabled: changeNotifier.isBusy,
                       loading: changeNotifier.isBusy,
                       onTap: () {

@@ -135,6 +135,7 @@ class _PaymentOptionViewState extends State<PaymentOptionView> {
                         onTap: () {
                           changeNotifier
                               .setPaymentOption(PaymentOption.refundWallet);
+                          changeNotifier.nextPage();
                         },
                       ),
                       const YSpace(16),
@@ -142,6 +143,7 @@ class _PaymentOptionViewState extends State<PaymentOptionView> {
                         onTap: () {
                           changeNotifier
                               .setPaymentOption(PaymentOption.lenders);
+                          changeNotifier.nextPage();
                         },
                         title: 'Pay through Lenders',
                       )

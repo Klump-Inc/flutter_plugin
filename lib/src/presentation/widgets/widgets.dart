@@ -21,3 +21,4 @@ export 'select_bank_flow.dart';
 export 'spaces.dart';
 export 'text.dart';
 export 'text_area.dart';
+export 'wallet_views/wallet_views.dart';

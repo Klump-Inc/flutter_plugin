@@ -44,7 +44,6 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void setPaymentOption(PaymentOption option) {
     _paymentOption = option;
-    nextPage();
   }
 
   bool _isBusy = false;
@@ -150,6 +149,9 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _paymentLinkData;
   KCAPIResponse? get paymentLinkData => _paymentLinkData;
 
+//Wallet addition
+  KCAPIResponse? _balancePageWithTopupData;
+  KCAPIResponse? get balancePageWithTopupData => _balancePageWithTopupData;
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -162,6 +164,16 @@ class KCChangeNotifier extends ChangeNotifier {
 
   void prevPage() {
     _currentPage--;
+    _pageController.animateToPage(
+      _currentPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+    notifyListeners();
+  }
+
+  void pageTo(int page) {
+    _currentPage = page;
     _pageController.animateToPage(
       _currentPage,
       duration: const Duration(milliseconds: 300),
@@ -287,6 +299,9 @@ class KCChangeNotifier extends ChangeNotifier {
       case 'PAYMENT_LINK':
         _paymentLinkData = data;
         break;
+      case 'BALANCE_PAGE_WITH_TOPUP':
+        _balancePageWithTopupData = data;
+        break;
       default:
     }
   }
@@ -371,50 +386,55 @@ class KCChangeNotifier extends ChangeNotifier {
     _firstName = firstName ?? _firstName;
     _email = email ?? _email;
     _username = username ?? _username;
-    final formFields =
-        (verificationStepData?.nextStep ?? selectedBankFlow?.nextStep)
-            ?.formFields
-            ?.map((e) => e.name)
-            .toList();
+
+    final formFieldsNames =
+        verificationStepData?.nextStep.formFields?.map((e) => e.name).toList();
     Map<String, dynamic> data = {
       'is_live': initiateResponse?.isLive == true,
-      'partner': _selectedBankFlow!.slug,
       'klump_public_key': _checkoutData?.merchantPublicKey,
     };
-    if (formFields?.contains('accountNumber') == true) {
+    if (_selectedBankFlow?.slug != null) {
+      data['partner'] = _selectedBankFlow!.slug;
+    }
+    verificationStepData?.nextStep.formFields?.forEach((e) {
+      if (e.name != null && e.value != null) {
+        data[e.name!] = e.value!;
+      }
+    });
+    if (formFieldsNames?.contains('accountNumber') == true) {
       data['accountNumber'] = _accountNumber;
     }
-    if (formFields?.contains('phoneNumber') == true) {
+    if (formFieldsNames?.contains('phoneNumber') == true) {
       data['phoneNumber'] = _phoneNumber;
     }
-    if (formFields?.contains('bank') == true) {
+    if (formFieldsNames?.contains('bank') == true) {
       data['bank'] = _selectedBank != null ? _selectedBank!['slug'] : null;
     }
-    if (formFields?.contains('firstName') == true) {
+    if (formFieldsNames?.contains('firstName') == true) {
       data['firstName'] = firstName;
     }
-    if (formFields?.contains('firstname') == true) {
+    if (formFieldsNames?.contains('firstname') == true) {
       data['firstname'] = firstName;
     }
-    if (formFields?.contains('password') == true) {
+    if (formFieldsNames?.contains('password') == true) {
       data['password'] = password;
     }
-    if (formFields?.contains('amount') == true ||
+    if (formFieldsNames?.contains('amount') == true ||
         selectedBankFlow?.slug == 'fidelity') {
       data['amount'] =
           _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
     }
-    if (formFields?.contains('email') == true) {
+    if (formFieldsNames?.contains('email') == true) {
       data['email'] = _email;
     }
 
-    if (formFields?.contains('currency') == true) {
+    if (formFieldsNames?.contains('currency') == true) {
       data['currency'] = 'NGN';
     }
-    if (formFields?.contains('username') == true) {
+    if (formFieldsNames?.contains('username') == true) {
       data['username'] = username;
     }
-    if (formFields?.contains('pin') == true) {
+    if (formFieldsNames?.contains('pin') == true) {
       data['pin'] = pin;
     }
     MixPanelService.logEvent(
@@ -422,7 +442,7 @@ class KCChangeNotifier extends ChangeNotifier {
       properties: {
         'environment':
             initiateResponse?.isLive == true ? 'production' : 'staging',
-        'partner': selectedBankFlow!.slug,
+        'partner': selectedBankFlow?.slug ?? 'refund_wallet',
         'payload': data,
       },
     );
@@ -435,7 +455,7 @@ class KCChangeNotifier extends ChangeNotifier {
             selectedBankFlow?.nextStep?.api ??
             '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
-        partner: _selectedBankFlow!.slug,
+        partner: _selectedBankFlow?.slug ?? 'refund_wallet',
         data: data,
       ),
     );
