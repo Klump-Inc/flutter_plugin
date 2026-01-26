@@ -10,7 +10,6 @@ class NextStep extends Equatable {
   final String? api;
   final dynamic timeout;
   final String? mobileCheckoutUrl;
-
   const NextStep({
     this.name,
     this.method,

@@ -11,6 +11,7 @@ class DisplayDataModel extends DisplayData {
     super.text,
     super.version,
     super.carousel,
+    super.subText,
   });
   factory DisplayDataModel.fromJson(Map<String, dynamic> json) =>
       DisplayDataModel(
@@ -23,5 +24,6 @@ class DisplayDataModel extends DisplayData {
         text: json['text'],
         version: json['version'],
         carousel: json['carousel'],
+        subText: json['subtext'],
       );
 }

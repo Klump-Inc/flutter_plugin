@@ -10,6 +10,7 @@ class DisplayData extends Equatable {
   final String? text;
   final dynamic version;
   final List<dynamic>? carousel;
+  final String? subText;
 
   const DisplayData({
     this.title,
@@ -21,6 +22,7 @@ class DisplayData extends Equatable {
     this.text,
     this.version,
     this.carousel,
+    this.subText,
   });
 
   @override
@@ -34,5 +36,6 @@ class DisplayData extends Equatable {
         text,
         version,
         carousel,
+        subText,
       ];
 }

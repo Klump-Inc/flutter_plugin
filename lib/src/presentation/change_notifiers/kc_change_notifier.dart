@@ -152,6 +152,10 @@ class KCChangeNotifier extends ChangeNotifier {
 //Wallet addition
   KCAPIResponse? _balancePageWithTopupData;
   KCAPIResponse? get balancePageWithTopupData => _balancePageWithTopupData;
+
+  KCAPIResponse? _walletKYCStepData;
+  KCAPIResponse? get walletKYCStepData => _walletKYCStepData;
+
   void nextPage() {
     _currentPage++;
     _pageController.animateToPage(
@@ -301,6 +305,9 @@ class KCChangeNotifier extends ChangeNotifier {
         break;
       case 'BALANCE_PAGE_WITH_TOPUP':
         _balancePageWithTopupData = data;
+        break;
+      case 'UPDATE_USER_KYC':
+        _walletKYCStepData = data;
         break;
       default:
     }
@@ -1029,6 +1036,8 @@ class KCChangeNotifier extends ChangeNotifier {
 
   Future<void> partnerKYC({
     required String? nin,
+    required String? bvn,
+    required DateTime? dateOfBirth,
     required String? maritalStatus,
     required String? residentialStatus,
     required String? address,
@@ -1055,6 +1064,14 @@ class KCChangeNotifier extends ChangeNotifier {
     };
     if (nin?.isNotEmpty == true) {
       data.addAll({'nin': nin});
+    }
+    if (bvn?.isNotEmpty == true) {
+      data.addAll({'bvn': bvn});
+    }
+    if (dateOfBirth != null) {
+      data.addAll({
+        'date_of_birth': KCStringUtil.formatServerDate(dateOfBirth),
+      });
     }
     if (maritalStatus?.isNotEmpty == true) {
       data.addAll({'marital_status': maritalStatus});
@@ -1547,6 +1564,162 @@ class KCChangeNotifier extends ChangeNotifier {
       (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
       (r) {
         storeNextStepData(r);
+      },
+    );
+  }
+
+  ///Wallet KYC
+
+  Future<void> walletKYC({
+    required String? nin,
+    required String? bvn,
+    required DateTime? dateOfBirth,
+    required String? maritalStatus,
+    required String? residentialStatus,
+    required String? address,
+    required String? landmark,
+    required String? city,
+    required String? state,
+    required DateTime? dateMovedIn,
+    required String? employmentStatus,
+    required String? companyName,
+    required String? companyIndustry,
+    required String? companyAddress,
+    required DateTime? companyStartDate,
+    required String? monthlyIncome,
+    required String? education,
+    required String? nextOfKinName,
+    required String? nextOfKinRetionship,
+    required String? nextOfKinPhone,
+    required double? amount,
+  }) async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      'is_live': initiateResponse?.isLive == true,
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+    };
+
+    if (_selectedBankFlow?.slug != null) {
+      data['partner'] = _selectedBankFlow!.slug;
+    }
+    if (nin?.isNotEmpty == true) {
+      data.addAll({'nin': nin});
+    }
+    if (bvn?.isNotEmpty == true) {
+      data.addAll({'bvn': bvn});
+    }
+    if (dateOfBirth != null) {
+      data.addAll({
+        'date_of_birth': KCStringUtil.formatServerDate(dateOfBirth),
+      });
+    }
+    if (maritalStatus?.isNotEmpty == true) {
+      data.addAll({'marital_status': maritalStatus});
+    }
+    if (residentialStatus?.isNotEmpty == true) {
+      data.addAll({'residential_status': residentialStatus});
+    }
+    if (address?.isNotEmpty == true) {
+      data.addAll({'address': address});
+    }
+    if (landmark?.isNotEmpty == true) {
+      data.addAll({'landmark': landmark});
+    }
+    if (city?.isNotEmpty == true) {
+      data.addAll({'city': city});
+    }
+    if (state?.isNotEmpty == true) {
+      data.addAll({'state': state});
+    }
+    if (dateMovedIn != null) {
+      data.addAll({
+        'date_moved_in': KCStringUtil.formatServerDate(dateMovedIn),
+      });
+    }
+    if (employmentStatus?.isNotEmpty == true) {
+      data.addAll({'employment_status': employmentStatus});
+    }
+    if (companyName?.isNotEmpty == true) {
+      data.addAll({'company_name': companyName});
+    }
+    if (companyIndustry?.isNotEmpty == true) {
+      data.addAll({'company_industry': companyIndustry});
+    }
+    if (companyAddress?.isNotEmpty == true) {
+      data.addAll({'company_address': companyAddress});
+    }
+    if (companyStartDate != null) {
+      data.addAll({
+        'company_start_date': KCStringUtil.formatServerDate(companyStartDate),
+      });
+    }
+    if (monthlyIncome?.isNotEmpty == true) {
+      data.addAll({
+        'monthly_income': KCStringUtil.convertTextFigure(monthlyIncome!),
+      });
+    }
+    if (education?.isNotEmpty == true) {
+      data.addAll({'education': education});
+    }
+    if (nextOfKinName?.isNotEmpty == true) {
+      data.addAll({'next_of_kin_name': nextOfKinName});
+    }
+    if (nextOfKinRetionship?.isNotEmpty == true) {
+      data.addAll({'next_of_kin_relationship': nextOfKinRetionship});
+    }
+    if (nextOfKinPhone?.isNotEmpty == true) {
+      data.addAll({'next_of_kin_phone': nextOfKinPhone});
+    }
+    if (amount != null) {
+      data.addAll({'amount': amount});
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: walletKYCStepData?.nextStep.method ?? '',
+        api: walletKYCStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow?.slug ?? 'refund_wallet',
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        nextPage();
+      },
+    );
+  }
+
+  Future<void> payWithWallet() async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      'amount': totalAmount,
+      'currency': _checkoutData!.currency ?? 'NGN',
+      'partner': _selectedBankFlow?.slug ?? 'refund_wallet',
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      'is_live': initiateResponse?.isLive == true,
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: balancePageWithTopupData?.nextStep.method ?? '',
+        api: balancePageWithTopupData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow?.slug ?? 'refund_wallet',
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
       },
     );
   }

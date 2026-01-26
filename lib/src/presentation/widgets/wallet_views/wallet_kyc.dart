@@ -8,16 +8,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/core/core.dart';
 import 'package:klump_checkout/src/presentation/presentation.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-class PartnerKYC extends StatefulWidget {
-  const PartnerKYC({super.key});
+class WalletKYC extends StatefulWidget {
+  const WalletKYC({super.key});
 
   @override
-  State<PartnerKYC> createState() => _PartnerKYCState();
+  State<WalletKYC> createState() => _WalletKYCState();
 }
 
-class _PartnerKYCState extends State<PartnerKYC> {
+class _WalletKYCState extends State<WalletKYC> {
   late TextEditingController _ninCtrl;
   late TextEditingController _bvnCtrl;
   late TextEditingController _addressCtrl;
@@ -68,23 +69,20 @@ class _PartnerKYCState extends State<PartnerKYC> {
 
   void validateInputs() {
     final checkoutNotfier = context.read<KCChangeNotifier>();
-    final formFields = (checkoutNotfier.userKYCStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
-        ?.formFields
+    final formFields = checkoutNotfier.walletKYCStepData?.nextStep.formFields
         ?.map((e) => e.name)
         .toList();
-    final monthlyIncomeFormList = (checkoutNotfier.userKYCStepData?.nextStep ??
-            checkoutNotfier.selectedBankFlow?.nextStep)
-        ?.formFields
-        ?.where((e) => e.name == 'monthly_income');
+    final monthlyIncomeFormList =
+        (checkoutNotfier.walletKYCStepData?.nextStep ??
+                checkoutNotfier.selectedBankFlow?.nextStep)
+            ?.formFields
+            ?.where((e) => e.name == 'monthly_income');
     final monthlyIncomeInputData = monthlyIncomeFormList?.isNotEmpty == true
         ? monthlyIncomeFormList?.first
         : null;
 
     final ninError = KCFormValidator.errorNIN(_ninCtrl.text.trim(), 'Required');
     final bvnError = KCFormValidator.errorBVN(_bvnCtrl.text.trim(), 'Required');
-    final dateOfBirthError = KCFormValidator.errorDate(
-        _dateOfBirth, 'Required', _validateDateOfBirth);
     final addressError =
         KCFormValidator.errorGeneric(_addressCtrl.text.trim(), 'Required');
     final landmarkError =
@@ -95,6 +93,8 @@ class _PartnerKYCState extends State<PartnerKYC> {
         KCFormValidator.errorGeneric(_lgaCtrl.text.trim(), 'Required');
     final dateMovedInError =
         KCFormValidator.errorDate(_dateMovedIn, 'Required', true);
+    final dateOfBirthError = KCFormValidator.errorDate(
+        _dateOfBirth, 'Required', _validateDateOfBirth);
     final companyNameError =
         KCFormValidator.errorGeneric(_companyCtrl.text.trim(), 'Required');
     final companyIndustryError = KCFormValidator.errorGeneric(
@@ -116,8 +116,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
         _nextOfkinPhoneCtrl.text.trim(), 'Required');
     if ((ninError?.isEmpty == true || formFields?.contains('nin') != true) &&
         (bvnError?.isEmpty == true || formFields?.contains('bvn') != true) &&
-        (dateOfBirthError?.isEmpty == true ||
-            formFields?.contains('date_of_birth') != true) &&
         (_maritalStatus != null ||
             formFields?.contains('marital_status') != true) &&
         (_residentialStatus != null ||
@@ -134,6 +132,8 @@ class _PartnerKYCState extends State<PartnerKYC> {
             formFields?.contains('state') != true) &&
         (dateMovedInError?.isEmpty == true ||
             formFields?.contains('date_moved_in') != true) &&
+        (dateOfBirthError?.isEmpty == true ||
+            formFields?.contains('date_of_birth') != true) &&
         (_employmentStatus != null ||
             formFields?.contains('employment_status') != true) &&
         (companyNameError?.isEmpty == true ||
@@ -266,13 +266,6 @@ class _PartnerKYCState extends State<PartnerKYC> {
       if (savedBvn != null) {
         _bvnCtrl.text = savedBvn;
       }
-      final savedDateOfBirth = getSavedValue('date_of_birth');
-      if (savedDateOfBirth != null) {
-        _dateOfBirth = DateTime.tryParse(savedDateOfBirth.toString());
-        if (_dateOfBirth != null) {
-          _dateOfBirthCtrl.text = KCStringUtil.formatDate(_dateOfBirth!);
-        }
-      }
       final savedMaritalStatus = getSavedValue('marital_status');
       if (savedMaritalStatus != null) {
         _maritalStatus = KCDropdownInputAns(
@@ -302,6 +295,13 @@ class _PartnerKYCState extends State<PartnerKYC> {
         _dateMovedIn = DateTime.tryParse(savedDateMovedIn.toString());
         if (_dateMovedIn != null) {
           _dateMovedInCtrl.text = KCStringUtil.formatDate(_dateMovedIn!);
+        }
+      }
+      final savedDateOfBirth = getSavedValue('date_of_birth');
+      if (savedDateOfBirth != null) {
+        _dateOfBirth = DateTime.tryParse(savedDateOfBirth.toString());
+        if (_dateOfBirth != null) {
+          _dateOfBirthCtrl.text = KCStringUtil.formatDate(_dateOfBirth!);
         }
       }
       final savedEmploymentStatus = getSavedValue('employment_status');
@@ -398,7 +398,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
     String? value;
     final checkoutNotfier =
         Provider.of<KCChangeNotifier>(context, listen: false);
-    final stepData = checkoutNotfier.userKYCStepData?.nextStep;
+    final stepData = checkoutNotfier.walletKYCStepData?.nextStep;
     final formMap = stepData?.formFields;
     final inputData = formMap?.where((e) => e.name == fieldName);
     if (inputData?.isNotEmpty == true) {
@@ -412,10 +412,11 @@ class _PartnerKYCState extends State<PartnerKYC> {
   @override
   Widget build(BuildContext context) {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
-    final stepData = checkoutNotfier.userKYCStepData?.nextStep ??
+    final stepData = checkoutNotfier.walletKYCStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
     final formMap = stepData?.formFields;
-    final formFields = formMap?.map((e) => e.name).toList();
+    final formFieldsNames = formMap?.map((e) => e.name).toList();
+    Logger().d(formMap);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -478,7 +479,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                             KCHeadline5(stepData?.displayData?.subTitle ?? ''),
                       ),
                     const YSpace(24),
-                    if (formFields?.contains('nin') == true)
+                    if (formFieldsNames?.contains('nin') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -502,7 +503,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('bvn') == true)
+                    if (formFieldsNames?.contains('bvn') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -526,71 +527,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('date_of_birth') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            KCInputField(
-                              controller: _dateOfBirthCtrl,
-                              hint: 'Date of Birth',
-                              textInputType: TextInputType.text,
-                              validationMessage: KCFormValidator.errorDate(
-                                _dateOfBirth,
-                                'Date of Birth is required',
-                                _validateDateOfBirth,
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  _validateDateOfBirth = true;
-                                });
-                                if (Platform.isIOS) {
-                                  showCupertinoModalPopup<void>(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    barrierColor:
-                                        const Color.fromRGBO(0, 0, 0, 0.4),
-                                    builder: (BuildContext context) {
-                                      return KCIOSDatePickerContainer(
-                                        initialDate: _dateOfBirth,
-                                        onDateSelected: (value) {
-                                          _dateOfBirthCtrl.text =
-                                              KCStringUtil.formatDate(value!);
-                                          setState(() {
-                                            _dateOfBirth = value;
-                                          });
-                                          validateInputs();
-                                          Navigator.pop(context);
-                                        },
-                                        onCancel: () {
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  selectDateAndroid(
-                                    context,
-                                    initialDate: _dateOfBirth,
-                                    onDateSelected: (value) {
-                                      _dateOfBirthCtrl.text =
-                                          KCStringUtil.formatDate(value!);
-                                      setState(() {
-                                        _dateOfBirth = value;
-                                      });
-                                      validateInputs();
-                                    },
-                                  );
-                                }
-                              },
-                              readOnly: true,
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (formFields?.contains('marital_status') == true)
+                    if (formFieldsNames?.contains('marital_status') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Builder(
@@ -618,7 +555,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('residential_status') == true)
+                    if (formFieldsNames?.contains('residential_status') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Builder(
@@ -646,7 +583,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('address') == true)
+                    if (formFieldsNames?.contains('address') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -665,7 +602,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('landmark') == true)
+                    if (formFieldsNames?.contains('landmark') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -684,7 +621,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('state') == true)
+                    if (formFieldsNames?.contains('state') == true)
                       Builder(builder: (context) {
                         final inputData =
                             formMap!.where((e) => e.name == 'state').first;
@@ -727,7 +664,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                                 ),
                         );
                       }),
-                    if (formFields?.contains('city') == true)
+                    if (formFieldsNames?.contains('city') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Builder(
@@ -774,7 +711,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('date_moved_in') == true)
+                    if (formFieldsNames?.contains('date_moved_in') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Column(
@@ -838,7 +775,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           ],
                         ),
                       ),
-                    if (formFields?.contains('employment_status') == true)
+                    if (formFieldsNames?.contains('employment_status') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Builder(
@@ -865,7 +802,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('company_name') == true)
+                    if (formFieldsNames?.contains('company_name') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -886,7 +823,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('company_industry') == true)
+                    if (formFieldsNames?.contains('company_industry') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -905,7 +842,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('company_address') == true)
+                    if (formFieldsNames?.contains('company_address') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -924,7 +861,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('company_start_date') == true)
+                    if (formFieldsNames?.contains('company_start_date') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Column(
@@ -988,7 +925,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           ],
                         ),
                       ),
-                    if (formFields?.contains('monthly_income') == true)
+                    if (formFieldsNames?.contains('monthly_income') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -1041,7 +978,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('education') == true)
+                    if (formFieldsNames?.contains('education') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: Builder(
@@ -1069,7 +1006,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('next_of_kin_name') == true)
+                    if (formFieldsNames?.contains('next_of_kin_name') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -1088,7 +1025,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('next_of_kin_relationship') ==
+                    if (formFieldsNames?.contains('next_of_kin_relationship') ==
                         true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
@@ -1118,7 +1055,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
-                    if (formFields?.contains('next_of_kin_phone') == true)
+                    if (formFieldsNames?.contains('next_of_kin_phone') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: StreamBuilder<String>(
@@ -1142,6 +1079,70 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           },
                         ),
                       ),
+                    if (formFieldsNames?.contains('date_of_birth') == true)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            KCInputField(
+                              controller: _dateOfBirthCtrl,
+                              hint: 'Date of Birth',
+                              textInputType: TextInputType.text,
+                              validationMessage: KCFormValidator.errorDate(
+                                _dateOfBirth,
+                                'Date of Birth is required',
+                                _validateDateOfBirth,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _validateDateOfBirth = true;
+                                });
+                                if (Platform.isIOS) {
+                                  showCupertinoModalPopup<void>(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    barrierColor:
+                                        const Color.fromRGBO(0, 0, 0, 0.4),
+                                    builder: (BuildContext context) {
+                                      return KCIOSDatePickerContainer(
+                                        initialDate: _dateOfBirth,
+                                        onDateSelected: (value) {
+                                          _dateOfBirthCtrl.text =
+                                              KCStringUtil.formatDate(value!);
+                                          setState(() {
+                                            _dateOfBirth = value;
+                                          });
+                                          validateInputs();
+                                          Navigator.pop(context);
+                                        },
+                                        onCancel: () {
+                                          setState(() {});
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  selectDateAndroid(
+                                    context,
+                                    initialDate: _dateOfBirth,
+                                    onDateSelected: (value) {
+                                      _dateOfBirthCtrl.text =
+                                          KCStringUtil.formatDate(value!);
+                                      setState(() {
+                                        _dateOfBirth = value;
+                                      });
+                                      validateInputs();
+                                    },
+                                  );
+                                }
+                              },
+                              readOnly: true,
+                            ),
+                          ],
+                        ),
+                      ),
                     if (stepData?.displayData?.smallText != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 0),
@@ -1163,7 +1164,7 @@ class _PartnerKYCState extends State<PartnerKYC> {
                           loading: checkoutNotfier.isBusy,
                           onTap: () {
                             FocusScope.of(context).unfocus();
-                            checkoutNotfier.partnerKYC(
+                            checkoutNotfier.walletKYC(
                               nin: _ninCtrl.text.trim(),
                               bvn: _bvnCtrl.text.trim(),
                               dateOfBirth: _dateOfBirth,
@@ -1189,6 +1190,10 @@ class _PartnerKYCState extends State<PartnerKYC> {
                               nextOfKinRetionship:
                                   _nextOfkinRelationship?.value,
                               nextOfKinPhone: _nextOfkinPhoneCtrl.text.trim(),
+                              amount:
+                                  formFieldsNames?.contains('amount') == true
+                                      ? checkoutNotfier.totalAmount
+                                      : null,
                             );
                           },
                         );

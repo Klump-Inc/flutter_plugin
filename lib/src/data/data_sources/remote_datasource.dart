@@ -216,6 +216,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
+      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['message'],
@@ -496,6 +497,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'klump-public-key': publicKey,
       };
       late Response<dynamic> response;
+      Logger().d(data);
       if (method == 'POST') {
         response = await kcHttpRequester.post(
           endpoint: '/v1$api',

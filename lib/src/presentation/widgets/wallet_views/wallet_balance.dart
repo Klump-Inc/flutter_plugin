@@ -26,8 +26,10 @@ class _WalletBalanceState extends State<WalletBalance> {
   Widget build(BuildContext context) {
     final changeNotifier = Provider.of<KCChangeNotifier>(context);
     final stepData = changeNotifier.balancePageWithTopupData?.nextStep;
-    Logger().d(stepData);
-
+    Logger().d(stepData?.displayData?.subText);
+    final insufficientBalance =
+        stepData?.displayData?.subText?.contains('balance is insufficient') ==
+            true;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -153,39 +155,80 @@ class _WalletBalanceState extends State<WalletBalance> {
                         ),
                       ),
                     const YSpace(12),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        changeNotifier.setPaymentOption(PaymentOption.lenders);
-                        changeNotifier.pageTo(0);
-                      },
-                      child: KCBodyText1(
-                        'Change your mind? Pay through Klump Lenders',
-                        decoration: TextDecoration.underline,
-                        color: KCColors.lightBlue,
-                        decorationColor: KCColors.lightBlue,
+                    if (stepData?.displayData?.subText != null)
+                      KCBodyText1(
+                        stepData?.displayData?.subText ?? '',
+                        fontSize: 12,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500,
+                      )
+                    else
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          changeNotifier
+                              .setPaymentOption(PaymentOption.lenders);
+                          changeNotifier.pageTo(0);
+                        },
+                        child: KCBodyText1(
+                          'Change your mind? Pay through Klump Lenders',
+                          decoration: TextDecoration.underline,
+                          color: KCColors.lightBlue,
+                          decorationColor: KCColors.lightBlue,
+                        ),
                       ),
-                    ),
                     const YSpace(25),
                     const Spacer(),
-                    KCPrimaryButton(
-                      title:
-                          'Yes, Pay NGN ${KCStringUtil.formatAmount(changeNotifier.totalAmount)}',
-                      disabled: changeNotifier.isBusy,
-                      loading: changeNotifier.isBusy,
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                        changeNotifier.nextPage();
-                      },
-                    ),
-                    const YSpace(16),
-                    KCSecondaryButton(
-                      title: 'Not enough? Top up wallet',
-                      onTap: () {
-                        // WalletTopupContainer.route(
-                        //     context, widget.initiateResponse);
-                      },
-                    ),
+                    if (insufficientBalance)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          KCPrimaryButton(
+                            title: 'Top up Wallet',
+                            disabled: changeNotifier.isBusy,
+                            loading: changeNotifier.isBusy,
+                            onTap: () {
+                              WalletTopupContainer.route(
+                                  context, changeNotifier.initiateResponse!);
+                            },
+                          ),
+                          const YSpace(16),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              changeNotifier
+                                  .setPaymentOption(PaymentOption.lenders);
+                              changeNotifier.pageTo(0);
+                            },
+                            child: KCBodyText1(
+                              'Change your mind? Pay through Klump Lenders',
+                              decoration: TextDecoration.underline,
+                              color: KCColors.lightBlue,
+                              decorationColor: KCColors.lightBlue,
+                            ),
+                          ),
+                          const YSpace(16),
+                        ],
+                      )
+                    else
+                      Column(
+                        children: [
+                          KCPrimaryButton(
+                            title:
+                                'Yes, Pay NGN ${KCStringUtil.formatAmount(changeNotifier.totalAmount)}',
+                            disabled: changeNotifier.isBusy,
+                            loading: changeNotifier.isBusy,
+                            onTap: () {
+                              changeNotifier.nextPage();
+                            },
+                          ),
+                          const YSpace(16),
+                          KCSecondaryButton(
+                            title: 'Not enough? Top up wallet',
+                            onTap: () {},
+                          ),
+                        ],
+                      )
                   ],
                 ),
               ),

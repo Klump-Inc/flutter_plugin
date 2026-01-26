@@ -119,7 +119,9 @@ class _KCMainViewContainerState extends State<KCMainViewContainer> {
                   if (checkoutNotifier.paymentOption ==
                       PaymentOption.refundWallet) ...{
                     const WalletLogin(),
-                    const WalletBalance()
+                    if (checkoutNotifier.walletKYCStepData != null)
+                      const WalletKYC(),
+                    const WalletBalance(),
                   },
                   if (checkoutNotifier.paymentOption ==
                       PaymentOption.lenders) ...{
