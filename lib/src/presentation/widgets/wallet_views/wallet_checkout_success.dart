@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class WalletCheckoutSuccess extends StatefulWidget {
-  const WalletCheckoutSuccess({super.key, required this.initiateResponse});
-  final InitiateResponseModel initiateResponse;
+  const WalletCheckoutSuccess({
+    super.key,
+  });
 
   @override
   State<WalletCheckoutSuccess> createState() => _WalletCheckoutSuccessState();
@@ -15,7 +17,7 @@ class _WalletCheckoutSuccessState extends State<WalletCheckoutSuccess> {
   @override
   Widget build(BuildContext context) {
     final changeNotifier = Provider.of<KCChangeNotifier>(context);
-
+    final stepData = changeNotifier.walletFinalStepData;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -46,14 +48,15 @@ class _WalletCheckoutSuccessState extends State<WalletCheckoutSuccess> {
                             KCAssets.klumpLogo,
                             package: 'klump_checkout',
                           ),
-                          if (widget.initiateResponse.merchant != null)
+                          if (changeNotifier.initiateResponse?.merchant != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Text.rich(
                                 TextSpan(children: [
                                   const TextSpan(text: 'Proud partner of '),
                                   TextSpan(
-                                      text: widget.initiateResponse.merchant
+                                      text: changeNotifier
+                                          .initiateResponse?.merchant
                                           .toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w700)),
@@ -106,8 +109,13 @@ class _WalletCheckoutSuccessState extends State<WalletCheckoutSuccess> {
                     disabled: changeNotifier.isBusy,
                     loading: changeNotifier.isBusy,
                     onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      final checkoutResponse = KlumpCheckoutResponse(
+                          CheckoutStatus.success,
+                          stepData?.message as String? ??
+                              'Payment completed successfully.',
+                          stepData?.data);
+                      Logger().d(checkoutResponse);
+                      Navigator.pop(context, checkoutResponse);
                     },
                   ),
                   const YSpace(16),

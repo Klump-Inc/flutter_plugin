@@ -1,5 +1,6 @@
 export 'topup_views/topup_views.dart';
 export 'wallet_balance.dart';
+export 'wallet_balance_topup.dart';
 export 'wallet_checkout_success.dart';
 export 'wallet_kyc.dart';
 export 'wallet_loading.dart';

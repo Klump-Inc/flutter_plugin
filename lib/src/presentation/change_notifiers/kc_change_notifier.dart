@@ -149,12 +149,22 @@ class KCChangeNotifier extends ChangeNotifier {
   KCAPIResponse? _paymentLinkData;
   KCAPIResponse? get paymentLinkData => _paymentLinkData;
 
-//Wallet addition
-  KCAPIResponse? _balancePageWithTopupData;
-  KCAPIResponse? get balancePageWithTopupData => _balancePageWithTopupData;
+//Wallet addition step data
+
+  KCAPIResponse? _walletBalanceStepData;
+  KCAPIResponse? get walletBalanceStepData => _walletBalanceStepData;
+
+  KCAPIResponse? _balanceTopupStepData;
+  KCAPIResponse? get balanceTopupStepData => _balanceTopupStepData;
 
   KCAPIResponse? _walletKYCStepData;
   KCAPIResponse? get walletKYCStepData => _walletKYCStepData;
+
+  KCAPIResponse? _walletTermsStepData;
+  KCAPIResponse? get walletTermsStepData => _walletTermsStepData;
+
+  KCAPIResponse? _walletFinalStepData;
+  KCAPIResponse? get walletFinalStepData => _walletFinalStepData;
 
   void nextPage() {
     _currentPage++;
@@ -284,6 +294,7 @@ class KCChangeNotifier extends ChangeNotifier {
         break;
       case 'ACCEPT_LOAN_TERMS':
         _repaymentDetailsStepData = data;
+        _walletTermsStepData = data;
         break;
       case 'REDIRECT':
         _redirectStepData = data;
@@ -304,10 +315,16 @@ class KCChangeNotifier extends ChangeNotifier {
         _paymentLinkData = data;
         break;
       case 'BALANCE_PAGE_WITH_TOPUP':
-        _balancePageWithTopupData = data;
+        _balanceTopupStepData = data;
+        break;
+      case 'BALANCE_PAGE':
+        _walletBalanceStepData = data;
         break;
       case 'UPDATE_USER_KYC':
         _walletKYCStepData = data;
+        break;
+      case 'FINAL':
+        _walletFinalStepData = data;
         break;
       default:
     }
@@ -555,7 +572,7 @@ class KCChangeNotifier extends ChangeNotifier {
     _setBusy(true);
     final data = <String, dynamic>{
       "amount": _checkoutData?.amount ?? 0,
-      'partner': _selectedBankFlow!.slug,
+      'partner': _selectedBankFlow?.slug ?? 'refund_wallet',
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       "items": (_checkoutData?.items ?? []).map((e) => e.toMap()).toList(),
@@ -602,7 +619,7 @@ class KCChangeNotifier extends ChangeNotifier {
         method: newLoanStepData?.nextStep.method ?? '',
         api: newLoanStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
-        partner: _selectedBankFlow!.slug,
+        partner: _selectedBankFlow?.slug ?? 'refund_wallet',
         data: data,
       ),
     );
@@ -1703,8 +1720,40 @@ class KCChangeNotifier extends ChangeNotifier {
     };
     final response = await partnersUsecase(
       PartnersUsecaseParams(
-        method: balancePageWithTopupData?.nextStep.method ?? '',
-        api: balancePageWithTopupData?.nextStep.api ?? '',
+        method: walletBalanceStepData?.nextStep.method ?? '',
+        api: walletBalanceStepData?.nextStep.api ?? '',
+        publicKey: _checkoutData?.merchantPublicKey ?? '',
+        partner: _selectedBankFlow?.slug ?? 'refund_wallet',
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    response.fold(
+      (l) => showToast(KCExceptionsToMessage.mapErrorToMessage(l)),
+      (r) {
+        storeNextStepData(r);
+        if (r.nextStep.name == 'NEW_LOAN') {
+          createLoan();
+        } else {
+          nextPage();
+        }
+      },
+    );
+  }
+
+  Future<void> acceptWalletTerms() async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      'amount': totalAmount,
+      'currency': _checkoutData!.currency ?? 'NGN',
+      'partner': _selectedBankFlow?.slug ?? 'refund_wallet',
+      'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
+      'is_live': initiateResponse?.isLive == true,
+    };
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: walletTermsStepData?.nextStep.method ?? '',
+        api: walletTermsStepData?.nextStep.api ?? '',
         publicKey: _checkoutData?.merchantPublicKey ?? '',
         partner: _selectedBankFlow?.slug ?? 'refund_wallet',
         data: data,

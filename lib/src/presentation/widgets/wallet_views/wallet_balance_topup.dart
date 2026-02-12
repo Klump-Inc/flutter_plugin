@@ -4,8 +4,8 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-class WalletBalance extends StatefulWidget {
-  const WalletBalance({super.key});
+class WalletBalanceTopup extends StatefulWidget {
+  const WalletBalanceTopup({super.key});
 
   @override
   State<WalletBalance> createState() => _WalletBalanceState();
@@ -25,7 +25,7 @@ class _WalletBalanceState extends State<WalletBalance> {
   @override
   Widget build(BuildContext context) {
     final changeNotifier = Provider.of<KCChangeNotifier>(context);
-    final stepData = changeNotifier.walletBalanceStepData?.nextStep;
+    final stepData = changeNotifier.balanceTopupStepData?.nextStep;
     Logger().d(stepData?.displayData?.subText);
     final insufficientBalance =
         stepData?.displayData?.subText?.contains('balance is insufficient') ==
@@ -219,7 +219,7 @@ class _WalletBalanceState extends State<WalletBalance> {
                             disabled: changeNotifier.isBusy,
                             loading: changeNotifier.isBusy,
                             onTap: () {
-                              changeNotifier.payWithWallet();
+                              changeNotifier.nextPage();
                             },
                           ),
                           const YSpace(16),

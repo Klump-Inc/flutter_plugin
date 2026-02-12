@@ -746,6 +746,8 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   @override
   _i6.Future<void> partnerKYC({
     required String? nin,
+    required String? bvn,
+    required DateTime? dateOfBirth,
     required String? maritalStatus,
     required String? residentialStatus,
     required String? address,
@@ -770,6 +772,8 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
           [],
           {
             #nin: nin,
+            #bvn: bvn,
+            #dateOfBirth: dateOfBirth,
             #maritalStatus: maritalStatus,
             #residentialStatus: residentialStatus,
             #address: address,
@@ -943,6 +947,82 @@ class MockKCChangeNotifier extends _i1.Mock implements _i2.KCChangeNotifier {
   _i6.Future<void> resendPhoneOTP() => (super.noSuchMethod(
         Invocation.method(
           #resendPhoneOTP,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> walletKYC({
+    required String? nin,
+    required String? bvn,
+    required DateTime? dateOfBirth,
+    required String? maritalStatus,
+    required String? residentialStatus,
+    required String? address,
+    required String? landmark,
+    required String? city,
+    required String? state,
+    required DateTime? dateMovedIn,
+    required String? employmentStatus,
+    required String? companyName,
+    required String? companyIndustry,
+    required String? companyAddress,
+    required DateTime? companyStartDate,
+    required String? monthlyIncome,
+    required String? education,
+    required String? nextOfKinName,
+    required String? nextOfKinRetionship,
+    required String? nextOfKinPhone,
+    required double? amount,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #walletKYC,
+          [],
+          {
+            #nin: nin,
+            #bvn: bvn,
+            #dateOfBirth: dateOfBirth,
+            #maritalStatus: maritalStatus,
+            #residentialStatus: residentialStatus,
+            #address: address,
+            #landmark: landmark,
+            #city: city,
+            #state: state,
+            #dateMovedIn: dateMovedIn,
+            #employmentStatus: employmentStatus,
+            #companyName: companyName,
+            #companyIndustry: companyIndustry,
+            #companyAddress: companyAddress,
+            #companyStartDate: companyStartDate,
+            #monthlyIncome: monthlyIncome,
+            #education: education,
+            #nextOfKinName: nextOfKinName,
+            #nextOfKinRetionship: nextOfKinRetionship,
+            #nextOfKinPhone: nextOfKinPhone,
+            #amount: amount,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> payWithWallet() => (super.noSuchMethod(
+        Invocation.method(
+          #payWithWallet,
+          [],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> acceptWalletTerms() => (super.noSuchMethod(
+        Invocation.method(
+          #acceptWalletTerms,
           [],
         ),
         returnValue: _i6.Future<void>.value(),
