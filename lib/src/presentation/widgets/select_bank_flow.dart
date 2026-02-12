@@ -30,6 +30,9 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 : 'staging',
           },
         );
+        if (checkoutNotifier.loanPartners == null) {
+          checkoutNotifier.getLoanPartners();
+        }
       }
     });
     super.initState();
