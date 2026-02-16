@@ -20,7 +20,7 @@ class PartnerRepository {
     required String phone,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
-    required String merchantReference,
+    required String? merchantReference,
     required Map<String, dynamic> sourceAnalytics,
   }) async {
     try {
