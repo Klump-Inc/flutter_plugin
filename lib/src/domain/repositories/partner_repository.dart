@@ -84,6 +84,7 @@ class PartnerRepository {
     required String? firstName,
     required String partner,
     required String? bank,
+    required String? username,
     required bool isLive,
   }) async {
     try {
@@ -97,6 +98,7 @@ class PartnerRepository {
         firstName: firstName,
         partner: partner,
         bank: bank,
+        username: username,
         isLive: isLive,
       );
       return Right(response);

@@ -44,11 +44,13 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
         Provider.of<KCChangeNotifier>(context, listen: false);
     final formFields = checkoutNotifier.verifyOTPStepData!.nextStep.formFields!
         .map((e) => e.name);
-    final otpLength = checkoutNotifier.selectedBankFlow?.slug == 'stanbic'
-        ? 6
-        : checkoutNotifier.selectedBankFlow?.slug == 'polaris'
-            ? 4
-            : 5;
+
+    final otpForms = checkoutNotifier.verifyOTPStepData!.nextStep.formFields!
+        .where((e) => e.name == 'otp')
+        .toList();
+    final otpLength = otpForms.isNotEmpty
+        ? (int.tryParse(otpForms.first.length.toString()) ?? 5)
+        : 5;
     final passwordError =
         KCFormValidator.errorPassword2(_passwordCtrl.text.trim(), 'Required');
     final otpError =
@@ -190,42 +192,39 @@ class _PartnerLoginOTPState extends State<PartnerLoginOTP> {
                     ),
                     const YSpace(28),
                     if (formFields?.contains('otp') == true)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: StreamBuilder<String>(
-                          stream: otpStreamCtrl.stream,
-                          builder: (context, snapshot) {
-                            return KCInputField(
-                              controller: _otpCtrl,
-                              hint: checkoutNotfier.selectedBankFlow?.slug ==
-                                      'stanbic'
-                                  ? 'Enter the 6-digit code here'
-                                  : checkoutNotfier.selectedBankFlow?.slug ==
-                                          'polaris'
-                                      ? 'Enter the 4-digit code here'
-                                      : 'Enter the 5-digit code here',
-                              validationMessage: KCFormValidator.errorOTP(
-                                snapshot.data,
-                                'OTP is required',
-                                checkoutNotfier.selectedBankFlow?.slug ==
-                                        'stanbic'
-                                    ? 6
-                                    : checkoutNotfier.selectedBankFlow?.slug ==
-                                            'polaris'
-                                        ? 4
-                                        : 5,
-                              ),
-                              textInputType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(6),
-                              ],
-                              textInputAction: TextInputAction.done,
-                            );
-                          },
-                        ),
-                      ),
+                      Builder(builder: (context) {
+                        final form = formMap!
+                            .where((e) => e.name == 'otp')
+                            .toList()
+                            .first;
+                        final otpLength = form.length != null
+                            ? (int.tryParse(form.length.toString()) ?? 5)
+                            : 5;
+                        Logger().d(form);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: StreamBuilder<String>(
+                            stream: otpStreamCtrl.stream,
+                            builder: (context, snapshot) {
+                              return KCInputField(
+                                controller: _otpCtrl,
+                                hint: form.placeholder ?? 'Enter the code here',
+                                validationMessage: KCFormValidator.errorOTP(
+                                    snapshot.data,
+                                    'OTP is required',
+                                    otpLength),
+                                textInputType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                  LengthLimitingTextInputFormatter(otpLength),
+                                ],
+                                textInputAction: TextInputAction.done,
+                              );
+                            },
+                          ),
+                        );
+                      }),
                     if (formFields?.contains('password') == true)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),

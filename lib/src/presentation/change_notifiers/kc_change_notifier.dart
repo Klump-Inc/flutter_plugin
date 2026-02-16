@@ -412,7 +412,11 @@ class KCChangeNotifier extends ChangeNotifier {
     _username = username ?? _username;
 
     final formFieldsNames =
-        verificationStepData?.nextStep.formFields?.map((e) => e.name).toList();
+        (verificationStepData?.nextStep ?? selectedBankFlow?.nextStep)
+            ?.formFields
+            ?.map((e) => e.name)
+            .toList();
+    Logger().d(formFieldsNames);
     Map<String, dynamic> data = {
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey,
@@ -452,7 +456,8 @@ class KCChangeNotifier extends ChangeNotifier {
       data['email'] = _email;
     }
 
-    if (formFieldsNames?.contains('currency') == true) {
+    if (formFieldsNames?.contains('currency') == true ||
+        selectedBankFlow?.slug == 'veend_hq') {
       data['currency'] = 'NGN';
     }
     if (formFieldsNames?.contains('username') == true) {
@@ -461,6 +466,8 @@ class KCChangeNotifier extends ChangeNotifier {
     if (formFieldsNames?.contains('pin') == true) {
       data['pin'] = pin;
     }
+
+    Logger().d(data);
     MixPanelService.logEvent(
       '6 - ACCOUNT VERIFICATION MODAL',
       properties: {
@@ -520,13 +527,31 @@ class KCChangeNotifier extends ChangeNotifier {
   }
 
   Future<void> verifyOTP(String? otp, String? password) async {
+    final formFieldsNames =
+        (verifyOTPStepData?.nextStep ?? selectedBankFlow?.nextStep)
+            ?.formFields
+            ?.map((e) => e.name)
+            .toList();
+    Logger().d(formFieldsNames);
     _setBusy(true);
     final response = await verifyOTPUsecase(
       VerifyOTPUsecaseParams(
-        accountNumber:
-            _accountNumber?.isNotEmpty == true ? _accountNumber : null,
-        phoneNumber: _phoneNumber?.isNotEmpty == true ? _phoneNumber : null,
-        email: _email?.isNotEmpty == true ? _email : null,
+        accountNumber: formFieldsNames?.contains('accountNumber') == true &&
+                _accountNumber?.isNotEmpty == true
+            ? _accountNumber
+            : null,
+        phoneNumber: formFieldsNames?.contains('phoneNumber') == true &&
+                _phoneNumber?.isNotEmpty == true
+            ? _phoneNumber
+            : null,
+        email: formFieldsNames?.contains('email') == true &&
+                _email?.isNotEmpty == true
+            ? _email
+            : null,
+        username: formFieldsNames?.contains('username') == true &&
+                _username?.isNotEmpty == true
+            ? _username
+            : null,
         otp: otp,
         password: password,
         publicKey: _checkoutData!.merchantPublicKey,

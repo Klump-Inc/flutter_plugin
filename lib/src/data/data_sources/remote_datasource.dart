@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class RemoteDatasource {
@@ -45,6 +44,7 @@ abstract class RemoteDatasource {
     required String? firstName,
     required String partner,
     required String? bank,
+    required String? username,
     required bool isLive,
   });
   Future<KCAPIResponseModel> getBankTC({
@@ -237,6 +237,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String? firstName,
     required String partner,
     required String? bank,
+    required String? username,
     required bool isLive,
   }) async {
     if (await kcInternetInfo.isConnected) {
@@ -246,21 +247,20 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       };
       final body = <String, dynamic>{
         "partner": partner,
-        "email": "",
         'klump_public_key': publicKey,
         'is_live': isLive,
       };
-      if (accountNumber != null) {
+      if (accountNumber?.isNotEmpty == true) {
         body.addAll({
           'accountNumber': accountNumber,
         });
       }
-      if (phoneNumber != null) {
+      if (phoneNumber?.isNotEmpty == true) {
         body.addAll({
           'phoneNumber': phoneNumber,
         });
       }
-      if (email != null) {
+      if (email?.isNotEmpty == true) {
         body.addAll({
           'email': email,
         });
@@ -278,6 +278,11 @@ class RemoteDataSourceImpl implements RemoteDatasource {
       if (password?.isNotEmpty == true) {
         body.addAll({
           "password": password,
+        });
+      }
+      if (username?.isNotEmpty == true) {
+        body.addAll({
+          "username": username,
         });
       }
       if (bank != null) {
@@ -497,7 +502,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         'klump-public-key': publicKey,
       };
       late Response<dynamic> response;
-      Logger().d(data);
       if (method == 'POST') {
         response = await kcHttpRequester.post(
           endpoint: '/v1$api',

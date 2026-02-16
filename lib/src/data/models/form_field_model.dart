@@ -11,6 +11,7 @@ class FormFieldModel extends Equatable {
   final dynamic max;
   final dynamic value;
   final dynamic readonly;
+  final dynamic length;
 
   const FormFieldModel({
     this.type,
@@ -23,6 +24,7 @@ class FormFieldModel extends Equatable {
     this.min,
     this.value,
     this.readonly,
+    this.length,
   });
   factory FormFieldModel.fromJson(Map<String, dynamic> json) => FormFieldModel(
         type: json['type'],
@@ -35,6 +37,7 @@ class FormFieldModel extends Equatable {
         max: json['max'],
         value: json['value'],
         readonly: json['readonly'],
+        length: json['length'],
       );
 
   @override
@@ -49,5 +52,6 @@ class FormFieldModel extends Equatable {
         max,
         value,
         readonly,
+        length,
       ];
 }

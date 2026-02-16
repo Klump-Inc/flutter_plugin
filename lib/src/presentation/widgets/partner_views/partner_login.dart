@@ -152,8 +152,10 @@ class _PartnerLoginState extends State<PartnerLogin> {
     final checkoutNotfier = Provider.of<KCChangeNotifier>(context);
     final stepData = checkoutNotfier.verificationStepData?.nextStep ??
         checkoutNotfier.selectedBankFlow?.nextStep;
-    final formMap = stepData?.formFields;
+    final formMap =
+        stepData?.formFields?.where((e) => e.type != 'hidden').toList();
     final formFields = formMap?.map((e) => e.name).toList();
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -185,10 +187,12 @@ class _PartnerLoginState extends State<PartnerLogin> {
                     const YSpace(16),
                     KCHeadline3(
                       stepData?.displayData?.title ??
-                          'Login to your ${checkoutNotfier.selectedBankFlow?.name} account.',
+                          stepData?.displayData?.subTitle ??
+                          '',
                       fontSize: 24,
                     ),
-                    if (stepData?.displayData?.subTitle != null)
+                    if (stepData?.displayData?.subTitle != null &&
+                        stepData?.displayData?.title != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child:

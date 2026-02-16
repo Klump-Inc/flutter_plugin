@@ -24,6 +24,7 @@ class VerifyOTPUsecase
         partner: params.partner,
         firstName: params.firstName,
         bank: params.bank,
+        username: params.username,
         isLive: params.isLive,
       );
 }
@@ -39,6 +40,7 @@ class VerifyOTPUsecaseParams extends Equatable {
     required this.partner,
     required this.firstName,
     required this.bank,
+    required this.username,
     required this.isLive,
   });
 
@@ -51,6 +53,7 @@ class VerifyOTPUsecaseParams extends Equatable {
   final String partner;
   final String? firstName;
   final String? bank;
+  final String? username;
   final bool isLive;
 
   @override
@@ -63,6 +66,7 @@ class VerifyOTPUsecaseParams extends Equatable {
         partner,
         firstName,
         bank,
+        username,
         isLive,
       ];
 }
