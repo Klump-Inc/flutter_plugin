@@ -13,7 +13,7 @@ abstract class RemoteDatasource {
     required String phone,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
-    required String merchantReference,
+    required String? merchantReference,
     required Map<String, dynamic> sourceAnalytics,
   });
   Future<KCAPIResponseModel> validateAccount({
@@ -113,7 +113,7 @@ class RemoteDataSourceImpl implements RemoteDatasource {
     required String phone,
     required List<KlumpCheckoutItem> items,
     required Map<String, dynamic>? shippingData,
-    required String merchantReference,
+    required String? merchantReference,
     required Map<String, dynamic> sourceAnalytics,
   }) async {
     if (await kcInternetInfo.isConnected) {
@@ -130,9 +130,13 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         "email": email,
         "phone": phone,
         "items": items.map((e) => e.toMap()).toList(),
-        "merchant_reference": merchantReference,
         "source_analytics": sourceAnalytics,
       };
+      if (merchantReference != null) {
+        body.addAll({
+          'merchant_reference': merchantReference,
+        });
+      }
       if (shippingFee != null) {
         body['shipping_fee'] = shippingFee;
       }

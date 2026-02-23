@@ -53,7 +53,7 @@ class InitiateTransactionUsecaseParams extends Equatable {
   final String phone;
   final List<KlumpCheckoutItem> items;
   final Map<String, dynamic>? shippingData;
-  final String merchantReference;
+  final String? merchantReference;
   final Map<String, dynamic> sourceAnalytics;
 
   @override
