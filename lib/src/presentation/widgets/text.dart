@@ -143,17 +143,16 @@ class KCHeadline5 extends KCTextBase {
 }
 
 class KCAutoSizedText extends StatelessWidget {
-  const KCAutoSizedText(
-    this.text, {
-    super.key,
-    this.color = KCColors.black3,
-    this.fontSize = 15,
-    this.fontWeight = FontWeight.w500,
-    this.textAlign,
-    this.overflow,
-    this.maxLines,
-    this.height,
-  });
+  const KCAutoSizedText(this.text,
+      {super.key,
+      this.color = KCColors.black3,
+      this.fontSize = 15,
+      this.fontWeight = FontWeight.w500,
+      this.textAlign,
+      this.overflow,
+      this.maxLines,
+      this.height,
+      this.minFontSize = 8});
 
   final String text;
   final Color color;
@@ -163,12 +162,14 @@ class KCAutoSizedText extends StatelessWidget {
   final TextOverflow? overflow;
   final int? maxLines;
   final double? height;
+  final double minFontSize;
 
   @override
   Widget build(BuildContext context) {
     return AutoSizeText(
       text,
       maxLines: maxLines,
+      minFontSize: minFontSize,
       textAlign: TextAlign.left,
       style: TextStyle(
         color: color,

@@ -29,10 +29,12 @@ void main() {
     merchantPublicKey: 'test_key',
   );
 
-  testWidgets('SelectBankFlow disables popup when no partners', (tester) async {
+  testWidgets('SelectBankFlow disables search when no partners', (tester) async {
     when(kcChangeNotifier.loanPartners).thenAnswer((_) => []);
     when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
     when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+    when(kcChangeNotifier.initiateResponse).thenAnswer((_) => null);
+    when(kcChangeNotifier.getLoanPartners()).thenAnswer((_) async {});
 
     await mockNetworkImagesFor(() async {
       await tester.pumpKCWidget(
@@ -44,11 +46,8 @@ void main() {
     });
 
     await tester.pump();
-    final popupFinder = find.byType(PopupMenuButton<Partner>);
-    expect(popupFinder, findsOneWidget);
-    // Tapping should not open menu since it's disabled
-    await tester.tap(popupFinder);
-    await tester.pump();
+    await tester.pumpAndSettle(); // Allow Future.delayed in initState to complete
+    expect(find.byType(TextField), findsOneWidget);
     expect(find.byType(KCPartnerPopupMenuItemContent), findsNothing);
   });
 
@@ -69,6 +68,8 @@ void main() {
     when(kcChangeNotifier.loanPartners).thenAnswer((_) => partners);
     when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
     when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+    when(kcChangeNotifier.initiateResponse).thenAnswer((_) => null);
+    when(kcChangeNotifier.getLoanPartners()).thenAnswer((_) async {});
     when(kcChangeNotifier.setBankFlow(any)).thenAnswer((_) async {});
 
     await mockNetworkImagesFor(() async {
@@ -81,10 +82,8 @@ void main() {
     });
 
     await tester.pump();
-    await tester.tap(find.byType(PopupMenuButton<Partner>).first);
-    await tester.pump();
+    await tester.pumpAndSettle(); // Allow Future.delayed in initState to complete
     expect(find.byType(KCPartnerPopupMenuItemContent), findsWidgets);
-    // The first item should be tappable and call setBankFlow
     await tester.tap(find.byType(KCPartnerPopupMenuItemContent).first);
     await tester.pump();
     verify(kcChangeNotifier.setBankFlow(partners.first)).called(1);
