@@ -69,6 +69,9 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     Future.delayed(Duration.zero, () async {
+      if (checkoutNotifier.selectedBankFlow != null) {
+        _lenderSearchController.text = checkoutNotifier.selectedBankFlow!.name;
+      }
       if (widget.data.email != null && widget.data.phone != null) {
         checkoutNotifier.setTransactionData(widget.data);
         await checkoutNotifier.initiateTransaction(
@@ -279,15 +282,26 @@ class _LenderSearchDropdownState extends State<_LenderSearchDropdown> {
       searchQuery,
       widget.selectedBankFlow?.name ?? '',
     );
+    bool isActive(Partner p) => p.isActive && p.isActiveForMobile == true;
     final loansToAnybody = filteredPartners
         .where((p) =>
             p.metadata?.customerType.toString().toLowerCase() == 'everyone')
-        .toList();
+        .toList()
+      ..sort((a, b) {
+        final aActive = isActive(a);
+        final bActive = isActive(b);
+        return aActive == bActive ? 0 : (aActive ? -1 : 1);
+      });
     final loansToCustomersOnly = filteredPartners
         .where((p) =>
             p.metadata?.customerType.toString().toLowerCase() ==
             'its customers')
-        .toList();
+        .toList()
+      ..sort((a, b) {
+        final aActive = isActive(a);
+        final bActive = isActive(b);
+        return aActive == bActive ? 0 : (aActive ? -1 : 1);
+      });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
