@@ -97,10 +97,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             ],
           ),
           const YSpace(30.22),
-          KCHeadline3('Select a Partner'),
+          KCHeadline3('Select a lender'),
           const YSpace(8),
           KCHeadline5(
-            'Credit approval in minutes',
+            'Can’t find your bank? Use Credit Direct to checkout',
             fontSize: 16,
           ),
           const YSpace(16),
@@ -218,44 +218,44 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               );
             },
           ),
-          const YSpace(12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: SvgPicture.asset(
-                  KCAssets.info,
-                  package: 'klump_checkout',
-                ),
-              ),
-              const XSpace(8),
-              const Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: 'Can’t find your bank? Use '),
-                      TextSpan(
-                        text: 'Renmoney ',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(text: 'or '),
-                      TextSpan(
-                        text: 'CDL ',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(text: 'to checkout'),
-                    ],
-                  ),
-                  style: TextStyle(
-                    fontFamily: KCFonts.avenir,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // const YSpace(12),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.only(top: 2),
+          //       child: SvgPicture.asset(
+          //         KCAssets.info,
+          //         package: 'klump_checkout',
+          //       ),
+          //     ),
+          //     const XSpace(8),
+          //     const Expanded(
+          //       child: Text.rich(
+          //         TextSpan(
+          //           children: [
+          //             TextSpan(text: 'Can’t find your bank? Use '),
+          //             TextSpan(
+          //               text: 'Renmoney ',
+          //               style: TextStyle(fontWeight: FontWeight.w800),
+          //             ),
+          //             TextSpan(text: 'or '),
+          //             TextSpan(
+          //               text: 'CDL ',
+          //               style: TextStyle(fontWeight: FontWeight.w800),
+          //             ),
+          //             TextSpan(text: 'to checkout'),
+          //           ],
+          //         ),
+          //         style: TextStyle(
+          //           fontFamily: KCFonts.avenir,
+          //           fontSize: 15,
+          //           fontWeight: FontWeight.w400,
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           if (banks.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 35),
