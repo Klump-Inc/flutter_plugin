@@ -6,8 +6,10 @@ class CloseViewButton extends StatelessWidget {
   const CloseViewButton({
     super.key,
     this.onTap,
+    this.fromSelectBank = false,
   });
   final void Function()? onTap;
+  final bool fromSelectBank;
   @override
   Widget build(BuildContext context) {
     final checkoutNotifier = Provider.of<KCChangeNotifier>(context);
@@ -26,15 +28,29 @@ class CloseViewButton extends StatelessWidget {
                   topRight: Radius.circular(9.92367),
                 ),
               ),
-              builder: (context) => FeedbackView(
-                params: FeedbackViewArgument(
-                  email: checkoutNotifier.email ?? '',
-                  phoneNumber: checkoutNotifier.phoneNumber ?? '',
-                  publicKey: checkoutNotifier.checkoutData!.merchantPublicKey,
-                  merchant: checkoutNotifier.initiateResponse?.merchant,
-                  isLive: checkoutNotifier.initiateResponse?.isLive == true,
-                ),
-              ),
+              builder: (context) => fromSelectBank
+                  ? NoBankFoundView(
+                      params: NoBankFoundViewArgument(
+                        email: checkoutNotifier.email ?? '',
+                        phoneNumber: checkoutNotifier.phoneNumber ?? '',
+                        publicKey:
+                            checkoutNotifier.checkoutData!.merchantPublicKey,
+                        merchant: checkoutNotifier.initiateResponse?.merchant,
+                        isLive:
+                            checkoutNotifier.initiateResponse?.isLive == true,
+                      ),
+                    )
+                  : FeedbackView(
+                      params: FeedbackViewArgument(
+                        email: checkoutNotifier.email ?? '',
+                        phoneNumber: checkoutNotifier.phoneNumber ?? '',
+                        publicKey:
+                            checkoutNotifier.checkoutData!.merchantPublicKey,
+                        merchant: checkoutNotifier.initiateResponse?.merchant,
+                        isLive:
+                            checkoutNotifier.initiateResponse?.isLive == true,
+                      ),
+                    ),
             );
           },
       behavior: HitTestBehavior.opaque,

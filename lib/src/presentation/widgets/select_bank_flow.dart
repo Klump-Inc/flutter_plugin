@@ -133,7 +133,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               ),
               const SizedBox(
                 width: 30,
-                child: CloseViewButton(),
+                child: CloseViewButton(fromSelectBank: true),
               ),
             ],
           ),
