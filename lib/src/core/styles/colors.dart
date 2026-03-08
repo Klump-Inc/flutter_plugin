@@ -14,6 +14,8 @@ class KCColors {
   static const Color grey6 = Color(0XFFC4C4C4);
   static const Color grey7 = Color(0XFFE4E4E4);
   static const Color grey8 = Color(0XFFEBEBEB);
+  static const Color ash = Color(0XFFC3C3C3);
+
   static const Color blue = Color(0XFF4062D1);
   static const Color lightBlue = Color(0XFF2C86FF);
   static const Color green = Color(0XFF4CAF50);

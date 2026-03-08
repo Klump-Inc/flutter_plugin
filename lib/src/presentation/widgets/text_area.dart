@@ -14,8 +14,8 @@ class KCTextArea extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      minLines: 6,
-      maxLines: 8,
+      minLines: 3,
+      maxLines: 5,
       onTapOutside: (event) {
         FocusManager.instance.primaryFocus?.unfocus();
       },
