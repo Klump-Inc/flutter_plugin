@@ -5,12 +5,14 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class WalletTopupContainer extends StatefulWidget {
-  const WalletTopupContainer({super.key, required this.initiateResponse});
+  const WalletTopupContainer(
+      {super.key, required this.initiateResponse, required this.amount});
 
   final InitiateResponseModel initiateResponse;
+  final double amount;
 
-  static dynamic route(
-      BuildContext context, InitiateResponseModel initiateResponse) {
+  static dynamic route(BuildContext context,
+      InitiateResponseModel initiateResponse, double amount) {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       isDismissible: false,
@@ -23,8 +25,8 @@ class WalletTopupContainer extends StatefulWidget {
           topRight: Radius.circular(9.92367),
         ),
       ),
-      builder: (context) =>
-          WalletTopupContainer(initiateResponse: initiateResponse),
+      builder: (context) => WalletTopupContainer(
+          initiateResponse: initiateResponse, amount: amount),
     );
   }
 
