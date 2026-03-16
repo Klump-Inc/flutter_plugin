@@ -5,14 +5,26 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class WalletTopupContainer extends StatefulWidget {
-  const WalletTopupContainer(
-      {super.key, required this.initiateResponse, required this.amount});
+  const WalletTopupContainer({
+    super.key,
+    required this.initiateResponse,
+    required this.amount,
+    required this.confirmWalletSteoData,
+    required this.publicKey,
+  });
 
   final InitiateResponseModel initiateResponse;
   final double amount;
+  final KCAPIResponse confirmWalletSteoData;
+  final String publicKey;
 
-  static dynamic route(BuildContext context,
-      InitiateResponseModel initiateResponse, double amount) {
+  static dynamic route(
+    BuildContext context, {
+    required double amount,
+    required KCAPIResponse confirmWalletSteoData,
+    required InitiateResponseModel initiateResponse,
+    required String publicKey,
+  }) {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       isDismissible: false,
@@ -26,7 +38,11 @@ class WalletTopupContainer extends StatefulWidget {
         ),
       ),
       builder: (context) => WalletTopupContainer(
-          initiateResponse: initiateResponse, amount: amount),
+        initiateResponse: initiateResponse,
+        amount: amount,
+        confirmWalletSteoData: confirmWalletSteoData,
+        publicKey: publicKey,
+      ),
     );
   }
 
@@ -40,7 +56,11 @@ class _WalletTopupContainerState extends State<WalletTopupContainer> {
     return SizedBox(
       height: screenHeight(context) - 67.48,
       child: ChangeNotifierProvider<KCTopupNotifier>(
-        create: (_) => KCTopupNotifier(),
+        create: (_) => KCTopupNotifier(
+          confirmWalletSteoData: widget.confirmWalletSteoData,
+          initiateResponse: widget.initiateResponse,
+          publicKey: widget.publicKey,
+        ),
         child: SafeArea(
           child: OKToast(
             animationDuration: const Duration(milliseconds: 300),
@@ -61,12 +81,9 @@ class _WalletTopupContainerState extends State<WalletTopupContainer> {
             child: Consumer<KCTopupNotifier>(
               builder: (_, topupNotifier, __) {
                 var views = <Widget>[
-                  WalletTopupAmount(
-                      initiateResponse: widget.initiateResponse,
-                      amount: widget.amount),
-                  WalletTopupDetails(initiateResponse: widget.initiateResponse),
-                  TopupChecking(initiateResponse: widget.initiateResponse),
-                  WalletTopupSuccess(initiateResponse: widget.initiateResponse),
+                  const WalletTopupDetails(),
+                  const TopupChecking(),
+                  const WalletTopupSuccess(),
                 ];
                 return PageView(
                   controller: topupNotifier.pageController,

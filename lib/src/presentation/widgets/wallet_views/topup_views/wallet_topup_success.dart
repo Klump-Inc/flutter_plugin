@@ -4,8 +4,7 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class WalletTopupSuccess extends StatefulWidget {
-  const WalletTopupSuccess({super.key, required this.initiateResponse});
-  final InitiateResponseModel initiateResponse;
+  const WalletTopupSuccess({super.key});
 
   @override
   State<WalletTopupSuccess> createState() => _WalletTopupSuccessState();
@@ -46,14 +45,15 @@ class _WalletTopupSuccessState extends State<WalletTopupSuccess> {
                             KCAssets.klumpLogo,
                             package: 'klump_checkout',
                           ),
-                          if (widget.initiateResponse.merchant != null)
+                          if (topupNotifier.initiateResponse.merchant != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Text.rich(
                                 TextSpan(children: [
                                   const TextSpan(text: 'Proud partner of '),
                                   TextSpan(
-                                      text: widget.initiateResponse.merchant
+                                      text: topupNotifier
+                                          .initiateResponse.merchant
                                           .toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w700)),

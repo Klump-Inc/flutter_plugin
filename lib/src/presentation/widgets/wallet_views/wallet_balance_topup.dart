@@ -181,7 +181,7 @@ class _WalletBalanceTopupState extends State<WalletBalanceTopup> {
                           title: 'Top up Wallet',
                           disabled: changeNotifier.isBusy,
                           loading: changeNotifier.isBusy,
-                          onTap: () {
+                          onTap: () async {
                             final smallText =
                                 stepData?.displayData?.smallText ?? '';
                             final match = RegExp(r'\(₦([\d,]+\.?\d*)\)')
@@ -190,14 +190,22 @@ class _WalletBalanceTopupState extends State<WalletBalanceTopup> {
                                   match?.group(1)?.replaceAll(',', '') ?? '',
                                 ) ??
                                 0;
-
                             final topupAmount =
                                 changeNotifier.totalAmount - walletBalance;
-                            WalletTopupContainer.route(
-                              context,
-                              changeNotifier.initiateResponse!,
-                              topupAmount,
-                            );
+
+                            final response = await changeNotifier.topupAccount(
+                                amount: topupAmount);
+                            if (response != null && context.mounted) {
+                              WalletTopupContainer.route(
+                                context,
+                                amount: topupAmount,
+                                confirmWalletSteoData: response,
+                                initiateResponse:
+                                    changeNotifier.initiateResponse!,
+                                publicKey: changeNotifier
+                                    .checkoutData!.merchantPublicKey,
+                              );
+                            }
                           },
                         ),
                         const YSpace(16),

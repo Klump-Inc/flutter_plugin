@@ -1802,6 +1802,43 @@ class KCChangeNotifier extends ChangeNotifier {
     );
   }
 
+  Future<KCAPIResponse?> topupAccount({required double amount}) async {
+    _setBusy(true);
+    final data = <String, dynamic>{
+      'klump_public_key': checkoutData!.merchantPublicKey,
+      'is_live': initiateResponse?.isLive == true,
+      'partner': 'refund_wallet',
+    };
+    final stepData =
+        _balanceTopupStepData?.nextStep.formFields?.map((e) => e.name).toList();
+    if (stepData?.contains('amount') == true) {
+      data['amount'] = amount;
+    }
+    if (stepData?.contains('currency') == true) {
+      data['currency'] = 'NGN';
+    }
+    final response = await partnersUsecase(
+      PartnersUsecaseParams(
+        method: _balanceTopupStepData?.nextStep.method ?? '',
+        api: _balanceTopupStepData?.nextStep.api ?? '',
+        publicKey: checkoutData!.merchantPublicKey,
+        partner: 'refund_wallet',
+        data: data,
+      ),
+    );
+    _setBusy(false);
+    return response.fold(
+      (l) {
+        showToast(KCExceptionsToMessage.mapErrorToMessage(l));
+        return null;
+      },
+      (r) {
+        storeNextStepData(r);
+        return KCAPIResponse(nextStep: r.nextStep);
+      },
+    );
+  }
+
   double get totalAmount =>
       _checkoutData!.amount + (_checkoutData!.shippingFee ?? 0);
 

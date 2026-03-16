@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
@@ -5,25 +7,44 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class TopupChecking extends StatefulWidget {
-  const TopupChecking({super.key, required this.initiateResponse});
-  final InitiateResponseModel initiateResponse;
+  const TopupChecking({super.key});
 
   @override
   State<TopupChecking> createState() => _TopupCheckingState();
 }
 
 class _TopupCheckingState extends State<TopupChecking> {
+  Timer? _pollingTimer;
+
+  static const _pollInterval = Duration(seconds: 5);
+
   @override
   void initState() {
     super.initState();
-    final walletNotifier = Provider.of<KCTopupNotifier>(context, listen: false);
-    Future.delayed(const Duration(seconds: 5), () {
-      walletNotifier.nextPage();
+    final topupNotifier = Provider.of<KCTopupNotifier>(context, listen: false);
+
+    _pollingTimer = Timer.periodic(_pollInterval, (_) async {
+      final response = await topupNotifier.confirmWallet();
+      if (response && mounted) {
+        _cancelTimers();
+        topupNotifier.nextPage();
+      }
     });
+  }
+
+  void _cancelTimers() {
+    _pollingTimer?.cancel();
+  }
+
+  @override
+  void dispose() {
+    _cancelTimers();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final topupNotifier = Provider.of<KCTopupNotifier>(context);
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return ConstrainedBox(
@@ -54,14 +75,15 @@ class _TopupCheckingState extends State<TopupChecking> {
                             KCAssets.klumpLogo,
                             package: 'klump_checkout',
                           ),
-                          if (widget.initiateResponse.merchant != null)
+                          if (topupNotifier.initiateResponse.merchant != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: Text.rich(
                                 TextSpan(children: [
                                   const TextSpan(text: 'Proud partner of '),
                                   TextSpan(
-                                      text: widget.initiateResponse.merchant
+                                      text: topupNotifier
+                                          .initiateResponse.merchant
                                           .toString(),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w700)),

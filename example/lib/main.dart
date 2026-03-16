@@ -51,15 +51,16 @@ class FirstScreen extends StatelessWidget {
               context: context,
               data: const KlumpCheckoutData(
                 merchantPublicKey:
-                    // 'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
-                    'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
-                amount: 60000,
+                    'klp_pk_7f6cd8d49c244f80a16cdc09acebdc9550e0fe47bc704b49b9c957fe16b9bd3b',
+                // 'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
+                // 'klp_pk_test_8dc412b18d2d402e96430e0108c5f83e46c974462e814102bbb858f7197f06c2',
+                amount: 600000,
                 shippingFee: 10000,
                 merchantReference:
-                    "what-ever-you-want-this-to-be_ejerkjrj33eeeeerr3",
+                    "what-ever-you-want-this-to-be_ejerkjrj33eeeeerr3uuu",
                 metaData: {
                   'customer': "Elon Musk",
-                  'email': "florian4@dtheatersn.com",
+                  'email': 'florian4@dtheatersn.com',
                 },
                 items: [
                   KlumpCheckoutItem(
@@ -67,7 +68,7 @@ class FirstScreen extends StatelessWidget {
                         'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
                     itemUrl: 'https://www.paypal.com/in/webapps/mpp/home',
                     name: 'Awesome item',
-                    unitPrice: 20000,
+                    unitPrice: 200000,
                     quantity: 3,
                   )
                 ],
