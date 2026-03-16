@@ -8,8 +8,11 @@ import 'package:klump_checkout/src/src.dart';
 import 'package:provider/provider.dart';
 
 class WalletTopupAmount extends StatefulWidget {
-  const WalletTopupAmount({super.key, required this.initiateResponse});
+  const WalletTopupAmount(
+      {super.key, required this.initiateResponse, required this.amount});
   final InitiateResponseModel initiateResponse;
+
+  final double amount;
 
   @override
   State<WalletTopupAmount> createState() => _WalletTopupAmountState();
@@ -44,7 +47,7 @@ class _WalletTopupAmountState extends State<WalletTopupAmount> {
         final totalAmount = double.tryParse(
             widget.initiateResponse.totalAmountToBePaid!.toString());
         if (totalAmount != null) {
-          _amountCtrl.text = 'NGN ${KCStringUtil.formatAmount(totalAmount)}';
+          _amountCtrl.text = 'NGN ${KCStringUtil.formatAmount(widget.amount)}';
           amountStreamCtrl.sink.add(_amountCtrl.text.trim());
         }
       }

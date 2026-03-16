@@ -61,7 +61,9 @@ class _WalletTopupContainerState extends State<WalletTopupContainer> {
             child: Consumer<KCTopupNotifier>(
               builder: (_, topupNotifier, __) {
                 var views = <Widget>[
-                  WalletTopupAmount(initiateResponse: widget.initiateResponse),
+                  WalletTopupAmount(
+                      initiateResponse: widget.initiateResponse,
+                      amount: widget.amount),
                   WalletTopupDetails(initiateResponse: widget.initiateResponse),
                   TopupChecking(initiateResponse: widget.initiateResponse),
                   WalletTopupSuccess(initiateResponse: widget.initiateResponse),

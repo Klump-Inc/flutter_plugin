@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:klump_checkout/src/domain/entities/kc_api_response.dart';
+import 'package:logger/logger.dart';
 
 class KCTopupNotifier extends ChangeNotifier {
   final PageController _pageController = PageController();
@@ -33,5 +35,19 @@ class KCTopupNotifier extends ChangeNotifier {
       curve: Curves.linear,
     );
     notifyListeners();
+  }
+
+  KCAPIResponse? _balanceTopupStepData;
+  KCAPIResponse? get balanceTopupStepData => _balanceTopupStepData;
+
+  void storeNextStepData(KCAPIResponse data) {
+    final stepName = data.nextStep.name?.toUpperCase();
+    Logger().d(stepName);
+    switch (stepName) {
+      case 'BALANCE_PAGE_WITH_TOPUP':
+        _balanceTopupStepData = data;
+        break;
+      default:
+    }
   }
 }
