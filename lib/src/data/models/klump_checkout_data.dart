@@ -1,12 +1,11 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:klump_checkout/klump_checkout.dart';
 
 class KlumpCheckoutData extends Equatable {
   final double amount;
   final double? shippingFee;
   final String? currency;
-  final String merchantReference;
+  final String? merchantReference;
   final Map<String, String> metaData;
   final List<KlumpCheckoutItem> items;
   final String merchantPublicKey;
@@ -17,10 +16,10 @@ class KlumpCheckoutData extends Equatable {
 
   const KlumpCheckoutData({
     required this.amount,
-    required this.merchantReference,
     required this.metaData,
     required this.items,
     required this.merchantPublicKey,
+    this.merchantReference,
     this.shippingFee,
     this.currency,
     this.shippingData,
@@ -51,7 +50,6 @@ class KlumpCheckoutData extends Equatable {
         merchantReference,
         metaData,
         items,
-        required,
         merchantPublicKey,
         shippingData,
         email,

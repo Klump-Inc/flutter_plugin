@@ -601,8 +601,12 @@ class KCChangeNotifier extends ChangeNotifier {
       'is_live': initiateResponse?.isLive == true,
       'klump_public_key': _checkoutData?.merchantPublicKey ?? '',
       "items": (_checkoutData?.items ?? []).map((e) => e.toMap()).toList(),
-      "merchant_reference": _checkoutData!.merchantReference,
     };
+    if (_checkoutData?.merchantReference != null) {
+      data.addAll({
+        "merchant_reference": _checkoutData?.merchantReference,
+      });
+    }
     if (_checkoutData?.shippingData != null) {
       data.addAll({
         'shipping_data': _checkoutData?.shippingData,

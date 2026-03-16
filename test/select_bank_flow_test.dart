@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:klump_checkout/klump_checkout.dart';
-import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:provider/provider.dart';
+
 import 'helpers/pump_app.dart';
 import 'klump_checkout_test.mocks.dart';
 
@@ -29,10 +30,13 @@ void main() {
     merchantPublicKey: 'test_key',
   );
 
-  testWidgets('SelectBankFlow disables popup when no partners', (tester) async {
+  testWidgets('SelectBankFlow disables search when no partners',
+      (tester) async {
     when(kcChangeNotifier.loanPartners).thenAnswer((_) => []);
     when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
     when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+    when(kcChangeNotifier.initiateResponse).thenAnswer((_) => null);
+    when(kcChangeNotifier.getLoanPartners()).thenAnswer((_) async {});
 
     await mockNetworkImagesFor(() async {
       await tester.pumpKCWidget(
@@ -44,11 +48,9 @@ void main() {
     });
 
     await tester.pump();
-    final popupFinder = find.byType(PopupMenuButton<Partner>);
-    expect(popupFinder, findsOneWidget);
-    // Tapping should not open menu since it's disabled
-    await tester.tap(popupFinder);
-    await tester.pump();
+    await tester
+        .pumpAndSettle(); // Allow Future.delayed in initState to complete
+    expect(find.byType(KCLenderSearchDropdown), findsOneWidget);
     expect(find.byType(KCPartnerPopupMenuItemContent), findsNothing);
   });
 
@@ -64,12 +66,20 @@ void main() {
         requiresPrequalification: false,
         config: {},
         isActiveForMobile: true,
+        metadata: PartnerMetadataModel(
+          partnerType: null,
+          customerType: 'everyone',
+          dropdownMessage: null,
+          allowDynamicDownpayment: null,
+        ),
       ),
     ];
     when(kcChangeNotifier.loanPartners).thenAnswer((_) => partners);
     when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
     when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
-    when(kcChangeNotifier.setBankFlow(any)).thenAnswer((_) async {});
+    when(kcChangeNotifier.initiateResponse).thenAnswer((_) => null);
+    when(kcChangeNotifier.getLoanPartners()).thenAnswer((_) async {});
+    when(kcChangeNotifier.setBankFlow(any)).thenAnswer((_) {});
 
     await mockNetworkImagesFor(() async {
       await tester.pumpKCWidget(
@@ -81,12 +91,65 @@ void main() {
     });
 
     await tester.pump();
-    await tester.tap(find.byType(PopupMenuButton<Partner>).first);
-    await tester.pump();
+    await tester
+        .pumpAndSettle(); // Allow Future.delayed in initState to complete
+    expect(find.byType(KCLenderSearchDropdown), findsOneWidget);
     expect(find.byType(KCPartnerPopupMenuItemContent), findsWidgets);
-    // The first item should be tappable and call setBankFlow
-    await tester.tap(find.byType(KCPartnerPopupMenuItemContent).first);
+    await tester.ensureVisible(find.text('Polaris Bank'));
+    await tester.tap(find.text('Polaris Bank'));
     await tester.pump();
     verify(kcChangeNotifier.setBankFlow(partners.first)).called(1);
+  });
+
+  testWidgets(
+      'SelectBankFlow shows bank dropdown when selected partner has extra form fields',
+      (tester) async {
+    const partnerWithBanks = Partner(
+      id: '1',
+      name: 'Credit Direct',
+      slug: 'credit-direct',
+      isActive: true,
+      requiresPrequalification: false,
+      config: {
+        'extra_form_fields': [
+          {
+            'options': [
+              {'name': 'Access Bank'},
+              {'name': 'GTBank'},
+            ],
+          },
+        ],
+      },
+      isActiveForMobile: true,
+      metadata: PartnerMetadataModel(
+        partnerType: null,
+        customerType: 'everyone',
+        dropdownMessage: null,
+        allowDynamicDownpayment: null,
+      ),
+    );
+    when(kcChangeNotifier.loanPartners).thenAnswer((_) => [partnerWithBanks]);
+    when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => partnerWithBanks);
+    when(kcChangeNotifier.selectedBank).thenAnswer((_) => null);
+    when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+    when(kcChangeNotifier.initiateResponse).thenAnswer((_) => null);
+    when(kcChangeNotifier.getLoanPartners()).thenAnswer((_) async {});
+
+    await mockNetworkImagesFor(() async {
+      await tester.pumpKCWidget(
+        SizedBox(
+          height: 900,
+          child: ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, _) => const SelectBankFlow(data: checkoutData),
+          ),
+        ),
+      );
+    });
+
+    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(find.byType(KCLenderSearchDropdown), findsOneWidget);
+    expect(find.byType(KCBankSearchDropdown), findsOneWidget);
   });
 }

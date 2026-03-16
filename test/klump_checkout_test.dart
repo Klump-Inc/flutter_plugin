@@ -905,18 +905,20 @@ void main() {
         ),
       );
       await tester.pump(Duration.zero);
-      expect(find.text('Sad to see you go 😞'), findsOneWidget);
+      expect(find.text('Not sure how this works?'), findsOneWidget);
+      expect(find.text('Watch Demo'), findsOneWidget);
       expect(
-          find.text('Please tell us why you aren\'t completing this purchase'),
+          find.text('Please tell us why you not completing this purchase'),
           findsOneWidget);
+      expect(find.text('Exit'), findsOneWidget);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(XSpace), findsWidgets);
-      expect(find.byType(KCTextArea), findsOneWidget);
+      // KCTextArea only shows when "Others" is selected
+      expect(find.byType(KCTextArea), findsNothing);
       expect(find.byType(SvgPicture), findsWidgets);
-      expect(find.byType(Expanded), findsWidgets);
-      expect(find.byType(Spacer), findsOneWidget);
-      expect(find.text('Continue'), findsOneWidget);
-      expect(find.byType(KCPrimaryButton), findsOneWidget);
+      expect(find.text('I did not see my bank'), findsOneWidget);
+      expect(find.text('Others'), findsOneWidget);
+      expect(find.byType(KCPrimaryButton), findsWidgets);
     });
   });
 
