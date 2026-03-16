@@ -36,8 +36,8 @@
 ## [1.0.36] - UI improvements
 ## [1.1.41] - Improvements
 ## [1.0.42] - Add new financial partners
-## [1.0.43] - UI improvements
-
+## [1.2.43] - UI improvements
+## [1.2.44] - UI improvements
 
 
 
