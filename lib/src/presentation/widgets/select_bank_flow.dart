@@ -17,10 +17,48 @@ class SelectBankFlow extends StatefulWidget {
 }
 
 class _SelectBankFlowState extends State<SelectBankFlow> {
+  final TextEditingController _lenderSearchController = TextEditingController();
+  final FocusNode _lenderSearchFocusNode = FocusNode();
+  final TextEditingController _bankSearchController = TextEditingController();
+  final FocusNode _bankSearchFocusNode = FocusNode();
+
   @override
   void initState() {
     Future.delayed(Duration.zero, _initiatTranx);
     super.initState();
+    _lenderSearchFocusNode.addListener(() => setState(() {}));
+    _bankSearchFocusNode.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _lenderSearchController.dispose();
+    _lenderSearchFocusNode.dispose();
+    _bankSearchController.dispose();
+    _bankSearchFocusNode.dispose();
+    super.dispose();
+  }
+
+  List<Partner> _filterPartners(
+      List<Partner> partners, String query, String partnerName) {
+    if (query.isEmpty) return partners;
+    final lowerQuery = query.toLowerCase();
+    return partners
+        .where((p) =>
+            p.name.toLowerCase().contains(lowerQuery) ||
+            partnerName.toLowerCase() == lowerQuery)
+        .toList();
+  }
+
+  List<dynamic> _filterBanks(
+    List<dynamic> banks,
+    String query,
+  ) {
+    if (query.isEmpty) return banks;
+    final lowerQuery = query.toLowerCase();
+    return banks
+        .where((b) => (b['name'] as String).toLowerCase().contains(lowerQuery))
+        .toList();
   }
 
   void _getCameras() async {
@@ -31,6 +69,9 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     final checkoutNotifier =
         Provider.of<KCChangeNotifier>(context, listen: false);
     Future.delayed(Duration.zero, () async {
+      if (checkoutNotifier.selectedBankFlow != null) {
+        _lenderSearchController.text = checkoutNotifier.selectedBankFlow!.name;
+      }
       if (widget.data.email != null && widget.data.phone != null) {
         checkoutNotifier.setTransactionData(widget.data);
         await checkoutNotifier.initiateTransaction(
@@ -92,238 +133,74 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               ),
               const SizedBox(
                 width: 30,
-                child: CloseViewButton(),
+                child: CloseViewButton(fromSelectBank: true),
               ),
             ],
           ),
           const YSpace(30.22),
-          KCHeadline3('Select a Partner'),
+          KCHeadline3('Select a lender'),
           const YSpace(8),
           KCHeadline5(
-            'Credit approval in minutes',
-            fontSize: 16,
+            'Can’t find your bank? Use Credit Direct to checkout',
+            fontSize: 14,
           ),
           const YSpace(16),
-          LayoutBuilder(
-            builder: (context, costraint) {
-              return PopupMenuButton<Partner>(
-                color: Colors.white,
-                enabled: activeLoanPartners.isNotEmpty,
-                constraints: BoxConstraints(
-                  minWidth: costraint.maxWidth,
-                  maxWidth: costraint.maxWidth,
-                  maxHeight: 300,
-                ),
-                padding: EdgeInsets.zero,
-                elevation: 1,
-                offset: const Offset(0, 70),
-                child: Container(
-                  height: 60,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.11,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: KCColors.grey1),
-                    borderRadius: BorderRadius.circular(4.4186),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (checkoutNotfier.selectedBankFlow == null)
-                        KCBodyText1(
-                          'Select Bank',
-                          color: KCColors.grey2,
-                          fontSize: 15,
-                        )
-                      else
-                        Expanded(
-                          child: Row(
-                            children: [
-                              KCNetworkImage(
-                                url: checkoutNotfier.selectedBankFlow?.logo,
-                                height: 20,
-                                width: 17.09,
-                              ),
-                              const XSpace(14),
-                              Expanded(
-                                child: KCBodyText1(
-                                  checkoutNotfier.selectedBankFlow!.name,
-                                  fontSize: 15,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2, right: 5),
-                        child: SvgPicture.asset(
-                          KCAssets.caretDown,
-                          package: KC_PACKAGE_NAME,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                itemBuilder: (context) {
-                  return List.generate(
-                    activeLoanPartners.length + 1,
-                    (index) {
-                      return index != activeLoanPartners.length
-                          ? PopupMenuItem<Partner>(
-                              height: 0,
-                              padding: EdgeInsets.zero,
-                              child: KCPartnerPopupMenuItemContent(
-                                title: activeLoanPartners[index].name,
-                                logo: activeLoanPartners[index].logo,
-                                withBG: index % 2 == 0,
-                                isActive: activeLoanPartners[index].isActive &&
-                                    activeLoanPartners[index]
-                                            .isActiveForMobile ==
-                                        true,
-                                message: activeLoanPartners[index]
-                                    .metadata?['dropdown_message'],
-                              ),
-                              onTap: () {
-                                checkoutNotfier
-                                    .setBankFlow(activeLoanPartners[index]);
-                              },
-                            )
-                          : PopupMenuItem<Partner>(
-                              enabled: false,
-                              height: 0,
-                              padding: EdgeInsets.zero,
-                              child: Container(
-                                height: 49,
-                                color: KCColors.grey3.withOpacity(0.30),
-                                width: double.infinity,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Row(
-                                  children: [
-                                    KCBodyText1(
-                                      'Others banks coming soon',
-                                      color: KCColors.grey4,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {},
-                            );
-                    },
-                  );
-                },
-              );
-            },
+          KCLenderSearchDropdown(
+            activeLoanPartners: activeLoanPartners,
+            selectedBankFlow: checkoutNotfier.selectedBankFlow,
+            searchController: _lenderSearchController,
+            focusNode: _lenderSearchFocusNode,
+            onFilter: _filterPartners,
+            onSelect: checkoutNotfier.setBankFlow,
           ),
-          const YSpace(12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: SvgPicture.asset(
-                  KCAssets.info,
-                  package: 'klump_checkout',
-                ),
-              ),
-              const XSpace(8),
-              const Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: 'Can’t find your bank? Use '),
-                      TextSpan(
-                        text: 'Renmoney ',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(text: 'or '),
-                      TextSpan(
-                        text: 'CDL ',
-                        style: TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                      TextSpan(text: 'to checkout'),
-                    ],
-                  ),
-                  style: TextStyle(
-                    fontFamily: KCFonts.avenir,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // const YSpace(12),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.only(top: 2),
+          //       child: SvgPicture.asset(
+          //         KCAssets.info,
+          //         package: 'klump_checkout',
+          //       ),
+          //     ),
+          //     const XSpace(8),
+          //     const Expanded(
+          //       child: Text.rich(
+          //         TextSpan(
+          //           children: [
+          //             TextSpan(text: 'Can’t find your bank? Use '),
+          //             TextSpan(
+          //               text: 'Renmoney ',
+          //               style: TextStyle(fontWeight: FontWeight.w800),
+          //             ),
+          //             TextSpan(text: 'or '),
+          //             TextSpan(
+          //               text: 'CDL ',
+          //               style: TextStyle(fontWeight: FontWeight.w800),
+          //             ),
+          //             TextSpan(text: 'to checkout'),
+          //           ],
+          //         ),
+          //         style: TextStyle(
+          //           fontFamily: KCFonts.avenir,
+          //           fontSize: 15,
+          //           fontWeight: FontWeight.w400,
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           if (banks.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 35),
-              child: LayoutBuilder(
-                builder: (context, costraint) {
-                  return PopupMenuButton<Partner>(
-                    enabled: true,
-                    constraints: BoxConstraints(
-                      minWidth: costraint.maxWidth,
-                      maxHeight: 250,
-                    ),
-                    padding: EdgeInsets.zero,
-                    elevation: 1,
-                    offset: const Offset(0, 76),
-                    child: Container(
-                      height: 60,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.11,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: KCColors.grey1),
-                        borderRadius: BorderRadius.circular(4.4186),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (checkoutNotfier.selectedBank == null)
-                            KCBodyText1(
-                              'Select Bank',
-                              color: KCColors.grey2,
-                              fontSize: 15,
-                            )
-                          else
-                            KCBodyText1(
-                              checkoutNotfier.selectedBank!['name'],
-                              fontSize: 15,
-                            ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 2, right: 5),
-                            child: SvgPicture.asset(
-                              KCAssets.caretDown,
-                              package: KC_PACKAGE_NAME,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    itemBuilder: (context) {
-                      return List.generate(
-                        banks.length,
-                        (index) {
-                          return PopupMenuItem<Partner>(
-                            height: 0,
-                            padding: EdgeInsets.zero,
-                            child: KCBankPopupMenuItemContent(
-                              title: banks[index]['name'],
-                              withBG: index % 2 == 0,
-                            ),
-                            onTap: () {
-                              checkoutNotfier.selectBank(banks[index]);
-                            },
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
+              child: KCBankSearchDropdown(
+                banks: banks,
+                selectedBank: checkoutNotfier.selectedBank,
+                searchController: _bankSearchController,
+                focusNode: _bankSearchFocusNode,
+                onFilter: _filterBanks,
+                onSelect: checkoutNotfier.selectBank,
               ),
             ),
           const YSpace(32),

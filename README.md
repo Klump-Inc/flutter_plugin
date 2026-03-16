@@ -13,7 +13,7 @@ This library would help you add Klump Checkout to your hybrid android/ios applic
 To use this plugin, add `klump_checkout` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 ```pub
 dependencies:
-  klump_checkout: ^1.1.42
+  klump_checkout: ^1.1.43
 ```
 
 ### Usage
@@ -71,7 +71,7 @@ final res = await klumpCheckout.pay(
                     'klp_pk_test_e4aaa1a8e96644ad9af23fa453ddd6ffa39a8233a88c4b93860f119c8cd9a332',
       amount: 45000,
       shippingFee: 5000,
-      merchantReference: "what-ever-you-want-this-to-be",
+      merchantReference: "a unique reference string for each transaction",
       metaData: {
         'customer': "Elon Musk",
         'email': "musk@spacex.com",

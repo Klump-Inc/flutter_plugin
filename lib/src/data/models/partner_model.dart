@@ -40,7 +40,9 @@ class PartnerModel extends Partner {
             ? null
             : NextStepModel.fromJson(json['next_step']),
         isActiveForMobile: json['is_active_for_mobile'],
-        metadata: json['metadata'],
+        metadata: json['metadata'] == null
+            ? null
+            : PartnerMetadataModel.fromJson(json['metadata']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -58,6 +60,6 @@ class PartnerModel extends Partner {
         "created_at": createdAt,
         "updated_at": updatedAt?.toIso8601String(),
         "is_active_for_mobile": isActiveForMobile,
-        "metadata": metadata,
+        "metadata": metadata?.toJson(),
       };
 }

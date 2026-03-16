@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:klump_checkout/src/domain/domain.dart';
+import 'package:klump_checkout/src/src.dart';
 
 class Partner extends Equatable {
   final String id;
@@ -17,7 +17,7 @@ class Partner extends Equatable {
   final DateTime? updatedAt;
   final NextStep? nextStep;
   final bool? isActiveForMobile;
-  final Map<String, dynamic>? metadata;
+  final PartnerMetadataModel? metadata;
 
   const Partner({
     required this.id,
