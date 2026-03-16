@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class WalletBalance extends StatefulWidget {
@@ -26,10 +25,7 @@ class _WalletBalanceState extends State<WalletBalance> {
   Widget build(BuildContext context) {
     final changeNotifier = Provider.of<KCChangeNotifier>(context);
     final stepData = changeNotifier.walletBalanceStepData?.nextStep;
-    Logger().d(stepData?.displayData?.subText);
-    final insufficientBalance =
-        stepData?.displayData?.subText?.contains('balance is insufficient') ==
-            true;
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SingleChildScrollView(
@@ -161,74 +157,18 @@ class _WalletBalanceState extends State<WalletBalance> {
                         fontSize: 12,
                         color: Colors.red,
                         fontWeight: FontWeight.w500,
-                      )
-                    else
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          changeNotifier
-                              .setPaymentOption(PaymentOption.lenders);
-                          changeNotifier.pageTo(0);
-                        },
-                        child: KCBodyText1(
-                          'Change your mind? Pay through Klump Lenders',
-                          decoration: TextDecoration.underline,
-                          color: KCColors.lightBlue,
-                          decorationColor: KCColors.lightBlue,
-                        ),
                       ),
                     const YSpace(25),
                     const Spacer(),
-                    if (insufficientBalance)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          KCPrimaryButton(
-                            title: 'Top up Wallet',
-                            disabled: changeNotifier.isBusy,
-                            loading: changeNotifier.isBusy,
-                            onTap: () {
-                              WalletTopupContainer.route(
-                                  context, changeNotifier.initiateResponse!);
-                            },
-                          ),
-                          const YSpace(16),
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              changeNotifier
-                                  .setPaymentOption(PaymentOption.lenders);
-                              changeNotifier.pageTo(0);
-                            },
-                            child: KCBodyText1(
-                              'Change your mind? Pay through Klump Lenders',
-                              decoration: TextDecoration.underline,
-                              color: KCColors.lightBlue,
-                              decorationColor: KCColors.lightBlue,
-                            ),
-                          ),
-                          const YSpace(16),
-                        ],
-                      )
-                    else
-                      Column(
-                        children: [
-                          KCPrimaryButton(
-                            title:
-                                'Yes, Pay NGN ${KCStringUtil.formatAmount(changeNotifier.totalAmount)}',
-                            disabled: changeNotifier.isBusy,
-                            loading: changeNotifier.isBusy,
-                            onTap: () {
-                              changeNotifier.payWithWallet();
-                            },
-                          ),
-                          const YSpace(16),
-                          KCSecondaryButton(
-                            title: 'Not enough? Top up wallet',
-                            onTap: () {},
-                          ),
-                        ],
-                      )
+                    KCPrimaryButton(
+                      title:
+                          'Yes, Pay NGN ${KCStringUtil.formatAmount(changeNotifier.totalAmount)}',
+                      disabled: changeNotifier.isBusy,
+                      loading: changeNotifier.isBusy,
+                      onTap: () {
+                        changeNotifier.payWithWallet();
+                      },
+                    )
                   ],
                 ),
               ),
