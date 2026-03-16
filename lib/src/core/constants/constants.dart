@@ -6,9 +6,9 @@ export 'kc_fonts.dart';
 const String KC_PACKAGE_NAME = 'klump_checkout';
 const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
-const String KC_PLUGIN_VERSION = '1.1.42';
+const String KC_PLUGIN_VERSION = '1.1.43';
 
-const bool dev = true;
+const bool dev = false;
 
 const String KC_BASE_URL = 'https://api.useklump.com';
 
