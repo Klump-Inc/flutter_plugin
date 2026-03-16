@@ -35,6 +35,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 : 'staging',
           },
         );
+        if (checkoutNotifier.selectedBankFlow != null) {
+          _lenderSearchController.text =
+              checkoutNotifier.selectedBankFlow!.name;
+        }
         if (checkoutNotifier.loanPartners == null) {
           checkoutNotifier.getLoanPartners();
         }
@@ -78,24 +82,6 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
 
   void _getCameras() async {
     cameras = await availableCameras();
-  }
-
-  void _initiatTranx() {
-    final checkoutNotifier =
-        Provider.of<KCChangeNotifier>(context, listen: false);
-    Future.delayed(Duration.zero, () async {
-      if (checkoutNotifier.selectedBankFlow != null) {
-        _lenderSearchController.text = checkoutNotifier.selectedBankFlow!.name;
-      }
-      if (widget.data.email != null && widget.data.phone != null) {
-        checkoutNotifier.setTransactionData(widget.data);
-        await checkoutNotifier.initiateTransaction(
-          email: widget.data.email!,
-          phone: widget.data.phone!,
-        );
-      }
-      checkoutNotifier.getLoanPartners();
-    });
   }
 
   @override

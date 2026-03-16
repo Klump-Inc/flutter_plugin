@@ -151,7 +151,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         headers: headers,
       );
-      Logger().d(response.data);
       await prefs.setString(KC_CHECKOUT_TOKEN,
           (response.data as Map<String, dynamic>)['token'] as String);
       return InitiateResponseModel.fromJson(response.data);
@@ -220,7 +219,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
         body: body,
         token: prefs.getString(KC_CHECKOUT_TOKEN),
       );
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: response.data['message'],
@@ -528,7 +526,6 @@ class RemoteDataSourceImpl implements RemoteDatasource {
               (response.data as Map<String, dynamic>)['data']['token']);
         }
       }
-      Logger().d(response.data);
       return KCAPIResponseModel(
         nextStep: NextStepModel.fromJson(response.data['next_step']),
         data: api == '/loans/account/verify-otp'
