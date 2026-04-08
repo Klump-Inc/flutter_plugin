@@ -46,7 +46,8 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
       searchQuery,
       widget.selectedBankFlow?.name ?? '',
     );
-    bool isActive(Partner p) => p.isActive && p.isActiveForMobile == true;
+    bool isActive(Partner p) =>
+        p.isActive == true && p.isActiveForMobile == true;
     final loansToAnybody = filteredPartners
         .where((p) =>
             p.metadata?.customerType.toString().toLowerCase() == 'everyone')
@@ -146,7 +147,7 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
                       final partner = entry.value;
                       return GestureDetector(
                         onTap: () {
-                          if (partner.isActive &&
+                          if (partner.isActive == true &&
                               partner.isActiveForMobile == true) {
                             widget.onSelect(partner);
                             widget.searchController.text = partner.name;
@@ -157,7 +158,7 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
                           title: partner.name,
                           logo: partner.logo,
                           // withBG: entry.key % 2 == 0,
-                          isActive: partner.isActive &&
+                          isActive: partner.isActive == true &&
                               partner.isActiveForMobile == true,
                           message: partner.metadata?.dropdownMessage,
                         ),
@@ -186,7 +187,7 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
                       final partner = entry.value;
                       return GestureDetector(
                         onTap: () {
-                          if (partner.isActive &&
+                          if (partner.isActive == true &&
                               partner.isActiveForMobile == true) {
                             widget.onSelect(partner);
                             widget.searchController.text = partner.name;
@@ -197,7 +198,7 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
                           title: partner.name,
                           logo: partner.logo,
                           // withBG: entry.key % 2 == 0,
-                          isActive: partner.isActive &&
+                          isActive: partner.isActive == true &&
                               partner.isActiveForMobile == true,
                           message: partner.metadata?.dropdownMessage,
                         ),

@@ -8,7 +8,7 @@ const String NGN = 'NGN';
 const String PUBLIC_KEY = 'publicKey';
 const String KC_PLUGIN_VERSION = '1.2.44';
 
-const bool dev = false;
+const bool dev = true;
 
 const String KC_BASE_URL = 'https://api.useklump.com';
 

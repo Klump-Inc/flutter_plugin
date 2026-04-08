@@ -2,12 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:klump_checkout/src/src.dart';
 
 class Partner extends Equatable {
-  final String id;
+  final String? id;
   final String name;
   final String slug;
   final String? logo;
-  final bool isActive;
-  final bool requiresPrequalification;
+  final bool? isActive;
+  final bool? requiresPrequalification;
   final String? interest;
   final String? minLoanAmount;
   final String? maxLoanAmount;
@@ -18,6 +18,8 @@ class Partner extends Equatable {
   final NextStep? nextStep;
   final bool? isActiveForMobile;
   final PartnerMetadataModel? metadata;
+  final List<dynamic>? keywords;
+  final bool? isAvailable;
 
   const Partner({
     required this.id,
@@ -36,6 +38,8 @@ class Partner extends Equatable {
     this.nextStep,
     this.isActiveForMobile,
     this.metadata,
+    this.keywords,
+    this.isAvailable,
   });
 
   @override
@@ -56,5 +60,7 @@ class Partner extends Equatable {
         nextStep,
         isActiveForMobile,
         metadata,
+        keywords,
+        isAvailable,
       ];
 }
