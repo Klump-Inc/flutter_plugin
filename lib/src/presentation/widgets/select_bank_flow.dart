@@ -89,6 +89,14 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     final activeLoanPartners = checkoutNotfier.loanPartners == null
         ? <Partner>[]
         : checkoutNotfier.loanPartners!;
+
+    final loansToAnybody = activeLoanPartners
+        .where((p) =>
+            p.metadata?.customerType.toString().toLowerCase() == 'everyone' &&
+            p.isAvailable == true &&
+            p.isActive == true)
+        .toList();
+
     final banks = ((checkoutNotfier.selectedBankFlow?.config
                     as Map<String, dynamic>?)?['extra_form_fields'] as List?)
                 ?.isNotEmpty ==
@@ -142,6 +150,10 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           const YSpace(8),
           KCHeadline5(
             'Can’t find your bank? Use Credit Direct to checkout',
+            fontSize: 14,
+          ),
+          KCHeadline5(
+            'First ${loansToAnybody.length} below lends to all customers',
             fontSize: 14,
           ),
           const YSpace(16),

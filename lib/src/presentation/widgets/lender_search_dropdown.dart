@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/src.dart';
+import 'package:logger/logger.dart';
 
 class KCLenderSearchDropdown extends StatefulWidget {
   const KCLenderSearchDropdown({
@@ -46,27 +47,6 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
       searchQuery,
       widget.selectedBankFlow?.name ?? '',
     );
-    bool isActive(Partner p) =>
-        p.isActive == true && p.isActiveForMobile == true;
-    final loansToAnybody = filteredPartners
-        .where((p) =>
-            p.metadata?.customerType.toString().toLowerCase() == 'everyone')
-        .toList()
-      ..sort((a, b) {
-        final aActive = isActive(a);
-        final bActive = isActive(b);
-        return aActive == bActive ? 0 : (aActive ? -1 : 1);
-      });
-    final loansToCustomersOnly = filteredPartners
-        .where((p) =>
-            p.metadata?.customerType.toString().toLowerCase() ==
-            'its customers')
-        .toList()
-      ..sort((a, b) {
-        final aActive = isActive(a);
-        final bActive = isActive(b);
-        return aActive == bActive ? 0 : (aActive ? -1 : 1);
-      });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,77 +114,24 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 children: [
-                  if (loansToAnybody.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: KCBodyText1(
-                        'Loans to anybody',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
+                  ...filteredPartners.asMap().entries.map((entry) {
+                    final partner = entry.value;
+                    Logger().d(partner.metadata?.dropdownMessage);
+                    return GestureDetector(
+                      onTap: () {
+                        widget.onSelect(partner);
+                        widget.searchController.text = partner.name;
+                        widget.focusNode.unfocus();
+                      },
+                      child: KCPartnerPopupMenuItemContent(
+                        title: partner.name,
+                        logo: partner.logo,
+                        isActive: true,
+                        message: partner.metadata?.dropdownMessage ??
+                            'This institution loans exclusively to its customers',
                       ),
-                    ),
-                    ...loansToAnybody.asMap().entries.map((entry) {
-                      final partner = entry.value;
-                      return GestureDetector(
-                        onTap: () {
-                          if (partner.isActive == true &&
-                              partner.isActiveForMobile == true) {
-                            widget.onSelect(partner);
-                            widget.searchController.text = partner.name;
-                            widget.focusNode.unfocus();
-                          }
-                        },
-                        child: KCPartnerPopupMenuItemContent(
-                          title: partner.name,
-                          logo: partner.logo,
-                          // withBG: entry.key % 2 == 0,
-                          isActive: partner.isActive == true &&
-                              partner.isActiveForMobile == true,
-                          message: partner.metadata?.dropdownMessage,
-                        ),
-                      );
-                    }),
-                  ],
-                  if (loansToCustomersOnly.isNotEmpty &&
-                      loansToAnybody.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      height: 0.75,
-                      width: double.infinity,
-                      color: KCColors.grey8,
-                    ),
-                  if (loansToCustomersOnly.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      child: KCBodyText1(
-                        'Loans to only their customers',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    ...loansToCustomersOnly.asMap().entries.map((entry) {
-                      final partner = entry.value;
-                      return GestureDetector(
-                        onTap: () {
-                          if (partner.isActive == true &&
-                              partner.isActiveForMobile == true) {
-                            widget.onSelect(partner);
-                            widget.searchController.text = partner.name;
-                            widget.focusNode.unfocus();
-                          }
-                        },
-                        child: KCPartnerPopupMenuItemContent(
-                          title: partner.name,
-                          logo: partner.logo,
-                          // withBG: entry.key % 2 == 0,
-                          isActive: partner.isActive == true &&
-                              partner.isActiveForMobile == true,
-                          message: partner.metadata?.dropdownMessage,
-                        ),
-                      );
-                    }),
-                  ],
+                    );
+                  }),
                   if (filteredPartners.isEmpty)
                     Padding(
                       padding: const EdgeInsets.all(16),
