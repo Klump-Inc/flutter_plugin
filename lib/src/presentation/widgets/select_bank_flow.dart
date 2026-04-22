@@ -111,6 +111,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
             .first['options'] as List
         : [];
     final showUniversalLenderFallback = _inactivePartnerFallback != null;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),
       child: Column(
@@ -189,6 +190,8 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 setState(() => _inactivePartnerFallback = null);
               },
             ),
+            if (_inactivePartnerFallback!.slug == 'opay')
+              const _OpayBrowserDisclaimer()
           ],
           // const YSpace(12),
           // Row(
@@ -278,6 +281,28 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           ],
           const YSpace(59)
         ],
+      ),
+    );
+  }
+}
+
+class _OpayBrowserDisclaimer extends StatelessWidget {
+  const _OpayBrowserDisclaimer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      decoration: BoxDecoration(
+        color: KCColors.yellow.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(3.52),
+        border: Border.all(color: KCColors.yellow, width: 0.59),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      child: KCBodyText1(
+        'OPay users selecting Credit Direct, please use a web browser to complete face verification.',
+        fontWeight: FontWeight.w500,
+        color: KCColors.orange,
       ),
     );
   }

@@ -20,4 +20,6 @@ class KCColors {
   static const Color lightBlue = Color(0XFF2C86FF);
   static const Color green = Color(0XFF4CAF50);
   static const Color blue1 = Color(0XFF107EBC);
+  static const Color yellow = Color(0XFFFDB813);
+  static const Color orange = Color(0XFFEA6700);
 }
