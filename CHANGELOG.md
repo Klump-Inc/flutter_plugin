@@ -38,6 +38,8 @@
 ## [1.0.42] - Add new financial partners
 ## [1.2.43] - UI improvements
 ## [1.2.44] - UI improvements
+## [1.2.45] - Add new financial partners
+
 
 
 
