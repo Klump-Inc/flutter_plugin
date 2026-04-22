@@ -256,8 +256,11 @@ void main() {
       await tester.pump(Duration.zero);
       expect(find.byType(YSpace), findsWidgets);
       expect(find.byType(SvgPicture), findsWidgets);
-      expect(find.text('Select a Partner'), findsOneWidget);
-      expect(find.text('Credit approval in minutes'), findsOneWidget);
+      expect(find.text('Select a lender'), findsOneWidget);
+      expect(
+        find.text('Can’t find your bank? Use Credit Direct to checkout'),
+        findsOneWidget,
+      );
       expect(find.byType(KCPrimaryButton), findsOneWidget);
       expect(find.text('Continue'), findsOneWidget);
     });

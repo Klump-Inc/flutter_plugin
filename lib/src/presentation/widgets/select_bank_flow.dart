@@ -21,6 +21,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
   final FocusNode _lenderSearchFocusNode = FocusNode();
   final TextEditingController _bankSearchController = TextEditingController();
   final FocusNode _bankSearchFocusNode = FocusNode();
+  Partner? _inactivePartnerFallback;
 
   @override
   void initState() {
@@ -92,9 +93,13 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
 
     final loansToAnybody = activeLoanPartners
         .where((p) =>
-            p.metadata?.customerType.toString().toLowerCase() == 'everyone' &&
-            p.isAvailable == true &&
-            p.isActive == true)
+                p.metadata?.customerType.toString().toLowerCase() ==
+                    'everyone' &&
+                p.isAvailable == true &&
+                p.isActive == true
+            // &&
+            // p.isActiveForMobile == true
+            )
         .toList();
 
     final banks = ((checkoutNotfier.selectedBankFlow?.config
@@ -105,6 +110,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
                 as Map<String, dynamic>?)?['extra_form_fields'] as List)
             .first['options'] as List
         : [];
+    final showUniversalLenderFallback = _inactivePartnerFallback != null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 26),
       child: Column(
@@ -147,24 +153,43 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
           ),
           const YSpace(30.22),
           KCHeadline3('Select a lender'),
-          const YSpace(8),
-          KCHeadline5(
-            'Can’t find your bank? Use Credit Direct to checkout',
-            fontSize: 14,
-          ),
-          KCHeadline5(
-            'First ${loansToAnybody.length} below lends to all customers',
-            fontSize: 14,
-          ),
-          const YSpace(16),
-          KCLenderSearchDropdown(
-            activeLoanPartners: activeLoanPartners,
-            selectedBankFlow: checkoutNotfier.selectedBankFlow,
-            searchController: _lenderSearchController,
-            focusNode: _lenderSearchFocusNode,
-            onFilter: _filterPartners,
-            onSelect: checkoutNotfier.setBankFlow,
-          ),
+          if (!showUniversalLenderFallback) ...[
+            const YSpace(8),
+            KCHeadline5(
+              'Can’t find your bank? Use Credit Direct to checkout',
+              fontSize: 14,
+            ),
+            KCHeadline5(
+              'First ${loansToAnybody.length} below lends to all customers',
+              fontSize: 14,
+            ),
+            const YSpace(16),
+            KCLenderSearchDropdown(
+              activeLoanPartners: activeLoanPartners,
+              selectedBankFlow: checkoutNotfier.selectedBankFlow,
+              searchController: _lenderSearchController,
+              focusNode: _lenderSearchFocusNode,
+              onFilter: _filterPartners,
+              onSelect: checkoutNotfier.setBankFlow,
+              onInactivePartnerTap: (partner) {
+                checkoutNotfier.setBankFlow(partner);
+                setState(() => _inactivePartnerFallback = partner);
+              },
+            ),
+          ] else ...[
+            const YSpace(12),
+            _UnavailablePartnerBanner(
+                partnerName: _inactivePartnerFallback!.name),
+            const YSpace(16),
+            _UniversalLenderList(
+              partners: loansToAnybody,
+              onSelect: (p) {
+                checkoutNotfier.setBankFlow(p);
+                _lenderSearchController.text = p.name;
+                setState(() => _inactivePartnerFallback = null);
+              },
+            ),
+          ],
           // const YSpace(12),
           // Row(
           //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,8 +269,127 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
               checkoutNotfier.selectBankSubmitted();
             },
           ),
+          if (showUniversalLenderFallback) ...[
+            const YSpace(12),
+            KCSecondaryButton(
+              title: 'Go Back',
+              onTap: () => setState(() => _inactivePartnerFallback = null),
+            ),
+          ],
           const YSpace(59)
         ],
+      ),
+    );
+  }
+}
+
+class _UnavailablePartnerBanner extends StatelessWidget {
+  const _UnavailablePartnerBanner({required this.partnerName});
+
+  final String partnerName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        style: const TextStyle(
+          fontFamily: KCFonts.avenir,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: KCColors.black3,
+          height: 1.35,
+        ),
+        children: [
+          const TextSpan(
+            text: '⚠️',
+          ),
+          TextSpan(
+            text: '"$partnerName"',
+            style: const TextStyle(
+              color: Color(0xFFE53935),
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const TextSpan(
+            text: " isn't on Klump yet. ",
+            style: TextStyle(
+              color: Color(0xFFE53935),
+            ),
+          ),
+          const TextSpan(
+            text: ". Use any lender below — ",
+          ),
+          const TextSpan(
+            text: 'they lend to all customers.',
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UniversalLenderList extends StatelessWidget {
+  const _UniversalLenderList({
+    required this.partners,
+    required this.onSelect,
+  });
+
+  final List<Partner> partners;
+  final void Function(Partner) onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    if (partners.isEmpty) {
+      return KCBodyText1(
+        'No lenders are available for all customers yet. Please try again later.',
+        fontSize: 14,
+        color: KCColors.grey4,
+      );
+    }
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 300),
+      child: ListView.separated(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        itemCount: partners.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          final partner = partners[index];
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => onSelect(partner),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                border: Border.all(color: KCColors.grey1),
+                borderRadius: BorderRadius.circular(4.4186),
+                color: Colors.white,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: KCPartnerPopupMenuItemContent(
+                      title: partner.name,
+                      logo: partner.logo,
+                      isActive: true,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: Icon(
+                      Icons.chevron_right,
+                      color: KCColors.grey4,
+                      size: 22,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

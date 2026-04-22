@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:klump_checkout/src/src.dart';
-import 'package:logger/logger.dart';
 
 class KCLenderSearchDropdown extends StatefulWidget {
   const KCLenderSearchDropdown({
@@ -12,6 +11,7 @@ class KCLenderSearchDropdown extends StatefulWidget {
     required this.focusNode,
     required this.onFilter,
     required this.onSelect,
+    this.onInactivePartnerTap,
   });
 
   final List<Partner> activeLoanPartners;
@@ -21,12 +21,17 @@ class KCLenderSearchDropdown extends StatefulWidget {
   final List<Partner> Function(
       List<Partner> partners, String query, String partnerName) onFilter;
   final void Function(Partner) onSelect;
+  final void Function(Partner)? onInactivePartnerTap;
 
   @override
   State<KCLenderSearchDropdown> createState() => _KCLenderSearchDropdownState();
 }
 
 class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
+  static bool _partnerIsSelectable(Partner partner) {
+    return partner.isActive == true && partner.isActiveForMobile == true;
+  }
+
   @override
   void didUpdateWidget(covariant KCLenderSearchDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -47,6 +52,12 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
       searchQuery,
       widget.selectedBankFlow?.name ?? '',
     );
+    final sortedPartners = [...filteredPartners]..sort((a, b) {
+        final aSel = _partnerIsSelectable(a);
+        final bSel = _partnerIsSelectable(b);
+        if (aSel != bSel) return aSel ? -1 : 1;
+        return a.name.compareTo(b.name);
+      });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,11 +125,16 @@ class _KCLenderSearchDropdownState extends State<KCLenderSearchDropdown> {
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 children: [
-                  ...filteredPartners.asMap().entries.map((entry) {
-                    final partner = entry.value;
-                    Logger().d(partner.metadata?.dropdownMessage);
+                  ...sortedPartners.map((partner) {
+                    final selectable = _partnerIsSelectable(partner);
                     return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () {
+                        if (!selectable) {
+                          widget.focusNode.unfocus();
+                          widget.onInactivePartnerTap?.call(partner);
+                          return;
+                        }
                         widget.onSelect(partner);
                         widget.searchController.text = partner.name;
                         widget.focusNode.unfocus();

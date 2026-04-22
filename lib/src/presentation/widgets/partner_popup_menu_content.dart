@@ -52,14 +52,17 @@ class KCPartnerPopupMenuItemContent extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const YSpace(2),
-                KCBodyText1(
-                  message ?? '',
-                  fontSize: 8,
-                  fontWeight: FontWeight.w400,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                if (message != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: KCBodyText1(
+                      message!,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w400,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
               ],
             ),
           ),
