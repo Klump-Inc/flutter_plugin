@@ -49,6 +49,11 @@ void main() {
           dropdownMessage: null,
           allowDynamicDownpayment: null,
         ),
+        keywords: [
+          'Eyowo Microfinance Bank',
+          'Eyowo',
+          'Eyowo MFB',
+        ],
       ),
       const Partner(
         id: '3',
@@ -81,9 +86,7 @@ void main() {
     if (query.isEmpty) return list;
     final lowerQuery = query.toLowerCase();
     return list
-        .where((p) =>
-            p.name.toLowerCase().contains(lowerQuery) ||
-            partnerName.toLowerCase() == lowerQuery)
+        .where((p) => p.matchesLenderSearchQuery(lowerQuery, partnerName))
         .toList();
   }
 
@@ -174,6 +177,17 @@ void main() {
     await tester.pump();
     expect(find.text('Credit Direct'), findsOneWidget);
     expect(find.text('Fidelity Bank'), findsNothing);
+    expect(find.text('Stanbic IBTC'), findsNothing);
+  });
+
+  testWidgets('KCLenderSearchDropdown filters by partner keyword', (tester) async {
+    await pumpDropdown(tester);
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'eyowo');
+    await tester.pump();
+    expect(find.text('Fidelity Bank'), findsOneWidget);
+    expect(find.text('Credit Direct'), findsNothing);
     expect(find.text('Stanbic IBTC'), findsNothing);
   });
 

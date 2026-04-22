@@ -64,3 +64,22 @@ class Partner extends Equatable {
         isAvailable,
       ];
 }
+
+extension PartnerLenderSearchX on Partner {
+  /// Whether [lowerQuery] matches [name], the selected [partnerName] field, or any [keywords] entry.
+  bool matchesLenderSearchQuery(String lowerQuery, String partnerName) {
+    if (name.toLowerCase().contains(lowerQuery) ||
+        partnerName.toLowerCase() == lowerQuery) {
+      return true;
+    }
+    final kws = keywords;
+    if (kws == null || kws.isEmpty) return false;
+    for (final s in kws) {
+      if (s.toString().isNotEmpty &&
+          s.toString().toLowerCase().contains(lowerQuery)) {
+        return true;
+      }
+    }
+    return false;
+  }
+}

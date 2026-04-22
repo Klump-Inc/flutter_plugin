@@ -45,9 +45,7 @@ class _SelectBankFlowState extends State<SelectBankFlow> {
     if (query.isEmpty) return partners;
     final lowerQuery = query.toLowerCase();
     return partners
-        .where((p) =>
-            p.name.toLowerCase().contains(lowerQuery) ||
-            partnerName.toLowerCase() == lowerQuery)
+        .where((p) => p.matchesLenderSearchQuery(lowerQuery, partnerName))
         .toList();
   }
 
