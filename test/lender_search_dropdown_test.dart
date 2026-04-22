@@ -119,7 +119,7 @@ void main() {
     expect(find.byType(KCPartnerPopupMenuItemContent), findsWidgets);
   });
 
-  testWidgets('KCLenderSearchDropdown sorts active before coming soon',
+  testWidgets('KCLenderSearchDropdown sorts active partners before inactive',
       (tester) async {
     await pumpDropdown(tester);
     final menuItems = find.byType(KCPartnerPopupMenuItemContent);
@@ -127,14 +127,15 @@ void main() {
     expect(find.text('Credit Direct'), findsOneWidget);
     expect(find.text('Stanbic IBTC'), findsOneWidget);
     expect(find.text('Fidelity Bank'), findsOneWidget);
-    expect(find.text('Coming soon'), findsOneWidget);
+    expect(find.text('Others banks coming soon'), findsOneWidget);
     final firstListTile =
         tester.widgetList<KCPartnerPopupMenuItemContent>(menuItems).first;
     expect(firstListTile.title, 'Credit Direct');
+    expect(firstListTile.isActive, isTrue);
     final lastListTile =
         tester.widgetList<KCPartnerPopupMenuItemContent>(menuItems).last;
     expect(lastListTile.title, 'Fidelity Bank');
-    expect(lastListTile.isActive, isFalse);
+    expect(lastListTile.isActive, isTrue);
   });
 
   testWidgets(
