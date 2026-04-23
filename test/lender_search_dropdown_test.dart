@@ -11,11 +11,13 @@ void main() {
   late List<Partner> partners;
   Partner? selectedPartner;
   late void Function(Partner) onSelect;
+  Partner? inactiveTapPartner;
 
   setUp(() {
     searchController = TextEditingController();
     focusNode = FocusNode();
     selectedPartner = null;
+    inactiveTapPartner = null;
     onSelect = (p) => selectedPartner = p;
     partners = [
       const Partner(
@@ -47,6 +49,11 @@ void main() {
           dropdownMessage: null,
           allowDynamicDownpayment: null,
         ),
+        keywords: [
+          'Eyowo Microfinance Bank',
+          'Eyowo',
+          'Eyowo MFB',
+        ],
       ),
       const Partner(
         id: '3',
@@ -79,9 +86,7 @@ void main() {
     if (query.isEmpty) return list;
     final lowerQuery = query.toLowerCase();
     return list
-        .where((p) =>
-            p.name.toLowerCase().contains(lowerQuery) ||
-            partnerName.toLowerCase() == lowerQuery)
+        .where((p) => p.matchesLenderSearchQuery(lowerQuery, partnerName))
         .toList();
   }
 
@@ -95,6 +100,7 @@ void main() {
           focusNode: focusNode,
           onFilter: filterPartners,
           onSelect: onSelect,
+          onInactivePartnerTap: (p) => inactiveTapPartner = p,
         ),
       );
     });
@@ -110,22 +116,29 @@ void main() {
   testWidgets('KCLenderSearchDropdown shows dropdown when no selection',
       (tester) async {
     await pumpDropdown(tester);
-    expect(find.text('Loans to anybody'), findsOneWidget);
-    expect(find.text('Loans to only their customers'), findsOneWidget);
+    expect(find.text('Credit Direct'), findsOneWidget);
+    expect(find.text('Stanbic IBTC'), findsOneWidget);
+    expect(find.text('Fidelity Bank'), findsOneWidget);
     expect(find.byType(KCPartnerPopupMenuItemContent), findsWidgets);
   });
 
-  testWidgets('KCLenderSearchDropdown sorts active before coming soon',
+  testWidgets('KCLenderSearchDropdown sorts active partners before inactive',
       (tester) async {
     await pumpDropdown(tester);
     final menuItems = find.byType(KCPartnerPopupMenuItemContent);
     expect(menuItems, findsNWidgets(3));
-    // First in "Loans to anybody" should be Credit Direct (active)
-    // First in "Loans to only their customers" should be Stanbic IBTC (active), then Fidelity (coming soon)
     expect(find.text('Credit Direct'), findsOneWidget);
     expect(find.text('Stanbic IBTC'), findsOneWidget);
     expect(find.text('Fidelity Bank'), findsOneWidget);
-    expect(find.text('Coming soon'), findsOneWidget);
+    expect(find.text('Others banks coming soon'), findsOneWidget);
+    final firstListTile =
+        tester.widgetList<KCPartnerPopupMenuItemContent>(menuItems).first;
+    expect(firstListTile.title, 'Credit Direct');
+    expect(firstListTile.isActive, isTrue);
+    final lastListTile =
+        tester.widgetList<KCPartnerPopupMenuItemContent>(menuItems).last;
+    expect(lastListTile.title, 'Fidelity Bank');
+    expect(lastListTile.isActive, isTrue);
   });
 
   testWidgets(
@@ -143,6 +156,7 @@ void main() {
     await tester.tap(find.text('Fidelity Bank'));
     await tester.pump();
     expect(selectedPartner, isNull);
+    expect(inactiveTapPartner?.name, 'Fidelity Bank');
   });
 
   testWidgets('KCLenderSearchDropdown shows No lenders found when filter empty',
@@ -166,14 +180,25 @@ void main() {
     expect(find.text('Stanbic IBTC'), findsNothing);
   });
 
+  testWidgets('KCLenderSearchDropdown filters by partner keyword', (tester) async {
+    await pumpDropdown(tester);
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+    await tester.enterText(find.byType(TextField), 'eyowo');
+    await tester.pump();
+    expect(find.text('Fidelity Bank'), findsOneWidget);
+    expect(find.text('Credit Direct'), findsNothing);
+    expect(find.text('Stanbic IBTC'), findsNothing);
+  });
+
   testWidgets(
       'KCLenderSearchDropdown hides dropdown when has selection and not focused',
       (tester) async {
     selectedPartner = partners.first;
     await pumpDropdown(tester);
     await tester.pump();
-    expect(find.text('Loans to anybody'), findsNothing);
-    expect(find.text('Loans to only their customers'), findsNothing);
+    expect(find.text('Stanbic IBTC'), findsNothing);
+    expect(find.text('Fidelity Bank'), findsNothing);
   });
 
   testWidgets('KCLenderSearchDropdown disables field when no partners',

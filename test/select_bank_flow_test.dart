@@ -104,6 +104,8 @@ void main() {
   testWidgets(
       'SelectBankFlow shows bank dropdown when selected partner has extra form fields',
       (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(const Size(800, 900));
     const partnerWithBanks = Partner(
       id: '1',
       name: 'Credit Direct',
@@ -151,5 +153,79 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(KCLenderSearchDropdown), findsOneWidget);
     expect(find.byType(KCBankSearchDropdown), findsOneWidget);
+  });
+
+  testWidgets(
+      'SelectBankFlow shows universal lenders after tapping inactive partner',
+      (tester) async {
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.binding.setSurfaceSize(const Size(800, 900));
+    const universalLender = Partner(
+      id: '1',
+      name: 'Credit Direct',
+      slug: 'credit-direct',
+      logo: 'https://example.com/cdl.png',
+      isActive: true,
+      requiresPrequalification: false,
+      config: {},
+      isActiveForMobile: true,
+      isAvailable: true,
+      metadata: PartnerMetadataModel(
+        partnerType: null,
+        customerType: 'everyone',
+        dropdownMessage: null,
+        allowDynamicDownpayment: null,
+      ),
+    );
+    const inactiveLender = Partner(
+      id: '2',
+      name: 'Fidelity Bank',
+      slug: 'fidelity',
+      logo: 'https://example.com/fid.png',
+      isActive: false,
+      requiresPrequalification: true,
+      config: {},
+      isActiveForMobile: false,
+      isAvailable: true,
+      metadata: PartnerMetadataModel(
+        partnerType: null,
+        customerType: 'its customers',
+        dropdownMessage: null,
+        allowDynamicDownpayment: null,
+      ),
+    );
+    final partners = [universalLender, inactiveLender];
+    when(kcChangeNotifier.loanPartners).thenAnswer((_) => partners);
+    when(kcChangeNotifier.selectedBankFlow).thenAnswer((_) => null);
+    when(kcChangeNotifier.selectedBank).thenAnswer((_) => null);
+    when(kcChangeNotifier.isBusy).thenAnswer((_) => false);
+    when(kcChangeNotifier.initiateResponse).thenAnswer((_) => null);
+    when(kcChangeNotifier.getLoanPartners()).thenAnswer((_) async {});
+    when(kcChangeNotifier.setBankFlow(any)).thenAnswer((_) {});
+
+    await mockNetworkImagesFor(() async {
+      await tester.pumpKCWidget(
+        SizedBox(
+          height: 900,
+          child: ChangeNotifierProvider<KCChangeNotifier>.value(
+            value: kcChangeNotifier,
+            builder: (context, _) => const SelectBankFlow(data: checkoutData),
+          ),
+        ),
+      );
+    });
+
+    await tester.pump();
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextField));
+    await tester.pump();
+    await tester.tap(find.text('Fidelity Bank'));
+    await tester.pump();
+    expect(find.textContaining("isn't on Klump yet"), findsOneWidget);
+    expect(find.text('Credit Direct'), findsWidgets);
+    await tester.tap(find.text('Go Back'));
+    await tester.pump();
+    expect(find.textContaining("isn't on Klump yet"), findsNothing);
+    expect(find.text('First 1 below lends to all customers'), findsOneWidget);
   });
 }

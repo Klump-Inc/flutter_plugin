@@ -16,6 +16,7 @@ export 'kc_network_image.dart';
 export 'lender_search_dropdown.dart';
 export 'loader.dart';
 export 'logo_header_widget.dart';
+export 'opay_browser_disclaimer.dart';
 export 'page_loader.dart';
 export 'partner_popup_menu_content.dart';
 export 'partner_views/partner_views.dart';

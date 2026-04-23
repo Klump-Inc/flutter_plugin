@@ -2,7 +2,7 @@ import 'package:klump_checkout/klump_checkout.dart';
 
 class PartnerModel extends Partner {
   const PartnerModel({
-    required super.id,
+    super.id,
     required super.name,
     required super.slug,
     super.logo,
@@ -18,6 +18,8 @@ class PartnerModel extends Partner {
     super.nextStep,
     super.isActiveForMobile,
     super.metadata,
+    super.keywords,
+    super.isAvailable,
   });
 
   factory PartnerModel.fromJson(Map<String, dynamic> json) => PartnerModel(
@@ -43,6 +45,8 @@ class PartnerModel extends Partner {
         metadata: json['metadata'] == null
             ? null
             : PartnerMetadataModel.fromJson(json['metadata']),
+        keywords: json['keywords'],
+        isAvailable: json['is_available'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -61,5 +65,7 @@ class PartnerModel extends Partner {
         "updated_at": updatedAt?.toIso8601String(),
         "is_active_for_mobile": isActiveForMobile,
         "metadata": metadata?.toJson(),
+        "keywords": keywords,
+        "is_available": isAvailable,
       };
 }
